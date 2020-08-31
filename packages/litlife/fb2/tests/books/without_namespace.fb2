@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+  <description xmlns="">
+    <title-info>
+      <genre></genre>
+      <author>
+        <first-name></first-name>
+        <last-name></last-name>
+      </author>
+      <book-title>Название книги</book-title>
+      <annotation>
+        <p></p>
+      </annotation>
+      <date></date>
+      <lang>en</lang>
+      <src-lang>en</src-lang>
+    </title-info>
+    <document-info>
+      <author>
+        <nickname>Сonverter</nickname>
+        <email></email>
+      </author>
+      <program-used></program-used>
+      <date value="2000-01-01">01.01.2000</date>
+      <src-ocr>Unknown</src-ocr>
+      <id></id>
+      <version>1.0</version>
+    </document-info>
+    <publish-info>
+      <book-name>Unknown</book-name>
+    </publish-info>
+  </description>
+  <body>
+    <title xmlns="">
+      <p></p>
+    </title>
+    <section xmlns="">
+      <title>
+        <p></p>
+      </title>
+      <p>текст книги</p>
+    </section>
+  </body>
+</FictionBook>

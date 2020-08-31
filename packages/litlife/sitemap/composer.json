@@ -1,0 +1,23 @@
+{
+  "name": "litlife/sitemap",
+  "description": "Sitemap create module",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Litlife\\Sitemap\\Facades\\": "src/Facades",
+      "Litlife\\Sitemap\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\Sitemap\\": "tests"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "litlife/id-dirname",
+  "description": "Id to Dirname package",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Litlife\\IdDirname\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\IdDirname\\": "tests"
+    }
+  }
+}

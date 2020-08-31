@@ -1,0 +1,14 @@
+@import "variables.scss";
+
+html {
+  padding: 20px;
+}
+
+blockquote {
+  font-size: 100%;
+  padding: 10px 20px;
+  margin: 0 0 20px;
+  background-color: $gray-200;
+  border-left: 5px solid $gray-600;
+}
+

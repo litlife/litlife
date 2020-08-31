@@ -1,0 +1,24 @@
+{
+  "name": "litlife/html-splitter",
+  "description": "Url module",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "ext-dom": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Litlife\\HtmlSplitter\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\HtmlSplitter\\": "tests"
+    }
+  }
+}

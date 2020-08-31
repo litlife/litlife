@@ -1,0 +1,19 @@
+@import "variables";
+
+.book_text {
+
+  a:before {
+    content: "";
+    height: 60px; /* Give height of your fixed element */
+    margin-top: -60px; /* Give negative margin of your fixed element */
+    visibility: hidden;
+  }
+
+  .u-section-break {
+    border-top: 2px dashed #000;
+    height: 2px;
+  }
+
+  @import "book_styles";
+}
+

@@ -1,0 +1,23 @@
+{
+  "name": "litlife/fb2",
+  "description": "Fb2 module",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Litlife\\Fb2\\Facades\\": "src/Facades",
+      "Litlife\\Fb2\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\Fb2\\": "tests"
+    }
+  }
+}

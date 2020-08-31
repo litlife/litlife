@@ -1,0 +1,25 @@
+{
+  "name": "litlife/fb2-fix",
+  "description": "Fb2 fix module",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "ext-tidy": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Litlife\\Fb2Fix\\Facades\\": "src/Facades",
+      "Litlife\\Fb2Fix\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\Fb2Fix\\": "tests"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+  <description>
+    <document-info>
+      <program-used>fb2edit</program-used>
+      <date value="2018-01-01 01:01:01">01 янв 2019</date>
+    </document-info>
+  </description>
+ <body>
+  <section>
+   <p>Текст книги</p>
+   <empty-line/>
+  </section>
+ </body>
+</FictionBook>

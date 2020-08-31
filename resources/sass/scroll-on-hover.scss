@@ -1,0 +1,18 @@
+.scroll_on_hover {
+  overflow: auto;
+  visibility: hidden;
+}
+
+.scroll_on_hover_content,
+.scroll_on_hover:hover,
+.scroll_on_hover:focus {
+  visibility: visible;
+}
+
+.scroll_on_hover_delayed {
+  transition: visibility 0.2s;
+}
+
+.scroll_on_hover_delayed:hover {
+  transition: visibility 0s 0.2s;
+}

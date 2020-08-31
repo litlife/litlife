@@ -1,0 +1,101 @@
+
+iframe {
+  display: block;
+  max-width: 100%;
+}
+
+table {
+  @extend .table-bordered;
+}
+
+.bb_quote {
+  background-color: $gray-200;
+  @extend %blockquote;
+}
+
+div.bb_code {
+  border: #ccc 1px solid;
+  padding: 5px;
+}
+
+code.bb_code {
+  @extend code;
+}
+
+span.bb_spec_char {
+  color: #000099;
+}
+
+span.bb_mnemonic {
+  color: #ff0000;
+}
+
+span.bb_tag {
+  color: #009900;
+}
+
+span.bb_bracket {
+  font-weight: bold;
+}
+
+span.bb_slash {
+  font-weight: normal;
+}
+
+span.bb_tagname {
+  color: #990099;
+}
+
+span.bb_equal {
+  color: #999900;
+}
+
+span.bb_quote {
+  @extend %blockquote;
+}
+
+span.bb_attrib_name {
+  color: #999900;
+}
+
+span.bb_attrib_val {
+  color: #009999;
+}
+
+img.bb {
+  @extend %img_fluid;
+}
+
+picture.bb {
+  @extend %img_fluid;
+}
+
+.bb_spoiler {
+  border: 1px solid #CCC;
+}
+
+.bb_spoiler .bb_spoiler_title {
+  padding: 5px;
+  border-bottom: 1px solid #CCC;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.bb_spoiler .bb_spoiler_text {
+  padding: 5px;
+  display: none;
+}
+
+a {
+  @extend %blue_link;
+}
+
+span.bb_autolink {
+  @extend %blue_link;
+}
+
+
+
+
+
+

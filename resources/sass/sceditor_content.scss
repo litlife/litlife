@@ -1,0 +1,66 @@
+@import "variables.scss";
+
+$body-bg: #fff;
+
+@import "~bootstrap/scss/bootstrap";
+
+html {
+  padding: 5px;
+  height: 100%;
+}
+
+.ios {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch
+}
+
+.ios body {
+  position: relative;
+  overflow: auto
+}
+
+body {
+  min-height: 100%;
+  word-wrap: break-word
+}
+
+body.placeholder::before {
+  content: attr(placeholder);
+  color: #555;
+  font-style: italic
+}
+
+img {
+  @extend %img_fluid;
+}
+
+table {
+  @extend .table;
+  @extend .table-striped;
+  @extend .table-bordered;
+}
+
+// fix bug with tag P
+
+p {
+  margin: .1em 0 !important;
+}
+
+p.special {
+  margin: 0 !important;
+}
+
+@import "bbcode";
+
+blockquote {
+  background-color: $gray-200;
+  @extend %blockquote;
+}
+
+// в редакторе спойлер должен быть открыт
+.bb_spoiler .bb_spoiler_text {
+  display: block !important;
+}
+
+
+

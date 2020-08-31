@@ -1,0 +1,25 @@
+{
+  "name": "litlife/fb2-to-html",
+  "description": "Fb2 to html module",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "ext-dom": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Litlife\\Fb2ToHtml\\Facades\\": "src/Facades",
+      "Litlife\\Fb2ToHtml\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\Fb2ToHtml\\": "tests"
+    }
+  }
+}

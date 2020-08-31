@@ -1,0 +1,26 @@
+{
+  "name": "litlife/book-converter",
+  "description": "Book converter",
+  "authors": [
+    {
+      "name": "Litlife",
+      "email": "litlife@yandex.ru"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "litlife/url": "^1.0",
+    "symfony/process": "^5.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Litlife\\BookConverter\\Facades\\": "src/Facades",
+      "Litlife\\BookConverter\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\BookConverter\\Tests\\": "tests/"
+    }
+  }
+}

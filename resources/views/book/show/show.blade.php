@@ -1,0 +1,1 @@
+@extends('book.show.layout')

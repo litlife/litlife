@@ -1,0 +1,32 @@
+<?php
+
+return [
+	"character" => "Роль",
+	"comment" => "Текст заявки",
+	"created_at" => "Создан",
+	"declined" => "Заявка отклонена",
+	"nothing_found" => "Ни одной записи не найдено",
+	"on_check" => "{1}Заявка на рассмотрении|[2,*]Заявки на рассмотрении",
+	"request_created" => "Заявка создана",
+	"request_saved" => "Заявка сохранена",
+	"request_approved" => "Заявка одобрена",
+	"succeed" => "Заявка успешно обработана",
+	'user_id' => 'ID пользователя',
+	'send_request' => 'Отправить заявку',
+	'save_request' => 'Сохранить заявку',
+	'character_helper' => '',
+	'error_author_already_attached' => 'К странице автора уже привязан в качестве автора другой пользователь',
+	'profit_percent' => 'Процент вознаграждения автора',
+	'checked_by_user' => 'Проверил',
+	'start_review_request' => 'Начать рассматривать',
+	'stop_review_request' => 'Отменить рассмотрение',
+	'request_review_by_user' => 'Заявку рассматривает',
+	'request_has_been_sent' => 'Заявка отправлена. Пожалуйста, ожидайте рассмотрения',
+	'request_on_review' => 'Заявка на рассмотрении',
+	'request_is_saved_and_will_be_sent_for_review_after_the_authors_publication' => 'Заявка сохранена и будет отправлена на рассмотрение после публикации автора',
+	'the_author_is_not_published' => 'Автор не опубликован',
+	'the_author_is_deleted' => 'Автор не найден',
+	'ability_to_sell_books_for_the_author_is_disabled' => 'Возможность продавать книги для автора отключена. Все книги, которые были на продаже сняты с продажи и заблокированны для чтения и скачивания',
+	'disable_sales_for_the_author' => 'Отключить продажи для автора',
+	'warning_before_disabling_sales_for_the_author' => 'Внимание! Все книги автора находящиеся на продаже будут сняты с продажи и заблокированы для чтения и скачивания. У автора будет отключена возможность продавать книги.'
+];

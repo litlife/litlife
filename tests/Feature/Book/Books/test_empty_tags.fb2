@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>fgdfg</genre>
+   <author>
+    <first-name></first-name>
+    <middle-name></middle-name>
+    <last-name></last-name>
+    <nickname></nickname>
+    <home-page></home-page>
+    <email></email>
+   </author>
+   <book-title></book-title>
+   <annotation>
+    <p></p>
+   </annotation>
+   <keywords></keywords>
+   <date></date>
+   <coverpage></coverpage>
+   <lang></lang>
+   <src-lang></src-lang>
+   <translator>
+    <first-name></first-name>
+    <middle-name></middle-name>
+    <last-name></last-name>
+    <nickname></nickname>
+    <home-page></home-page>
+    <email></email>
+   </translator>
+   <sequence name="" number=""/>
+  </title-info>
+  <document-info>
+   <author>
+    <first-name></first-name>
+    <last-name></last-name>
+   </author>
+   <program-used></program-used>
+   <date value=""></date>
+   <id></id>
+   <version>1.0</version>
+   <history>
+    <p></p>
+   </history>
+  </document-info>
+  <publish-info>
+   <publisher></publisher>
+   <city></city>
+   <year></year>
+   <isbn></isbn>
+  </publish-info>
+ </description>
+ <body>
+  <section id="">
+   <title>
+    <p></p>
+   </title>
+   <p></p>
+  </section>
+ </body>
+</FictionBook>

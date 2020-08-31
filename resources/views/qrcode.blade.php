@@ -1,0 +1,1 @@
+{!! QrCode::size($size ?? 100)->generate($str ?? 'error') !!}

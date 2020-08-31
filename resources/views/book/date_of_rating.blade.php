@@ -1,0 +1,1 @@
+<x-time :time="$user_rating->user_updated_at"/>

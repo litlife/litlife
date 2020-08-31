@@ -1,0 +1,24 @@
+{
+  "name": "litlife/laravel-dkim",
+  "description": "Laravel package for signing outgoing messages with DKIM.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Vitaly Baev",
+      "email": "dj@vitalybaev.ru"
+    }
+  ],
+  "require": {
+    "laravel/framework": "^5.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Litlife\\LaravelDkim\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Litlife\\LaravelDkim\\": "tests"
+    }
+  }
+}

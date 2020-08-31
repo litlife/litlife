@@ -1,0 +1,174 @@
+
+p, h4, h5, h6 {
+  @extend %p;
+}
+
+td {
+  @extend %td;
+}
+
+p {
+  @extend %p;
+}
+
+a {
+  @extend %a;
+}
+
+.u-title {
+  @extend %title;
+}
+
+.u-title p {
+  @extend %title;
+}
+
+a[data-type="note"] {
+  @extend %note;
+}
+
+.u-empty-line {
+  @extend %empty_line;
+}
+
+.u-subtitle {
+  @extend %subtitle;
+}
+
+.u-annotation {
+  @extend %annotation;
+}
+
+.u-date {
+  @extend %date;
+}
+
+.u-epigraph {
+  @extend %epigraph;
+}
+
+.u-text-author {
+  @extend %text-author;
+}
+
+.u-poem {
+  @extend %poem;
+
+  > .u-title {
+    text-indent: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    font-size: 100%;
+  }
+}
+
+.u-stanza {
+  @extend %stanza;
+
+  p {
+    @extend %v;
+  }
+
+  > .u-title {
+    text-indent: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    font-size: 100%;
+  }
+}
+
+.u-v {
+  @extend %v;
+}
+
+blockquote {
+  @extend %blockquote;
+
+  > .u-text-author {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.u-image-align-right {
+  @extend %image-right;
+}
+
+.u-image-align-left {
+  @extend %image-left;
+}
+
+.u-image-align-center {
+  @extend %image-center;
+}
+
+/*
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    -moz-tab-size: 4;
+    tab-size: 4;
+  }
+
+  .marker {
+    background-color: Yellow;
+  }
+
+  span[lang] {
+    font-style: italic;
+  }
+
+  figure {
+    text-align: center;
+    border: solid 1px #ccc;
+    border-radius: 2px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    margin: 10px 20px;
+    display: inline-block;
+  }
+
+  figure > figcaption {
+    text-align: center;
+    display: block;
+  }
+
+  a > img {
+    padding: 1px;
+    margin: 1px;
+    border: none;
+    outline: 1px solid #0782C1;
+  }
+
+  .code-featured {
+    border: 5px solid red;
+  }
+
+  .math-featured {
+    padding: 20px;
+    box-shadow: 0 0 2px rgba(200, 0, 0, 1);
+    background-color: rgba(255, 0, 0, 0.05);
+    margin: 10px;
+  }
+
+  .image-clean {
+    border: 0;
+    background: none;
+    padding: 0;
+  }
+
+  .image-clean > figcaption {
+    font-size: .9em;
+    text-align: right;
+  }
+
+  .image-grayscale {
+    background-color: white;
+    color: #666;
+  }
+
+  .image-grayscale img, img.image-grayscale {
+    filter: grayscale(100%);
+  }
+  */
+

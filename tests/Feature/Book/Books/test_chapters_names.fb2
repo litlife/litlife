@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <annotation><p>Текст</p></annotation>
+   <date/>
+   <coverpage>
+    <image l:href="#cover.jpg"/></coverpage>
+   <lang>ru</lang>
+   </title-info>
+ </description>
+ <body>
+  <section>
+   <p><emphasis>Текст первой главы</emphasis></p>
+  </section>
+  <section>
+   <p><strong>Текст второй</strong></p>
+   <p><strong> главы</strong></p>
+  </section>
+  <section>
+   <p><strong>Текст третьей главы</strong></p>
+  </section>
+  <section>
+   <p>Текст четвертой </p>
+   <p>главы</p>
+  </section>
+</body>
+</FictionBook>

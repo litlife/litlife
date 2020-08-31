@@ -1,0 +1,136 @@
+.page_text {
+
+  a {
+    @extend %a;
+  }
+
+  td {
+    @extend %td;
+  }
+
+  p {
+    @extend %p;
+  }
+
+  a.note {
+    @extend %note;
+  }
+
+  a.fb2-note-back {
+    @extend %note;
+  }
+
+}
+
+.fb2-title-main * {
+  font-size: 120%;
+  margin-bottom: 1.2em;
+  font-weight: bold;
+  text-indent: 0 !important;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+a.fb2-title-main {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.fb2-title {
+  @extend %title;
+}
+
+a.fb2-title {
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.fb2-title p {
+  @extend %title;
+}
+
+.fb2-section-note {
+  margin-bottom: 0.3em;
+}
+
+.fb2-empty-line {
+  @extend %empty_line;
+}
+
+.fb2-subtitle {
+  @extend %subtitle;
+}
+
+.fb2-annotation {
+  @extend %annotation;
+}
+
+.fb2-cite {
+  @extend %blockquote;
+
+  > .fb2-text-author {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.fb2-date {
+  @extend %date;
+}
+
+.fb2-epigraph {
+  @extend %epigraph;
+}
+
+.fb2-text-author {
+  @extend %text-author;
+}
+
+.fb2-poem {
+  @extend %poem;
+
+  > .fb2-title {
+    text-indent: 0 !important;
+    margin-left: 0;
+    margin-right: 0;
+    font-size: 100%;
+  }
+}
+
+.fb2-stanza {
+  @extend %stanza;
+
+  p {
+    @extend %v;
+  }
+
+  > .fb2-title {
+    text-indent: 0 !important;
+    margin-left: 0;
+    margin-right: 0;
+    font-size: 100%;
+  }
+}
+
+.fb2-code {
+  @extend code;
+}
+
+.page_notes {
+  //font-size: 85%;
+}
+
+
+.page_divided_line {
+  border-bottom: solid #666666 2px;
+  height: 1.3em;
+  margin-bottom: 1.3em;
+}
+
+.fb2-section-notes a {
+  text-decoration: none;
+}
+
+.fb2-v {
+  @extend %v;
+}

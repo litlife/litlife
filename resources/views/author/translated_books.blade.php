@@ -1,0 +1,1 @@
+@include('author.books', ['books' => $translated_books])

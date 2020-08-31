@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:test="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre></genre>
+   <author>
+    <first-name></first-name>
+    <last-name></last-name>
+   </author>
+   <book-title></book-title>
+   <annotation>
+    <p>Текст аннотации</p>
+   </annotation>
+   <date></date>
+   <lang>ru</lang>
+  </title-info>
+  <document-info>
+   <author>
+    <first-name>Your</first-name>
+    <last-name>Name</last-name>
+   </author>
+   <program-used>FictionBook Editor Release 2.6.6</program-used>
+   <date value="2019-10-03">03 October 2019</date>
+   <id>846C8EFD-9B3D-4F9A-8CA4-AC792705C098</id>
+   <version>1.0</version>
+   <history>
+    <p>1.0 — создание файла</p>
+   </history>
+  </document-info>
+ </description>
+ <body>
+  <section>
+   <p>Текст главы <a test:href="#section_2">сноска</a></p>
+   <empty-line/>
+   <image test:href="#_nazvanie.png"/>
+  </section>
+  <section id="section_2">
+   <p>Текст главы</p>
+  </section>
+ </body>
+ <binary id="_nazvanie.png" content-type="image/png">iVBORw0KGgoAAAANSUhEUgAAAVQAAAFMCAIAAAAbddMUAAAAAXNSR0IArs4c6QAAAARnQU1B
+AACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOsSURBVHhe7dMBDQAwCMCwu0Em0rmQ
+NamFvtsBguSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico
++SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSH
+KPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lk
+hyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i
+5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIf
+ouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiS
+H6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6I
+kh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+
+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFK
+foiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkh
+Sn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5
+IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico
++SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSH
+KPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lk
+hyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i
+5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIf
+ouSHKPkhSn6Ikh+i5Ico+SFKfoiSH6Lkhyj5IUp+iJIfouSHKPkhSn6Ikh+i5Ico+SFKfkja
++WlATSzswatGAAAAAElFTkSuQmCC</binary>
+</FictionBook>

@@ -1,0 +1,32 @@
+<?php
+
+return [
+	'complain' => 'Жалоба',
+	"checked" => "Жалоба рассмотрена",
+	"complains" => "{0}Жалоба|[2,*]Жалобы",
+	"copyright" => "Нарушение моих прав",
+	"created_at" => "Создана",
+	"discrimination" => "Проявления нетерпимости и дискриминация",
+	"edit" => "Редактировать комментарий",
+	"for_blog" => "Cообщение на стене от пользователя",
+	"for_comment" => "Комментарий пользователя",
+	"for_post" => "Cообщение на форуме",
+	"for_book_file" => "Файл книги",
+	"harmful" => "Вредные или опасные действия",
+	"insults" => "Оскорбления",
+	"nothing_found" => "Ни одной жалобы не найдено",
+	"spam" => "Спам/введение в заблуждение",
+	"text" => "Текст жалобы",
+	'checked_by_user' => 'Рассмотрел',
+	'start_review' => 'Начать рассматривать',
+	'complained_by_user' => 'Пожаловался',
+	'review_by_user' => 'Жалобу рассматривает',
+	'stop_review_request' => 'Отменить рассмотрение',
+	'mark_as_reviewed' => 'Отметить как рассмотренную',
+	'you_have_begun_to_review_the_complaint' => 'Вы начали рассматривать жалобу',
+	'you_reject_to_review_the_complaint' => 'Вы отказались рассматривать жалобу',
+	'complaint_was_reviewed' => 'Жалобу рассмотрел',
+	'complaint_sent' => 'Жалоба отправлена',
+	'complaint_is_pending' => 'Жалоба ожидает рассмотрения',
+	'complaint_was_successfully_edited' => 'Жалоба успешно отредактирована'
+];

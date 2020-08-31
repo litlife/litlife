@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <body>
+  <section id="section1">
+   <title>
+    <p>Section 1</p>
+   </title>
+   <p>section 1 text</p>
+   <empty-line/>
+   <image l:href="#image.png"/>
+   <empty-line/>
+  </section>
+  <section>
+   <title>
+    <p>Section 2</p>
+   </title>
+   <p>����� ������ ������</p>
+   <empty-line/>
+  </section>
+  <section>
+   <title>
+    <p>Section 3</p>
+   </title>
+   <p><a l:href="#note3">note1text</a> </p>
+  </section>
+  <section>
+   <title>
+    <p>Section 4</p>
+   </title>
+   <p><a l:href="#note4">note2text</a> </p>
+  </section>
+  <section>
+   <title>
+    <p>Section 5</p>
+   </title>
+   <section>
+    <title>
+     <p>Subsection 51</p>
+    </title>
+    <section>
+     <title>
+      <p>Subsubsection 511</p>
+     </title>
+     <p>text</p>
+    </section>
+   </section>
+  </section>
+ </body>
+ <body name="notes">
+  <title>
+   <p>Notes</p>
+  </title>
+  <section id="note3">
+   <title>
+    <p>1</p>
+   </title>
+   <p>note 1 text</p>
+  </section>
+  <section id="note4">
+   <title>
+    <p>2</p>
+   </title>
+   <p>note 2 text</p>
+  </section>
+  <section id="note5">
+   <title>
+    <p>3</p>
+   </title>
+   <p>note 3 text</p>
+  </section>
+ </body>
+ <binary id="image.png" content-type="image/png">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</binary>
+</FictionBook>
