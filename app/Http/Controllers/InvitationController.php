@@ -10,8 +10,10 @@ use App\Notifications\UserHasRegisteredNotification;
 use App\User;
 use App\UserEmail;
 use Auth;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -112,6 +114,8 @@ class InvitationController extends Controller
 			return redirect()
 				->route('invitation');
 
+		DB::beginTransaction();
+
 		$user = new User;
 		$user->email = $invitation->email;
 		$user->fill($request->all());
@@ -141,7 +145,11 @@ class InvitationController extends Controller
 		 */
 		Auth::login($user);
 
+		event(new Registered($user));
+
 		$user->notify(new UserHasRegisteredNotification($user, __('password.your_entered_password')));
+
+		DB::commit();
 
 		return redirect()
 			->route('welcome');

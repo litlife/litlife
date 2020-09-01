@@ -14,7 +14,9 @@ use Exception;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Laravel\Socialite\Facades\Socialite;
 use Mockery;
@@ -31,6 +33,8 @@ class UserSocialAccountsTest extends TestCase
 	public function testIfNotRegistered()
 	{
 		Notification::fake();
+
+		Event::fake(Registered::class);
 
 		$email = $this->faker->email;
 		$provider_user_id = $this->faker->uuid;
@@ -59,32 +63,12 @@ class UserSocialAccountsTest extends TestCase
 
 		$this->assertAuthenticatedAs($user);
 
+		Event::assertDispatched(Registered::class, 1);
+
 		Notification::assertSentTo(
 			$user,
 			UserHasRegisteredNotification::class,
 			function ($notification, $channels) use ($user, $email) {
-
-				$this->assertContains('mail', $channels);
-
-				$mail = $notification->toMail($user);
-
-				$this->assertEquals(__('notification.user_has_registered.subject'), $mail->subject);
-
-				$this->assertEquals(__('notification.user_has_registered.line'), $mail->introLines[0]);
-				$this->assertEquals(__('notification.user_has_registered.line2'), $mail->introLines[1]);
-
-				$this->assertEquals(__('notification.user_has_registered.line3', [
-					'email' => $email->email
-				]), $mail->introLines[2]);
-
-				$this->assertEquals(__('notification.user_has_registered.line4', [
-					'password' => $notification->password
-				]), $mail->introLines[3]);
-
-				$this->assertEquals(4, count($mail->introLines));
-
-				$this->assertEquals(route('profile', ['user' => $user]), $mail->actionUrl);
-				$this->assertEquals(__('notification.user_has_registered.action'), $mail->actionText);
 
 				$result = Auth::guard()->attempt([
 					'login' => $email->email,

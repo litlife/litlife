@@ -51,19 +51,19 @@ class EventServiceProvider extends ServiceProvider
 			'App\Listeners\UpdateBookCountInGroup',
 		],
 
-		/*
 		'Illuminate\Auth\Events\Registered' => [
-			'App\Listeners\LogRegisteredUser',
+			'App\Listeners\User\UserCreateDefaultBookmarkFolderListener',
+			'App\Listeners\User\UserAttachDefaultGroup',
 		],
+		/*
+				'Illuminate\Auth\Events\Attempting' => [
+					'App\Listeners\LogAuthenticationAttempt',
+				],
 
-		'Illuminate\Auth\Events\Attempting' => [
-			'App\Listeners\LogAuthenticationAttempt',
-		],
-
-		'Illuminate\Auth\Events\Authenticated' => [
-			'App\Listeners\LogAuthenticated',
-		],
-  */
+				'Illuminate\Auth\Events\Authenticated' => [
+					'App\Listeners\LogAuthenticated',
+				],
+		  */
 
 
 		'Illuminate\Auth\Events\Login' => [

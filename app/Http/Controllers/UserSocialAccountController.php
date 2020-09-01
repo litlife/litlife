@@ -10,6 +10,7 @@ use App\UserSocialAccount;
 use ErrorException;
 use Exception;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
@@ -264,6 +265,10 @@ class UserSocialAccountController extends Controller
 		$this->downloadUserPhotoIfNotExists($user, $providerUser->getAvatar());
 
 		auth()->login($user, true);
+
+		if ($is_new_user) {
+			event(new Registered($user));
+		}
 
 		if ($is_new_user)
 			return redirect()->route('welcome');
