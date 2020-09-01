@@ -202,11 +202,14 @@ class BookPolicy extends Policy
 				return true;
 		} else {
 			/*
-			if ($auth_user->can('manage', $book))
-				return true;
-			*/
-			// проверяем может ли он удалять книги из публичной библиотеки
+						$character = optional($book->getManagerAssociatedWithUser($auth_user))->character;
 
+						if ($character == 'author') {
+							if ($book->comment_count < 1 and
+								$book->user_vote_count < 1)
+								return true;
+						}
+			*/
 			if ($book->isUserCreator($auth_user))
 				return (boolean)$auth_user->getPermission('delete_self_book');
 			else

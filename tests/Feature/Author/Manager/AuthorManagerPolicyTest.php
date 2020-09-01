@@ -193,6 +193,8 @@ class AuthorManagerPolicyTest extends TestCase
 			->states('with_cover', 'si_false', 'lp_false', 'publish_fields_empty')
 			->create(['create_user_id' => $user->id]);
 		$book->writers()->sync([$author->id]);
+		$book->user_vote_count = 1;
+		$book->save();
 
 		$file = factory(BookFile::class)
 			->states('txt')
@@ -303,6 +305,8 @@ class AuthorManagerPolicyTest extends TestCase
 
 		$book = factory(Book::class)->create(['is_si' => false]);
 		$book->writers()->sync([$author->id]);
+		$book->user_vote_count = 1;
+		$book->save();
 
 		$section = factory(Section::class)
 			->create(['book_id' => $book->id]);

@@ -11,6 +11,7 @@ use App\Sequence;
 use App\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -304,6 +305,12 @@ class Kernel extends ConsoleKernel
 		$schedule->command('book:text_waited_processing')
 			->everyMinute()
 			->withoutOverlapping(5);
+
+		if (App::isProduction()) {
+			$schedule->command('sitemap:create')
+				->monthly()
+				->monthlyOn(1, '3:00');
+		}
 		/*
 				$schedule->command('survey:send_invitations', [
 					'onlyUsersWhoRegisteredLaterThanTheDate' => Carbon::createFromDate(2020, 4, 1),

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Book;
 
 use App\Attachment;
+use App\Author;
 use App\Book;
 use App\BookFile;
 use App\BookKeyword;
@@ -195,4 +196,45 @@ class BookDeleteTest extends TestCase
 		]), $array['description']);
 		$this->assertEquals(route('books.show', $book), $array['url']);
 	}
+
+	public function testCanDeleteBookIfNoRatingAndNoComments()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager', 'with_book')
+			->create();
+
+		$user = $author->managers->first()->user;
+		$book = $author->books->first();
+
+		$this->assertTrue($user->can('delete', $book));
+	}
+	/*
+		public function testCantDeleteBookIfHasComment()
+		{
+			$author = factory(Author::class)
+				->states('with_author_manager', 'with_book')
+				->create();
+
+			$user = $author->managers->first()->user;
+			$book = $author->books->first();
+			$book->comment_count = 1;
+			$book->save();
+
+			$this->assertFalse($user->can('delete', $book));
+		}
+
+		public function testCantDeleteBookIfHasVotes()
+		{
+			$author = factory(Author::class)
+				->states('with_author_manager', 'with_book')
+				->create();
+
+			$user = $author->managers->first()->user;
+			$book = $author->books->first();
+			$book->user_vote_count = 1;
+			$book->save();
+
+			$this->assertFalse($user->can('delete', $book));
+		}
+		*/
 }
