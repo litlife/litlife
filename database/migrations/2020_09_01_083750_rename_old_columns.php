@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveOldColumns extends Migration
+class RenameOldColumns extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -428,7 +428,9 @@ class RemoveOldColumns extends Migration
 	public function dropColumnIfExists(Blueprint $table, $column)
 	{
 		if (Schema::hasColumn($table->getTable(), $column)) {
-			$table->dropColumn($column);
+			//$table->dropColumn($column);
+			if (mb_substr($column, 0, 4) != 'old_')
+				$table->renameColumn($column, 'old_' . $column);
 		}
 	}
 }
