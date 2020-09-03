@@ -38,7 +38,7 @@ class BookPublishTest extends TestCase
 		$user->push();
 
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_section', 'lp_false')
+			->states('with_writer', 'private', 'with_section', 'lp_false', 'with_genre')
 			->create(['create_user_id' => $user->id]);
 
 		$book->authors()->detach();
@@ -164,7 +164,7 @@ class BookPublishTest extends TestCase
 		$user = factory(User::class)->create();
 
 		$book = factory(Book::class)
-			->states('sent_for_review', 'with_section', 'with_file', 'lp_false')
+			->states('sent_for_review', 'with_section', 'with_file', 'lp_false', 'with_genre')
 			->create(['create_user_id' => $user->id]);
 
 		$book->authors()->detach();
@@ -293,7 +293,7 @@ class BookPublishTest extends TestCase
 		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
 
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_section', 'with_file', 'lp_false')
+			->states('with_writer', 'private', 'with_section', 'with_file', 'lp_false', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -334,7 +334,7 @@ class BookPublishTest extends TestCase
 		$user = factory(User::class)->create();
 
 		$book = factory(Book::class)
-			->states('private', 'with_section', 'with_file', 'lp_false')
+			->states('private', 'with_section', 'with_file', 'lp_false', 'with_genre')
 			->create(['create_user_id' => $user->id]);
 
 		$book->authors()->detach();
@@ -426,7 +426,7 @@ class BookPublishTest extends TestCase
 		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
 
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_section', 'with_file', 'lp_false')
+			->states('with_writer', 'private', 'with_section', 'with_file', 'lp_false', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -477,6 +477,7 @@ class BookPublishTest extends TestCase
 
 		$this->actingAs($user)
 			->get(route('books.publish', $book))
+			->assertSessionHasNoErrors()
 			->assertRedirect(route('books.show', $book))
 			->assertSessionHas('success', __('book.published'));
 
@@ -505,6 +506,7 @@ class BookPublishTest extends TestCase
 
 		$this->actingAs($user)
 			->get(route('books.publish', $book))
+			->assertSessionHasNoErrors()
 			->assertRedirect(route('books.show', $book))
 			->assertSessionHas('success', __('book.added_for_check'));
 
@@ -537,7 +539,8 @@ class BookPublishTest extends TestCase
 		$response = $this->actingAs($user)
 			->get(route('books.publish', $book));
 		if (!empty(session('errors'))) var_dump(session('errors'));
-		$response->assertRedirect(route('books.show', $book))
+		$response->assertSessionHasNoErrors()
+			->assertRedirect(route('books.show', $book))
 			->assertSessionHas('success', __('book.added_for_check'));
 
 		$book->refresh();
@@ -581,7 +584,7 @@ class BookPublishTest extends TestCase
 	public function testPublishPolicy()
 	{
 		$book = factory(Book::class)
-			->states('private', 'with_section', 'with_file')
+			->states('private', 'with_section', 'with_file', 'with_create_user')
 			->create();
 
 		$creator = $book->create_user;
@@ -623,7 +626,7 @@ class BookPublishTest extends TestCase
 	public function testSendToPrivateAndPublish()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'accepted', 'with_section', 'with_file', 'lp_false')
+			->states('with_writer', 'accepted', 'with_section', 'with_file', 'lp_false', 'with_create_user', 'with_genre')
 			->create();
 
 		$admin = factory(User::class)
@@ -652,7 +655,7 @@ class BookPublishTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
-			->states('private', 'with_section', 'with_file', 'lp_false')
+			->states('private', 'with_section', 'with_file', 'lp_false', 'with_create_user', 'with_genre')
 			->create();
 		$user = $book->create_user;
 		$user->group->add_book = true;
@@ -685,7 +688,7 @@ class BookPublishTest extends TestCase
 	public function testDontDisableReadOrDownloadAccessForLpBooks()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'sent_for_review', 'with_section', 'with_file', 'lp_true')
+			->states('with_writer', 'sent_for_review', 'with_section', 'with_file', 'lp_true', 'with_genre')
 			->create();
 
 		$admin = factory(User::class)->create();
@@ -706,7 +709,7 @@ class BookPublishTest extends TestCase
 	public function testAccessEnabledIfSectionsExistsAfterPublish()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_section', 'lp_true')
+			->states('with_writer', 'private', 'with_section', 'lp_true', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -735,7 +738,7 @@ class BookPublishTest extends TestCase
 	public function testAccessEnabledIfFilesExistsAfterPublish()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_file', 'lp_true')
+			->states('with_writer', 'private', 'with_file', 'lp_true', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -764,7 +767,7 @@ class BookPublishTest extends TestCase
 	public function testCloseReadDownloadAcessIfNoFilesAndNoSectionsAfterPublish()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'lp_true')
+			->states('with_writer', 'private', 'lp_true', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -820,7 +823,7 @@ class BookPublishTest extends TestCase
 	public function testDontAddForReviewFileIfAutoCreated()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_file')
+			->states('with_writer', 'private', 'with_file', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;

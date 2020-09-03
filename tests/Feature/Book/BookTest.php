@@ -8,11 +8,11 @@ use App\Book;
 use App\BookFile;
 use App\BookKeyword;
 use App\Console\Commands\BookFillDBFromSource;
-use App\Enums\StatusEnum;
 use App\Genre;
 use App\Http\Requests\StoreBook;
 use App\Jobs\Book\BookUpdateCharactersCountJob;
 use App\Jobs\Book\UpdateBookFilesCount;
+use App\Jobs\User\UpdateUserCreatedBooksCount;
 use App\Library\AddFb2File;
 use App\Manager;
 use App\Section;
@@ -20,7 +20,6 @@ use App\Sequence;
 use App\User;
 use App\UserPurchase;
 use Carbon\Carbon;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -44,189 +43,6 @@ class BookTest extends TestCase
 	{
 		$this->get(route('books'))
 			->assertOk();
-	}
-
-	public function testCreateZipHttp()
-	{
-		config(['activitylog.enabled' => true]);
-
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$filename = uniqid();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test_95.doc.zip'));
-
-		$file = new UploadedFile($tmpFilePath, $filename, filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$book_file = $user->created_book_files()->first();
-		$book = $user->created_books()->first();
-
-		$response->assertRedirect(route('books.create.description', $book));
-
-		$this->assertNotNull($user->created_books()->first());
-		$this->assertNotNull($book_file->first());
-		$this->assertRegExp('/^' . $filename . '_([A-z0-9]{5})\.doc.zip$/iu', $book_file->name);
-		$this->assertEquals('doc', $book_file->format);
-
-		$activity = $book->activities()->first();
-
-		$this->assertEquals(1, $book->activities()->count());
-		$this->assertEquals('created', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
-
-	public function testCreateWithoutFileHttp()
-	{
-		config(['activitylog.enabled' => true]);
-
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$title = $this->faker->realText(100);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['title' => $title]
-			)->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$book = $user->created_books()->first();
-
-		$response->assertRedirect(route('books.create.description', $book));
-
-		$this->assertEquals($title, $book->title);
-		$this->assertNull($book->year_writing);
-		$this->assertTrue($book->isPrivate());
-
-		$activity = $book->activities()->first();
-
-		$this->assertEquals(1, $book->activities()->count());
-		$this->assertEquals('created', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
-
-	public function testCreateEpubHttp()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$filename = uniqid();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.epub'));
-
-		$file = new UploadedFile($tmpFilePath, $filename, filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)
-			->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$this->assertNotNull($user->created_books()->first());
-		$this->assertNotNull($user->created_book_files()->first());
-		$this->assertRegExp('/^' . $filename . '_([A-z0-9]{5})\.epub/iu', $user->created_book_files()->first()->name);
-	}
-
-	public function testCreateUnsupportFormatError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/../images/test.gif'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.gif', filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.book_file_extension', ['attribute' => __('book.file')])]);
-	}
-
-	public function testCreateBrokenZipError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/invalid.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'invalid.zip', filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.zip', ['attribute' => __('book.file')])]);
-	}
-
-	public function testCreateZipUnsupportedFormatInsideError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.jpeg.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.jpeg.zip', filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.zip_book_file', ['attribute' => __('book.file')])]);
-	}
-
-	public function testCreateZipFb2()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)
-			->states('admin')->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2.zip', filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasNoErrors();
-
-		$book = $user->created_books()->first();
-
-		$this->assertEquals('fb2', $book->files()->first()->extension);
 	}
 
 	public function testCreateNewSectionsOverExisted()
@@ -262,80 +78,6 @@ class BookTest extends TestCase
 
 		$response = $this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
 			->assertOk();
-	}
-
-	public function testGenreHelper()
-	{
-		$book = factory(Book::class)
-			->create();
-
-		$book->genres()->detach();
-
-		$this->assertEquals(0, $book->genres()->count());
-
-		$genres = Genre::inRandomOrder()->notMain()->limit(2)->get();
-
-		$book->genres()->sync($genres->pluck('id')->toArray());
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals(2, $book->genres()->count());
-		$this->assertEquals('{' . implode(',', $genres->pluck('id')->toArray()) . '}',
-			$book->genres_helper);
-
-		$book->genres()->detach($genres[0]->id);
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals(1, $book->genres()->count());
-		$this->assertEquals('{' . $genres[1]->id . '}',
-			$book->genres_helper);
-	}
-
-	public function testFormatsHelper()
-	{
-		$book = factory(Book::class)->create();
-		$book->statusAccepted();
-		$book->push();
-
-		$book_file = factory(BookFile::class)
-			->states('odt')
-			->create([
-				'book_id' => $book->id,
-				'format' => 'odt',
-				'status' => StatusEnum::Accepted,
-				'create_user_id' => $book->create_user_id
-			]);
-		$book_file->push();
-		UpdateBookFilesCount::dispatch($book);
-		$book_file->refresh();
-		$book->refresh();
-
-		$this->assertEquals(1, $book->files_count);
-		$this->assertEquals(['odt'], $book->formats);
-
-		//
-
-		$book = factory(Book::class)->create();
-		$book->statusPrivate();
-		$book->push();
-
-		$book_file = factory(BookFile::class)
-			->states('odt')
-			->create([
-				'book_id' => $book->id,
-				'format' => 'odt',
-				'status' => StatusEnum::Private,
-				'create_user_id' => $book->create_user_id
-			]);
-		$book_file->push();
-		UpdateBookFilesCount::dispatch($book);
-
-		$book->refresh();
-		$book_file->refresh();
-
-		$this->assertEquals(1, $book->files_count);
-		$this->assertEquals(['odt'], $book->formats);
 	}
 
 	public function testCreateAttachmentPolicy()
@@ -385,9 +127,9 @@ class BookTest extends TestCase
 
 	public function testBookAutoSetAge()
 	{
-		$book = factory(Book::class)->states('with_writer')->create();
-		$book->statusPrivate();
-		$book->save();
+		$book = factory(Book::class)
+			->states('with_writer', 'with_create_user', 'private')
+			->create();
 
 		$user = $book->create_user;
 
@@ -411,123 +153,6 @@ class BookTest extends TestCase
 			->assertRedirect(route('books.edit', $book));
 
 		$this->assertEquals(18, $book->fresh()->age);
-	}
-
-	public function testGenreHelperUpdatedAfterEdit()
-	{
-		$book = factory(Book::class)->states('with_writer')->create();
-		$book->statusPrivate();
-		$book->save();
-
-		$user = $book->create_user;
-
-		$genre = factory(Genre::class)->create();
-		$genre2 = factory(Genre::class)->create();
-		$genre3 = factory(Genre::class)->create();
-		$genre4 = factory(Genre::class)->create();
-
-		$post = [
-			'title' => 'текст ' . $book->title,
-			'genres' => [$genre->id, $genre2->id, $genre3->id],
-			'writers' => $book->writers()->any()->pluck('id')->toArray(),
-			'ti_lb' => 'RU', 'ti_olb' => 'RU', 'ready_status' => 'complete'
-		];
-
-		$this->actingAs($user)
-			->patch(route('books.update', $book), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.edit', $book));
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . ',' . $genre3->id . '}', $book->fresh()->genres_helper);
-
-		//
-
-		$post['genres'] = [$genre->id, $genre2->id];
-
-		$this->actingAs($user)
-			->patch(route('books.update', $book), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.edit', $book));
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->fresh()->genres_helper);
-
-		//
-
-		$post['genres'] = [$genre->id, $genre2->id, $genre4->id];
-
-		$this->actingAs($user)
-			->patch(route('books.update', $book), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.edit', $book));
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . ',' . $genre4->id . '}', $book->fresh()->genres_helper);
-
-		//
-
-		$post['genres'] = [$genre->id, $genre2->id];
-
-		$this->actingAs($user)
-			->patch(route('books.update', $book), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.edit', $book));
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->fresh()->genres_helper);
-
-		$post['genres'] = [$genre2->id, $genre->id];
-
-		$this->actingAs($user)
-			->patch(route('books.update', $book), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.edit', $book));
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->fresh()->genres_helper);
-	}
-
-	public function testGenreHelperSync()
-	{
-		$book = factory(Book::class)
-			->create();
-
-		$genre = factory(Genre::class)->create();
-		$genre2 = factory(Genre::class)->create();
-		$genre3 = factory(Genre::class)->create();
-
-		$book->genres()->sync([$genre->id, $genre2->id, $genre3->id]);
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . ',' . $genre3->id . '}', $book->genres_helper);
-
-		$book->genres()->sync([$genre2->id, $genre->id]);
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->genres_helper);
-
-		$book->genres()->attach([$genre3->id]);
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . ',' . $genre3->id . '}', $book->genres_helper);
-
-		$book->genres()->detach([$genre3->id]);
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->genres_helper);
-
-		$book->genres()->detach();
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{}', $book->genres_helper);
-
-		$book->genres()->syncWithoutDetaching([$genre->id]);
-		$book->genres()->syncWithoutDetaching([$genre2->id]);
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->genres_helper);
 	}
 
 	public function testSequenceSearch()
@@ -672,7 +297,7 @@ class BookTest extends TestCase
 		$user->push();
 
 		$book = factory(Book::class)
-			->states('with_writer')
+			->states('with_writer', 'with_genre')
 			->create();
 
 		$array = $book->toArray();
@@ -1277,38 +902,19 @@ class BookTest extends TestCase
 		$this->assertFalse($user->can('author', $book));
 	}
 
-	public function testGenresHelperUpdate()
-	{
-		$book = factory(Book::class)->create();
-
-		$genre = factory(Genre::class)->create();
-		$genre2 = factory(Genre::class)->create();
-
-		$book->genres()->sync([$genre->id, $genre2->id]);
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->genres_helper);
-
-		$book->genres_helper = null;
-		$book->save();
-		$book->refresh();
-
-		$this->assertNull($book->genres_helper);
-
-		$book->refreshGenresHelper();
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals('{' . $genre->id . ',' . $genre2->id . '}', $book->genres_helper);
-	}
-
 	public function testUpdateUserCreatedBooksOnCreate()
 	{
 		$book = factory(Book::class)
+			->states('with_create_user')
 			->create();
 
 		$this->assertNotNull($book->create_user);
 
 		$user = $book->create_user;
+
+		UpdateUserCreatedBooksCount::dispatch($book->create_user);
+
+		$user->refresh();
 
 		$this->assertEquals(1, $user->data->created_books_count);
 
@@ -1394,18 +1000,6 @@ class BookTest extends TestCase
 		$this->assertEquals('user', $activity->causer_type);
 	}
 
-	public function testUploadEmptyFile()
-	{
-		$admin = factory(User::class)->states('admin')->create();
-
-		$tmp = tmpfile();
-		$file = new UploadedFile(stream_get_meta_data($tmp)['uri'], 'file.epub', null, null, true);
-
-		$response = $this->actingAs($admin)
-			->post(route('books.store'), ['file' => $file])
-			->assertRedirect()
-			->assertSessionHasErrors(['file' => __('validation.min.file', ['attribute' => __('book.file'), 'min' => 1])]);
-	}
 
 	public function testSeePrivateAuthorIfBookSentOnReview()
 	{
@@ -1472,7 +1066,9 @@ class BookTest extends TestCase
 	{
 		$title = Str::random(10);
 
-		$book = factory(Book::class)->create(['title' => 'ё' . $title]);
+		$book = factory(Book::class)
+			->states('with_create_user')
+			->create(['title' => 'ё' . $title]);
 
 		$this->assertEquals(1, Book::query()->titleAuthorsFulltextSearch('ё' . $title)->count());
 		$this->assertEquals(1, Book::query()->titleAuthorsFulltextSearch('е' . $title)->count());
@@ -1493,38 +1089,10 @@ class BookTest extends TestCase
 		$this->assertTrue($user->can('editFieldOfPublicDomain', $book));
 	}
 
-	public function testUploadZippedEpubHttp()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)
-			->states('admin')->create();
-
-		$filename = uniqid();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.epub.zip'));
-
-		$file = new UploadedFile($tmpFilePath, $filename, filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$book_file = $user->created_book_files()->first();
-
-		$this->assertTrue($book_file->size > 0);
-		$this->assertTrue($book_file->file_size > 0);
-
-		$this->assertEquals(3631, $book_file->size);
-		$this->assertEquals(3631, $book_file->file_size);
-	}
-
 	public function testPrivateBookPolicy()
 	{
 		$book = factory(Book::class)
-			->states('private')
+			->states('private', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;
@@ -1616,7 +1184,7 @@ class BookTest extends TestCase
 	public function testShowPrivateBook()
 	{
 		$book = factory(Book::class)
-			->states('private')
+			->states('private', 'with_create_user')
 			->create();
 
 		$this->get(route('books.show', $book))

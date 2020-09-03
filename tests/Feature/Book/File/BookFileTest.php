@@ -1,21 +1,17 @@
 <?php
 
-namespace Tests\Feature\Book;
+namespace Tests\Feature\Book\File;
 
 use App\Author;
 use App\Book;
 use App\BookFile;
 use App\BookFileDownloadLog;
-use App\BookParse;
 use App\Enums\StatusEnum;
 use App\Jobs\Book\UpdateBookFilesCount;
 use App\User;
-use Carbon\Carbon;
 use Exception;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Litlife\Fb2\Fb2;
 use Litlife\Url\Url;
@@ -29,35 +25,6 @@ class BookFileTest extends TestCase
 		parent::setUp();
 
 		Storage::fake(config('filesystems.default'));
-	}
-
-	public function testUploadEmptyNameHttp()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.epub'));
-
-		$file = new UploadedFile($tmpFilePath, '%.epub',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				[
-					'file' => $file
-				]
-			)
-			->assertRedirect();
-
-		$response->assertSessionHasNoErrors();
-
-		$book_file = $user->created_book_files()
-			->first();
-
-		$this->assertNotRegExp('/^file_([A-z0-9]{6})\.epub$/iu', $book_file->name);
 	}
 
 	public function testCreateHttp()
@@ -74,164 +41,6 @@ class BookFileTest extends TestCase
 			->assertOk();
 	}
 
-	public function testStoreHttp()
-	{
-		config(['activitylog.enabled' => true]);
-
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->create();
-
-		$comment = $this->faker->realText(100);
-		$number = rand(1, 100);
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2',
-			filesize($tmpFilePath), null, true);
-
-		$this->actingAs($user)
-			->followingRedirects()
-			->post(route('books.files.store', compact('book')),
-				[
-					'file' => $file,
-					'comment' => $comment,
-					'number' => $number
-				]
-			)
-			->assertOk()
-			->assertSeeText(__('book_file.uploaded_successfully'));
-
-		$book_file = $user->created_book_files()
-			->first();
-
-		$this->assertNotNull($user->created_book_files()->first());
-		$this->assertEquals($comment, $book_file->comment);
-		$this->assertEquals($number, $book_file->number);
-		$this->assertTrue($book_file->isSentForReview());
-
-		$this->assertEquals(1, $book_file->activities()->count());
-		$activity = $book_file->activities()->first();
-		$this->assertEquals('created', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-
-		$this->assertTrue($book_file->book->parse->isWait());
-		$this->assertFalse($book_file->isAutoCreated());
-	}
-
-	public function testStoreHttpDontParseWaitedIfSectionsExists()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
-
-		$book = factory(Book::class)
-			->states('accepted', 'with_section')
-			->create();
-
-		$this->assertTrue($book->parse->isSucceed());
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2',
-			filesize($tmpFilePath), null, true);
-
-		$this->actingAs($admin)
-			->followingRedirects()
-			->post(route('books.files.store', compact('book')), [
-				'file' => $file
-			])
-			->assertOk()
-			->assertSeeText(__('book_file.uploaded_successfully'));
-
-		$file = $book->files()
-			->first();
-
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isSucceed());
-	}
-
-	public function testCreateUnsupportFormatError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/../images/test.gif'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.gif',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.book_file_extension', ['attribute' => __('book.file')])]);
-	}
-
-	public function testCreateBrokenZipError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/invalid.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'invalid.zip',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.zip', ['attribute' => __('book.file')])]);
-	}
-
-	public function testCreateZipUnsupportedFormatInsideError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.jpeg.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.jpeg.zip',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.zip_book_file', ['attribute' => __('book.file')])]);
-	}
-
 	public function testCreate()
 	{
 		Storage::fake(config('filesystems.default'));
@@ -241,7 +50,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		//$file->zip = true;
-		$file->open(__DIR__ . '/Books/test.fb2');
+		$file->open(__DIR__ . '/../Books/test.fb2');
 		$file->statusAccepted();
 		$book->files()->save($file);
 
@@ -265,7 +74,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		//$file->zip = true;
-		$file->open(__DIR__ . '/Books/test_95.doc.zip');
+		$file->open(__DIR__ . '/../Books/test_95.doc.zip');
 		$file->statusAccepted();
 		$book->files()->save($file);
 
@@ -317,7 +126,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		$file->zip = true;
-		$file->open(__DIR__ . '/Books/test.fb2');
+		$file->open(__DIR__ . '/../Books/test.fb2');
 		$file->statusAccepted();
 		$book->files()->save($file);
 
@@ -347,7 +156,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		$file->zip = true;
-		$file->open(__DIR__ . '/Books/test_95.doc.zip');
+		$file->open(__DIR__ . '/../Books/test_95.doc.zip');
 		$file->statusAccepted();
 		$book->files()->save($file);
 
@@ -377,7 +186,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		$file->zip = true;
-		$file->open(__DIR__ . '/Books/test.fb2');
+		$file->open(__DIR__ . '/../Books/test.fb2');
 		$file->statusAccepted();
 		$book->files()->save($file);
 		$file->refresh();
@@ -398,7 +207,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		$file->zip = true;
-		$file->open(__DIR__ . '/Books/test.fb2');
+		$file->open(__DIR__ . '/../Books/test.fb2');
 		$file->statusAccepted();
 		$book->files()->save($file);
 		$file->refresh();
@@ -413,7 +222,7 @@ class BookFileTest extends TestCase
 			->create();
 
 		$file = new BookFile;
-		$file->open(__DIR__ . '/Books/test.fb2');
+		$file->open(__DIR__ . '/../Books/test.fb2');
 		$file->statusAccepted();
 		$book->files()->save($file);
 		$file->refresh();
@@ -428,7 +237,7 @@ class BookFileTest extends TestCase
 
 	public function testIsZipArcive()
 	{
-		$file = __DIR__ . '/Books/invalid.zip';
+		$file = __DIR__ . '/../Books/invalid.zip';
 
 		$this->assertFileExists($file);
 
@@ -444,7 +253,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		$file->zip = true;
-		$file->open(__DIR__ . '/Books/test.epub');
+		$file->open(__DIR__ . '/../Books/test.epub');
 		$file->statusAccepted();
 		$book->files()->save($file);
 		$file->refresh();
@@ -456,7 +265,7 @@ class BookFileTest extends TestCase
 
 		$file = new BookFile;
 		$file->zip = true;
-		$file->open(__DIR__ . '/Books/test.odt');
+		$file->open(__DIR__ . '/../Books/test.odt');
 		$file->statusAccepted();
 		$book->files()->save($file);
 		$file->refresh();
@@ -475,133 +284,12 @@ class BookFileTest extends TestCase
 		$file->zip = true;
 
 		try {
-			$file->open(__DIR__ . '/Books/' . uniqid());
+			$file->open(__DIR__ . '/../Books/' . uniqid());
 			$this->assertFalse(true);
 
 		} catch (Exception $exception) {
 			$this->assertEquals($exception->getMessage(), 'File or resource not found');
 		}
-	}
-
-	public function testSetAsSourceAndMakeNewPages()
-	{
-		config(['activitylog.enabled' => true]);
-
-		Storage::fake(config('filesystems.default'));
-		Notification::fake();
-		Notification::assertNothingSent();
-
-		$user = factory(User::class)->create();
-		$user->group->edit_self_book = true;
-		$user->push();
-
-		$title = $this->faker->realText(100);
-
-		$book = factory(Book::class)
-			->create([
-				'title' => $title,
-				'create_user_id' => $user,
-				'online_read_new_format' => false
-			])
-			->fresh();
-		$book->statusAccepted();
-		$book->save();
-		$this->assertFalse($book->isPagesNewFormat());
-
-		$file = new BookFile;
-		$file->open(__DIR__ . '/Books/test.fb2');
-		$file->statusAccepted();
-		$book->files()->save($file);
-
-		$this->actingAs($user)
-			->get(route('book_files.set_source_and_make_pages', ['file' => $file]))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isWait());
-		$this->assertEquals($user->id, $book->parse->create_user->id);
-
-		$this->assertEquals(1, $file->activities()->count());
-		$activity = $file->activities()->first();
-		$this->assertEquals('set_as_source', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-
-		Artisan::call('book:fill_db_from_source', ['book_id' => $book->id]);
-		/*
-				Notification::assertSentTo(
-					[$user], BookFinishParseNotification::class
-				);
-				*/
-
-		Notification::fake();
-
-		$file->refresh();
-		$book->refresh();
-
-		$this->assertTrue($file->isSource());
-		$this->assertTrue($book->parse->isSucceed());
-		$this->assertTrue($book->isPagesNewFormat());
-
-		$book->title = uniqid();
-		$book->save();
-
-		$title = $book->title;
-
-
-		$content = $book->sections()->where('type', 'section')->first()->getContent();
-
-		$this->assertEquals(11, $book->sections->count());
-		$this->assertEquals(5, $book->page_count);
-		$this->assertTrue($book->isPagesNewFormat());
-
-		//
-		$book->online_read_new_format = false;
-		$book->save();
-		$book->refresh();
-		$this->assertFalse($book->isPagesNewFormat());
-
-		$file2 = new BookFile;
-		$file2->open(__DIR__ . '/Books/test.epub');
-		$file2->statusAccepted();
-		$book->files()->save($file2);
-		$file2->refresh();
-
-		$this->actingAs($user)
-			->get(route('book_files.set_source_and_make_pages', ['file' => $file2]))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isWait());
-		$this->assertEquals($user->id, $book->parse->create_user->id);
-
-		Notification::assertNothingSent();
-
-		Artisan::call('book:fill_db_from_source', ['book_id' => $book->id]);
-		/*
-				Notification::assertSentTo(
-					[$user], BookFinishParseNotification::class
-				);
-		*/
-		$file->refresh();
-		$file2->refresh();
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isSucceed());
-		$this->assertFalse($file->isSource());
-		$this->assertTrue($file2->isSource());
-
-		$content2 = $book->sections()->where('type', 'section')->first()->getContent();
-
-		$this->assertEquals($book->title, $title);
-		$this->assertGreaterThanOrEqual(1, $book->sections->count());
-		$this->assertNotEquals($content, $content2);
-		$this->assertEquals(2, $book->page_count);
-		$this->assertTrue($book->isPagesNewFormat());
 	}
 
 	public function testViewSendForReviewHttp()
@@ -832,7 +520,7 @@ class BookFileTest extends TestCase
 	{
 		config(['litlife.disk_for_files' => 'public']);
 
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 		$book->statusPrivate();
 		$book->save();
 		$book->refresh();
@@ -866,100 +554,7 @@ class BookFileTest extends TestCase
 			->assertRedirect($book_file->url);
 	}
 
-	public function testUploadToPrivateBook()
-	{
-		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->push();
-
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
-		$book->statusPrivate();
-		$book->save();
-		$book->refresh();
-
-		$this->assertTrue($book->isPrivate());
-
-		$comment = $this->faker->realText(100);
-		$number = rand(1, 100);
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')),
-				[
-					'file' => $file,
-					'comment' => $comment,
-					'number' => $number
-				]
-			)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$response->assertSessionHasNoErrors();
-
-		$book_file = $user->created_book_files()
-			->first();
-		$book->refresh();
-
-		$this->assertNotNull($user->created_book_files()->first());
-		$this->assertEquals($comment, $book_file->comment);
-		$this->assertEquals($number, $book_file->number);
-		$this->assertTrue($book->isPrivate());
-		$this->assertTrue($book_file->isPrivate());
-	}
-
-	public function testUploadToAcceptedBookIfCanAddWithoutCheck()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->group->book_file_add_without_check = true;
-		$user->push();
-
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
-		$book->statusAccepted();
-		$book->save();
-		$book->refresh();
-
-		$this->assertTrue($book->isAccepted());
-
-		$comment = $this->faker->realText(100);
-		$number = rand(1, 100);
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')),
-				[
-					'file' => $file,
-					'comment' => $comment,
-					'number' => $number
-				]
-			)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$response->assertSessionHasNoErrors();
-
-		$book_file = $user->created_book_files()
-			->first();
-		$book->refresh();
-
-		$this->assertNotNull($user->created_book_files()->first());
-		$this->assertEquals($comment, $book_file->comment);
-		$this->assertEquals($number, $book_file->number);
-		$this->assertTrue($book->isAccepted());
-		$this->assertTrue($book_file->isAccepted());
-	}
 
 	public function testDeleteIfDeclined()
 	{
@@ -980,72 +575,6 @@ class BookFileTest extends TestCase
 		$this->assertTrue($book_file->fresh()->trashed());
 	}
 
-	public function testParseDoneDatabaseNotificationDisable()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->email_notification_setting->db_book_finish_parse = false;
-		$user->push();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$book = $user->created_books()->first();
-
-		$this->assertTrue($book->parse->isWait());
-		$this->assertEquals($user->id, $book->parse->create_user->id);
-
-		Artisan::call('book:fill_db_from_source', ['book_id' => $book->id]);
-		/*
-				Notification::assertSentTo(
-					$user,
-					BookFinishParseNotification::class,
-					function ($notification, $channels) use ($book) {
-						$this->assertNotContains('database', $channels);
-						return $notification->book_parse->book->id === $book->id;
-					}
-				);
-				*/
-	}
-
-	public function testParseDoneUnreadDatabaseNotificationCount()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->push();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				['file' => $file]
-			)->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$book = $user->created_books()->first();
-
-		$this->assertTrue($book->parse->isWait());
-		$this->assertEquals($user->id, $book->parse->create_user->id);
-
-		Artisan::call('book:fill_db_from_source', ['book_id' => $book->id]);
-	}
 
 	public function testCreateNewBookFileIfBookAccepted()
 	{
@@ -1370,7 +899,7 @@ class BookFileTest extends TestCase
 		config(['litlife.disk_for_files' => 'public']);
 
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_create_user')
 			->create(['title' => 'Сделаешь']);
 
 		$book_file = factory(BookFile::class)
@@ -1388,32 +917,6 @@ class BookFileTest extends TestCase
 			->assertRedirect($book_file->url);
 	}
 
-	public function testStoreEmptyHttp()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->create();
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')), ['file' => ''])
-			->assertRedirect()
-			->assertSessionHasErrors(['file' => __('validation.required', ['attribute' => __('book_file.file')])]);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')))
-			->assertRedirect()
-			->assertSessionHasErrors(['file' => __('validation.required', ['attribute' => __('book_file.file')])]);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')), ['file' => 'string'])
-			->assertRedirect()
-			->assertSessionHasErrors(['file' => __('validation.file', ['attribute' => __('book_file.file')])]);
-	}
 
 	public function testUpdateHttp()
 	{
@@ -1445,52 +948,6 @@ class BookFileTest extends TestCase
 		$this->assertEquals('updated', $activity->description);
 		$this->assertEquals($admin->id, $activity->causer_id);
 		$this->assertEquals('user', $activity->causer_type);
-	}
-
-	public function testUploadMinSize()
-	{
-		$admin = factory(User::class)->states('admin')->create();
-
-		$book = factory(Book::class)->create();
-
-		$tmp = tmpfile();
-		$file = new UploadedFile(stream_get_meta_data($tmp)['uri'], 'file.epub', null, null, true);
-
-		$response = $this->actingAs($admin)
-			->post(route('books.files.store', ['book' => $book]), ['file' => $file])
-			->assertSessionHasErrors(['file' => __('validation.min.file', ['attribute' => __('book_file.file'), 'min' => 1])]);
-	}
-
-	public function testSendToParsingIfAnotherOneAlreadyExists()
-	{
-		$admin = factory(User::class)->states('admin')->create();
-
-		$book_parse = factory(BookParse::class)->states('successed')->create();
-
-		$book = $book_parse->book;
-
-		$file = factory(BookFile::class)
-			->states('fb2')
-			->create(['book_id' => $book->id]);
-
-		Carbon::setTestNow(now()->addMinute());
-
-		$this->actingAs($admin)
-			->get(route('book_files.set_source_and_make_pages', ['file' => $file]))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$file->refresh();
-		$book->refresh();
-		$latest_book_parse = $book->parse;
-
-		$this->assertEquals(2, $book->parses()->count());
-
-		$this->assertEquals($admin->id, $latest_book_parse->create_user->id);
-		$this->assertTrue($latest_book_parse->isWait());
-		$this->assertTrue($latest_book_parse->isParseOnlyPages());
-		$this->assertTrue($file->isSource());
-		$this->assertFalse($book->isWaitedCreateNewBookFiles());
 	}
 
 	public function testPurgeDownloadLogs()
@@ -1637,29 +1094,6 @@ class BookFileTest extends TestCase
 		$this->assertTrue($book->parse->isParseOnlyPages());
 	}
 
-	public function testUploadInvalidZipCRCError()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)
-			->states('admin')
-			->create();
-
-		$book = factory(Book::class)
-			->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/invalid_crc.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'invalid_crc.zip',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store', compact('book')),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasErrors(['file' => __('validation.zip_book_file', ['attribute' => __('book.file')])]);
-	}
 
 	public function testAutoCreateAttribute()
 	{
@@ -1727,112 +1161,5 @@ class BookFileTest extends TestCase
 			)
 			->assertSessionHasNoErrors()
 			->assertRedirect();
-	}
-
-	public function testStoreFileCommentRequireIfOtherFileWithSameExtensionExists()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)
-			->states('admin')
-			->create();
-
-		$book = factory(Book::class)
-			->create();
-
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create(['book_id' => $book->id]);
-
-		$this->assertEquals('odt', $file->extension);
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.odt'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.odt',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', compact('book')),
-				[
-					'file' => $file,
-					'comment' => ''
-				]
-			);
-
-		$file2 = $book->files()->orderBy('id', 'desc')->first();
-
-		$this->assertEquals('odt', $file2->extension);
-
-		$response->assertRedirect(route('books.files.edit', ['book' => $book, 'file' => $file2]))
-			->assertSessionHasErrors(['comment' => __('validation.required', ['attribute' => __('book_file.comment')])]);
-	}
-
-	public function testUploadDocx()
-	{
-		$user = factory(User::class)->states('admin')->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test2.docx'));
-
-		$file = new UploadedFile($tmpFilePath, 'test2.docx',
-			filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.store'),
-				[
-					'file' => $file
-				]
-			)
-			->assertRedirect();
-
-		$response->assertSessionHasNoErrors();
-
-		$book_file = $user->created_book_files()
-			->first();
-
-		$this->assertEquals('docx', $book_file->format);
-	}
-
-	public function testCreateZipFb2()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)
-			->states('admin')->create();
-
-		$book = factory(Book::class)
-			->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb2.zip'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb2.zip', filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($user)
-			->post(route('books.files.store', ['book' => $book]),
-				['file' => $file]
-			)->assertRedirect();
-
-		$response->assertSessionHasNoErrors();
-
-		$this->assertEquals('fb2', $book->files()->first()->extension);
-	}
-
-	public function testStoreFb3()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$book = factory(Book::class)
-			->create();
-
-		$admin = factory(User::class)->states('admin')->create();
-
-		$tmpFilePath = tmpfilePath(file_get_contents(__DIR__ . '/Books/test.fb3'));
-
-		$file = new UploadedFile($tmpFilePath, 'test.fb3', filesize($tmpFilePath), null, true);
-
-		$response = $this->actingAs($admin)
-			->post(route('books.files.store', $book),
-				['file' => $file]
-			)->assertRedirect()
-			->assertSessionHasErrors(['file' => __('validation.book_file_extension', ['attribute' => __('book.file')])]);
 	}
 }

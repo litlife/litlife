@@ -197,10 +197,12 @@ class BookParseTest extends TestCase
 
 	public function testCantCancelParseIfPrivateBook()
 	{
-		$book = factory(Book::class)->states('private')->create();
+		$book = factory(Book::class)
+			->states('with_create_user', 'private')
+			->create();
+
 		$book->parse->wait();
 		$book->push();
-		$book->refresh();
 
 		$this->assertTrue($book->parse->isWait());
 

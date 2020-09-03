@@ -6,6 +6,7 @@ use App\Book;
 use App\BookFile;
 use App\Console\Commands\BookFillDBFromSource;
 use App\Jobs\Book\BookUpdatePageNumbersJob;
+use App\Jobs\Notification\BookFinishParseJob;
 use App\Section;
 use App\User;
 use Exception;
@@ -28,7 +29,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 	public function testAddFromSourceDocx()
 	{
-		Bus::fake(BookUpdatePageNumbersJob::class);
+		Bus::fake([BookUpdatePageNumbersJob::class, BookFinishParseJob::class]);
 
 		Storage::fake(config('filesystems.default'));
 
@@ -51,6 +52,7 @@ class BookFillDBFromSourceTest extends TestCase
 		$this->assertGreaterThanOrEqual(1, $book->sections()->count());
 
 		Bus::assertDispatched(BookUpdatePageNumbersJob::class);
+		Bus::assertDispatched(BookFinishParseJob::class);
 	}
 
 	public function testAddFromSourceRtf()

@@ -80,7 +80,7 @@
 						<select id="label" name="label"
 								class="form-control{{ $errors->user->has('label') ? ' is-invalid' : '' }}">
 							<option value=""> -</option>
-							@foreach (\App\Enums\TopicLabelEnum::toArray() as $key => $value)
+							@foreach (\App\Enums\TopicLabelEnum::asArray() as $key => $value)
 								@if ($value == (old('label') ?: $topic->label))
 									<option value="{{ $value }}" selected>{{ __('topic.labels.'.$key) }}</option>
 								@else

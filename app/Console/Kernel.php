@@ -244,11 +244,6 @@ class Kernel extends ConsoleKernel
 			->everyMinute()
 			->withoutOverlapping(2);
 
-		// удаляем временные файлы
-		$schedule->command('clean:directories')
-			->everyMinute()
-			->withoutOverlapping(5);
-
 		$schedule->command('refresh:clear_rating_for_periods')
 			->hourly()
 			->withoutOverlapping(5);

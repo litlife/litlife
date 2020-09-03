@@ -28,9 +28,7 @@ $factory->define(App\Book::class, function (Faker $faker) {
 		'pi_city' => $faker->city,
 		'pi_year' => $faker->year,
 		'pi_isbn' => $faker->isbn13,
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
+		'create_user_id' => 0,
 		'is_si' => true,
 		'year_writing' => $faker->year,
 		'rightholder' => $faker->realText(20),
@@ -56,6 +54,10 @@ $factory->afterCreating(App\Book::class, function ($book, $faker) {
 		$book->writers()->sync([$author->id]);
 		$book->refresh();
 	*/
+});
+
+$factory->afterCreatingState(App\Book::class, 'with_genre', function ($book, $faker) {
+
 	$count = Genre::count();
 
 	if (empty($count))
@@ -65,7 +67,13 @@ $factory->afterCreating(App\Book::class, function ($book, $faker) {
 
 	$book->genres()->sync([$genre->id]);
 	$book->push();
+});
 
+$factory->afterCreatingState(App\Book::class, 'with_create_user', function ($book, $faker) {
+
+	$book->create_user_id = factory(App\User::class)->create()->id;
+	$book->save();
+	$book->refresh();
 });
 
 $factory->afterCreatingState(App\Book::class, 'with_writer', function ($book, $faker) {

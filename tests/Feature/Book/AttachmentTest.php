@@ -473,7 +473,7 @@ class AttachmentTest extends TestCase
 		Storage::fake(config('filesystems.default'));
 
 		$book = factory(Book::class)
-			->states('private')
+			->states('private', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;

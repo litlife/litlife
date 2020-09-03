@@ -248,7 +248,7 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testIfCreatorOfBookDeleted()
 	{
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 		$book->create_user->delete();
 
 		$epub = $this->createEpubAndOpenFile($book);

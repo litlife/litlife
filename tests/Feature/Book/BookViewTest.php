@@ -171,7 +171,7 @@ class BookViewTest extends TestCase
 	public function testViewPolicyIfBookAccepted()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;
@@ -186,7 +186,7 @@ class BookViewTest extends TestCase
 	public function testViewPolicyIfBookPrivate()
 	{
 		$book = factory(Book::class)
-			->states('private')
+			->states('private', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;

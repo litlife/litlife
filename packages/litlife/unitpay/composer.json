@@ -7,17 +7,25 @@
       "email": "litlife@yandex.ru"
     }
   ],
-  "minimum-stability": "dev",
   "require": {},
   "autoload": {
     "psr-4": {
-      "Litlife\\Unitpay\\Facades\\": "src/Facades",
-      "Litlife\\Unitpay\\": "src"
+      "Litlife\\Unitpay\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Litlife\\Unitpay\\": "tests"
+      "Litlife\\Unitpay\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Litlife\\Unitpay\\UnitPayServiceProvider"
+      ],
+      "aliases": {
+        "Unitpay": "Litlife\\Unitpay\\Facades\\UnitPay"
+      }
     }
   }
 }

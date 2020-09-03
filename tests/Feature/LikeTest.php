@@ -237,6 +237,7 @@ class LikeTest extends TestCase
 		$user->push();
 
 		$book = factory(Book::class)
+			->states('with_create_user')
 			->create()
 			->fresh();
 

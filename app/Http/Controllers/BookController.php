@@ -685,7 +685,7 @@ class BookController extends Controller
 					return [$item->id => ['order' => $order]];
 				})->toArray());
 
-		foreach (AuthorEnum::toArray() as $key => $type) {
+		foreach (AuthorEnum::asArray() as $key => $type) {
 			$relation = mb_strtolower($key . 's');
 
 			$array = empty($request->$relation) ? [] :
@@ -803,7 +803,7 @@ class BookController extends Controller
 			UpdateGenreBooksCount::dispatch($genre);
 		});
 
-		foreach (AuthorEnum::toArray() as $key => $type) {
+		foreach (AuthorEnum::asArray() as $key => $type) {
 			$old_book->getAuthorsWithType($type)
 				->diff($book->getAuthorsWithType($type))
 				->merge($book->getAuthorsWithType($type)->diff($old_book->getAuthorsWithType($type)))

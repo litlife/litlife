@@ -1,8 +1,8 @@
 @extends('book.show.layout')
 
 @section('cover')
-	<div class="row text-center mb-3">
-		<div class="col-12">
+	<div class="row mb-3">
+		<div class="col-12 text-center">
 			<x-book-cover :book="$book" width="200" height="400" style="max-width: 100%;"/>
 		</div>
 	</div>

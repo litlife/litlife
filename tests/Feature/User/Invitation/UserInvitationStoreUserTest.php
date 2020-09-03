@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\User;
+namespace Tests\Feature\User\Invitation;
 
 use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
 use App\Enums\UserGroupEnum;
@@ -23,7 +23,7 @@ class UserInvitationStoreUserTest extends TestCase
 		$invitation = factory(Invitation::class)
 			->create();
 
-		$password = $this->faker->password;
+		$password = Str::random(6) . 'Pw1';
 		$ip = $this->faker->ipv4;
 
 		$user = factory(User::class)
@@ -43,7 +43,7 @@ class UserInvitationStoreUserTest extends TestCase
 				]);
 
 		if (session('errors'))
-			dump(session('errors'));
+			var_dump(session('errors'));
 
 		$response->assertSessionHasNoErrors()
 			->assertRedirect(route('welcome'));
@@ -124,7 +124,7 @@ class UserInvitationStoreUserTest extends TestCase
 				'password_confirmation' => $password,
 				'name_show_type' => 'FullLastNameFirstName'
 			]);
-		if (!empty(session('errors'))) dump(session('errors'));
+		if (!empty(session('errors'))) var_dump(session('errors'));
 		$response->assertSessionHasNoErrors()
 			->assertRedirect(route('invitation'));
 	}

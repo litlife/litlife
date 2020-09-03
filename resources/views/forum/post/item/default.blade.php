@@ -43,7 +43,7 @@
 			<x-user-name :user="$parent->create_user"/>
 		@endif
 
-		@include ('time', ['time' => $item->created_at ])
+		<x-time :time="$item->created_at"/>
 	</h6>
 
 

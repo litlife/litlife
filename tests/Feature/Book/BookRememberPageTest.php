@@ -21,6 +21,7 @@ class BookRememberPageTest extends TestCase
 	public function testRemeberHttp()
 	{
 		$book = factory(Book::class)
+			->states('with_create_user')
 			->create();
 
 		$section = factory(Section::class)
@@ -63,8 +64,11 @@ class BookRememberPageTest extends TestCase
 
 	public function testStopReadingHttp()
 	{
-		$book = factory(Book::class)->create();
-		$section = factory(Section::class)->create(['book_id' => $book->id]);
+		$book = factory(Book::class)
+			->states('with_create_user', 'with_section')
+			->create();
+
+		$section = $book->sections()->first();
 
 		$response = $this->actingAs($book->create_user)
 			->get(route('books.sections.show', ['book' => $book->id, 'section' => $section->inner_id]))
@@ -266,7 +270,7 @@ class BookRememberPageTest extends TestCase
 	public function testBookListHttpOk()
 	{
 		$book = factory(Book::class)
-			->states('with_three_sections')
+			->states('with_three_sections', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;
@@ -291,6 +295,7 @@ class BookRememberPageTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
+			->states('with_create_user')
 			->create();
 
 		$chapter1 = factory(Section::class)

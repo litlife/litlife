@@ -21,7 +21,8 @@ class Time extends Component
 		}
 
 		if ($time instanceof Carbon) {
-			$this->time = $time->timezone(session()->get('geoip')->timezone);
+			if (isset(session()->get('geoip')->timezone))
+				$this->time = $time->timezone(session()->get('geoip')->timezone);
 		}
 	}
 

@@ -3,68 +3,6 @@
 namespace App\Providers;
 
 use App;
-use App\Attachment;
-use App\Author;
-use App\AuthorBiography;
-use App\AuthorPhoto;
-use App\AuthorRepeat;
-use App\AuthorStatus;
-use App\Blog;
-use App\Book;
-use App\BookFile;
-use App\BookKeyword;
-use App\Bookmark;
-use App\BookStatus;
-use App\BookVote;
-use App\Comment;
-use App\CommentVote;
-use App\Forum;
-use App\ForumGroup;
-use App\Image;
-use App\Keyword;
-use App\Like;
-use App\Message;
-use App\Observers\AttachmentObserver;
-use App\Observers\AuthorBiographyObserver;
-use App\Observers\AuthorObserver;
-use App\Observers\AuthorPhotoObserver;
-use App\Observers\AuthorRepeatObserver;
-use App\Observers\AuthorStatusObserver;
-use App\Observers\BlogObserver;
-use App\Observers\BookFileObserver;
-use App\Observers\BookKeywordObserver;
-use App\Observers\BookmarkObserver;
-use App\Observers\BookObserver;
-use App\Observers\BookStatusObserver;
-use App\Observers\BookVoteObserver;
-use App\Observers\CommentObserver;
-use App\Observers\CommentVoteObserver;
-use App\Observers\ForumGroupObserver;
-use App\Observers\ForumObserver;
-use App\Observers\ImageObserver;
-use App\Observers\KeywordObserver;
-use App\Observers\LikeObserver;
-use App\Observers\MessageObserver;
-use App\Observers\PostObserver;
-use App\Observers\SectionObserver;
-use App\Observers\SequenceObserver;
-use App\Observers\TopicObserver;
-use App\Observers\UserDataObserver;
-use App\Observers\UserEmailObserver;
-use App\Observers\UserEmailTokenObserver;
-use App\Observers\UserObserver;
-use App\Observers\UserPhotoObserver;
-use App\Observers\UserRelationObserver;
-use App\Post;
-use App\Section;
-use App\Sequence;
-use App\Topic;
-use App\User;
-use App\UserData;
-use App\UserEmail;
-use App\UserEmailToken;
-use App\UserPhoto;
-use App\UserRelation;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -77,7 +15,6 @@ use Jenssegers\Date\Date;
 use Laravel\Dusk\DuskServiceProvider;
 use MailChecker;
 use Request;
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -93,21 +30,20 @@ class AppServiceProvider extends ServiceProvider
 			URL::forceScheme('https');
 		}
 		*/
-		if ($this->app->environment() !== 'production') {
+
+		if (!$this->app->environment('production')) {
 
 			// Нет поддержки laravel 6.0
 			//$this->app->register(\Way\Generators\GeneratorsServiceProvider::class);
 			//$this->app->register(\Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
 
 			$this->app->register(IdeHelperServiceProvider::class);
-			$this->app->register(\Staudenmeir\DuskUpdater\DuskServiceProvider::class);
 			$this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
-		}
-
-		if ($this->app->environment('local', 'testing')) {
+			$this->app->register(\Staudenmeir\DuskUpdater\DuskServiceProvider::class);
 			$this->app->register(DuskServiceProvider::class);
 			$this->app->register(DuskBrowserServiceProvider::class);
 		}
+
 
 		if (app()->runningInConsole()) {
 
@@ -130,48 +66,40 @@ class AppServiceProvider extends ServiceProvider
 
 		setlocale(LC_TIME, config('app.locale') . '_' . mb_strtoupper(config('app.locale')) . '.UTF-8');
 
-		UserPhoto::observe(UserPhotoObserver::class);
-		BookVote::observe(BookVoteObserver::class);
-		UserRelation::observe(UserRelationObserver::class);
 
-		Keyword::observe(KeywordObserver::class);
-		BookKeyword::observe(BookKeywordObserver::class);
-
-		Post::observe(PostObserver::class);
-		Topic::observe(TopicObserver::class);
-		Forum::observe(ForumObserver::class);
-		ForumGroup::observe(ForumGroupObserver::class);
-		Like::observe(LikeObserver::class);
-		User::observe(UserObserver::class);
-		UserEmail::observe(UserEmailObserver::class);
-		UserEmailToken::observe(UserEmailTokenObserver::class);
-		AuthorRepeat::observe(AuthorRepeatObserver::class);
-		Bookmark::observe(BookmarkObserver::class);
-		Blog::observe(BlogObserver::class);
-		AuthorBiography::observe(AuthorBiographyObserver::class);
-		AuthorPhoto::observe(AuthorPhotoObserver::class);
-		Comment::observe(CommentObserver::class);
-		CommentVote::observe(CommentVoteObserver::class);
-		BookFile::observe(BookFileObserver::class);
-
-		UserData::observe(UserDataObserver::class);
-		BookStatus::observe(BookStatusObserver::class);
-
-		Section::observe(SectionObserver::class);
-		Attachment::observe(AttachmentObserver::class);
-		Book::observe(BookObserver::class);
-		Image::observe(ImageObserver::class);
-
-		Author::observe(AuthorObserver::class);
-		Sequence::observe(SequenceObserver::class);
-
-		Message::observe(MessageObserver::class);
+		App\UserPhoto::observe(App\Observers\UserPhotoObserver::class);
+		App\BookVote::observe(App\Observers\BookVoteObserver::class);
+		App\UserRelation::observe(App\Observers\UserRelationObserver::class);
+		App\Keyword::observe(App\Observers\KeywordObserver::class);
+		App\BookKeyword::observe(App\Observers\BookKeywordObserver::class);
+		App\Post::observe(App\Observers\PostObserver::class);
+		App\Topic::observe(App\Observers\TopicObserver::class);
+		App\Forum::observe(App\Observers\ForumObserver::class);
+		App\ForumGroup::observe(App\Observers\ForumGroupObserver::class);
+		App\Like::observe(App\Observers\LikeObserver::class);
+		App\User::observe(App\Observers\UserObserver::class);
+		App\UserEmail::observe(App\Observers\UserEmailObserver::class);
+		App\UserEmailToken::observe(App\Observers\UserEmailTokenObserver::class);
+		App\AuthorRepeat::observe(App\Observers\AuthorRepeatObserver::class);
+		App\Bookmark::observe(App\Observers\BookmarkObserver::class);
+		App\Blog::observe(App\Observers\BlogObserver::class);
+		App\AuthorBiography::observe(App\Observers\AuthorBiographyObserver::class);
+		App\AuthorPhoto::observe(App\Observers\AuthorPhotoObserver::class);
+		App\Comment::observe(App\Observers\CommentObserver::class);
+		App\CommentVote::observe(App\Observers\CommentVoteObserver::class);
+		App\BookFile::observe(App\Observers\BookFileObserver::class);
+		App\UserData::observe(App\Observers\UserDataObserver::class);
+		App\BookStatus::observe(App\Observers\BookStatusObserver::class);
+		App\Section::observe(App\Observers\SectionObserver::class);
+		App\Attachment::observe(App\Observers\AttachmentObserver::class);
+		App\Book::observe(App\Observers\BookObserver::class);
+		App\Image::observe(App\Observers\ImageObserver::class);
+		App\Author::observe(App\Observers\AuthorObserver::class);
+		App\Sequence::observe(App\Observers\SequenceObserver::class);
+		App\Message::observe(App\Observers\MessageObserver::class);
 		App\Genre::observe(App\Observers\GenreObserver::class);
-
-		AuthorStatus::observe(AuthorStatusObserver::class);
-
+		App\AuthorStatus::observe(App\Observers\AuthorStatusObserver::class);
 		App\Page::observe(App\Observers\PageObserver::class);
-
 		App\Achievement::observe(App\Observers\AchievementObserver::class);
 		App\AchievementUser::observe(App\Observers\AchievementUserObserver::class);
 		App\BookKeywordVote::observe(App\Observers\BookKeywordVoteObserver::class);
@@ -187,6 +115,7 @@ class AppServiceProvider extends ServiceProvider
 		App\Collection::observe(App\Observers\CollectionObserver::class);
 		App\CollectedBook::observe(App\Observers\CollectedBookObserver::class);
 		App\UserSurvey::observe(App\Observers\UserSurveyObserver::class);
+
 
 		Validator::extend('wikipedia', function ($attribute, $value, $parameters, $validator) {
 			$host = parse_url($value, PHP_URL_HOST);
@@ -302,8 +231,6 @@ class AppServiceProvider extends ServiceProvider
 		Blade::if('env', function ($environment) {
 			return app()->environment($environment);
 		});
-
-
 	}
 
 	/**

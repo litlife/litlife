@@ -27,10 +27,11 @@ class BookSearchTest extends TestCase
 	 */
 	public function testPrivacyInSearch()
 	{
-		$book = factory(Book::class)->create([
-			'title' => uniqid() . uniqid() . uniqid(),
-			'status' => StatusEnum::Private
-		]);
+		$book = factory(Book::class)
+			->states('with_create_user', 'private')
+			->create([
+				'title' => uniqid() . uniqid() . uniqid()
+			]);
 
 		$book = Book::any()->findOrFail($book->id);
 
@@ -49,10 +50,11 @@ class BookSearchTest extends TestCase
 
 	public function testDeletedInSearch()
 	{
-		$book = factory(Book::class)->create([
-			'title' => uniqid() . uniqid() . uniqid(),
-			'status' => StatusEnum::Private
-		]);
+		$book = factory(Book::class)
+			->states('private', 'with_create_user')
+			->create([
+				'title' => uniqid() . uniqid() . uniqid()
+			]);
 
 		$book = Book::any()->findOrFail($book->id);
 
@@ -67,10 +69,11 @@ class BookSearchTest extends TestCase
 
 	public function testGenre()
 	{
-		$book = factory(Book::class)->create([
-			'title' => uniqid() . uniqid(),
-			'status' => StatusEnum::Accepted
-		])->fresh();
+		$book = factory(Book::class)
+			->states('with_genre', 'with_create_user', 'accepted')
+			->create([
+				'title' => uniqid() . uniqid()
+			]);
 
 		$this->assertEquals(1, $book->genres()->count());
 
@@ -84,7 +87,7 @@ class BookSearchTest extends TestCase
 	{
 		$title = Str::random(10);
 
-		$book = factory(Book::class)->states('accepted')->create([
+		$book = factory(Book::class)->states('accepted', 'with_genre', 'with_create_user')->create([
 			'title' => $title
 		])->fresh();
 
@@ -105,10 +108,9 @@ class BookSearchTest extends TestCase
 	public function testLanguage()
 	{
 
-		$book = factory(Book::class)->create([
+		$book = factory(Book::class)->states('with_create_user', 'accepted')->create([
 			'title' => uniqid() . uniqid(),
-			'ti_lb' => 'EN',
-			'status' => StatusEnum::Accepted
+			'ti_lb' => 'EN'
 		])->fresh();
 
 		$this->actingAs($book->create_user)
@@ -134,10 +136,11 @@ class BookSearchTest extends TestCase
 
 	public function testKeywords()
 	{
-		$book = factory(Book::class)->create([
-			'title' => uniqid() . uniqid(),
-			'status' => StatusEnum::Accepted
-		])->fresh();
+		$book = factory(Book::class)
+			->states('with_create_user', 'accepted')
+			->create([
+				'title' => uniqid() . uniqid()
+			]);
 
 		$book_keyword = factory(BookKeyword::class)->create([
 			'book_id' => $book->id
@@ -206,7 +209,7 @@ class BookSearchTest extends TestCase
 
 	public function testFormats()
 	{
-		$book = factory(Book::class)->create([
+		$book = factory(Book::class)->states('with_create_user')->create([
 			'title' => uniqid() . uniqid(),
 			'status' => StatusEnum::Accepted
 		])->fresh();
@@ -233,10 +236,12 @@ class BookSearchTest extends TestCase
 	{
 		$ready_status = 'complete';
 
-		$book = factory(Book::class)->create([
-			'title' => uniqid() . uniqid(),
-			'ready_status' => $ready_status
-		])->fresh();
+		$book = factory(Book::class)
+			->states('with_create_user')
+			->create([
+				'title' => uniqid() . uniqid(),
+				'ready_status' => $ready_status
+			]);
 
 		$this->actingAs($book->create_user)
 			->get(route('books', ['search' => $book->title, 'rs' => $ready_status, 'order' => 'date_down']))
@@ -252,7 +257,7 @@ class BookSearchTest extends TestCase
 	public function testAuthorGender()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'with_translator')
+			->states('with_writer', 'with_translator', 'with_create_user')
 			->create([
 				'title' => uniqid() . uniqid()
 			])->fresh();
@@ -433,6 +438,7 @@ class BookSearchTest extends TestCase
 	public function testCoverExists()
 	{
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create(['title' => uniqid()]);
 
 		$this->assertNull($book->cover);
@@ -463,6 +469,7 @@ class BookSearchTest extends TestCase
 	public function testAnnotationExists()
 	{
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create(['title' => uniqid()]);
 
 		$this->assertFalse($book->fresh()->annotation_exists);
@@ -575,6 +582,7 @@ class BookSearchTest extends TestCase
 		$title = Str::random(8);
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create(['title' => $title]);
 
 		$user = factory(User::class)
@@ -629,7 +637,7 @@ class BookSearchTest extends TestCase
 		$title = Str::random(10);
 
 		$book = factory(Book::class)
-			->states('private')
+			->states('with_create_user', 'private')
 			->create(['title' => $title]);
 
 		$user = $book->create_user;
@@ -710,7 +718,7 @@ class BookSearchTest extends TestCase
 		$title = Str::random(8);
 
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => $title, 'pi_year' => 2020]);
 
 		$this->get(route('books', [
@@ -725,7 +733,7 @@ class BookSearchTest extends TestCase
 	public function testPublishYearAfter()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => Str::random(8), 'pi_year' => 2021]);
 
 		$this->get(route('books', [
@@ -750,7 +758,7 @@ class BookSearchTest extends TestCase
 	public function testPublishYearBefore()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => Str::random(8), 'pi_year' => 2021]);
 
 		$this->get(route('books', [
@@ -761,7 +769,7 @@ class BookSearchTest extends TestCase
 			->assertDontSeeText($book->title);
 
 		$book2 = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => Str::random(8), 'pi_year' => 2019]);
 
 		$this->get(route('books', [
@@ -777,7 +785,7 @@ class BookSearchTest extends TestCase
 		$title = Str::random(8);
 
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => $title, 'year_writing' => 2018]);
 
 		$this->get(route('books', [
@@ -792,7 +800,7 @@ class BookSearchTest extends TestCase
 	public function testPaidAccessSeePaidOnly()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => Str::random(8), 'price' => '50']);
 
 		$this->get(route('books', [
@@ -813,7 +821,7 @@ class BookSearchTest extends TestCase
 	public function testPaidAccessSeeFreeOnly()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_genre')
 			->create(['title' => Str::random(8), 'price' => '0']);
 
 		$this->get(route('books', [

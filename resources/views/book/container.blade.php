@@ -307,7 +307,7 @@
 							<label>{{  __('book.ready_status') }}: </label>
 							<select class="rs form-control" name="rs">
 								<option value="">{{ __('common.any') }}</option>
-								@foreach (\App\Enums\BookComplete::toArray() as $text => $code)
+								@foreach (\App\Enums\BookComplete::asArray() as $text => $code)
 									<option value="{{ $text }}"
 											@if ($text == $input['rs']) selected="selected" @endif > {{ __('book.text_complete.'.$text) }}</option>
 								@endforeach

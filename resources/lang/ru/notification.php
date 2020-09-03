@@ -30,7 +30,7 @@ return [
 	],
 	"book_finish_parse" => [
 		"line" => "",
-		"subject" => "Обработка книги «:title» завершилась",
+		"subject" => "Создание текста книги «:title» для онлайн чтения завершилась",
 		'action' => 'Перейти к книге'
 	],
 	"author_sale_request_accepted" => [

@@ -3,12 +3,10 @@
 namespace Tests\Feature\Book;
 
 use App\Book;
-use App\BookFile;
 use App\Jobs\Book\UpdateBookSectionsCount;
 use App\Library\AddEpubFile;
 use App\Scopes\CheckedScope;
 use App\Section;
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -16,63 +14,6 @@ use Tests\TestCase;
 
 class BookNewFilesCreateTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testDisableIfBookOnParse()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$user = factory(User::class)->create();
-		$user->group->book_fb2_file_convert_divide_on_page = true;
-		$user->group->edit_self_book = true;
-		$user->group->edit_other_user_book = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->create(['create_user_id' => $user->id])
-			->fresh();
-
-		$file = new BookFile;
-		$file->source = true;
-		$file->open(__DIR__ . '/Books/test.epub');
-		$file->statusAccepted();
-		$book->files()->save($file);
-
-		Artisan::call('book:fill_db_from_source', ['book_id' => $book->id]);
-
-		$this->assertTrue($book->refresh()->isWaitedCreateNewBookFiles());
-		$this->assertTrue($book->isPagesNewFormat());
-
-		$this->actingAs($user)
-			->patch(route('books.sections.update', ['book' => $book, 'section' => $book->sections()->where('type', 'section')->first()->inner_id]),
-				[
-					'title' => $this->faker->realText(100),
-					'content' => $this->faker->text
-				])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$this->assertTrue($book->refresh()->isWaitedCreateNewBookFiles());
-
-		$file = new BookFile;
-		$file->open(__DIR__ . '/Books/test.fb2');
-		$file->statusAccepted();
-		$book->files()->save($file);
-
-		$this->actingAs($user)
-			->get(route('book_files.set_source_and_make_pages', ['file' => $file]))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isWait());
-		$this->assertFalse($book->isWaitedCreateNewBookFiles());
-	}
-
 	public function testCreatedAfterEdit()
 	{
 		Storage::fake(config('filesystems.default'));
@@ -122,10 +63,9 @@ class BookNewFilesCreateTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create()->fresh();
-		$book->statusPrivate();
-		$book->sections_count = 1;
-		$book->save();
+		$book = factory(Book::class)
+			->states('private', 'with_create_user', 'with_section')
+			->create();
 
 		$section = factory(Section::class)
 			->create(['book_id' => $book->id]);

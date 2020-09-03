@@ -168,7 +168,7 @@ class BookAddToPrivateTest extends TestCase
 
 		$admin = factory(User::class)->states('admin')->create();
 
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 
 		$reason = $this->faker->realText(100);
 
@@ -222,7 +222,7 @@ class BookAddToPrivateTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
-			->states('sent_for_review')
+			->states('sent_for_review', 'with_create_user')
 			->create();
 
 		$manager = factory(Manager::class)

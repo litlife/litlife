@@ -235,10 +235,12 @@ class HomeTest extends TestCase
 		$user = factory(User::class)
 			->create();
 
-		$book_vote = factory(BookVote::class)
+		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
-		$book = $book_vote->book;
+		$book_vote = factory(BookVote::class)
+			->create(['book_id' => $book->id]);
 
 		$genre = $book->genres()->first();
 
@@ -283,5 +285,14 @@ class HomeTest extends TestCase
 			->assertSeeText($post->text)
 			->assertDontSeeText($post_on_review->text);
 	}
-
+	/*
+		public function test()
+		{
+			for ($a = 0; $a < 100; $a++)
+			{
+				$this->get(route('test'))
+					->assertOk();
+			}
+		}
+		*/
 }

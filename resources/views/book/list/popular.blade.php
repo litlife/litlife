@@ -1,6 +1,6 @@
 <div class="book card mb-3">
 	<div class="card-body">
-		<div class="col-12 mb-3 d-flex justify-content-center">
+		<div class="col-12 mb-3 d-flex text-center">
 			<x-book-cover :book="$book" width="100" height="200" style="max-width: 100%;"/>
 		</div>
 		<div class="col-12 ">

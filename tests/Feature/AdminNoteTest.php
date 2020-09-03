@@ -168,6 +168,8 @@ class AdminNoteTest extends TestCase
 
 	public function testAuthRequiredIfUserGuest()
 	{
+		$this->assertGuest();
+
 		$admin_note = factory(AdminNote::class)
 			->create();
 

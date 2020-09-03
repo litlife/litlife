@@ -1246,7 +1246,7 @@ class Book extends Model
 
 	public function scopeWhereReadyStatus($query, $text)
 	{
-		foreach (BookComplete::toArray() as $item => $number) {
+		foreach (BookComplete::asArray() as $item => $number) {
 			if ($text == $item)
 				return $query->where($this->getTable() . '.ready_status', $number);
 		}

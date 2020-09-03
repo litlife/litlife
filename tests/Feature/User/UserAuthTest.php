@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\User;
 
+use App\Http\Middleware\RefreshUserLastActivity;
+use App\Http\Middleware\RemeberSessionGeoIpAndBrowser;
 use App\User;
 use Tests\TestCase;
 
@@ -14,6 +16,9 @@ class UserAuthTest extends TestCase
 	 */
 	public function testIfSuspendedHttp()
 	{
+		$this->withMiddleware(RefreshUserLastActivity::class);
+		$this->withMiddleware(RemeberSessionGeoIpAndBrowser::class);
+
 		$this->assertGuest();
 
 		$password = uniqid();

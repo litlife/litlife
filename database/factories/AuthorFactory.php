@@ -53,7 +53,7 @@ $factory->afterCreatingState(App\Author::class, 'with_biography', function ($aut
 $factory->afterCreatingState(App\Author::class, 'with_book', function ($author, $faker) {
 
 	$book = factory(\App\Book::class)
-		->states('with_section', 'complete')
+		->states('with_section', 'complete', 'with_genre')
 		->create();
 
 	$book->writers()->detach();
@@ -65,7 +65,7 @@ $factory->afterCreatingState(App\Author::class, 'with_book', function ($author, 
 $factory->afterCreatingState(App\Author::class, 'with_si_book', function ($author, $faker) {
 
 	$book = factory(\App\Book::class)
-		->states('with_section', 'si_true', 'complete')
+		->states('with_section', 'si_true', 'complete', 'with_genre')
 		->create();
 
 	$book->writers()->detach();
@@ -89,7 +89,7 @@ $factory->afterCreatingState(App\Author::class, 'with_complete_book', function (
 $factory->afterCreatingState(App\Author::class, 'with_book_cover_annotation', function ($author, $faker) {
 
 	$book = factory(\App\Book::class)
-		->states('with_cover', 'with_section', 'with_annotation', 'complete')
+		->states('with_cover', 'with_section', 'with_annotation', 'complete', 'with_genre')
 		->create();
 
 	$book->writers()->detach();
@@ -101,7 +101,7 @@ $factory->afterCreatingState(App\Author::class, 'with_book_cover_annotation', fu
 $factory->afterCreatingState(App\Author::class, 'with_private_book', function ($author, $faker) {
 
 	$book = factory(\App\Book::class)
-		->states('with_section', 'private')
+		->states('with_section', 'private', 'with_genre')
 		->create();
 
 	$book->writers()->detach();
@@ -122,7 +122,7 @@ $factory->afterCreatingState(App\Author::class, 'with_paid_section', function ($
 $factory->afterCreatingState(App\Author::class, 'with_book_for_sale', function ($author, $faker) {
 
 	$book = factory(\App\Book::class)
-		->states('with_section', 'without_any_authors', 'complete', 'with_cover', 'with_annotation')
+		->states('with_section', 'without_any_authors', 'complete', 'with_cover', 'with_annotation', 'with_genre')
 		->create([
 			'price' => rand(50, 100),
 			'is_si' => true,

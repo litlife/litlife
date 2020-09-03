@@ -7,13 +7,12 @@
       "email": "litlife@yandex.ru"
     }
   ],
-  "minimum-stability": "dev",
   "require": {
     "ext-zip": "*",
     "ext-dom": "*",
     "ext-imagick": "*",
     "nelexa/zip": "^3.1",
-    "litlife/url": "^1.0"
+    "litlife/url": "dev-dev"
   },
   "autoload": {
     "psr-4": {

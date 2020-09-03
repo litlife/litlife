@@ -4,6 +4,7 @@ namespace Tests\Feature\User;
 
 use App\Blog;
 use App\Book;
+use App\Http\Middleware\RefreshUserLastActivity;
 use App\Jobs\CreateSiteAccountIfNotExists;
 use App\Like;
 use App\Notifications\NewLikeNotification;
@@ -141,6 +142,8 @@ class UserTest extends TestCase
 
 	public function testDripOnline()
 	{
+		$this->withMiddleware(RefreshUserLastActivity::class);
+
 		$user = factory(User::class)
 			->create();
 

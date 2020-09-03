@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Book;
+namespace Tests\Feature\Book\File;
 
 use App\Book;
 use App\BookFile;
@@ -116,7 +116,7 @@ class BookFilePolicyTest extends TestCase
 
 	public function testUserCanUpdateFileIfFilePrivate()
 	{
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 
 		$user = $book->create_user;
 
@@ -132,7 +132,7 @@ class BookFilePolicyTest extends TestCase
 
 	public function testUserCanUpdateFileIfFileOnReview()
 	{
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 
 		$user = $book->create_user;
 

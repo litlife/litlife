@@ -23,7 +23,7 @@
 	<h6 class="mb-2">
 		<x-user-name :user="$item->create_user"/>
 
-		@include ('time', ['time' => $item->created_at ])
+		<x-time :time="$item->created_at"/>
 	</h6>
 
 	<div class="mb-2">

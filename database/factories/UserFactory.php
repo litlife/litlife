@@ -2,11 +2,9 @@
 
 use App\AchievementUser;
 use App\Enums\Gender;
-use App\Enums\UserGroupEnum;
 use App\ReferredUser;
 use App\User;
 use App\UserEmail;
-use App\UserGroup;
 use App\UserPaymentDetail;
 use App\UserPaymentTransaction;
 use App\UserPhoto;
@@ -42,9 +40,11 @@ $factory->afterCreating(App\User::class, function ($user, $faker) {
 
 $factory->afterCreatingState(App\User::class, 'with_user_group', function ($user, $faker) {
 
-	$group = UserGroup::where('key', UserGroupEnum::User)->firstOrFail();
+	$group = factory(App\UserGroup::class)
+		->state('user')
+		->create();
 
-	$user->groups()->attach($group);
+	$user->groups()->sync($group);
 
 	$user->load('groups');
 });

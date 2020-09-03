@@ -54,38 +54,40 @@
 @section('top')
 
 	@if (!$book->parse->isSucceed())
-		@if ($book->parse->isWait())
-			<div class="alert alert-info" role="alert">
-				{{ __('book.parse.wait') }} {{ __('book.check_later') }}
-			</div>
-		@elseif ($book->parse->isProgress())
-			<div class="alert alert-warning" role="alert">
-				{{ __('book.parse.progress') }} {{ __('book.check_later') }}
-			</div>
-		@elseif ($book->parse->isFailed())
-
-			<div class="alert alert-danger" role="alert">
-				{{ __('book.parse.failed') }}
-			</div>
-
-			@if (!empty($book->parse->parse_errors))
-				<div class="alert alert-danger" role="alert">
-					<b>{{ __('common.error') }}:</b>
-					{{ $book->parse->parse_errors['message'] }}
+		<div class="mb-3">
+			@if ($book->parse->isWait())
+				<div class="alert alert-info" role="alert">
+					{{ __('book.parse.wait') }} {{ __('book.check_later') }}
 				</div>
+			@elseif ($book->parse->isProgress())
+				<div class="alert alert-warning" role="alert">
+					{{ __('book.parse.progress') }} {{ __('book.check_later') }}
+				</div>
+			@elseif ($book->parse->isFailed())
+
+				<div class="alert alert-danger" role="alert">
+					{{ __('book.parse.failed') }}
+				</div>
+
+				@if (!empty($book->parse->parse_errors))
+					<div class="alert alert-danger" role="alert">
+						<b>{{ __('common.error') }}:</b>
+						{{ $book->parse->parse_errors['message'] }}
+					</div>
+				@endif
+
+				@can('retry_failed_parse', $book)
+					<a href="{{ route('books.retry_failed_parse', $book) }}"
+					   class="btn btn-primary mb-3">{{ __('book.retry_failed_parse') }}</a>
+				@endcan
+
 			@endif
 
-			@can('retry_failed_parse', $book)
-				<a href="{{ route('books.retry_failed_parse', $book) }}"
-				   class="btn btn-primary mb-3">{{ __('book.retry_failed_parse') }}</a>
+			@can('cancel_parse', $book)
+				<a href="{{ route('books.cancel_parse', $book) }}"
+				   class="btn btn-primary">{{ __('book.cancel_parse') }}</a>
 			@endcan
-
-		@endif
-
-		@can('cancel_parse', $book)
-			<a href="{{ route('books.cancel_parse', $book) }}"
-			   class="btn btn-primary">{{ __('book.cancel_parse') }}</a>
-		@endcan
+		</div>
 	@endif
 
 	@if ($book->isSentForReview())
@@ -212,10 +214,10 @@
 
 								@foreach ($books_similar as $book_similar)
 
-									<div class="similars_item text-center list-group-item "
+									<div class="similars_item list-group-item"
 										 data-other-book-id="{{ $book_similar->other_book_id }}">
 
-										<div class="mb-2">
+										<div class="mb-2 text-center">
 											<x-book-cover :book="$book_similar" width="100" height="100" style="max-width: 100%;"/>
 										</div>
 
@@ -312,8 +314,8 @@
 
 								@foreach ($rand_books as $rand_book)
 
-									<div class="list-group-item text-center">
-										<div class="mb-2">
+									<div class="list-group-item">
+										<div class="mb-2 text-center">
 											<x-book-cover :book="$rand_book" width="100" height="100" style="max-width: 100%;"/>
 										</div>
 

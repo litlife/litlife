@@ -225,11 +225,11 @@ class StatusTest extends TestCase
 
 	public function testScopeAcceptedOrBelongsToUser()
 	{
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 		$book->statusPrivate();
 		$book->save();
 
-		$book2 = factory(Book::class)->create();
+		$book2 = factory(Book::class)->states('with_create_user')->create();
 		$book2->statusAccepted();
 		$book2->save();
 
@@ -242,11 +242,11 @@ class StatusTest extends TestCase
 
 	public function testScopeAcceptedOrBelongsToAuthUser()
 	{
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 		$book->statusPrivate();
 		$book->save();
 
-		$book2 = factory(Book::class)->create();
+		$book2 = factory(Book::class)->states('with_create_user')->create();
 		$book2->statusAccepted();
 		$book2->save();
 

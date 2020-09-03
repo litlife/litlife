@@ -12,6 +12,10 @@
 
 	@include ('book.edit_tab')
 
+	@can('see_a_message_about_how_to_start_editing_the_text_of_a_book_in_the_old_format', $book)
+		@include('book.new_pages_format_warning', ['book' => $book])
+	@endcan
+
 	@if(!empty($sections) and count($sections) > 0)
 		<ol class="list-group list-group-flush mb-3 pl-0">
 			@foreach($sections as $number => $section)

@@ -20,10 +20,7 @@ class EventServiceProvider extends ServiceProvider
 			// add your listeners (aka providers) here
 			'SocialiteProviders\Google\GoogleExtendSocialite@handle',
 			'SocialiteProviders\VKontakte\VKontakteExtendSocialite@handle',
-			'SocialiteProviders\Yandex\YandexExtendSocialite@handle',
-			'SocialiteProviders\Twitter\TwitterExtendSocialite@handle',
-			'SocialiteProviders\Instagram\InstagramExtendSocialite@handle',
-			'SocialiteProviders\YouTube\YouTubeExtendSocialite@handle',
+			'SocialiteProviders\Facebook\FacebookExtendSocialite@handle',
 		],
 
 		'App\Events\BookRatingChanged' => [

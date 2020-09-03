@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\StatusEnum;
 use App\Jobs\Book\UpdateBookNotesCount;
 use App\Jobs\Book\UpdateBookPagesCount;
 use App\Jobs\Book\UpdateBookSectionsCount;
@@ -14,7 +13,8 @@ $factory->define(App\Section::class, function (Faker $faker) {
 		'type' => 'section',
 		'book_id' => function () {
 			return factory(App\Book::class)
-				->create(['status' => StatusEnum::Private])
+				->states('private', 'with_create_user')
+				->create()
 				->id;
 		},
 		'created_at' => now(),

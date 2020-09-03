@@ -826,7 +826,7 @@ class SectionTest extends TestCase
 	public function testViewIfBookPrivate()
 	{
 		$book = factory(Book::class)
-			->states('private', 'with_section')
+			->states('private', 'with_section', 'with_create_user')
 			->create();
 
 		$section = $book->sections()->first();

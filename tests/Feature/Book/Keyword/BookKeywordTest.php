@@ -605,9 +605,9 @@ class BookKeywordTest extends TestCase
 
 	public function testCantAttachNewToPrivateBook()
 	{
-		$book = factory(Book::class)->create();
-		$book->statusPrivate();
-		$book->save();
+		$book = factory(Book::class)
+			->states('with_create_user', 'private')
+			->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = false;
@@ -627,9 +627,9 @@ class BookKeywordTest extends TestCase
 
 	public function testCanAttachExistedToPrivateBook()
 	{
-		$book = factory(Book::class)->create();
-		$book->statusPrivate();
-		$book->save();
+		$book = factory(Book::class)
+			->states('with_create_user', 'private')
+			->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = false;
@@ -654,9 +654,9 @@ class BookKeywordTest extends TestCase
 
 	public function testCantAttachExistedPrivateToPrivateBook()
 	{
-		$book = factory(Book::class)->create();
-		$book->statusPrivate();
-		$book->save();
+		$book = factory(Book::class)
+			->states('with_create_user', 'private')
+			->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = false;

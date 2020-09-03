@@ -543,6 +543,9 @@ class BookPolicy extends Policy
 		if (!$book->isCanChange($auth_user))
 			return false;
 
+		if (!$book->isPagesNewFormat())
+			return false;
+
 		// книга в личном облаке
 		if ($book->isPrivate()) {
 			// разрешаем только если пользователь создатель
@@ -1753,5 +1756,46 @@ class BookPolicy extends Policy
 			return false;
 
 		return (boolean)$auth_user->getPermission('Complain');
+	}
+
+	/**
+	 * Может ли пользователь увидеть сообщение о том как начать редактировать текст книги в старом формате
+	 *
+	 * @param User $auth_user
+	 * @param Book $book
+	 * @return bool
+	 */
+	public function see_a_message_about_how_to_start_editing_the_text_of_a_book_in_the_old_format(User $auth_user, Book $book)
+	{
+		if ($book->isPagesNewFormat())
+			return false;
+
+		if (!$book->isCanChange($auth_user))
+			return false;
+
+		if ($book->parse->isWait())
+			return false;
+
+		if ($book->parse->isProgress())
+			return false;
+
+		if (!$book->parse->isSucceed())
+			return false;
+
+		if ($book->isPrivate()) {
+			if ($book->isUserCreator($auth_user))
+				return true;
+		} else {
+
+			if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
+				if (!$book->isEditionDetailsFilled())
+					return true;
+			}
+
+			if ($book->isUserCreator($auth_user))
+				return (boolean)$auth_user->getPermission('edit_self_book');
+			else
+				return (boolean)$auth_user->getPermission('edit_other_user_book');
+		}
 	}
 }

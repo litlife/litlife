@@ -24,6 +24,7 @@ class BookAddEpubTest extends TestCase
 	public function testMakeFile()
 	{
 		$book = factory(Book::class)
+			->states('with_create_user', 'with_genre')
 			->create();
 
 		$command = new BookFillDBFromSource();

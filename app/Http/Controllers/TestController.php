@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Author;
-use Debugbar;
-use Illuminate\Support\Facades\App;
-
 class TestController extends Controller
 {
 	function index()
 	{
+		/*
 		if (App::environment() == 'local') {
 			Debugbar::startMeasure('browser', 'browser');
 
@@ -27,6 +24,7 @@ class TestController extends Controller
 		}
 
 		return $view;
+		*/
 	}
 
 	public function test2()

@@ -134,6 +134,7 @@ class BookEditTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
 		$writer = factory(Author::class)->create();
@@ -225,6 +226,7 @@ class BookEditTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
 		$writer = factory(Author::class)->create();
@@ -263,9 +265,9 @@ class BookEditTest extends TestCase
 
 	public function testCopyProtection()
 	{
-		$book = factory(Book::class)->states('with_writer')->create();
-		$book->statusPrivate();
-		$book->save();
+		$book = factory(Book::class)
+			->states('with_writer', 'with_genre', 'with_create_user', 'private')
+			->create();
 
 		$user = $book->create_user;
 
@@ -334,7 +336,7 @@ class BookEditTest extends TestCase
 		$user->group->edit_field_of_public_domain = false;
 		$user->push();
 
-		$book = factory(Book::class)->states('with_writer')->create();
+		$book = factory(Book::class)->states('with_writer', 'with_genre')->create();
 		$book->is_public = true;
 		$book->year_public = 2005;
 		$book->push();
@@ -368,7 +370,7 @@ class BookEditTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
-			->states('with_writer')
+			->states('with_writer', 'with_genre')
 			->create();
 
 		$post = [
@@ -402,6 +404,7 @@ class BookEditTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
 		$writer = factory(Author::class)
@@ -437,6 +440,7 @@ class BookEditTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
 		$writer = factory(Author::class)
@@ -463,7 +467,7 @@ class BookEditTest extends TestCase
 	public function testCantEditIfUserCreatorAndEditSelfBookPermissionDisable()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;
@@ -476,7 +480,7 @@ class BookEditTest extends TestCase
 	public function testCanEditIfUserCreatorAndEditSelfBookPermissionEnable()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;
@@ -493,6 +497,7 @@ class BookEditTest extends TestCase
 			->create();
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
 		$writer = factory(Author::class)

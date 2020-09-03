@@ -125,9 +125,9 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('with_create_user', 'private')
+				->create();
 
 			$user = $book->create_user;
 
@@ -168,9 +168,9 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('with_create_user', 'private')
+				->create();
 
 			$user = $book->create_user;
 

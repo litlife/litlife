@@ -36,7 +36,7 @@ class SectionTest extends DuskTestCase
 				->visit(route('books.sections.create', $book))
 				->value('[name=title]', $title);
 			$browser->driver->executeScript("CKEDITOR.instances['content'].setData('" . $text . "');");
-			$browser->pause(20)
+			$browser->pause(500)
 				->press(__('common.save'))
 				->waitForText(__('section.add_new_chapter'))
 				->assertSee(__('section.add_new_chapter'));
@@ -184,9 +184,9 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('private', 'with_create_user')
+				->create();
 
 			$user = $book->create_user;
 
@@ -219,7 +219,6 @@ class SectionTest extends DuskTestCase
 			$this->assertEquals(1, $book->sections_count);
 			$this->assertEquals(1, $book->notes_count);
 
-
 		});
 	}
 
@@ -227,9 +226,9 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('with_create_user', 'private')
+				->create();
 
 			$user = $book->create_user;
 

@@ -158,7 +158,7 @@ blade;
 	public function testDontShowIfDontHaveAccess()
 	{
 		$book = factory(Book::class)
-			->states('with_cover', 'private')
+			->states('with_cover', 'private', 'with_create_user')
 			->create();
 
 		$component = new BookCover($book, 200, 200);
@@ -173,7 +173,7 @@ blade;
 	public function testShowIfHaveAccess()
 	{
 		$book = factory(Book::class)
-			->states('with_cover', 'private')
+			->states('with_cover', 'private', 'with_create_user')
 			->create();
 
 		$this->be($book->create_user);

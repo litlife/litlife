@@ -3,7 +3,6 @@
 namespace Tests\Feature\Book;
 
 use App\Attachment;
-use App\Author;
 use App\Book;
 use App\BookFile;
 use App\BookKeyword;
@@ -66,7 +65,7 @@ class BookDeleteTest extends TestCase
 
 		$admin = factory(User::class)->states('administrator')->create();
 
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 
 		$reason = $this->faker->realText(100);
 
@@ -146,7 +145,7 @@ class BookDeleteTest extends TestCase
 	public function testPrivateBookRestorePolicy()
 	{
 		$book = factory(Book::class)
-			->states('private')
+			->states('private', 'with_create_user')
 			->create();
 
 		$user = $book->create_user;
@@ -196,20 +195,8 @@ class BookDeleteTest extends TestCase
 		]), $array['description']);
 		$this->assertEquals(route('books.show', $book), $array['url']);
 	}
-
-	public function testCanDeleteBookIfNoRatingAndNoComments()
-	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
-
-		$user = $author->managers->first()->user;
-		$book = $author->books->first();
-
-		$this->assertTrue($user->can('delete', $book));
-	}
 	/*
-		public function testCantDeleteBookIfHasComment()
+		public function testCanDeleteBookIfNoRatingAndNoComments()
 		{
 			$author = factory(Author::class)
 				->states('with_author_manager', 'with_book')
@@ -217,24 +204,36 @@ class BookDeleteTest extends TestCase
 
 			$user = $author->managers->first()->user;
 			$book = $author->books->first();
-			$book->comment_count = 1;
-			$book->save();
 
-			$this->assertFalse($user->can('delete', $book));
+			$this->assertTrue($user->can('delete', $book));
 		}
 
-		public function testCantDeleteBookIfHasVotes()
-		{
-			$author = factory(Author::class)
-				->states('with_author_manager', 'with_book')
-				->create();
+			public function testCantDeleteBookIfHasComment()
+			{
+				$author = factory(Author::class)
+					->states('with_author_manager', 'with_book')
+					->create();
 
-			$user = $author->managers->first()->user;
-			$book = $author->books->first();
-			$book->user_vote_count = 1;
-			$book->save();
+				$user = $author->managers->first()->user;
+				$book = $author->books->first();
+				$book->comment_count = 1;
+				$book->save();
 
-			$this->assertFalse($user->can('delete', $book));
-		}
-		*/
+				$this->assertFalse($user->can('delete', $book));
+			}
+
+			public function testCantDeleteBookIfHasVotes()
+			{
+				$author = factory(Author::class)
+					->states('with_author_manager', 'with_book')
+					->create();
+
+				$user = $author->managers->first()->user;
+				$book = $author->books->first();
+				$book->user_vote_count = 1;
+				$book->save();
+
+				$this->assertFalse($user->can('delete', $book));
+			}
+			*/
 }

@@ -7,7 +7,6 @@
       "email": "litlife@yandex.ru"
     }
   ],
-  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "Litlife\\IdDirname\\": "src"

@@ -4,7 +4,6 @@ namespace Tests\Browser;
 
 use App\Attachment;
 use App\Book;
-use App\Enums\StatusEnum;
 use Tests\DuskTestCase;
 
 class AttachmentTest extends DuskTestCase
@@ -19,11 +18,10 @@ class AttachmentTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('private', 'with_create_user')
+				->create();
 
-			// create
 			$browser->resize(1000, 1000)
 				->loginAs($book->create_user)
 				->visit(route('books.attachments.index', $book))
@@ -45,9 +43,9 @@ class AttachmentTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('private', 'with_create_user')
+				->create();
 
 			$attachment = new Attachment;
 			$attachment->openImage(__DIR__ . '/images/test.jpeg');
@@ -98,9 +96,9 @@ class AttachmentTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create([
-				'status' => StatusEnum::Private
-			]);
+			$book = factory(Book::class)
+				->states('private', 'with_create_user')
+				->create();
 
 			$attachment = new Attachment;
 			$attachment->openImage(__DIR__ . '/images/test.jpeg');

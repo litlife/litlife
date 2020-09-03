@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\User;
 
+use App\Http\Middleware\RefreshUserLastActivity;
+use App\Http\Middleware\RemeberSessionGeoIpAndBrowser;
 use App\User;
 use App\UserEmail;
 use Carbon\Carbon;
@@ -56,6 +58,9 @@ class UserLoginTest extends TestCase
 
 	public function testRememberLoginHttp()
 	{
+		$this->withMiddleware(RefreshUserLastActivity::class);
+		$this->withMiddleware(RemeberSessionGeoIpAndBrowser::class);
+
 		$this->assertGuest();
 
 		$password = $this->faker->password;

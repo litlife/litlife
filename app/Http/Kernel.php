@@ -50,8 +50,7 @@ class Kernel extends HttpKernel
 		ReplaceAsc194ToSpace::class,
 		TrimStrings::class,
 		ConvertEmptyStringsToNull::class,
-		TrustProxies::class,
-
+		TrustProxies::class
 	];
 
 	/**

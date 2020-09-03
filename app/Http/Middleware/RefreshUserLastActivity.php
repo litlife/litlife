@@ -16,8 +16,6 @@ class RefreshUserLastActivity
 	 */
 	public function handle($request, Closure $next)
 	{
-
-
 		if (auth()->check())
 			auth()->user()->update_activity();
 

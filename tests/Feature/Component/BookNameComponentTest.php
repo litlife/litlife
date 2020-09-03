@@ -132,9 +132,9 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeIsPrivate()
 	{
-		$book = factory(Book::class)->states('lp_false', 'si_false', 'private')->create();
-		$book->age = 0;
-		$book->save();
+		$book = factory(Book::class)
+			->states('lp_false', 'si_false', 'private', 'with_create_user')
+			->create(['age' => 0]);
 
 		$this->be($book->create_user);
 
@@ -153,7 +153,9 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testNameIfDontHaveAccess()
 	{
-		$book = factory(Book::class)->states('private')->create();
+		$book = factory(Book::class)
+			->states('private', 'with_create_user')
+			->create();
 
 		$component = new BookName($book, false, false, false);
 

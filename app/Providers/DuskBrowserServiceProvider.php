@@ -31,8 +31,6 @@ class DuskBrowserServiceProvider extends ServiceProvider
 				return $this;
 			});
 		}
-
-
 	}
 
 	/**

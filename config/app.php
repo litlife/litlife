@@ -1,10 +1,5 @@
 <?php
 
-use hisorange\BrowserDetect\Facade;
-use hisorange\BrowserDetect\ServiceProvider;
-use Illuminate\Support\Str;
-use Torann\GeoIP\GeoIPServiceProvider;
-
 return [
 
 	/*
@@ -165,7 +160,6 @@ return [
 		Illuminate\Foundation\Providers\FoundationServiceProvider::class,
 		Illuminate\Hashing\HashServiceProvider::class,
 		Illuminate\Mail\MailServiceProvider::class,
-		Vitalybaev\LaravelDkim\DkimMailServiceProvider::class,
 		Illuminate\Notifications\NotificationServiceProvider::class,
 		Illuminate\Pagination\PaginationServiceProvider::class,
 		Illuminate\Pipeline\PipelineServiceProvider::class,
@@ -180,43 +174,41 @@ return [
 		/*
 		 * Package Service Providers...
 		 */
-		Laravel\Tinker\TinkerServiceProvider::class,
+
+		Vitalybaev\LaravelDkim\DkimMailServiceProvider::class,
 
 		/*
 		 * Application Service Providers...
 		 */
 		App\Providers\AppServiceProvider::class,
 		App\Providers\AuthServiceProvider::class,
-		App\Providers\BroadcastServiceProvider::class,
+		// App\Providers\BroadcastServiceProvider::class,
 		App\Providers\EventServiceProvider::class,
 		App\Providers\RouteServiceProvider::class,
-		App\Providers\DuskBrowserServiceProvider::class,
 
 		//App\Authentication\AuthServiceProvider::class,
 		//App\Providers\GuestServiceProvider::class,
-		Laravel\Socialite\SocialiteServiceProvider::class,
-		\SocialiteProviders\Manager\ServiceProvider::class,
-		Collective\Html\HtmlServiceProvider::class,
-		Stevebauman\Purify\PurifyServiceProvider::class,
 
-		Jenssegers\Date\DateServiceProvider::class,
 		//Proengsoft\JsValidation\JsValidationServiceProvider::class, удалил так как используется только для закладок и не зачем такой тяжелый скрипт грузить
-		Intervention\Image\ImageServiceProvider::class,
-		GeoIPServiceProvider::class,
 
-		Mews\Purifier\PurifierServiceProvider::class,
+		/*
+		Laravel\Tinker\TinkerServiceProvider::class,
+		Torann\GeoIP\GeoIPServiceProvider::class,
 		Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
 		Nikaia\TranslationSheet\TranslationSheetServiceProvider::class,
 		Artesaos\SEOTools\Providers\SEOToolsServiceProvider::class,
 		BenSampo\Enum\EnumServiceProvider::class,
-		Spatie\DirectoryCleanup\DirectoryCleanupServiceProvider::class,
 		Watson\Active\ActiveServiceProvider::class,
-		ServiceProvider::class,
-		//Geeky\Database\CacheBuilderServiceProvider::class,
-		Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+		hisorange\BrowserDetect\ServiceProvider::class,
 		Arcanedev\LogViewer\LogViewerServiceProvider::class,
-		Litlife\Unitpay\UnitPayServiceProvider::class,
-		Litlife\BookConverter\BookConverterServiceProvider::class
+
+		Jenssegers\Date\DateServiceProvider::class,
+		Laravel\Socialite\SocialiteServiceProvider::class,
+		\SocialiteProviders\Manager\ServiceProvider::class,
+		Collective\Html\HtmlServiceProvider::class,
+		Stevebauman\Purify\PurifyServiceProvider::class,
+		Spatie\DirectoryCleanup\DirectoryCleanupServiceProvider::class,
+		*/
 	],
 
 
@@ -264,7 +256,7 @@ return [
 		'Schema' => Illuminate\Support\Facades\Schema::class,
 		'Session' => Illuminate\Support\Facades\Session::class,
 		'Storage' => Illuminate\Support\Facades\Storage::class,
-		'Str' => Str::class,
+		'Str' => Illuminate\Support\Str::class,
 		'URL' => Illuminate\Support\Facades\URL::class,
 		'Validator' => Illuminate\Support\Facades\Validator::class,
 		'View' => Illuminate\Support\Facades\View::class,
@@ -277,7 +269,6 @@ return [
 		'Date' => Jenssegers\Date\Date::class,
 		'Image' => Intervention\Image\Facades\Image::class,
 		'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
-		'Purifier' => Mews\Purifier\Facades\Purifier::class,
 
 		'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
 
@@ -287,9 +278,7 @@ return [
 		// or
 		'SEO' => Artesaos\SEOTools\Facades\SEOTools::class,
 		'Active' => Watson\Active\Facades\Active::class,
-		'Browser' => Facade::class,
-		'UnitPay' => Litlife\UnitPay\Facades\UnitPay::class,
-		'BookConverter' => Litlife\BookConverter\Facades\BookConverter::class,
+		'Browser' => hisorange\BrowserDetect\Facade::class
 	],
 
 ];

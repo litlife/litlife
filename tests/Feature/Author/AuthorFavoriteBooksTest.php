@@ -153,18 +153,21 @@ class AuthorFavoriteBooksTest extends TestCase
 
 		$this->assertEquals(0, $user->getNewFavoriteAuthorsBooksCount());
 
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user', 'with_genre')->create();
 		$book->statusSentForReview();
 		$book->save();
+
 		$user_author->author->any_books()->sync([$book->id]);
 
-		$response = $this->followingRedirects()
+		$response = $this
 			->actingAs($admin)
 			->get(route('books.make_accepted', $book))
 			->assertSessionHasNoErrors()
-			->assertOk();
+			->assertRedirect();
 
-		$this->assertEquals(1, $user->fresh()->getNewFavoriteAuthorsBooksCount());
+		$user->refresh();
+
+		$this->assertEquals(1, $user->getNewFavoriteAuthorsBooksCount());
 	}
 
 	public function testBookAddToPrivateRefreshCounterHttp()
@@ -181,7 +184,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = factory(Book::class)->states('with_create_user')->create();
 		$book->statusAccepted();
 		$book->save();
 		$user_author->author->any_books()->sync([$book->id]);

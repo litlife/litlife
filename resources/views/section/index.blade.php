@@ -24,7 +24,9 @@
 	@include ('book.edit_tab')
 
 	@if (!$book->isPagesNewFormat())
-		@include('book.new_pages_format_warning')
+		@can('see_a_message_about_how_to_start_editing_the_text_of_a_book_in_the_old_format', $book)
+			@include('book.new_pages_format_warning', ['book' => $book])
+		@endif
 	@else
 		<div class="row">
 			<div class="col-12">

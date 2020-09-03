@@ -17,14 +17,14 @@ trait CreatesApplication
 		$app = require __DIR__ . '/../bootstrap/app.php';
 
 		ini_set('memory_limit', '2G');
-
-		echo(get_called_class() . '::' . $this->getName() . ' ');
-
+		/*
+				echo(get_called_class() . '::' . $this->getName() . ' ');
+		*/
 		$app->make(Kernel::class)->bootstrap();
-
-		echo(' ' . round(memory_get_usage() / 1000000, 2) . ' MB');
-		echo("\n");
-
+		/*
+				echo(' ' . round(memory_get_usage() / 1000000, 2) . ' MB');
+				echo("\n");
+				*/
 		return $app;
 	}
 }

@@ -11,7 +11,7 @@ class BookEditKeywordTest extends TestCase
 	public function testAddNew()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private')
+			->states('with_writer', 'private', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -49,7 +49,7 @@ class BookEditKeywordTest extends TestCase
 	public function testAddNewIfOtherExists()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_keyword')
+			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;
@@ -84,7 +84,7 @@ class BookEditKeywordTest extends TestCase
 	public function testRemove()
 	{
 		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_keyword')
+			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
 			->create();
 
 		$user = $book->create_user;

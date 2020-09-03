@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\User;
 
+use App\Http\Middleware\UserReferenceCookieSave;
 use App\Invitation;
 use App\Notifications\NewReferredUserNotification;
 use App\ReferredUser;
@@ -102,6 +103,7 @@ class UserReferenceTest extends TestCase
 	public function testCookieMiddleware()
 	{
 		//config(['litlife.name_user_refrence_get_param' => uniqid()]);
+		$this->withMiddleware(UserReferenceCookieSave::class);
 
 		$name = config('litlife.name_user_refrence_get_param');
 

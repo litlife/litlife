@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\User;
+namespace Tests\Feature\User\Invitation;
 
 use App\Invitation;
 use Tests\TestCase;

@@ -4,52 +4,26 @@ namespace Tests;
 
 use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
 use App\Http\Middleware\EncryptCookies;
-use Carbon\Carbon;
-use Carbon\CarbonImmutable;
-use Illuminate\Console\Application as Artisan;
-use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Application;
+use App\Http\Middleware\ErrorIfForbiddenWordsExists;
+use App\Http\Middleware\RefreshUserLastActivity;
+use App\Http\Middleware\RemeberSessionGeoIpAndBrowser;
+use App\Http\Middleware\SEOMiddleware;
+use App\Http\Middleware\UserReferenceCookieSave;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Imagick;
 use ImagickPixel;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
-use Mockery;
-use Mockery\Exception\InvalidCountException;
-use ReflectionObject;
 
 abstract class TestCase extends BaseTestCase
 {
+	use CreatesApplication;
 	use DatabaseTransactions;
 	use WithFaker;
 
 	public $images = [];
-
-	/**
-	 * Creates the application.
-	 *
-	 * @return Application
-	 */
-	public function createApplication()
-	{
-		$app = require __DIR__ . '/../bootstrap/app.php';
-
-		ini_set('memory_limit', '2G');
-
-		echo(' ' . get_called_class() . '::' . $this->getName() . ' ');
-
-		$app->make(Kernel::class)->bootstrap();
-
-		Hash::setRounds(4);
-
-		return $app;
-	}
 
 	public function setUpFaker(): void
 	{
@@ -125,23 +99,31 @@ abstract class TestCase extends BaseTestCase
 	 */
 	protected function setUp(): void
 	{
+		parent::setUp();
+
 		echo('setUp: ' . round(memory_get_usage() / 1000000, 2) . ' MB | ');
+		/*
+				if (!$this->app) {
+					$this->refreshApplication();
+				}
 
-		if (!$this->app) {
-			$this->refreshApplication();
-		}
+				$this->setUpTraits();
 
-		$this->setUpTraits();
+				foreach ($this->afterApplicationCreatedCallbacks as $callback) {
+					call_user_func($callback);
+				}
 
-		foreach ($this->afterApplicationCreatedCallbacks as $callback) {
-			call_user_func($callback);
-		}
+				Facade::clearResolvedInstances();
 
-		Facade::clearResolvedInstances();
+				Model::setEventDispatcher($this->app['events']);
 
-		Model::setEventDispatcher($this->app['events']);
-
-		$this->setUpHasRun = true;
+				$this->setUpHasRun = true;
+		*/
+		$this->withoutMiddleware(RefreshUserLastActivity::class);
+		$this->withoutMiddleware(RemeberSessionGeoIpAndBrowser::class);
+		$this->withoutMiddleware(ErrorIfForbiddenWordsExists::class);
+		$this->withoutMiddleware(SEOMiddleware::class);
+		$this->withoutMiddleware(UserReferenceCookieSave::class);
 	}
 
 	/**
@@ -151,6 +133,13 @@ abstract class TestCase extends BaseTestCase
 	 */
 	protected function tearDown(): void
 	{
+		if (rand(1, 100) == 50) {
+			$this->clearTestingDirecrory();
+		}
+
+		parent::tearDown();
+
+		/*
 		if ($this->app) {
 			$this->callBeforeApplicationDestroyedCallbacks();
 
@@ -208,7 +197,7 @@ abstract class TestCase extends BaseTestCase
 				$prop->setValue($this, null);
 			}
 		}
-
+*/
 		echo(' tearDown ' . round(memory_get_usage() / 1000000, 2) . ' MB ');
 		echo("\n");
 	}
@@ -222,4 +211,6 @@ abstract class TestCase extends BaseTestCase
 	{
 		return $this->withHeader('Accept', 'application/json');
 	}
+
+
 }

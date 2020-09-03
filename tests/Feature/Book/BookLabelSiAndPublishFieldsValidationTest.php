@@ -15,6 +15,7 @@ class BookLabelSiAndPublishFieldsValidationTest extends TestCase
 			->states('admin')->create();
 
 		$book = factory(Book::class)
+			->states('with_genre')
 			->create();
 
 		$post = [

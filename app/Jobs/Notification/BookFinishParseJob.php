@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Notification;
 
+use App\Notifications\BookFinishParseNotification;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 class BookFinishParseJob
@@ -27,15 +28,15 @@ class BookFinishParseJob
 	 */
 	public function handle()
 	{
-		/*
 		$notifiable = $this->book_parse->create_user;
 
 		if (!empty($notifiable)) {
 			if (!empty($this->book_parse->book) and !$this->book_parse->book->trashed()) {
 
-				$notifiable->notify(new BookFinishParseNotification($this->book_parse));
+				if ($this->book_parse->isParseOnlyPages()) {
+					$notifiable->notify(new BookFinishParseNotification($this->book_parse));
+				}
 			}
 		}
-		*/
 	}
 }

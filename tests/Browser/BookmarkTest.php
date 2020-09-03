@@ -5,6 +5,7 @@ namespace Tests\Browser;
 use App\Bookmark;
 use App\BookmarkFolder;
 use App\User;
+use Illuminate\Auth\Events\Registered;
 use Tests\DuskTestCase;
 
 class BookmarkTest extends DuskTestCase
@@ -47,13 +48,16 @@ class BookmarkTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			//$admin_user = factory(User::class)->create();
+			$user = factory(User::class)->create();
 
-			$bookmark_folder = factory(BookmarkFolder::class)->create();
+			event(new Registered($user));
 
-			$user = $bookmark_folder->create_user;
+			$bookmark_folder = factory(BookmarkFolder::class)
+				->create(['create_user_id' => $user->id]);
 
 			$title = $this->faker->realText(100);
+
+			$this->assertEquals(2, $user->bookmark_folders()->count());
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -184,6 +188,8 @@ class BookmarkTest extends DuskTestCase
 		$this->browse(function ($user_browser) {
 
 			$user = factory(User::class)->create();
+
+			event(new Registered($user));
 
 			$auto_created_bookmark_folder = $user->bookmark_folders()->first();
 

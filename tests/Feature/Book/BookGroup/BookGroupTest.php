@@ -666,8 +666,12 @@ class BookGroupTest extends TestCase
 			->states('admin')
 			->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = factory(Book::class)
+			->create();
+
+		$minorBook = factory(Book::class)
+			->states('with_create_user')
+			->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -739,8 +743,12 @@ class BookGroupTest extends TestCase
 		$user = factory(User::class)
 			->states('admin')->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = factory(Book::class)
+			->create();
+
+		$minorBook = factory(Book::class)
+			->states('with_create_user')
+			->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 

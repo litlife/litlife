@@ -1,186 +1,202 @@
 {
-  "name": "litlife/litlife",
-  "description": "Litlife",
-  "keywords": [
-    "litlife",
-    "books"
-  ],
-  "license": "MIT",
-  "type": "project",
-  "require": {
-    "php": "^7.2",
-    "ext-bcmath": "*",
-    "ext-curl": "*",
-    "ext-dom": "*",
-    "ext-fileinfo": "*",
-    "ext-gd": "*",
-    "ext-gmp": "*",
-    "ext-igbinary": "*",
-    "ext-imagick": "*",
-    "ext-intl": "*",
-    "ext-json": "*",
-    "ext-libxml": "*",
-    "ext-mbstring": "*",
-    "ext-memcached": "*",
-    "ext-msgpack": "*",
-    "ext-pdo": "*",
-    "ext-pgsql": "*",
-    "ext-pspell": "*",
-    "ext-simplexml": "*",
-    "ext-sqlite3": "*",
-    "ext-tidy": "*",
-    "ext-zip": "*",
-    "ext-zlib": "*",
-    "anhskohbo/no-captcha": "^3.2",
-    "appstract/laravel-opcache": "^4.0",
-    "arcanedev/log-viewer": "^7.0",
-    "artesaos/seotools": "^0.18.0",
-    "awobaz/compoships": "^2.0",
-    "babenkoivan/scout-elasticsearch-driver": "^4.2",
-    "badsyntax/jquery-spellchecker": "^0.3.2",
-    "bensampo/laravel-enum": "^2.1",
-    "bugsnag/bugsnag-laravel": "^2.19",
-    "coderello/laravel-shared-data": "^2.1",
-    "cweagans/composer-patches": "^1.6",
-    "davejamesmiller/laravel-breadcrumbs": "^5.3",
-    "doctrine/dbal": "^2.10",
-    "emgag/flysystem-hash": "^1.0",
-    "fgribreau/mailchecker": "^3.3",
-    "fico7489/laravel-pivot": "^3.0",
-    "fideloper/proxy": "^4.4",
-    "fossil01/laravel-dkim": "dev-master",
-    "gabrielelana/byte-units": "^0.5.0",
-    "geeky/query-cache-builder": "^1.1",
-    "gemorroj/xbbcode": "^2.4",
-    "genealabs/laravel-caffeine": "^7.0",
-    "genealabs/laravel-model-caching": "^0.10.1",
-    "geoip2/geoip2": "^2.10",
-    "guzzlehttp/guzzle": "^7.0",
-    "hhxsv5/laravel-s": "^3.7",
-    "hisorange/browser-detect": "^4.2",
-    "intervention/image": "^2.5",
-    "jenssegers/date": "^4.0",
-    "jenssegers/imagehash": "^0.7.0",
-    "kalnoy/nestedset": "^5.0",
-    "laravel-validation-rules/credit-card": "^1.3",
-    "laravel/framework": "^7.0",
-    "laravel/horizon": "^4.3",
-    "laravel/scout": "^8.2",
-    "laravel/socialite": "^4.4",
-    "laravel/tinker": "^2.4",
-    "laravel/ui": "^2.1",
-    "laravelcollective/html": "^6.1",
-    "league/flysystem": "^1.1",
-    "league/flysystem-aws-s3-v3": "^1.0",
-    "league/flysystem-memory": "^1.0",
-    "league/flysystem-ziparchive": "^1.0",
-    "mews/purifier": "^3.2",
-    "nelexa/zip": "^3.3",
-    "nikaia/translation-sheet": "^1.3",
-    "paragonie/random_compat": "^9.99",
-    "predis/predis": "^1.1",
-    "propaganistas/laravel-phone": "^4.2",
-    "pusher/pusher-php-server": "^4.1",
-    "sabberworm/php-css-parser": "^8.3",
-    "simplesoftwareio/simple-qrcode": "^3.0",
-    "socialiteproviders/google": "^3.1",
-    "socialiteproviders/instagram": "^3.0",
-    "socialiteproviders/manager": "^3.5",
-    "socialiteproviders/twitter": "^3.0",
-    "socialiteproviders/vkontakte": "^4.1",
-    "socialiteproviders/yandex": "^3.1",
-    "socialiteproviders/youtube": "^3.0",
-    "spatie/async": "^1.4",
-    "spatie/flysystem-dropbox": "^1.2",
-    "spatie/laravel-activitylog": "^3.14",
-    "spatie/laravel-directory-cleanup": "^1.5",
-    "spatie/url": "^1.3",
-    "splitbrain/php-archive": "^1.1",
-    "staudenmeir/eloquent-has-many-deep": "^1.12",
-    "stevebauman/purify": "^3.0",
-    "sunspikes/clamav-validator": "^2.2",
-    "symfony/dom-crawler": "^5.1",
-    "symfony/process": "^5.1",
-    "torann/geoip": "^1.2",
-    "watson/active": "^5.0",
-    "watson/rememberable": "^4.0"
-  },
-  "require-dev": {
-    "barryvdh/laravel-debugbar": "^3.4",
-    "barryvdh/laravel-ide-helper": "^2.8",
-    "beyondcode/laravel-query-detector": "^1.3",
-    "facade/ignition": "^2.3",
-    "filp/whoops": "^2.7",
-    "fzaninotto/faker": "^1.9",
-    "laravel/dusk": "^6.4",
-    "laravel/homestead": "^11.0",
-    "mockery/mockery": "^1.4",
-    "nunomaduro/collision": "^4.2",
-    "orchestra/testbench": "^5.4",
-    "phpunit/phpunit": "^8.5",
-    "roquie/laravel-dusk-select2": "^2.0",
-    "staudenmeir/dusk-updater": "^1.2",
-    "timacdonald/log-fake": "^1.6"
-  },
-  "autoload": {
-    "classmap": [
-      "database/seeds",
-      "database/factories"
+    "name": "litlife/litlife",
+    "description": "Litlife",
+    "keywords": [
+        "litlife",
+        "books"
     ],
-    "psr-4": {
-      "App\\": "app/",
-      "Litlife\\Unitpay\\": "packages/litlife/unitpay/src/",
-      "Litlife\\BookConverter\\": "packages/litlife/book-converter/src/",
-      "Litlife\\Url\\": "packages/litlife/url/src/",
-      "Litlife\\Fb2\\": "packages/litlife/fb2/src/",
-      "Litlife\\Fb2ToHtml\\": "packages/litlife/fb2-to-html/src/",
-      "Litlife\\HtmlSplitter\\": "packages/litlife/html-splitter/src/",
-      "Litlife\\Epub\\": "packages/litlife/epub/src/",
-      "Litlife\\Fb2Fix\\": "packages/litlife/fb2-fix/src/",
-      "Litlife\\Sitemap\\": "packages/litlife/sitemap/src/",
-      "Litlife\\LaravelDkim\\": "packages/litlife/laravel-dkim/src/",
-      "Litlife\\IdDirname\\": "packages/litlife/id-dirname/src/"
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "php": "^7.2",
+        "ext-bcmath": "*",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-fileinfo": "*",
+        "ext-gd": "*",
+        "ext-gmp": "*",
+        "ext-igbinary": "*",
+        "ext-imagick": "*",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "ext-memcached": "*",
+        "ext-msgpack": "*",
+        "ext-pdo": "*",
+        "ext-pgsql": "*",
+        "ext-pspell": "*",
+        "ext-simplexml": "*",
+        "ext-sqlite3": "*",
+        "ext-tidy": "*",
+        "ext-zip": "*",
+        "ext-zlib": "*",
+        "anhskohbo/no-captcha": "^3.2",
+        "arcanedev/log-viewer": "^7.0",
+        "artesaos/seotools": "^0.18.0",
+        "awobaz/compoships": "^2.0",
+        "babenkoivan/scout-elasticsearch-driver": "^4.2",
+        "bensampo/laravel-enum": "^2.1",
+        "coderello/laravel-shared-data": "^2.1",
+        "davejamesmiller/laravel-breadcrumbs": "^5.3",
+        "doctrine/dbal": "^2.10",
+        "emgag/flysystem-hash": "^1.0",
+        "fgribreau/mailchecker": "^3.3",
+        "fico7489/laravel-pivot": "^3.0",
+        "fideloper/proxy": "^4.4",
+        "fossil01/laravel-dkim": "dev-master",
+        "gabrielelana/byte-units": "^0.5.0",
+        "gemorroj/xbbcode": "^2.4",
+        "genealabs/laravel-caffeine": "^7.0",
+        "genealabs/laravel-model-caching": "^0.10.1",
+        "geoip2/geoip2": "^2.10",
+        "guzzlehttp/guzzle": "^7.0",
+        "hisorange/browser-detect": "^4.2",
+        "jenssegers/date": "^4.0",
+        "jenssegers/imagehash": "^0.7.0",
+        "kalnoy/nestedset": "^5.0",
+        "laravel-validation-rules/credit-card": "^1.3",
+        "laravel/framework": "^7.0",
+        "laravel/socialite": "^4.4",
+        "laravel/tinker": "^2.4",
+        "laravel/ui": "^2.1",
+        "laravelcollective/html": "^6.1",
+        "league/flysystem": "^1.1",
+        "league/flysystem-memory": "^1.0",
+        "league/flysystem-ziparchive": "^1.0",
+        "litlife/book-converter": "dev-dev",
+        "litlife/epub": "dev-dev",
+        "litlife/fb2": "dev-dev",
+        "litlife/fb2-fix": "dev-dev",
+        "litlife/fb2-to-html": "dev-dev",
+        "litlife/html-splitter": "dev-dev",
+        "litlife/id-dirname": "dev-dev",
+        "litlife/sitemap": "dev-dev",
+        "litlife/unitpay": "dev-dev",
+        "litlife/url": "dev-dev",
+        "mews/purifier": "^3.2",
+        "nelexa/zip": "^3.3",
+        "paragonie/random_compat": "^9.99",
+        "propaganistas/laravel-phone": "^4.2",
+        "sabberworm/php-css-parser": "^8.3",
+        "simplesoftwareio/simple-qrcode": "^3.0",
+        "socialiteproviders/facebook": "^1.0",
+        "socialiteproviders/google": "^3.1",
+        "socialiteproviders/manager": "^3.5",
+        "socialiteproviders/vkontakte": "^4.1",
+        "spatie/laravel-activitylog": "^3.14",
+        "spatie/url": "^1.3",
+        "staudenmeir/eloquent-has-many-deep": "^1.12",
+        "stevebauman/purify": "^3.0",
+        "sunspikes/clamav-validator": "^2.2",
+        "symfony/dom-crawler": "^5.1",
+        "torann/geoip": "^1.2",
+        "watson/active": "^5.0"
     },
-    "files": [
-      "app/Library/helpers.php"
-    ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/",
-      "Litlife\\Unitpay\\Tests\\": "packages/litlife/unitpay/tests/",
-      "Litlife\\BookConverter\\Tests\\": "packages/litlife/book-converter/tests/",
-      "Litlife\\Url\\Tests\\": "packages/litlife/url/tests/",
-      "Litlife\\Fb2\\Tests\\": "packages/litlife/fb2/tests/",
-      "Litlife\\Fb2ToHtml\\Tests\\": "packages/litlife/fb2-to-html/tests/",
-      "Litlife\\HtmlSplitter\\Tests\\": "packages/litlife/html-splitter/tests/",
-      "Litlife\\Epub\\Tests\\": "packages/litlife/epub/tests/",
-      "Litlife\\Fb2Fix\\Tests\\": "packages/litlife/fb2-fix/tests/",
-      "Litlife\\Sitemap\\Tests\\": "packages/litlife/sitemap/tests/",
-      "Litlife\\LaravelDkim\\Tests\\": "packages/litlife/laravel-dkim/tests/",
-      "Litlife\\IdDirname\\Tests\\": "packages/litlife/id-dirname/tests/"
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.4",
+        "barryvdh/laravel-ide-helper": "^2.8",
+        "beyondcode/laravel-query-detector": "^1.3",
+        "facade/ignition": "^2.3",
+        "filp/whoops": "^2.7",
+        "fzaninotto/faker": "^1.9",
+        "laravel/dusk": "^6.4",
+        "laravel/homestead": "^11.0",
+        "mockery/mockery": "^1.4",
+        "nunomaduro/collision": "^4.2",
+        "orchestra/testbench": "^5.4",
+        "phpunit/phpunit": "^8.5",
+        "roquie/laravel-dusk-select2": "^2.0",
+        "staudenmeir/dusk-updater": "^1.2",
+        "timacdonald/log-fake": "^1.6",
+        "nikaia/translation-sheet": "^1.3"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "autoload": {
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/Library/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-root-package-install": [
+            "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "php artisan key:generate"
+        ],
+        "post-install-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postInstall"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta",
+            "@php artisan ide-helper:models --reset"
+        ]
+    },
+    "repositories": {
+        "0": {
+            "type": "path",
+            "url": "./packages/litlife/book-converter"
+        },
+        "1": {
+            "type": "path",
+            "url": "./packages/litlife/epub"
+        },
+        "2": {
+            "type": "path",
+            "url": "./packages/litlife/fb2"
+        },
+        "3": {
+            "type": "path",
+            "url": "./packages/litlife/fb2-fix"
+        },
+        "4": {
+            "type": "path",
+            "url": "./packages/litlife/fb2-to-html"
+        },
+        "5": {
+            "type": "path",
+            "url": "./packages/litlife/html-splitter"
+        },
+        "6": {
+            "type": "path",
+            "url": "./packages/litlife/id-dirname"
+        },
+        "7": {
+            "type": "path",
+            "url": "./packages/litlife/sitemap"
+        },
+        "8": {
+            "type": "path",
+            "url": "./packages/litlife/unitpay"
+        },
+        "9": {
+            "type": "path",
+            "url": "./packages/litlife/url"
+        }
     }
-  },
-  "scripts": {
-    "post-root-package-install": [
-      "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
-    ],
-    "post-create-project-cmd": [
-      "php artisan key:generate"
-    ],
-    "post-install-cmd": [
-      "Illuminate\\Foundation\\ComposerScripts::postInstall"
-    ],
-    "post-update-cmd": [
-      "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-      "@php artisan ide-helper:generate",
-      "@php artisan ide-helper:meta",
-      "@php artisan ide-helper:models --reset"
-    ]
-  },
-  "config": {
-    "preferred-install": "dist",
-    "sort-packages": true,
-    "optimize-autoloader": true
-  }
 }

@@ -35,7 +35,7 @@
 					<label class="col-form-label">{{ __('text_block.show_status') }}</label>
 
 					<select name="show_for_all" class="form-control">
-						@foreach (\App\Enums\TextBlockShowEnum::toSelectArray() as $key => $value)
+						@foreach (\App\Enums\TextBlockShowEnum::asSelectArray() as $key => $value)
 							@if ($key == (old('show_for_all') ?: $textBlock->show_for_all))
 								<option value="{{ $key }}" selected>{{ __('text_block.show_status_array.'.$value) }}</option>
 							@else
