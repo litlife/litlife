@@ -214,7 +214,7 @@
 
 								@foreach ($books_similar as $book_similar)
 
-									<div class="similars_item list-group-item"
+									<div class="similars_item list-group-item text-center"
 										 data-other-book-id="{{ $book_similar->other_book_id }}">
 
 										<div class="mb-2 text-center">
@@ -310,7 +310,7 @@
 
 						<div id="collapse-rand-books" class="collapse dont-collapse-sm card-body p-0">
 
-							<div class="list-group list-group-flush mb-3">
+							<div class="list-group list-group-flush mb-3 text-center">
 
 								@foreach ($rand_books as $rand_book)
 
