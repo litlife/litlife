@@ -105,7 +105,6 @@ class UserData extends Model
 			'i_hate' => '',
 			'about_self' => '',
 			'favorite_quote' => '',
-			'book_added_comment_count' => 0,
 			'blog_record_comment_count' => 0,
 			'created_books_count' => 0,
 			'created_authors_count' => 0,

@@ -58,6 +58,9 @@ class AppServiceProvider extends ServiceProvider
 				$platform->registerDoctrineTypeMapping('storages', 'string');
 				$platform->registerDoctrineTypeMapping('morph', 'string');
 				$platform->registerDoctrineTypeMapping('read_statuses', 'string');
+				$platform->registerDoctrineTypeMapping('json', 'string');
+				$platform->registerDoctrineTypeMapping('jsonb', 'string');
+				$platform->registerDoctrineTypeMapping('_int4', 'integer');
 			}
 		}
 
