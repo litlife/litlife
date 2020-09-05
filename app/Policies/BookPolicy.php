@@ -34,7 +34,7 @@ class BookPolicy extends Policy
 	public function update(User $auth_user, Book &$book)
 	{
 		// книга уже распарсена или не нуждается в распарсивании
-		if (!$book->isParsed())
+		if (!$book->parse->isSucceed())
 			// книга еще не обработана или не нуждается в обработке
 			$this->deny(__('book.the_book_has_not_been_processed_yet'));
 
@@ -83,7 +83,7 @@ class BookPolicy extends Policy
 	 */
 	public function publish(User $auth_user, Book $book)
 	{
-		if (!$book->isParsed() and !$book->isDescriptionOnly())
+		if (!$book->parse->isSucceed() and !$book->isDescriptionOnly())
 			// книга еще не обработана или не нуждается в обработке
 			return false;
 
@@ -123,7 +123,7 @@ class BookPolicy extends Policy
 	 */
 	public function makeAccepted(User $auth_user, Book $book)
 	{
-		if (!$book->isParsed() and !$book->isDescriptionOnly())
+		if (!$book->parse->isSucceed() and !$book->isDescriptionOnly())
 			// книга еще не обработана или не нуждается в обработке
 			return false;
 
@@ -687,10 +687,10 @@ class BookPolicy extends Policy
 	 */
 	public function view_section_list(?User $auth_user, Book $book)
 	{
-		// книга уже распарсена или не нуждается в распарсивании
-		if ((!$book->isParsed()) and (!$book->isDescriptionOnly()))
-			// книга еще не обработана или не нуждается в обработке
-			return false;
+		if (!$book->isDescriptionOnly()) {
+			if (!$book->parse->isSucceed())
+				return false;
+		}
 
 		// книга в личном облаке
 		if ($book->isPrivate()) {
@@ -717,7 +717,7 @@ class BookPolicy extends Policy
 		if (!$book->isCanChange($auth_user))
 			return false;
 
-		if (!$book->isFailedParse())
+		if (!$book->parse->isFailed())
 			// у книги не провален парсинг
 			return false;
 
@@ -1148,7 +1148,7 @@ class BookPolicy extends Policy
 			return false;
 
 		// книга уже распарсена или не нуждается в распарсивании
-		if ((!$book->isParsed()) and (!$book->isDescriptionOnly()))
+		if ((!$book->parse->isSucceed()) and (!$book->isDescriptionOnly()))
 			// книга еще не обработана или не нуждается в обработке
 			return false;
 
@@ -1253,7 +1253,7 @@ class BookPolicy extends Policy
 		if (!$auth_user->can('use_shop', User::class))
 			return false;
 
-		if (!$book->isParsed())
+		if (!$book->parse->isSucceed())
 			return false;
 
 		if ($book->trashed())
@@ -1292,7 +1292,7 @@ class BookPolicy extends Policy
 		if ($book->is_lp)
 			return false;
 
-		if (!$book->isParsed())
+		if (!$book->parse->isSucceed())
 			return false;
 
 		if ($book->trashed())
@@ -1343,7 +1343,7 @@ class BookPolicy extends Policy
 		if (!$auth_user->can('use_shop', User::class))
 			return false;
 
-		if (!$book->isParsed())
+		if (!$book->parse->isSucceed())
 			return false;
 
 		if ($book->trashed())
@@ -1398,7 +1398,7 @@ class BookPolicy extends Policy
 			return false;
 		}
 
-		if (!$book->isParsed())
+		if (!$book->parse->isSucceed())
 			return false;
 
 		if ($book->trashed())

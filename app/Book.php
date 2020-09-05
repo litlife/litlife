@@ -38,9 +38,6 @@ use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
-
-// use IgnorableObservers\IgnorableObservers;
-
 /**
  * App\Book
  *
@@ -589,13 +586,16 @@ class Book extends Model
 		'pi_year' => 'integer',
 		'copy_protection' => 'boolean'
 	];
+
 	protected $dates = [
 		'status_changed_at',
 		'connected_at',
 		'user_edited_at',
 		'price_updated_at'
 	];
+
 	protected $perPage = 20;
+
 	private $sqlite;
 
 	const FAVORITABLE_PIVOT_TABLE = 'user_books';
@@ -1165,25 +1165,7 @@ class Book extends Model
 		return $this->hasMany('App\BookParse');
 	}
 
-	public function isParsed()
-	{
-		return $this->parse->isSucceed();
-	}
-
-	/*
-	 * Распарсена ли книга
-	 */
-
-	public function isFailedParse()
-	{
-		return $this->parse->isFailed();
-	}
-
-	/*
-	 * Парсинг произошел с ошибкой
-	 */
-
-	public function isDescriptionOnly()
+	public function isDescriptionOnly(): bool
 	{
 		if ($this->files_count < 1 and $this->sections_count < 1 and $this->page_count < 1)
 			return true;
@@ -1191,31 +1173,15 @@ class Book extends Model
 			return false;
 	}
 
-	/*
-	 * У книги нет ни файлов для скачивания, ни глав для чтения
-	 */
-
-	public function isParseExist()
-	{
-		if (!empty($this->parse))
-			return true;
-		else
-			return false;
-	}
-
-	/*
-	 * Книга добавлена как обложка и не нуждается в парсинге
-	 */
-
 	/**
 	 * Есть ли у книги любые текстовые страницы для чтения в старом или новом стиле
+	 *
 	 * @return bool
 	 */
-
-	public function isHavePagesToRead()
+	public function isHavePagesToRead(): bool
 	{
 		if ($this->isPagesNewFormat()) {
-			if ($this->sections_count < 1 and $this->notes_count < 1)
+			if ($this->sections_count < 1 and $this->notes_count < 1 and $this->page_count < 1)
 				return false;
 		} else {
 			if ($this->page_count < 1)
@@ -1224,9 +1190,9 @@ class Book extends Model
 		return true;
 	}
 
-	public function isPagesNewFormat()
+	public function isPagesNewFormat(): bool
 	{
-		return $this->online_read_new_format;
+		return (boolean)$this->online_read_new_format;
 	}
 
 	public function scopeOnlineReadNewFormat($query)

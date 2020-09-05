@@ -445,7 +445,7 @@ EOF;
 	public function testArtisanNewBook()
 	{
 		$book = factory(Book::class)
-			->states('accepted')
+			->states('accepted', 'with_section')
 			->create([
 				'created_at' => now()->addMinute()
 			]);

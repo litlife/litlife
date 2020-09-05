@@ -263,16 +263,19 @@ class Author extends Model
 	use FavoritableTrait;
 
 	protected static $recordEvents = [];
+
 	protected $attributes =
 		[
 			'status' => StatusEnum::Private
 		];
+
 	protected $indexConfigurator = AuthorIndexConfigurator::class;
 
 	// Here you can specify a mapping for a model fields.
 	protected $searchRules = [
 		//
 	];
+
 	protected $mapping = [
 		'properties' => [
 			'first_name' => [
@@ -337,19 +340,23 @@ class Author extends Model
 		'orig_first_name',
 		'orig_middle_name'
 	];
+
 	protected $appends = ['fullName'];
+
 	protected $dates = [
 		'status_changed_at',
 		'connected_at',
 		'view_updated_at',
 		'user_edited_at'
 	];
+
 	protected $casts = [
 		'nickname' => 'string',
 		'first_name' => 'string',
 		'last_name' => 'string',
 		'middle_name' => 'string'
 	];
+
 	protected $visible = [
 		'id',
 		'first_name',
@@ -366,6 +373,7 @@ class Author extends Model
 		'status_changed_at',
 		'like_count'
 	];
+
 	protected $perPage = 20;
 
 	const FAVORITABLE_PIVOT_TABLE = 'user_authors';
@@ -613,12 +621,12 @@ class Author extends Model
 		return $query;
 	}
 
-
 	public function getFullNameAttribute()
 	{
-		$model = &$this;
-
-		return trim(rtrim(rtrim($model->last_name . ' ' . $model->first_name) . ' ' . $model->middle_name) . ' ' . $model->nickname);
+		return trim(rtrim(rtrim($this->attributes['last_name'] . ' ' .
+			$this->attributes['first_name'] . ' ' .
+			$this->attributes['middle_name'] . ' ' .
+			$this->attributes['nickname'])));
 	}
 
 	public function getOriginalFullNameAttribute()
@@ -634,7 +642,7 @@ class Author extends Model
 
 		$arr = preg_split("/[\s,]+/", $name);
 
-		if (count($arr) < 1) return;
+		if (count($arr) < 1) return '';
 
 		if (count($arr) == 1) {
 			$this->attributes['nickname'] = $arr[0];

@@ -47,9 +47,9 @@
 				</div>
 
 				<div class="result">
-					<h1 class="spinner text-center py-5">
+					<div class="h1 spinner text-center py-5">
 						<i class="fas fa-spinner fa-spin"></i>
-					</h1>
+					</div>
 				</div>
 			</div>
 		</div>

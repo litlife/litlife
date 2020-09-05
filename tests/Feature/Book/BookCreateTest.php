@@ -83,7 +83,7 @@ class BookCreateTest extends TestCase
 		$error = ['message' => 'текст ошибки'];
 
 		$book->parse->failed($error);
-		$book->parse->save();
+		$book->push();
 
 		$response = $this->actingAs($user)
 			->get(route('books.create.description', $book))

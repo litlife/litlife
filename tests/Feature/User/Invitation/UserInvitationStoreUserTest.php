@@ -11,11 +11,15 @@ use App\UserEmail;
 use App\UserGroup;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class UserInvitationStoreUserTest extends TestCase
 {
+	public function getPassword()
+	{
+		return 'Pw1' . $this->faker->password(10);
+	}
+
 	public function testStoreNewUserIsOk()
 	{
 		Notification::fake();
@@ -23,7 +27,7 @@ class UserInvitationStoreUserTest extends TestCase
 		$invitation = factory(Invitation::class)
 			->create();
 
-		$password = Str::random(6) . 'Pw1';
+		$password = $this->getPassword();
 		$ip = $this->faker->ipv4;
 
 		$user = factory(User::class)
@@ -108,7 +112,7 @@ class UserInvitationStoreUserTest extends TestCase
 		$email->confirm = true;
 		$email->save();
 
-		$password = Str::random(10);
+		$password = $this->getPassword();
 
 		$user = factory(User::class)
 			->make();
@@ -134,7 +138,7 @@ class UserInvitationStoreUserTest extends TestCase
 		$invitation = factory(Invitation::class)
 			->create();
 
-		$password = Str::random(10);
+		$password = 'Pw1' . $this->getPassword();
 
 		$response = $this->post(route('users.store', ['token' => $invitation->token]),
 			[
@@ -176,7 +180,7 @@ class UserInvitationStoreUserTest extends TestCase
 			->make(['nick' => $nick_lowercase]);
 
 		$post = $user_filled_data->toArray();
-		$password = Str::random(10);
+		$password = $this->getPassword();
 		$post['password'] = $password;
 		$post['password_confirmation'] = $password;
 
@@ -194,13 +198,14 @@ class UserInvitationStoreUserTest extends TestCase
 			->make();
 
 		$post = $user_filled_data->toArray();
-		$password = Str::random(10);
+
+		$password = $this->getPassword();
 		$post['password'] = $password;
 		$post['password_confirmation'] = $password;
 
 		$response = $this->post(route('users.store', ['token' => $invitation->token]), $post)
 			->assertRedirect();
-		if (!empty(session('errors'))) dump(session('errors'));
+		if (!empty(session('errors'))) var_dump(session('errors'));
 		$response->assertSessionHasNoErrors()
 			->assertRedirect();
 
@@ -223,7 +228,7 @@ class UserInvitationStoreUserTest extends TestCase
 			->make();
 
 		$post = $user_filled_data->toArray();
-		$password = Str::random(10);
+		$password = $this->getPassword();
 		$post['password'] = '';
 		$post['password_confirmation'] = '';
 
@@ -245,7 +250,7 @@ class UserInvitationStoreUserTest extends TestCase
 			->make();
 
 		$post = $user_filled_data->toArray();
-		$password = Str::random(10);
+		$password = $this->getPassword();
 		$post['password'] = $password;
 		$post['password_confirmation'] = $password;
 

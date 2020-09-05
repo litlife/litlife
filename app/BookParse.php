@@ -101,7 +101,7 @@ class BookParse extends Model
 	/*
 	* Не отправлена на обработку
 	*/
-	public function isReseted()
+	public function isReseted(): bool
 	{
 		if (empty($this->waited_at) and empty($this->started_at) and empty($this->failed_at) and empty($this->succeed_at))
 			return true;
@@ -112,7 +112,7 @@ class BookParse extends Model
 	/*
 	* Ожидает ли обработки
 	*/
-	public function isWait()
+	public function isWait(): bool
 	{
 		if (!empty($this->waited_at) and empty($this->started_at) and empty($this->failed_at) and empty($this->succeed_at))
 			return true;
@@ -124,7 +124,7 @@ class BookParse extends Model
 	* Находится ли в процессе обработки
 	*/
 
-	public function isProgress()
+	public function isProgress(): bool
 	{
 		if (!empty($this->started_at) and empty($this->failed_at) and empty($this->succeed_at))
 			return true;
@@ -136,7 +136,7 @@ class BookParse extends Model
 	 * Распарсена ли книга
 	 */
 
-	public function isParsed()
+	public function isParsed(): bool
 	{
 		return $this->isSucceed();
 	}
@@ -145,7 +145,7 @@ class BookParse extends Model
 	 * Парсинг произошел с ошибкой
 	 */
 
-	public function isSucceed()
+	public function isSucceed(): bool
 	{
 		if (isset($this->succeed_at))
 			return true;
@@ -153,7 +153,7 @@ class BookParse extends Model
 			return false;
 	}
 
-	public function isFailed()
+	public function isFailed(): bool
 	{
 		if (isset($this->failed_at))
 			return true;
@@ -161,7 +161,7 @@ class BookParse extends Model
 			return false;
 	}
 
-	public function isParseOnlyPages()
+	public function isParseOnlyPages(): bool
 	{
 		return (bool)(in_array('only_pages', $this->options ?? []));
 	}
@@ -169,7 +169,7 @@ class BookParse extends Model
 	public function parseOnlyPages()
 	{
 		$this->options = ['only_pages'];
-		$this->save();
+		//$this->save();
 	}
 
 	public function start()
@@ -177,14 +177,16 @@ class BookParse extends Model
 		$this->started_at = now();
 		$this->failed_at = null;
 		$this->succeed_at = null;
-		$this->save();
+		$this->parse_errors = null;
+		//$this->save();
 	}
 
 	public function success()
 	{
 		$this->succeed_at = now();
 		$this->failed_at = null;
-		$this->save();
+		$this->parse_errors = null;
+		//$this->save();
 	}
 
 	public function failed($error)
@@ -192,7 +194,7 @@ class BookParse extends Model
 		$this->succeed_at = null;
 		$this->failed_at = now();
 		$this->parse_errors = $error;
-		$this->save();
+		//$this->save();
 	}
 
 	public function reset()
@@ -202,7 +204,7 @@ class BookParse extends Model
 		$this->succeed_at = null;
 		$this->failed_at = null;
 		$this->parse_errors = null;
-		$this->save();
+		//$this->save();
 	}
 
 	public function wait()
@@ -212,7 +214,7 @@ class BookParse extends Model
 		$this->succeed_at = null;
 		$this->failed_at = null;
 		$this->parse_errors = null;
-		$this->save();
+		//$this->save();
 	}
 
 	public function getErrors()

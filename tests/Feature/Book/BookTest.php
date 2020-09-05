@@ -13,10 +13,8 @@ use App\Http\Requests\StoreBook;
 use App\Jobs\Book\BookUpdateCharactersCountJob;
 use App\Jobs\Book\UpdateBookFilesCount;
 use App\Jobs\User\UpdateUserCreatedBooksCount;
-use App\Library\AddFb2File;
 use App\Manager;
 use App\Section;
-use App\Sequence;
 use App\User;
 use App\UserPurchase;
 use Carbon\Carbon;
@@ -24,7 +22,6 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Litlife\Fb2\Fb2;
 use Tests\TestCase;
 
 class BookTest extends TestCase
@@ -153,42 +150,6 @@ class BookTest extends TestCase
 			->assertRedirect(route('books.edit', $book));
 
 		$this->assertEquals(18, $book->fresh()->age);
-	}
-
-	public function testSequenceSearch()
-	{
-		Storage::fake(config('filesystems.default'));
-
-		$fb2 = new Fb2();
-		$fb2->setFile(__DIR__ . '/Books/test.fb2');
-
-		foreach ($fb2->description()->getFirstChild('title-info')->childs('sequences') as $sequence) {
-
-			$this->assertEquals('Title', $sequence->getNode()->getAttribute('name'));
-			$this->assertEquals('1', $sequence->getNode()->getAttribute('number'));
-		}
-
-		Sequence::where('name', 'ilike', 'Title')
-			->delete();
-
-		$book = factory(Book::class)->create([
-			'create_user_id' => 50000,
-			'is_si' => false,
-			'is_lp' => false,
-			'age' => 0
-		]);
-
-		$sequence = factory(Sequence::class)
-			->create(['name' => 'New title']);
-
-		$addFb2File = new AddFb2File();
-		$addFb2File->setBook($book);
-		$addFb2File->setFile(__DIR__ . '/Books/test.fb2');
-		$addFb2File->init();
-
-		$book->refresh();
-
-		$this->assertEquals('Title', $book->sequences->first()->name);
 	}
 
 	public function testViewFilesOnReviewIfBookOnReview()

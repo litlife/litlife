@@ -145,6 +145,8 @@ class BookController extends Controller
 				$book->parse->wait();
 			}
 
+			$book->push();
+
 			// добавляем книгу в личную библиотеку
 			//UserBook::create(['book_id' => $book->id]);
 
@@ -1629,6 +1631,7 @@ class BookController extends Controller
 
 		$book->parse->associateAuthUser();
 		$book->parse->wait();
+		$book->push();
 
 		return back();
 	}
@@ -1646,6 +1649,7 @@ class BookController extends Controller
 		$this->authorize('cancel_parse', $book);
 
 		$book->parse->success();
+		$book->push();
 
 		return redirect()
 			->route('books.show', $book)

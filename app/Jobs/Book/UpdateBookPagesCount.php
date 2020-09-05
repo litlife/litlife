@@ -31,6 +31,7 @@ class UpdateBookPagesCount
 	{
 		if ($this->book->isPagesNewFormat()) {
 			$this->book->page_count = $this->book->sections()
+				->accepted()
 				->where('sections.type', '=', 'section')
 				->sum('pages_count');
 		}

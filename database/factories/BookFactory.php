@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
 $factory->define(App\Book::class, function (Faker $faker) {
 	return [
 		'title' => trim(mb_substr($faker->realText(500), 0, 100)) . ' ' . Str::random(10),
-		'page_count' => rand(1, 150),
+		'page_count' => 0,
 		'ti_lb' => 'EN',
 		'ti_olb' => 'RU',
 		'pi_bn' => $faker->realText(20),

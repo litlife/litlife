@@ -15,37 +15,7 @@
 	<div class="row mb-3">
 		<div class="col-12 btn-margin-bottom-1">
 
-			@if (!empty($sections_count))
-				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#sectionsList">
-					{{ __('page.select_section') }} ({{ $sections_count }})
-				</button>
-			@endif
-
-			@push('body_append')
-
-				<div class="modal" id="sectionsList" tabindex="-1" role="dialog" aria-labelledby="sectionsListTitle"
-					 aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="sectionsListTitle">{{ trans_choice('section.sections', 2) }}</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<div class="modal-body">
-								<ul class="list-group list-group-flush">
-									@include('book.page.section_list', ['sections' => $sections])
-								</ul>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary"
-										data-dismiss="modal">{{ __('common.close') }}</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			@endpush
+			@include('book.chapter.button', ['chapters_count' => $sections_count, 'book' => $book])
 
 			<a href="{{ route('settings.read_style') }}" class="btn btn-light change_read_style" target="_blank">
 				<i class="fas fa-cog"></i> {{ __('common.change_read_style') }}

@@ -32,6 +32,8 @@
 		@include('book.age_access_modal')
 
 		<div class="mb-3">
+			@include('book.chapter.button', ['chapters_count' => $book->sections_count, 'book' => $book])
+
 			@can('update', $section)
 				<a href="{{ route('books.sections.edit', ['book' => $book, 'section' => $section->inner_id]) }}"
 				   class="btn btn-light">

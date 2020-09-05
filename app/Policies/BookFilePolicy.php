@@ -52,7 +52,7 @@ class BookFilePolicy extends Policy
 			return false;
 
 		// книга еще не распарсена поэтому запрещаем удалять файлы книги
-		if (!$file->book->isParsed() and !$file->book->isFailedParse())
+		if (!$file->book->parse->isSucceed() and !$file->book->parse->isFailed())
 			return false;
 
 		if ($file->book->isPrivate()) {
@@ -80,7 +80,7 @@ class BookFilePolicy extends Policy
 			return false;
 
 		// книга еще не распарсена поэтому запрещаем удалять файлы книги
-		if (!$file->book->isParsed())
+		if (!$file->book->parse->isSucceed())
 			return false;
 
 		if ($file->book->isPrivate()) {

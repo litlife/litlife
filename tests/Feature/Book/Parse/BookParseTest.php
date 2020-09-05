@@ -15,89 +15,6 @@ class BookParseTest extends TestCase
 	 *
 	 * @return void
 	 */
-	public function testInit()
-	{
-		$book = factory(Book::class)
-			->create();
-		$book->refresh();
-
-		$this->assertFalse($book->parse->isWait());
-		$this->assertFalse($book->parse->isProgress());
-		$this->assertTrue($book->parse->isParsed());
-		$this->assertFalse($book->parse->isFailed());
-		$this->assertTrue($book->parse->isSucceed());
-		$this->assertNull($book->parse->getErrors());
-
-		$book->parse->reset();
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isReseted());
-		$this->assertFalse($book->parse->isWait());
-		$this->assertFalse($book->parse->isProgress());
-		$this->assertFalse($book->parse->isParsed());
-		$this->assertFalse($book->parse->isFailed());
-		$this->assertFalse($book->parse->isSucceed());
-		$this->assertNull($book->parse->getErrors());
-
-		$book->parse->wait();
-		$book->refresh();
-
-		$this->assertFalse($book->parse->isReseted());
-		$this->assertTrue($book->parse->isWait());
-		$this->assertFalse($book->parse->isProgress());
-		$this->assertFalse($book->parse->isParsed());
-		$this->assertFalse($book->parse->isFailed());
-		$this->assertFalse($book->parse->isSucceed());
-		$this->assertNull($book->parse->getErrors());
-
-		$book->parse->start();
-		$book->refresh();
-
-		$this->assertFalse($book->parse->isReseted());
-		$this->assertFalse($book->parse->isWait());
-		$this->assertTrue($book->parse->isProgress());
-		$this->assertFalse($book->parse->isParsed());
-		$this->assertFalse($book->parse->isFailed());
-		$this->assertFalse($book->parse->isSucceed());
-		$this->assertNull($book->parse->getErrors());
-
-		$book->parse->success();
-		$book->refresh();
-
-		$this->assertFalse($book->parse->isReseted());
-		$this->assertFalse($book->parse->isWait());
-		$this->assertFalse($book->parse->isProgress());
-		$this->assertTrue($book->parse->isParsed());
-		$this->assertFalse($book->parse->isFailed());
-		$this->assertTrue($book->parse->isSucceed());
-		$this->assertNull($book->parse->getErrors());
-
-		$book->parse->reset();
-		$book->parse->wait();
-		$book->parse->start();
-		$book->parse->failed(['error']);
-		$book->refresh();
-
-		$this->assertFalse($book->parse->isReseted());
-		$this->assertFalse($book->parse->isWait());
-		$this->assertFalse($book->parse->isProgress());
-		$this->assertFalse($book->parse->isParsed());
-		$this->assertTrue($book->parse->isFailed());
-		$this->assertFalse($book->parse->isSucceed());
-		$this->assertContains('error', $book->parse->getErrors());
-
-		$book->parse->reset();
-		$book->refresh();
-
-		$this->assertTrue($book->parse->isReseted());
-		$this->assertFalse($book->parse->isWait());
-		$this->assertFalse($book->parse->isProgress());
-		$this->assertFalse($book->parse->isParsed());
-		$this->assertFalse($book->parse->isFailed());
-		$this->assertFalse($book->parse->isSucceed());
-		$this->assertNull($book->parse->getErrors());
-	}
-
 	public function testParseOnlyPages()
 	{
 		$book = factory(Book::class)
@@ -123,18 +40,22 @@ class BookParseTest extends TestCase
 		$user->push();
 
 		$book->parse->wait();
+		$book->push();
 
 		$this->assertTrue($user->can('cancel_parse', $book));
 
 		$book->parse->start();
+		$book->push();
 
 		$this->assertFalse($user->can('cancel_parse', $book));
 
 		$book->parse->failed(['error']);
+		$book->push();
 
 		$this->assertTrue($user->can('cancel_parse', $book));
 
 		$book->parse->success();
+		$book->push();
 
 		$this->assertFalse($user->can('cancel_parse', $book));
 	}

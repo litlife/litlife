@@ -57,6 +57,7 @@ Route::get('/books/{book}/read', 'BookReadOldController@show')->name('books.old.
 Route::get('/books/{book}/read/images/{name}', 'BookReadOldController@binary')->name('books.old.image')->where('book', '[0-9]+');
 Route::get('/books/{book}/read/online', 'BookController@readRedirect')->name('books.read.online');
 Route::get('/books/{book}/cover', 'BookController@cover')->name('books.cover.show');
+Route::get('/books/{book}/sections/list_go_to', 'SectionController@listGoToChapter')->name('books.sections.list_go_to');
 
 Route::get('/emails/{email}/sendConfirmToken', 'UserEmailController@sendConfirmToken')->name('email.send_confirm_token');
 Route::get('/emails/{email}/confirm/{token}', 'UserEmailController@confirm')->name('email.confirm');

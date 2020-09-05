@@ -65,6 +65,7 @@ class BookFillDBFromSource extends Command
 
 		// устанавливаем статус что книга находится на обработке
 		$this->book->parse->start();
+		$this->book->push();
 
 		DB::beginTransaction();
 
@@ -205,9 +206,8 @@ class BookFillDBFromSource extends Command
 	 */
 	private function success()
 	{
-		$this->book->save();
-
 		$this->book->parse->success();
+		$this->book->push();
 
 		BookFinishParseJob::dispatch($this->book->parse);
 	}
@@ -228,6 +228,8 @@ class BookFillDBFromSource extends Command
 			'line' => $exception->getLine(),
 			'traceAsString' => $exception->getTraceAsString()
 		]);
+
+		$this->book->push();
 
 		throw $exception;
 	}
