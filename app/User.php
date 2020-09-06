@@ -37,20 +37,20 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int $ec
  * @property string $email
  * @property string|null $nick
- * @property \Illuminate\Support\Carbon $last_activity
+ * @property int $old_last_activity
  * @property string|null $last_name
  * @property string|null $first_name
  * @property string|null $middle_name
- * @property string|null $photo
+ * @property string|null $old_photo
  * @property string $password
  * @property int $gender
- * @property \Illuminate\Support\Carbon $reg_date
- * @property int $new_message_count
- * @property string|null $reg_ip_old
- * @property string|null $permission
- * @property string|null $read_style
- * @property int $mail_notif
- * @property int $version
+ * @property int $old_reg_date
+ * @property int $old_new_message_count
+ * @property string|null $old_reg_ip_old
+ * @property string|null $old_permission
+ * @property string|null $old_read_style
+ * @property int $old_mail_notif
+ * @property int $old_version
  * @property int $comment_count
  * @property int $user_lib_author_count
  * @property int $user_lib_book_count
@@ -65,17 +65,17 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property string|null $city
  * @property int $name_show_type
  * @property int $book_read_not_complete_count
- * @property int $hide
- * @property \Illuminate\Support\Carbon $hide_time
- * @property int $hide_user
- * @property int $book_file_count
- * @property int $profile_comment_count
+ * @property int $old_hide
+ * @property int $old_hide_time
+ * @property int $old_hide_user
+ * @property int $old_book_file_count
+ * @property int $old_profile_comment_count
  * @property int $subscriptions_count
  * @property int $subscribers_count
  * @property int $friends_count
  * @property int $blacklists_count
- * @property int $hide_email
- * @property int $invite_send
+ * @property int $old_hide_email
+ * @property int $old_invite_send
  * @property int $book_read_not_read_count
  * @property string|null $text_status
  * @property int|null $avatar_id
@@ -208,7 +208,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatarId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBalance($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBlacklistsCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereBookFileCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBookRateCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBookReadCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBookReadLaterCount($value)
@@ -229,34 +228,36 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereForumMessageCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereFriendsCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereHideEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereInviteSend($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereLastActivity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLastActivityAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLastName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereMailNotif($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereMiddleName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereMiniatureImageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNameHelper($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNameShowType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereNewMessageCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNick($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNickEquals($nick)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldBookFileCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHide($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHideEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHideTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHideUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldInviteSend($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldLastActivity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldMailNotif($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldNewMessageCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldPermission($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldPhoto($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldProfileCommentCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldReadStyle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldRegDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldRegIpOld($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOldVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePermission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoto($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePhotosCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereProfileCommentCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereReadStyle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereReferredByUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRefreshCounters($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRegDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRegIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRegIpOld($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSubscribersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSubscriptionsCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSuspendedAt($value)
@@ -270,7 +271,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserLibAuthorCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserLibBookCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserLibSequenceCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereVersion($value)
  * @method static Builder|User withTrashed()
  * @method static Builder|User withoutTrashed()
  * @mixin Eloquent
@@ -845,13 +845,24 @@ class User extends Authenticatable
 	public function unsuspend()
 	{
 		$this->suspended_at = null;
-		$this->save();
 	}
 
 	public function suspend()
 	{
 		$this->suspended_at = Carbon::now('UTC');
-		$this->save();
+	}
+
+	public function isActive()
+	{
+		if ($this->trashed() or $this->isSuspended())
+			return false;
+		else
+			return true;
+	}
+
+	public function isSuspended()
+	{
+		return (boolean)$this->suspended_at;
 	}
 
 	public function update_activity()
@@ -1002,19 +1013,6 @@ class User extends Authenticatable
 			return true;
 		else
 			return false;
-	}
-
-	public function isActive()
-	{
-		if ($this->trashed() or $this->isSuspended())
-			return false;
-		else
-			return true;
-	}
-
-	public function isSuspended()
-	{
-		return (boolean)$this->suspended_at;
 	}
 
 	public function isHaveConfirmedMailbox()

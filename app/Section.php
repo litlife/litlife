@@ -31,7 +31,7 @@ use tidy;
  * @property string $type
  * @property int $book_id
  * @property string $title
- * @property string|null $content
+ * @property string|null $old_content
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -41,7 +41,7 @@ use tidy;
  * @property int|null $character_count
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
  * @property array|null $parameters
- * @property array|null $html_tags_ids Массив всех id html тегов, которые содержатся в тексте
+ * @property mixed|null $old_html_tags_ids Массив всех id html тегов, которые содержатся в тексте
  * @property int $pages_count
  * @property int $status Статус главы. Пока будут варианты опубликована и в личном доступе или черновик
  * @property string|null $status_changed_at Дата изменения статуса
@@ -57,6 +57,7 @@ use tidy;
  * @property-read mixed $is_sent_for_review
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Page[] $pages
  * @property-read Section|null $parent
+ * @property-write mixed $content
  * @property-write mixed $element_id
  * @property-read \App\User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|Section accepted()
@@ -98,14 +99,14 @@ use tidy;
  * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCharacterCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Section whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Section whereHtmlTagsIds($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereInnerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereLft($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereOldContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereOldHtmlTagsIds($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section wherePagesCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereParameters($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereParentId($value)

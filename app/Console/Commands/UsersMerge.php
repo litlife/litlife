@@ -82,6 +82,7 @@ class UsersMerge extends Command
 				$this->item($user);
 
 				$user->suspend();
+				$user->save();
 			}
 		});
 	}

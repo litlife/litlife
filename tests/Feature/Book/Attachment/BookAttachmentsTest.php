@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Book;
+namespace Tests\Feature\Book\Attachment;
 
 use App\Attachment;
 use App\Book;
@@ -11,14 +11,13 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class AttachmentTest extends TestCase
+class BookAttachmentsTest extends TestCase
 {
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testCreate()
 	{
 		Storage::fake(config('filesystems.default'));
@@ -31,7 +30,7 @@ class AttachmentTest extends TestCase
 		]);
 
 		$attachment = new Attachment;
-		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
+		$attachment->openImage(__DIR__ . '/../../images/test.jpeg');
 		$book->attachments()->save($attachment);
 
 		$attachment->refresh();
@@ -280,7 +279,7 @@ class AttachmentTest extends TestCase
 		]);
 
 		$attachment = new Attachment;
-		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
+		$attachment->openImage(__DIR__ . '/../../images/test.jpeg');
 		$book->attachments()->save($attachment);
 
 		$attachment->refresh();
@@ -291,7 +290,7 @@ class AttachmentTest extends TestCase
 
 
 		$attachment = new Attachment;
-		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
+		$attachment->openImage(__DIR__ . '/../../images/test.jpeg');
 		$book->attachments()->save($attachment);
 
 		$attachment->refresh();
@@ -350,41 +349,6 @@ class AttachmentTest extends TestCase
 		$this->assertEquals('set_cover', $activity->description);
 		$this->assertEquals($user->id, $activity->causer_id);
 		$this->assertEquals('user', $activity->causer_type);
-	}
-
-	public function testDetachCover()
-	{
-		config(['activitylog.enabled' => true]);
-
-		$user = factory(User::class)->states('administrator')->create();
-
-		$attachment = factory(Attachment::class)->states('cover')->create();
-
-		$book = $attachment->book;
-		$book->sections_count = 10;
-		$book->save();
-
-		$this->assertTrue($attachment->isCover());
-
-		$this->actingAs($user)
-			->followingRedirects()
-			->get(route('books.remove_cover', ['book' => $book]))
-			->assertOk()
-			->assertSeeText(__('attachment.cover_removed'));
-
-		$attachment->refresh();
-		$book->refresh();
-
-		$this->assertFalse($attachment->isCover());
-		$this->assertTrue($book->isWaitedCreateNewBookFiles());
-		$this->assertEquals($book->edit_user_id, $user->id);
-		/*
-				$this->assertEquals(1, $book->activities()->count());
-				$activity = $book->activities()->first();
-				$this->assertEquals('set_cover', $activity->description);
-				$this->assertEquals($user->id, $activity->causer_id);
-				$this->assertEquals('user', $activity->causer_type);
-		*/
 	}
 
 	public function testDeleteHttp()
@@ -479,7 +443,7 @@ class AttachmentTest extends TestCase
 		$user = $book->create_user;
 
 		$attachment = new Attachment;
-		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
+		$attachment->openImage(__DIR__ . '/../../images/test.jpeg');
 		$book->attachments()->save($attachment);
 
 		$this->assertFalse($attachment->isCover());
@@ -502,7 +466,7 @@ class AttachmentTest extends TestCase
 			->create();
 
 		$attachment = new Attachment();
-		$attachment->openImage(__DIR__ . '/../images/test.jpg_0');
+		$attachment->openImage(__DIR__ . '/../../images/test.jpg_0');
 		$book->attachments()->save($attachment);
 		$attachment->refresh();
 
@@ -518,12 +482,12 @@ class AttachmentTest extends TestCase
 			->create();
 
 		$attachment = new Attachment();
-		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
+		$attachment->openImage(__DIR__ . '/../../images/test.jpeg');
 		$book->attachments()->save($attachment);
 		$attachment->refresh();
 
 		$attachment2 = new Attachment();
-		$attachment2->openImage(__DIR__ . '/../images/test.gif');
+		$attachment2->openImage(__DIR__ . '/../../images/test.gif');
 		$book->attachments()->save($attachment2);
 		$attachment2->refresh();
 

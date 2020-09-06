@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property string|null $password
  * @property string $ip
- * @property int $time
+ * @property int $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $user_agent_id
@@ -29,8 +29,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|UserAuthFail whereCreatedAt($value)
  * @method static Builder|UserAuthFail whereId($value)
  * @method static Builder|UserAuthFail whereIp($value)
+ * @method static Builder|UserAuthFail whereOldTime($value)
  * @method static Builder|UserAuthFail wherePassword($value)
- * @method static Builder|UserAuthFail whereTime($value)
  * @method static Builder|UserAuthFail whereUpdatedAt($value)
  * @method static Builder|UserAuthFail whereUserAgentId($value)
  * @method static Builder|UserAuthFail whereUserId($value)

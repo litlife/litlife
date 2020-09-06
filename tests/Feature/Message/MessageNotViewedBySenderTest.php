@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\MessageTest;
+namespace Tests\Feature\Message;
 
 use App\Jobs\UpdateParticipationCounters;
 use App\Message;

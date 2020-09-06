@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Book;
+namespace Tests\Feature\Bookmark;
 
 use App\Bookmark;
 use App\BookmarkFolder;

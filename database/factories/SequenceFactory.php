@@ -45,3 +45,15 @@ $factory->afterCreatingState(App\Sequence::class, 'with_two_books', function (Se
 	$sequence->refreshBooksCount();
 	$sequence->save();
 });
+
+$factory->afterMakingState(App\Sequence::class, 'accepted', function (Sequence $sequence, $faker) {
+	$sequence->statusAccepted();
+});
+
+$factory->afterMakingState(App\Sequence::class, 'sent_for_review', function (Sequence $sequence, $faker) {
+	$sequence->statusSentForReview();
+});
+
+$factory->afterMakingState(App\Sequence::class, 'private', function (Sequence $sequence, $faker) {
+	$sequence->statusPrivate();
+});

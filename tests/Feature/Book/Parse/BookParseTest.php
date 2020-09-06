@@ -15,20 +15,6 @@ class BookParseTest extends TestCase
 	 *
 	 * @return void
 	 */
-	public function testParseOnlyPages()
-	{
-		$book = factory(Book::class)
-			->create();
-
-		$this->assertFalse($book->parse->isParseOnlyPages());
-
-		$book->parse->wait();
-		$book->parse->parseOnlyPages();
-		$book->push();
-
-		$this->assertTrue($book->parse->isParseOnlyPages());
-	}
-
 	public function testCancelParsePolicy()
 	{
 		$book = factory(Book::class)

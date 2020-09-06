@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
  * App\UserGroup
  *
  * @property string $name
- * @property string|null $permissions
+ * @property string|null $old_permissions
  * @property int $id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -244,7 +244,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereNotShowAd($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereNotifyAssignment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserGroup wherePermissions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereOldPermissions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRefreshCounters($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRetryFailedBookParse($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSeeDeleted($value)

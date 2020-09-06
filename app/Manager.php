@@ -21,25 +21,25 @@ use Illuminate\Support\Facades\Cache;
  * @property int $user_id
  * @property string $character
  * @property int $manageable_id
- * @property int $add_time
- * @property int $hide
- * @property int $hide_time
- * @property int $hide_user
+ * @property int $old_add_time
+ * @property int $old_hide
+ * @property int $old_hide_time
+ * @property int $old_hide_user
  * @property string|null $comment
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $accepted_at
+ * @property string|null $old_accepted_at
  * @property int|null $check_user_id
  * @property string $manageable_type
- * @property string|null $rejected_at
+ * @property string|null $old_rejected_at
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $sent_for_review_at
+ * @property string|null $old_sent_for_review_at
  * @property bool $can_sale Может продавать книги или нет
  * @property int|null $profit_percent Процент от прибыли, который получает автор
- * @property bool $disable_editing_for_co_author Запрет редактирования для соавторов
+ * @property bool $old_disable_editing_for_co_author Запрет редактирования для соавторов
  * @property-read \App\User|null $check_user
  * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
@@ -78,8 +78,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unchecked()
  * @method static Builder|Model void()
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereAddTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCanSale($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCharacter($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCheckUserId($value)
@@ -88,16 +86,18 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereDisableEditingForCoAuthor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereManageableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereManageableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldAcceptedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldAddTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldDisableEditingForCoAuthor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldHide($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldHideTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldHideUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereProfitPercent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereStatusChangedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereStatusChangedUserId($value)

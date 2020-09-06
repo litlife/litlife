@@ -10,8 +10,8 @@ namespace App;
  * @property int $subject_id
  * @property string $subject_type
  * @property int $causer_id
- * @property int $time
- * @property string|null $text
+ * @property int $old_time
+ * @property string|null $old_text
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $causer_type
@@ -32,11 +32,11 @@ namespace App;
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereLogName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity whereOldText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Activity whereOldTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereProperties($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereSubjectType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Activity whereText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Activity whereTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Activity whereUpdatedAt($value)
  * @mixin \Eloquent
  */

@@ -5,7 +5,7 @@ namespace Tests\Unit\Book;
 use App\Book;
 use PHPUnit\Framework\TestCase;
 
-class BookIsHavePagesToRead extends TestCase
+class BookIsHavePagesToReadTest extends TestCase
 {
 	public function testTrueIfPageOldFormatAndHasPages()
 	{

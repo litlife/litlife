@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property int $user_id2
  * @property int|null $status
- * @property int|null $time
+ * @property int|null $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
@@ -32,8 +32,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Model void()
  * @method static Builder|UserRelation whereCreatedAt($value)
  * @method static Builder|UserRelation whereId($value)
+ * @method static Builder|UserRelation whereOldTime($value)
  * @method static Builder|UserRelation whereStatus($value)
- * @method static Builder|UserRelation whereTime($value)
  * @method static Builder|UserRelation whereUpdatedAt($value)
  * @method static Builder|UserRelation whereUserId($value)
  * @method static Builder|UserRelation whereUserId2($value)

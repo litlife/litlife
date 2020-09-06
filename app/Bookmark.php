@@ -15,9 +15,9 @@ use Litlife\Url\Url;
  *
  * @property int $id
  * @property int $create_user_id
- * @property string|null $url_old
+ * @property string|null $old_url_old
  * @property string $title
- * @property int $time
+ * @property int $old_time
  * @property int|null $folder_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -41,11 +41,11 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereFolderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereNew($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereOldTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereOldUrlOld($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereUrlOld($value)
  * @method static Builder|Bookmark withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark withoutFolder()
  * @method static Builder|Bookmark withoutTrashed()

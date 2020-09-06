@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\MessageTest;
+namespace Tests\Feature\Message;
 
 use App\Enums\UserAccountPermissionValues;
 use App\Enums\UserRelationType;

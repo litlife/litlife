@@ -180,4 +180,22 @@ class BookCreateTest extends TestCase
 			->assertSeeText(__('validation.required', ['attribute' => __('book.ready_status')]))
 			->assertDontSeeText(__('validation.required', ['attribute' => __('book.title')]));
 	}
+
+	public function testCreatePolicy()
+	{
+		$book = factory(Book::class)
+			->create();
+
+		$user = factory(User::class)
+			->states('with_user_group')
+			->create();
+
+		$this->assertFalse($user->can('create', $book));
+
+		$user->group->add_book = true;
+		$user->push();
+
+		$this->assertTrue($user->can('create', $book));
+	}
+
 }

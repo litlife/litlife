@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Book;
+namespace Tests\Feature\Book\Publish;
 
 use App\Author;
 use App\Book;
@@ -13,122 +13,12 @@ use App\Notifications\BookPublishedNotification;
 use App\Sequence;
 use App\User;
 use App\UserOnModeration;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class BookPublishTest extends TestCase
 {
-	public function testAddForReviewHttp()
-	{
-		config(['activitylog.enabled' => true]);
-
-		$this->resetCounters();
-
-		$this->assertEquals(0, Book::getCachedOnModerationCount());
-		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
-
-		$admin = factory(User::class)->create();
-		$admin->group->check_books = true;
-		$admin->push();
-
-		$user = factory(User::class)->create();
-		$user->group->add_book = true;
-		$user->group->add_book_without_check = false;
-		$user->group->check_books = false;
-		$user->push();
-
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_section', 'lp_false', 'with_genre')
-			->create(['create_user_id' => $user->id]);
-
-		$book->authors()->detach();
-		$book->sequences()->detach();
-
-		$author = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$author->statusPrivate();
-		$author->save();
-
-		$illustrator = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$illustrator->statusPrivate();
-		$illustrator->save();
-
-		$translator = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$translator->statusPrivate();
-		$translator->save();
-
-		$book->writers()->sync([$author->id]);
-		$book->translators()->sync([$translator->id]);
-		$book->illustrators()->sync([$illustrator->id]);
-
-		$sequence = factory(Sequence::class)->create(['create_user_id' => $user->id]);
-		$sequence->statusPrivate();
-		$sequence->save();
-
-		$book->sequences()->sync([$sequence->id]);
-
-		UpdateSequenceBooksCount::dispatch($sequence);
-
-		$this->assertEquals(1, $sequence->fresh()->book_count);
-
-		$book_file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
-		$book_file->statusPrivate();
-		$book_file->save();
-
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
-		$book_keyword->statusPrivate();
-		$book_keyword->save();
-
-		$response = $this->followingRedirects()
-			->actingAs($user)
-			->get(route('books.publish', $book));
-
-		//dump(session('errors'));
-		$response->assertOk()
-			->assertSessionHasNoErrors()
-			->assertSeeText(__('book.added_for_check'));
-
-		$this->actingAs($admin)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertSeeText($book->title)
-			->assertSeeText($author->name)
-			->assertSeeText($illustrator->name)
-			->assertSeeText($translator->name)
-			->assertSeeText($sequence->name)
-			->assertSeeText($book_keyword->keyword->text);
-
-		$sequence->refresh();
-		$book->refresh();
-
-		$this->assertEquals(1, Book::getCachedOnModerationCount());
-		$this->assertEquals(1, BookFile::getCachedOnModerationCount());
-
-		$this->assertEquals(StatusEnum::OnReview, $book->fresh()->status);
-		$this->assertEquals(StatusEnum::OnReview, $author->fresh()->status);
-		$this->assertEquals(StatusEnum::OnReview, $illustrator->fresh()->status);
-		$this->assertEquals(StatusEnum::OnReview, $translator->fresh()->status);
-		$this->assertEquals(StatusEnum::OnReview, $book_file->fresh()->status);
-		$this->assertEquals(StatusEnum::OnReview, $book_keyword->fresh()->status);
-		$this->assertTrue($book->isSentForReview());
-		$this->assertTrue($sequence->isSentForReview());
-
-		$this->assertEquals(0, $sequence->book_count);
-
-		$this->assertNull($book_file->formats);
-
-		$this->assertEquals(1, $book->activities()->count());
-		$activity = $book->activities()->first();
-		$this->assertEquals('add_for_review', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-
-		$this->assertFalse($book->isReadAccess());
-		$this->assertFalse($book->isDownloadAccess());
-	}
-
 	public function resetCounters()
 	{
 		Book::sentOnReview()->update(['status' => StatusEnum::Accepted]);
@@ -142,6 +32,107 @@ class BookPublishTest extends TestCase
 		BookKeyword::sentOnReview()->update(['status' => StatusEnum::Accepted]);
 		BookKeyword::flushCachedOnModerationCount();
 		$this->assertEquals(0, BookKeyword::getCachedOnModerationCount());
+	}
+
+	public function testAddForReviewHttp()
+	{
+		config(['activitylog.enabled' => true]);
+
+		$this->resetCounters();
+
+		$this->assertEquals(0, Book::getCachedOnModerationCount());
+		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
+
+		$admin = factory(User::class)->create();
+		$admin->group->check_books = true;
+		$admin->push();
+
+		$book = factory(Book::class)
+			->states('with_writer', 'private', 'with_section', 'lp_false', 'with_genre', 'with_create_user')
+			->create();
+
+		$user = $book->create_user;
+		$user->group->add_book = true;
+		$user->group->add_book_without_check = false;
+		$user->group->check_books = false;
+		$user->push();
+
+		$author = factory(Author::class)
+			->states('private')
+			->create(['create_user_id' => $user->id]);
+
+		$illustrator = factory(Author::class)
+			->states('private')
+			->create(['create_user_id' => $user->id]);
+
+		$translator = factory(Author::class)
+			->states('private')
+			->create(['create_user_id' => $user->id]);
+
+		$book->writers()->sync([$author->id]);
+		$book->translators()->sync([$translator->id]);
+		$book->illustrators()->sync([$illustrator->id]);
+
+		$sequence = factory(Sequence::class)
+			->states('private')
+			->create(['create_user_id' => $user->id]);
+
+		$book->sequences()->sync([$sequence->id]);
+
+		UpdateSequenceBooksCount::dispatch($sequence);
+
+		$sequence->refresh();
+
+		$this->assertEquals(1, $sequence->book_count);
+
+		$book_file = factory(BookFile::class)
+			->states('txt', 'private')
+			->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+
+		$book_keyword = factory(BookKeyword::class)
+			->states('private')
+			->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+
+		Bus::fake();
+
+		$response = $this->actingAs($user)
+			->get(route('books.publish', $book));
+		//var_dump(session('errors'));
+		$response->assertRedirect(route('books.show', $book))
+			->assertSessionHasNoErrors()
+			->assertSessionHas(['success' => __('book.added_for_check')]);
+
+		$book->refresh();
+		$sequence->refresh();
+		$author->refresh();
+		$illustrator->refresh();
+		$translator->refresh();
+		$book_file->refresh();
+		$book_keyword->refresh();
+
+		$this->assertFalse($book->isReadAccess());
+		$this->assertFalse($book->isDownloadAccess());
+
+		$this->assertEquals(1, Book::getCachedOnModerationCount());
+		$this->assertEquals(1, BookFile::getCachedOnModerationCount());
+
+		$this->assertTrue($book->isSentForReview());
+		$this->assertTrue($sequence->isSentForReview());
+		$this->assertTrue($author->isSentForReview());
+		$this->assertTrue($illustrator->isSentForReview());
+		$this->assertTrue($translator->isSentForReview());
+		$this->assertTrue($book_file->isSentForReview());
+		$this->assertTrue($book_keyword->isSentForReview());
+
+		Bus::assertDispatched(UpdateSequenceBooksCount::class);
+
+		$this->assertNull($book_file->formats);
+
+		$this->assertEquals(1, $book->activities()->count());
+		$activity = $book->activities()->first();
+		$this->assertEquals('add_for_review', $activity->description);
+		$this->assertEquals($user->id, $activity->causer_id);
+		$this->assertEquals('user', $activity->causer_type);
 	}
 
 	public function testMakeAcceptedHttp()
@@ -257,30 +248,6 @@ class BookPublishTest extends TestCase
 
 		$this->assertFalse($book->isReadAccess());
 		$this->assertFalse($book->isDownloadAccess());
-
-		Notification::assertSentTo(
-			$book->create_user,
-			BookPublishedNotification::class,
-			function ($notification, $channels) use ($book) {
-				$this->assertContains('mail', $channels);
-				$this->assertContains('database', $channels);
-
-				$mail = $notification->toMail($book->create_user);
-
-				$this->assertEquals(__('notification.book_published.subject'), $mail->subject);
-
-				$this->assertEquals(__('notification.book_published.line', [
-					'book_title' => $book->title,
-					'writers_names' => implode(', ', $book->writers->pluck('name')->toArray())
-				]), $mail->introLines[0]);
-
-				$this->assertEquals(__('notification.book_published.action'), $mail->actionText);
-
-				$this->assertEquals(route('books.show', ['book' => $book]), $mail->actionUrl);
-
-				return $notification->book->id == $book->id;
-			}
-		);
 	}
 
 	public function testPublishIfCreatorCanAddWithoutCheck()
@@ -579,48 +546,6 @@ class BookPublishTest extends TestCase
 
 		$this->assertFalse($book->isReadAccess());
 		$this->assertFalse($book->isDownloadAccess());
-	}
-
-	public function testPublishPolicy()
-	{
-		$book = factory(Book::class)
-			->states('private', 'with_section', 'with_file', 'with_create_user')
-			->create();
-
-		$creator = $book->create_user;
-		$creator->group->add_book_without_check = false;
-		$creator->push();
-
-		$admin = factory(User::class)->create();
-		$admin->group->check_books = true;
-		$admin->push();
-
-		$editor = factory(User::class)->create();
-		$editor->group->add_book_without_check = true;
-		$editor->group->check_books = false;
-
-		$editor->push();
-
-		$this->assertTrue($creator->can('publish', $book));
-		$this->assertTrue($admin->can('publish', $book));
-		$this->assertFalse($editor->can('publish', $book));
-
-		$book->statusSentForReview();
-		$book->save();
-		$book->refresh();
-
-		$this->assertTrue($book->isSentForReview());
-		$this->assertFalse($editor->can('publish', $book));
-		$this->assertFalse($creator->can('publish', $book));
-		$this->assertTrue($admin->can('publish', $book));
-
-		$book->statusAccepted();
-		$book->save();
-		$book->refresh();
-
-		$this->assertFalse($creator->can('publish', $book));
-		$this->assertFalse($admin->can('publish', $book));
-		$this->assertFalse($editor->can('publish', $book));
 	}
 
 	public function testSendToPrivateAndPublish()

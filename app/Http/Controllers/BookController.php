@@ -268,7 +268,7 @@ class BookController extends Controller
 
 		if ($book->isInGroup())
 			$query = Comment::whereIn('commentable_id', array_merge([$mainBook->id], $mainBook->groupedBooks()->get()->pluck('id')->toArray()))
-				->book();
+				->bookType();
 		else
 			$query = $book->comments();
 

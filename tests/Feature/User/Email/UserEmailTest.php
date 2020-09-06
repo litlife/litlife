@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\User;
+namespace Tests\Feature\User\Email;
 
 use App\Jobs\User\UpdateUserConfirmedMailboxCount;
 use App\Notifications\EmailConfirmNotification;

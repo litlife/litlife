@@ -17,14 +17,39 @@ use Tests\TestCase;
 
 class BookFillDBFromSourceTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function setUp(): void
+	public function testCreateNewSectionsOverExisted()
 	{
-		parent::setUp();
+		Storage::fake(config('filesystems.default'));
+
+		$book = factory(Book::class)->create();
+
+		$command = new BookFillDBFromSource();
+		$command->setExtension('epub');
+		$command->setBook($book);
+		$command->setStream(fopen(__DIR__ . '/Books/test.epub', 'r'));
+		$command->addFromFile();
+
+		$book->refresh();
+		$section = $book->sections()->first();
+
+		$this->assertEquals(3, $book->sections()->count());
+
+		$response = $this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
+			->assertOk();
+
+		$command = new BookFillDBFromSource();
+		$command->setExtension('epub');
+		$command->setBook($book);
+		$command->setStream(fopen(__DIR__ . '/Books/test.epub', 'r'));
+		$command->addFromFile();
+
+		$book->refresh();
+		$section = $book->sections()->first();
+
+		$this->assertEquals(3, $book->sections()->count());
+
+		$response = $this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
+			->assertOk();
 	}
 
 	public function testAddFromSourceDocx()

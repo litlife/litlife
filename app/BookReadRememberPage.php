@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @property int $book_id
  * @property int $user_id
- * @property int $time
+ * @property int $old_time
  * @property int $page
  * @property string $updated_at
  * @property int|null $inner_section_id
@@ -27,8 +27,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|BookReadRememberPage whereBookId($value)
  * @method static Builder|BookReadRememberPage whereCharactersCount($value)
  * @method static Builder|BookReadRememberPage whereInnerSectionId($value)
+ * @method static Builder|BookReadRememberPage whereOldTime($value)
  * @method static Builder|BookReadRememberPage wherePage($value)
- * @method static Builder|BookReadRememberPage whereTime($value)
  * @method static Builder|BookReadRememberPage whereUpdatedAt($value)
  * @method static Builder|BookReadRememberPage whereUserId($value)
  * @mixin Eloquent

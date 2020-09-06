@@ -33,7 +33,9 @@ use Illuminate\Database\Eloquent\Builder;
 class ViewCount extends Model
 {
 	public $timestamps = false;
+
 	public $incrementing = false;
+
 	public $attributes = [
 		'day' => 0,
 		'week' => 0,
@@ -41,6 +43,7 @@ class ViewCount extends Model
 		'year' => 0,
 		'all' => 0
 	];
+
 	protected $primaryKey = 'book_id';
 
 	public function book()

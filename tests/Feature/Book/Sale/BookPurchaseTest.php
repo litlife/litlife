@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Book;
+namespace Tests\Feature\Book\Sale;
 
 use App\Author;
 use App\User;

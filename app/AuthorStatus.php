@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @property int $author_id
  * @property int $user_id
- * @property int $code
+ * @property int $old_code
  * @property int $id
  * @property string|null $user_updated_at Время последнего изменения статуса пользователем
  * @property int $status
@@ -24,8 +24,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|AuthorStatus query()
  * @method static Builder|Model void()
  * @method static Builder|AuthorStatus whereAuthorId($value)
- * @method static Builder|AuthorStatus whereCode($value)
  * @method static Builder|AuthorStatus whereId($value)
+ * @method static Builder|AuthorStatus whereOldCode($value)
  * @method static Builder|AuthorStatus whereStatus($value)
  * @method static Builder|AuthorStatus whereUserId($value)
  * @method static Builder|AuthorStatus whereUserUpdatedAt($value)

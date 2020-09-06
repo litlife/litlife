@@ -147,7 +147,7 @@ class CommentListController extends Controller
 		$this->before();
 		/*
 				$builder = Comment::void()
-					->book()
+					->bookType()
 					->whereHas('book.users_read_statuses', function ($query) use ($user) {
 						$query->where('status', 'readed')
 							->where('user_id', $user->id);

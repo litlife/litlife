@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  *
  * @property string $name
  * @property string|null $value
- * @property int $update_time
+ * @property int $old_update_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
@@ -28,7 +28,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Variable whereCreatedAt($value)
  * @method static Builder|Variable whereId($value)
  * @method static Builder|Variable whereName($value)
- * @method static Builder|Variable whereUpdateTime($value)
+ * @method static Builder|Variable whereOldUpdateTime($value)
  * @method static Builder|Variable whereUpdatedAt($value)
  * @method static Builder|Variable whereValue($value)
  * @method static Builder|Variable withCacheCooldownSeconds($seconds = null)

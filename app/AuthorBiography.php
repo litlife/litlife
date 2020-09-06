@@ -15,7 +15,7 @@ use Stevebauman\Purify\Facades\Purify;
  * @property int|null $author_id
  * @property string $text
  * @property int $edit_user_id
- * @property int $edit_time
+ * @property int $old_edit_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -34,10 +34,10 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereEditTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereEditUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereExternalImagesDownloaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereOldEditTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereUserEditedAt($value)

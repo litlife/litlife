@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\ValidationRules;
 
 use App\Rules\ZipContainsBookFileRule;
 use App\Rules\ZipRule;
@@ -12,8 +12,6 @@ use Tests\TestCase;
 
 class ZipValidationTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
@@ -23,9 +21,9 @@ class ZipValidationTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$request['zip'] = new UploadedFile(__DIR__ . '/Book/Books/test_95.doc.zip',
+		$request['zip'] = new UploadedFile(__DIR__ . '/../Book/Books/test_95.doc.zip',
 			'test_95.doc.zip',
-			filesize(__DIR__ . '/Book/Books/test_95.doc.zip'), null, true);
+			filesize(__DIR__ . '/../Book/Books/test_95.doc.zip'), null, true);
 
 		$validator = Validator::make($request, [
 			'zip' => ['required', 'file', new ZipRule],
@@ -38,9 +36,9 @@ class ZipValidationTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$request['zip'] = new UploadedFile(__DIR__ . '/Book/Books/invalid.zip',
+		$request['zip'] = new UploadedFile(__DIR__ . '/../Book/Books/invalid.zip',
 			'invalid.zip',
-			filesize(__DIR__ . '/Book/Books/invalid.zip'), null, true);
+			filesize(__DIR__ . '/../Book/Books/invalid.zip'), null, true);
 
 		$validator = Validator::make($request, [
 			'zip' => ['required', 'file', new ZipRule],
@@ -54,9 +52,9 @@ class ZipValidationTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$request['zip'] = new UploadedFile(__DIR__ . '/Book/Books/test_95.doc.zip',
+		$request['zip'] = new UploadedFile(__DIR__ . '/../Book/Books/test_95.doc.zip',
 			'test_95.doc.zip',
-			filesize(__DIR__ . '/Book/Books/test_95.doc.zip'), null, true);
+			filesize(__DIR__ . '/../Book/Books/test_95.doc.zip'), null, true);
 
 		$validator = Validator::make($request, [
 			'zip' => ['required', 'file', new ZipContainsBookFileRule()],
@@ -69,9 +67,9 @@ class ZipValidationTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$request['zip'] = new UploadedFile(__DIR__ . '/Book/Books/test.jpeg.zip',
+		$request['zip'] = new UploadedFile(__DIR__ . '/../Book/Books/test.jpeg.zip',
 			'test.jpeg.zip',
-			filesize(__DIR__ . '/Book/Books/test.jpeg.zip'), null, true);
+			filesize(__DIR__ . '/../Book/Books/test.jpeg.zip'), null, true);
 
 		$validator = Validator::make($request, [
 			'zip' => ['required', 'file', new ZipContainsBookFileRule],

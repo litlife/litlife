@@ -3,6 +3,7 @@
 namespace Tests\Feature\User;
 
 use App\Blog;
+use App\Like;
 use App\User;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -49,5 +50,35 @@ class UserShowTest extends TestCase
 
 		$this->get(route('profile', compact('user')))
 			->assertNotFound();
+	}
+
+	public function testFixedBlogPostLikeAuth()
+	{
+		$blog = factory(Blog::class)->states('fixed')->create();
+
+		$like = factory(Like::class)->create([
+			'likeable_type' => 'blog',
+			'likeable_id' => $blog->id
+		]);
+
+		$blog->refresh();
+
+		$this->assertTrue($blog->isFixed());
+		$this->assertEquals(1, $blog->like_count);
+
+		$response = $this->get(route('profile', ['user' => $blog->create_user]))
+			->assertOk()
+			->assertViewHas('top_blog_record', $blog);
+
+		$top_blog_record = $response->viewData('top_blog_record');
+		$this->assertEquals(0, $top_blog_record->likes->count());
+
+		$response = $this->actingAs($like->create_user)
+			->get(route('profile', ['user' => $blog->create_user]))
+			->assertOk()
+			->assertViewHas('top_blog_record', $blog);
+
+		$top_blog_record = $response->viewData('top_blog_record');
+		$this->assertEquals(1, $top_blog_record->likes->count());
 	}
 }

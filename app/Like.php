@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  * @property string $likeable_type
  * @property int $likeable_id
  * @property int $create_user_id
- * @property int $time
+ * @property int $old_time
  * @property string $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -38,7 +38,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereLikeableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereLikeableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Like whereOldTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereUpdatedAt($value)
  * @method static Builder|Like withTrashed()
  * @method static Builder|Like withoutTrashed()

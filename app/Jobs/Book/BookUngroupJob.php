@@ -120,7 +120,7 @@ class BookUngroupJob
 	public function comments()
 	{
 		Comment::where('origin_commentable_id', $this->book->id)
-			->book()
+			->bookType()
 			->update([
 				'commentable_id' => DB::raw('"origin_commentable_id"')
 			]);

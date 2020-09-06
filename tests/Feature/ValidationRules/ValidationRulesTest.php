@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\ValidationRules;
 
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;

@@ -15,16 +15,6 @@ use Tests\TestCase;
 
 class BookAddFb2Test extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function setUp(): void
-	{
-		parent::setUp();
-	}
-
 	public function testAddFb2File()
 	{
 		Storage::fake(config('filesystems.default'));

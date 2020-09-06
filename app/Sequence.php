@@ -23,13 +23,13 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $id
  * @property string $name
  * @property int|null $create_user_id
- * @property int $hide
+ * @property int $old_hide
  * @property int|null $merged_to
  * @property int $book_count
- * @property int $update_time
- * @property int $hide_time
- * @property int $hide_user
- * @property string|null $hide_reason
+ * @property int $old_update_time
+ * @property int $old_hide_time
+ * @property int $old_hide_user
+ * @property string|null $old_hide_reason
  * @property int $user_lib_count
  * @property int $like_count
  * @property string|null $description
@@ -37,16 +37,16 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $accepted_at
- * @property string|null $sent_for_review_at
- * @property int|null $check_user_id
+ * @property string|null $old_accepted_at
+ * @property string|null $old_sent_for_review_at
+ * @property int|null $old_check_user_id
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property int|null $merge_user_id
  * @property Carbon|null $merged_at
- * @property int|null $delete_user_id ID пользователя который удалил серию
- * @property string|null $rejected_at
+ * @property int|null $old_delete_user_id ID пользователя который удалил серию
+ * @property string|null $old_rejected_at
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
@@ -96,34 +96,34 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Sequence unaccepted()
  * @method static Builder|Sequence unchecked()
  * @method static Builder|Sequence void()
- * @method static Builder|Sequence whereAcceptedAt($value)
  * @method static Builder|Sequence whereAddedToFavoritesCount($value)
  * @method static Builder|Sequence whereBookCount($value)
- * @method static Builder|Sequence whereCheckUserId($value)
  * @method static Builder|Sequence whereCreateUserId($value)
  * @method static Builder|Sequence whereCreatedAt($value)
  * @method static Builder|Sequence whereCreator(\App\User $user)
- * @method static Builder|Sequence whereDeleteUserId($value)
  * @method static Builder|Sequence whereDeletedAt($value)
  * @method static Builder|Sequence whereDescription($value)
- * @method static Builder|Sequence whereHide($value)
- * @method static Builder|Sequence whereHideReason($value)
- * @method static Builder|Sequence whereHideTime($value)
- * @method static Builder|Sequence whereHideUser($value)
  * @method static Builder|Sequence whereId($value)
  * @method static Builder|Sequence whereLikeCount($value)
  * @method static Builder|Sequence whereMergeUserId($value)
  * @method static Builder|Sequence whereMergedAt($value)
  * @method static Builder|Sequence whereMergedTo($value)
  * @method static Builder|Sequence whereName($value)
- * @method static Builder|Sequence whereRejectedAt($value)
- * @method static Builder|Sequence whereSentForReviewAt($value)
+ * @method static Builder|Sequence whereOldAcceptedAt($value)
+ * @method static Builder|Sequence whereOldCheckUserId($value)
+ * @method static Builder|Sequence whereOldDeleteUserId($value)
+ * @method static Builder|Sequence whereOldHide($value)
+ * @method static Builder|Sequence whereOldHideReason($value)
+ * @method static Builder|Sequence whereOldHideTime($value)
+ * @method static Builder|Sequence whereOldHideUser($value)
+ * @method static Builder|Sequence whereOldRejectedAt($value)
+ * @method static Builder|Sequence whereOldSentForReviewAt($value)
+ * @method static Builder|Sequence whereOldUpdateTime($value)
  * @method static Builder|Sequence whereStatus($value)
  * @method static Builder|Sequence whereStatusChangedAt($value)
  * @method static Builder|Sequence whereStatusChangedUserId($value)
  * @method static Builder|Sequence whereStatusIn($statuses)
  * @method static Builder|Sequence whereStatusNot($status)
- * @method static Builder|Sequence whereUpdateTime($value)
  * @method static Builder|Sequence whereUpdatedAt($value)
  * @method static Builder|Sequence whereUserEditedAt($value)
  * @method static Builder|Sequence whereUserLibCount($value)

@@ -12,21 +12,6 @@ use Tests\TestCase;
 
 class BookKeywordTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function setUp(): void
-	{
-		parent::setUp();
-
-		BookKeyword::sentOnReview()
-			->update(['status' => StatusEnum::Accepted]);
-
-		BookKeyword::flushCachedOnModerationCount();
-	}
-
 	public function testSearchHttp()
 	{
 		$book_keyword = factory(BookKeyword::class)->create();

@@ -318,6 +318,10 @@ $factory->afterMakingState(App\Author::class, 'accepted', function (\App\Author 
 	$author->statusAccepted();
 });
 
+$factory->afterMakingState(App\Author::class, 'sent_for_review', function (\App\Author $author, $faker) {
+	$author->statusSentForReview();
+});
+
 $factory->afterCreatingState(App\Author::class, 'with_photo', function (\App\Author $author, $faker) {
 
 	$photo = factory(AuthorPhoto::class)

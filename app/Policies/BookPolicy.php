@@ -88,12 +88,12 @@ class BookPolicy extends Policy
 			return false;
 
 		if ($book->isAccepted())
-			// книга принята в общую библиотеку
+			// книга опубликована
 			return false;
 		elseif ($book->isSentForReview()) {
 			// если книга добавлена пользователем
 			if ($book->isUserCreator($auth_user)) {
-				// и у пользователя есть право добавлять книгу в общую библиотеку без опубликования
+				// и у пользователя есть право публиковать книгу
 				if ($auth_user->getPermission('add_book_without_check'))
 					return true;
 			} else {

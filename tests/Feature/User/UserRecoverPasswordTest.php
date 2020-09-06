@@ -32,6 +32,7 @@ class UserRecoverPasswordTest extends TestCase
 			->create();
 
 		$user->suspend();
+		$user->save();
 
 		$email = $user->emails()->first();
 
@@ -81,6 +82,7 @@ class UserRecoverPasswordTest extends TestCase
 
 		$user = $passwordReset->user;
 		$user->suspend();
+		$user->save();
 		$user->refresh();
 		$this->assertFalse($user->isActive());
 

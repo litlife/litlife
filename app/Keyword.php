@@ -18,20 +18,20 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $text
  * @property int $count
- * @property int $action
- * @property int $hide
- * @property int|null $hide_time
- * @property int|null $hide_user
+ * @property int $old_action
+ * @property int $old_hide
+ * @property int|null $old_hide_time
+ * @property int|null $old_hide_user
  * @property int|null $create_user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $accepted_at
- * @property string|null $sent_for_review_at
+ * @property string|null $old_accepted_at
+ * @property string|null $old_sent_for_review_at
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $rejected_at
+ * @property string|null $old_rejected_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookKeyword[] $book_keywords
  * @property-read \App\User|null $create_user
  * @property-read mixed $is_accepted
@@ -68,19 +68,19 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword unchecked()
  * @method static Builder|Model void()
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereSentForReviewAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldAcceptedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldHide($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldHideTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldHideUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereOldSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereStatusChangedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereStatusChangedUserId($value)

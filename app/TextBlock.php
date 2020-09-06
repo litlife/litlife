@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string $text
  * @property int $user_id
- * @property int|null $time
+ * @property int|null $old_time
  * @property int $show_for_all
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -33,9 +33,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|TextBlock whereCreator(\App\User $user)
  * @method static Builder|TextBlock whereId($value)
  * @method static Builder|TextBlock whereName($value)
+ * @method static Builder|TextBlock whereOldTime($value)
  * @method static Builder|TextBlock whereShowForAll($value)
  * @method static Builder|TextBlock whereText($value)
- * @method static Builder|TextBlock whereTime($value)
  * @method static Builder|TextBlock whereUpdatedAt($value)
  * @method static Builder|TextBlock whereUserEditedAt($value)
  * @method static Builder|TextBlock whereUserId($value)

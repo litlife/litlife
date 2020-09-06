@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $user_id
  * @property int $sequence_id
- * @property int $time
+ * @property int $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
@@ -27,8 +27,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Model void()
  * @method static Builder|UserSequence whereCreatedAt($value)
  * @method static Builder|UserSequence whereId($value)
+ * @method static Builder|UserSequence whereOldTime($value)
  * @method static Builder|UserSequence whereSequenceId($value)
- * @method static Builder|UserSequence whereTime($value)
  * @method static Builder|UserSequence whereUpdatedAt($value)
  * @method static Builder|UserSequence whereUserId($value)
  * @mixin Eloquent

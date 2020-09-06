@@ -428,3 +428,11 @@ $factory->afterCreatingState(App\Book::class, 'with_two_minor_books', function (
 
 	BookGroupJob::dispatch($book, $minorBook);
 });
+
+$factory->afterMakingState(App\Book::class, 'description_only', function ($faker) {
+	return [
+		'files_count' => 0,
+		'sections_count' => 0,
+		'page_count' => 0
+	];
+});

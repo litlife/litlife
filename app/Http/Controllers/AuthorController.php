@@ -792,7 +792,7 @@ class AuthorController extends Controller
 		if (count($books_ids) < 1) $books_ids = [];
 
 		$builder = Comment::query()
-			->book()
+			->bookType()
 			->whereIn('commentable_id', $books_ids);
 
 		$resource = (new CommentSearchResource(request(), $builder))
