@@ -7,8 +7,10 @@ use App\User;
 class UserName extends Component
 {
 	public $user;
-	public $href = true;
+	public $href = false;
 	public $itemprop = '';
+	public $name;
+	public $class = '';
 
 	/**
 	 * Create a new component instance.
@@ -19,8 +21,29 @@ class UserName extends Component
 	public function __construct($user, $href = true, $itemprop = '')
 	{
 		$this->user = $user;
-		$this->href = boolval($href);
 		$this->itemprop = $itemprop;
+
+		if (!isset($this->user)) {
+			$this->name = __('User is not found');
+			$this->href = false;
+		} else {
+			if ($this->user->trashed()) {
+				$this->name = __('user.deleted');
+			} else {
+				$this->name = $this->user->userName;
+
+				if (!empty($this->itemprop))
+					$this->itemprop = $itemprop;
+
+				if ($this->user->isOnline()) {
+					$this->class = 'online';
+				}
+			}
+
+			if ($href) {
+				$this->href = route('profile', $this->user);
+			}
+		}
 	}
 
 	/**
@@ -31,31 +54,24 @@ class UserName extends Component
 	public function render()
 	{
 		if (!isset($this->user))
-			return __('User is not found');
+			return '{{ $name }}';
 
 		$output = '';
 
 		if ($this->href) {
-			$output .= '<a href="' . route('profile', $this->user) . '">';
+			$output .= '<a href="{{ $href }}">';
 		}
 
-		if ($this->user->trashed())
-			$output .= __('user.deleted');
-		else {
-			$output .= '<span style="color: #E14900"';
+		$output .= '<span style="color: #E14900"';
+		$output .= ' class="{{ $class }}"';
 
-			if ($this->user->isOnline()) {
-				$output .= ' class="online"';
-			}
-
-			if (!empty($this->itemprop)) {
-				$output .= ' itemprop="' . $this->itemprop . '"';
-			}
-
-			$output .= '>';
-			$output .= $this->user->userName;
-			$output .= '</span>';
+		if (!empty($this->itemprop)) {
+			$output .= ' itemprop="{{ $itemprop }}"';
 		}
+
+		$output .= '>';
+		$output .= '{{ $name }}';
+		$output .= '</span>';
 
 		if ($this->href) {
 			$output .= '</a>';

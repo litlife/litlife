@@ -32,8 +32,11 @@ class TimeComponentTest extends TestCase
 
 		$component = new Time(Carbon::parse('2015-06-02 10:23:18'));
 
-		$this->assertEquals('<span data-toggle="tooltip" data-placement="top" style="cursor:pointer" title="5 лет назад. Вторник">2 июня 2015 13:23</span>',
+		$this->assertEquals('<span data-toggle="tooltip" data-placement="top" style="cursor:pointer" title="{{ $title }}">{{ $text }}</span>',
 			$component->render());
+
+		$this->assertEquals('5 лет назад. Вторник', $component->title);
+		$this->assertEquals('2 июня 2015 13:23', $component->text);
 	}
 
 	/**
@@ -47,7 +50,10 @@ class TimeComponentTest extends TestCase
 
 		$component = new Time('2015-06-02 10:23:18');
 
-		$this->assertEquals('<span data-toggle="tooltip" data-placement="top" style="cursor:pointer" title="5 лет назад. Вторник">2 июня 2015 13:23</span>',
+		$this->assertEquals('<span data-toggle="tooltip" data-placement="top" style="cursor:pointer" title="{{ $title }}">{{ $text }}</span>',
 			$component->render());
+
+		$this->assertEquals('5 лет назад. Вторник', $component->title);
+		$this->assertEquals('2 июня 2015 13:23', $component->text);
 	}
 }

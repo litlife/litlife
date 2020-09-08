@@ -15,11 +15,16 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testDeleted()
 	{
-		$user = null;
+		$author = null;
 
-		$component = new AuthorName($user);
+		$component = new AuthorName($author);
 
-		$this->assertEquals(__('Author is not found'), $component->render());
+		$this->assertEquals('{{ $name }}', $component->render());
+
+		$this->assertEquals(__('Author is not found'), $component->name);
+		$this->assertEquals(null, $component->lang);
+		$this->assertEquals('', $component->class);
+		$this->assertEquals(false, $component->href);
 	}
 
 	/**
@@ -34,8 +39,12 @@ class AuthorNameComponentTest extends TestCase
 
 		$component = new AuthorName($author);
 
-		$this->assertEquals('<a class="author name"  href="' . route('authors.show', $author) . '">' . __('Author deleted') . '</a> (' . $author->lang . ')',
-			$component->render());
+		$this->assertEquals('<a class="{{ $class }}" href="{{ $href }}">{{ $name }}</a>', $component->render());
+
+		$this->assertEquals(__('Author deleted'), $component->name);
+		$this->assertEquals(null, $component->lang);
+		$this->assertEquals('author name', $component->class);
+		$this->assertEquals(route('authors.show', $author), $component->href);
 	}
 
 	/**
@@ -45,14 +54,22 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testHrefEnable()
 	{
-		$author = factory(Author::class)->create();
+		$author = factory(Author::class)->create(['lang' => 'EN']);
 
 		$component = new AuthorName($author);
-
-		$this->assertEquals('<a class="author name"  href="' . route('authors.show', $author) . '">' .
-			$author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname
-			. '</a> (' . $author->lang . ')',
+		/*
+				$this->assertEquals('<a class="author name"  href="' . route('authors.show', $author) . '">' .
+					$author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname
+					. '</a> (' . $author->lang . ')',
+					$component->render());
+		*/
+		$this->assertEquals('<a class="{{ $class }}" href="{{ $href }}">{{ $name }}</a> ({{ $lang }})',
 			$component->render());
+
+		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname, $component->name);
+		$this->assertEquals('EN', $component->lang);
+		$this->assertEquals('author name', $component->class);
+		$this->assertEquals(route('authors.show', $author), $component->href);
 	}
 
 	/**
@@ -62,11 +79,104 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testHrefDisable()
 	{
-		$author = factory(Author::class)->create();
+		$author = factory(Author::class)->create(['lang' => 'EN']);
 
 		$component = new AuthorName($author, false);
+		/*
+				$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname . ' (' . $author->lang . ')',
+					$component->render());
+				*/
+		$this->assertEquals('{{ $name }} ({{ $lang }})', $component->render());
 
-		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname . ' (' . $author->lang . ')',
-			$component->render());
+		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname, $component->name);
+		$this->assertEquals('EN', $component->lang);
+		$this->assertEquals('author name', $component->class);
+		$this->assertEquals(false, $component->href);
+	}
+
+	/**
+	 * A basic test example.
+	 *
+	 * @return void
+	 */
+	public function testLangRUDontShow()
+	{
+		$author = factory(Author::class)->create(['lang' => 'RU']);
+
+		$component = new AuthorName($author);
+		/*
+				$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname . ' (' . $author->lang . ')',
+					$component->render());
+				*/
+		$this->assertEquals('<a class="{{ $class }}" href="{{ $href }}">{{ $name }}</a>', $component->render());
+
+		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname, $component->name);
+		$this->assertEquals('RU', $component->lang);
+		$this->assertEquals('author name', $component->class);
+		$this->assertEquals(route('authors.show', $author), $component->href);
+	}
+
+	/**
+	 * A basic test example.
+	 *
+	 * @return void
+	 */
+	public function testShowLockIfPrivate()
+	{
+		$author = factory(Author::class)
+			->states('private')
+			->create(['lang' => 'EN']);
+
+		$component = new AuthorName($author);
+
+		$this->assertEquals('<a class="{{ $class }}" href="{{ $href }}">{{ $name }}</a> ({{ $lang }}) <i class="fas fa-lock" data-toggle="tooltip" data-placement="top"
+			   title="{{ __("book.private_tooltip") }}"></i>', $component->render());
+
+		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname, $component->name);
+		$this->assertEquals('EN', $component->lang);
+		$this->assertEquals('author name', $component->class);
+		$this->assertEquals(route('authors.show', $author), $component->href);
+	}
+
+	/**
+	 * A basic test example.
+	 *
+	 * @return void
+	 */
+	public function testShowOnlineEnable()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager')
+			->create(['lang' => 'RU']);
+
+		$component = new AuthorName($author, true, true);
+
+		$this->assertEquals('<a class="{{ $class }}" href="{{ $href }}">{{ $name }}</a>', $component->render());
+
+		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname, $component->name);
+		$this->assertEquals('RU', $component->lang);
+		$this->assertEquals('online author name', $component->class);
+		$this->assertEquals(route('authors.show', $author), $component->href);
+	}
+
+	/**
+	 * A basic test example.
+	 *
+	 * @return void
+	 */
+	public function testShowOnlineDisable()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager')
+			->create(['lang' => 'RU']);
+
+		$component = new AuthorName($author, true, false);
+
+		$this->assertEquals('<a class="{{ $class }}" href="{{ $href }}">{{ $name }}</a>', $component->render());
+
+		$this->assertEquals($author->last_name . ' ' . $author->first_name . ' ' . $author->middle_name . ' ' . $author->nickname, $component->name);
+		$this->assertEquals('RU', $component->lang);
+		$this->assertEquals('author name', $component->class);
+		$this->assertEquals(route('authors.show', $author), $component->href);
 	}
 }

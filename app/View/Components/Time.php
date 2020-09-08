@@ -7,6 +7,8 @@ use Carbon\Carbon;
 class Time extends Component
 {
 	public $time;
+	public $title;
+	public $text;
 
 	/**
 	 * Create a new component instance.
@@ -24,6 +26,11 @@ class Time extends Component
 			if (isset(session()->get('geoip')->timezone))
 				$this->time = $time->timezone(session()->get('geoip')->timezone);
 		}
+
+		if (!empty($this->time)) {
+			$this->title = $this->time->diffForHumans() . '. ' . $this->time->formatLocalized('%A');
+			$this->text = trim($this->time->formatLocalized('%e %B %Y %H:%M'));
+		}
 	}
 
 	/**
@@ -33,14 +40,12 @@ class Time extends Component
 	 */
 	public function render()
 	{
-		if (empty($this->time))
-			return '';
+		if (empty($this->text))
+			return <<<'blade'
+blade;
 
-		$output = '<span data-toggle="tooltip" data-placement="top" style="cursor:pointer" title="' .
-			$this->time->diffForHumans() . '. ' . $this->time->formatLocalized('%A') . '">';
-		$output .= trim($this->time->formatLocalized('%e %B %Y %H:%M'));
-		$output .= '</span>';
-
-		return $output;
+		return <<<'blade'
+<span data-toggle="tooltip" data-placement="top" style="cursor:pointer" title="{{ $title }}">{{ $text }}</span>
+blade;
 	}
 }
