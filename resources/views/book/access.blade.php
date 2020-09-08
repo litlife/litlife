@@ -17,6 +17,15 @@
 		</div>
 	@endif
 
+	@if (session('show_how_to_attach_a_file'))
+		<div class="alert alert-info">
+			<i class="fas fa-info"></i> &nbsp;
+			<a href="{{ route('faq') }}#how_attach_a_book_file_to_an_existing_book_page" class="alert-link" target="_blank">
+				{{ __('Click to find out how to attach a file') }}
+			</a>
+		</div>
+	@endif
+
 	@if (session('success'))
 		<div class="alert alert-success alert-dismissable">
 			{{ session('success') }}

@@ -1540,6 +1540,7 @@ class BookController extends Controller
 			if ($book->files_count < 1)
 				return redirect()
 					->route('books.access.edit', $book)
+					->with('show_how_to_attach_a_file', true)
 					->withErrors([__('book.to_access_the_download_at_least_one_file_must_be_attached_to_the_book')]);
 		}
 
