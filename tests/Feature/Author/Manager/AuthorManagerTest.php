@@ -54,40 +54,41 @@ class AuthorManagerTest extends TestCase
 		$this->assertTrue($manager->isSentForReview());
 	}
 
-	public function testEditorRequestHttp()
-	{
-		$author = factory(Author::class)
-			->create();
+	/*
+		public function testEditorRequestHttp()
+		{
+			$author = factory(Author::class)
+				->create();
 
-		$user = factory(User::class)->create();
-		$user->group->author_editor_request = true;
-		$user->push();
+			$user = factory(User::class)->create();
+			$user->group->author_editor_request = true;
+			$user->push();
 
-		$this->actingAs($user)
-			->get(route('authors.editor.request', $author))
-			->assertOk();
+			$this->actingAs($user)
+				->get(route('authors.editor.request', $author))
+				->assertOk();
 
-		$comment = $this->faker->realText(100);
+			$comment = $this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('authors.editor.request_save', $author),
-				['comment' => $comment])
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('authors.show', $author))
-			->assertSessionHas(['success' => __('manager.request_has_been_sent')]);
+			$this->actingAs($user)
+				->post(route('authors.editor.request_save', $author),
+					['comment' => $comment])
+				->assertSessionHasNoErrors()
+				->assertRedirect(route('authors.show', $author))
+				->assertSessionHas(['success' => __('manager.request_has_been_sent')]);
 
-		$manager = $author->managers()->first();
+			$manager = $author->managers()->first();
 
-		$this->assertNotNull($manager);
-		$this->assertEquals($user->id, $manager->create_user_id);
-		$this->assertEquals($user->id, $manager->user_id);
-		$this->assertEquals('editor', $manager->character);
-		$this->assertEquals($author->id, $manager->manageable_id);
-		$this->assertEquals('author', $manager->manageable_type);
-		$this->assertEquals($comment, $manager->comment);
-		$this->assertTrue($manager->isSentForReview());
-	}
-
+			$this->assertNotNull($manager);
+			$this->assertEquals($user->id, $manager->create_user_id);
+			$this->assertEquals($user->id, $manager->user_id);
+			$this->assertEquals('editor', $manager->character);
+			$this->assertEquals($author->id, $manager->manageable_id);
+			$this->assertEquals('author', $manager->manageable_type);
+			$this->assertEquals($comment, $manager->comment);
+			$this->assertTrue($manager->isSentForReview());
+		}
+	*/
 	public function testAttachUserToAuthor()
 	{
 		$admin = factory(User::class)->create();
@@ -594,32 +595,33 @@ class AuthorManagerTest extends TestCase
 		$this->assertTrue($manager->isPrivate());
 	}
 
-	public function testSentEditorRequestIfAuthorPrivate()
-	{
-		$author = factory(Author::class)
-			->states('private')
-			->create();
+	/*
+		public function testSentEditorRequestIfAuthorPrivate()
+		{
+			$author = factory(Author::class)
+				->states('private')
+				->create();
 
-		$user = $author->create_user;
-		$user->group->author_editor_request = true;
-		$user->push();
+			$user = $author->create_user;
+			$user->group->author_editor_request = true;
+			$user->push();
 
-		$comment = $this->faker->realText(300);
+			$comment = $this->faker->realText(300);
 
-		$this->actingAs($user)
-			->post(route('authors.editor.request_save', $author), [
-				'comment' => $comment
-			])
-			->assertSessionHasNoErrors()
-			->assertRedirect()
-			->assertSessionHas(['success' => __('manager.request_is_saved_and_will_be_sent_for_review_after_the_authors_publication')]);
+			$this->actingAs($user)
+				->post(route('authors.editor.request_save', $author), [
+					'comment' => $comment
+				])
+				->assertSessionHasNoErrors()
+				->assertRedirect()
+				->assertSessionHas(['success' => __('manager.request_is_saved_and_will_be_sent_for_review_after_the_authors_publication')]);
 
-		$manager = $author->managers()->first();
+			$manager = $author->managers()->first();
 
-		$this->assertNotNull($manager);
-		$this->assertTrue($manager->isPrivate());
-	}
-
+			$this->assertNotNull($manager);
+			$this->assertTrue($manager->isPrivate());
+		}
+	*/
 	public function testCantApproveIfAuthorIsNotPublished()
 	{
 		$admin = factory(User::class)

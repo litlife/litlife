@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Author;
+namespace Tests\Feature\Author\Manager;
 
 use App\Author;
 use App\User;
@@ -8,32 +8,46 @@ use Tests\TestCase;
 
 class AuthorEditorRequestPolicyTest extends TestCase
 {
-	public function testFalseIfAuthorPrivate()
+	public function testFalse()
 	{
 		$user = factory(User::class)
 			->states('admin')
 			->create();
 
 		$author = factory(Author::class)
-			->states('private')
+			->states('accepted')
 			->create();
 
-		$this->assertTrue($user->can('editorRequest', $author));
+		$this->assertFalse($user->can('editorRequest', $author));
 	}
 
-	public function testTrueIfAuthorHasEditorManager()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+	/*
+		public function testFalseIfAuthorPrivate()
+		{
+			$user = factory(User::class)
+				->states('admin')
+				->create();
 
-		$author = factory(Author::class)
-			->states('with_editor_manager')
-			->create();
+			$author = factory(Author::class)
+				->states('private')
+				->create();
 
-		$this->assertTrue($user->can('editorRequest', $author));
-	}
+			$this->assertTrue($user->can('editorRequest', $author));
+		}
 
+		public function testTrueIfAuthorHasEditorManager()
+		{
+			$user = factory(User::class)
+				->states('admin')
+				->create();
+
+			$author = factory(Author::class)
+				->states('with_editor_manager')
+				->create();
+
+			$this->assertTrue($user->can('editorRequest', $author));
+		}
+	*/
 	public function testFalseIfEditorManagerOnReview()
 	{
 		$author = factory(Author::class)
@@ -51,23 +65,24 @@ class AuthorEditorRequestPolicyTest extends TestCase
 		$this->assertFalse($user->can('editorRequest', $author));
 	}
 
-	public function testTrueIfOtherUserEditorManagerOnReview()
-	{
-		$author = factory(Author::class)
-			->states('with_editor_manager')
-			->create();
+	/*
+		public function testTrueIfOtherUserEditorManagerOnReview()
+		{
+			$author = factory(Author::class)
+				->states('with_editor_manager')
+				->create();
 
-		$manager = $author->managers()->first();
-		$manager->statusSentForReview();
-		$manager->save();
+			$manager = $author->managers()->first();
+			$manager->statusSentForReview();
+			$manager->save();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+			$user = factory(User::class)
+				->states('admin')
+				->create();
 
-		$this->assertTrue($user->can('editorRequest', $author));
-	}
-
+			$this->assertTrue($user->can('editorRequest', $author));
+		}
+	*/
 	public function testFalseIfUserRequestVerification()
 	{
 		$author = factory(Author::class)
@@ -115,21 +130,22 @@ class AuthorEditorRequestPolicyTest extends TestCase
 
 		$this->assertFalse($user->can('editorRequest', $author));
 	}
+	/*
+		public function testTrueIfUserNotAuthor()
+		{
+			$author = factory(Author::class)
+				->states('accepted', 'with_author_manager')
+				->create();
 
-	public function testTrueIfUserNotAuthor()
-	{
-		$author = factory(Author::class)
-			->states('accepted', 'with_author_manager')
-			->create();
+			$manager = $author->managers()->first();
+			$manager->statusAccepted();
+			$manager->save();
 
-		$manager = $author->managers()->first();
-		$manager->statusAccepted();
-		$manager->save();
+			$user = factory(User::class)->create();
+			$user->group->author_editor_request = true;
+			$user->push();
 
-		$user = factory(User::class)->create();
-		$user->group->author_editor_request = true;
-		$user->push();
-
-		$this->assertTrue($user->can('editorRequest', $author));
-	}
+			$this->assertTrue($user->can('editorRequest', $author));
+		}
+		*/
 }

@@ -414,10 +414,10 @@
 
 						@can ('viewOnCheck', App\Manager::class)
 							<a href="{{ route('managers.on_check') }}"
-							   title="{{ __('navbar.managers_on_check') }}" data-boundary="window" data-toggle="tooltip"
+							   title="{{ __('Requests for verification') }}" data-boundary="window" data-toggle="tooltip"
 							   data-placement="right"
 							   class="list-group-item list-group-item-action d-flex {{ active('managers.on_check') }}">
-								<span class="text-nowrap text-truncate">{{ __('navbar.managers_on_check') }}</span>
+								<span class="text-nowrap text-truncate">{{ __('Requests for verification') }}</span>
 								@if ($count = App\Manager::getCachedOnModerationCount())
 									<span class="badge badge-primary badge-pill ml-auto">{{ $count }}</span>
 								@endif

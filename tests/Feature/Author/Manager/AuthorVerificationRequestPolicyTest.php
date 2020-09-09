@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Author;
+namespace Tests\Feature\Author\Manager;
 
 use App\Author;
 use App\User;
