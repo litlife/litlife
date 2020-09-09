@@ -89,67 +89,6 @@ class AuthorManagerTest extends TestCase
 			$this->assertTrue($manager->isSentForReview());
 		}
 	*/
-	public function testAttachUserToAuthor()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->moderator_add_remove = true;
-		$admin->push();
-
-		$author = factory(Author::class)
-			->create();
-
-		$user = factory(User::class)
-			->create();
-
-		$this->actingAs($admin)
-			->post(route('authors.managers.store', ['author' => $author->id]), [
-				'user_id' => $user->id,
-				'character' => 'author'
-			])
-			->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$manager = $author->managers()->first();
-
-		$this->assertNotNull($manager);
-		$this->assertEquals($user->id, $manager->user_id);
-	}
-
-	public function testAttachUserToAuthorIfOtherUserAlreadyAttachedAsAuthor()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->moderator_add_remove = true;
-		$admin->push();
-
-		$author = factory(Author::class)
-			->create();
-
-		$user = factory(User::class)
-			->create();
-
-		$manager = factory(Manager::class)
-			->create([
-				'create_user_id' => $admin->id,
-				'user_id' => $user->id,
-				'character' => 'author',
-				'manageable_id' => $author->id,
-			]);
-
-		$response = $this->actingAs($admin)
-			->post(route('authors.managers.store', ['author' => $author->id]), [
-				'user_id' => $user->id,
-				'character' => 'author'
-			])
-			->assertRedirect();
-
-		//dump(session('errors'));
-
-		$response->assertSessionHasErrors(['user_id' => __('manager.error_author_already_attached')]);
-
-		$count = $author->managers()->count();
-
-		$this->assertEquals(1, $count);
-	}
 
 	public function testAcceptHttp()
 	{
@@ -296,29 +235,6 @@ class AuthorManagerTest extends TestCase
 
 		$this->assertFalse($manager->isAuthorCharacter());
 		$this->assertTrue($manager->isEditorCharacter());
-	}
-
-	public function testAttachAuthorUserGroupOnAttach()
-	{
-		$admin = factory(User::class)->states('admin')->create();
-
-		$author = factory(Author::class)
-			->create();
-
-		$user = factory(User::class)
-			->create();
-
-		$this->actingAs($admin)
-			->post(route('authors.managers.store', ['author' => $author->id]), [
-				'user_id' => $user->id,
-				'character' => 'author'
-			])
-			->assertRedirect()
-			->assertSessionHasNoErrors();
-
-		$user->refresh();
-
-		$this->assertEquals('Автор', $user->groups()->disableCache()->whereName('Автор')->first()->name);
 	}
 
 	public function testAttachAuthorUserGroupOnApprove()
