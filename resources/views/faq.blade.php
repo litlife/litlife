@@ -550,13 +550,21 @@
 						номера электронных кошельков и карт для получения пожертвований.
 					</dd>
 
-					<dt id="why_reader_cant_download_my_book?">
-						<a href="#why_reader_cant_download_my_book">
+					<dt id="why_reader_can_download_my_book">
+						<a href="#why_reader_can_download_my_book">
 							Я автор и добавил книгу. Почему читатель не может скачать мою книгу?</a>
 					</dt>
 
 					<dd>
 						<ul>
+							<li>
+								Проверьте верифицировали ли вы свою страницу автора. Если нет, то
+								<a href="#how_to_verify_the_authors_page" class="text-info">верифицируйте страницу автора</a>.
+							</li>
+							<li>Проверьте есть ли вообще у книги файлы для скачивания.
+								Если нет, то
+								<a href="#how_attach_a_book_file_to_an_existing_book_page" class="text-info">прикрепите файл книги</a>.
+							</li>
 							<li>Проверьте
 								<a href="#how_to_find_out_if_a_book_is_published" class="text-info">опубликована</a>
 								ли книга. Если нет, то
@@ -564,6 +572,10 @@
 							</li>
 							<li>Проверьте открыт ли доступ к скачиванию. Если нет, то
 								<a href="#how_to_open_access_to_reading_or_downloading" class="text-info">откройте доступ к скачиванию</a>.
+							</li>
+							<li>
+								Если все проверки выполнены, но читатель все еще не может скачать вашу книгу, то
+								<a href="#user_question" class="text-info">сообщите нам</a>.
 							</li>
 						</ul>
 					</dd>
@@ -816,7 +828,7 @@
 			</div>
 		@endif
 
-		<div class="card">
+		<div id="user_question" class="card">
 			<div class="card-header">
 				{{ __('If you can not find an answer to your question, please contact us:') }}
 			</div>
