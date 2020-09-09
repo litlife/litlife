@@ -4,6 +4,7 @@ namespace Tests\Feature\Book\File;
 
 use App\Book;
 use App\BookFile;
+use App\Jobs\Book\UpdateBookPagesCount;
 use App\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -28,6 +29,10 @@ class BookFileStoreTest extends TestCase
 
 		$book = factory(Book::class)
 			->create();
+
+		UpdateBookPagesCount::dispatch($book);
+
+		$book->refresh();
 
 		$comment = $this->faker->realText(100);
 		$number = rand(1, 100);

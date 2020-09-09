@@ -685,4 +685,54 @@ class SectionController extends Controller
 				'page' => $page_number
 			]);
 	}
+
+	/**
+	 * Список глав который открывается в диалоговом окне
+	 *
+	 * @param Request $request
+	 * @param Book $book
+	 * @return View
+	 * @throws
+	 */
+	public function listGoToChapter(Request $request, Book $book)
+	{
+		$this->authorize('view_section_list', $book);
+
+		if ($book->isPagesNewFormat()) {
+			$sections = Section::scoped(['book_id' => $book->id, 'type' => 'section'])
+				->when(!$book->isAuthUserCreator(), function ($query) {
+					$query->accepted();
+				})
+				->with(['pages' => function ($query) {
+					$query->where('page', '1');
+				}])
+				->defaultOrder()
+				->withDepth()
+				->get()
+				->toTree();
+
+			return view('book.chapter.list_go_to', [
+				'sections' => $sections,
+				'book' => $book
+			]);
+		} else {
+			$db_path = $book->getBookPath();
+
+			if (!file_exists($db_path))
+				abort(404);
+
+			$sqlite = new BookSqlite();
+			$sqlite->connect($db_path);
+
+			$sections_count = $sqlite->sectionsCount();
+
+			$sections = $sqlite->sections();
+
+			return view('book.chapter.old_page_format_list_go_to', [
+				'sections' => $sections,
+				'sections_count' => $sections_count,
+				'book' => $book
+			]);
+		}
+	}
 }

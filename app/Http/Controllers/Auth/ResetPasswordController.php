@@ -118,8 +118,8 @@ class ResetPasswordController extends Controller
 
 		$user->password = $request->password;
 		$user->setRememberToken(Str::random(60));
-		$user->save();
 		$user->unsuspend();
+		$user->save();
 
 		$not_confirmed_email = $user->emails()
 			->unconfirmed()

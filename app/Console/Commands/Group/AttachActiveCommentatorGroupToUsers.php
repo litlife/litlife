@@ -65,7 +65,7 @@ class AttachActiveCommentatorGroupToUsers extends Command
 		})->where('created_at', '<', now()->subMonths($this->min_months_from_the_date_of_registration))
 			->whereHas('comments', function (Builder $query) {
 				$query->select(DB::raw('"create_user_id", count(*) as "count"'))
-					->book()
+					->bookType()
 					->groupBy('create_user_id')
 					->havingRaw('count(*) >= ?', [$this->min_comments_count]);
 			})->chunkById(100, function ($items) {

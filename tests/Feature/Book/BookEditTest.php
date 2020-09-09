@@ -5,6 +5,7 @@ namespace Tests\Feature\Book;
 use App\Author;
 use App\Book;
 use App\Genre;
+use App\Section;
 use App\Sequence;
 use App\User;
 use Illuminate\Support\Str;
@@ -26,6 +27,96 @@ class BookEditTest extends TestCase
 		$this->actingAs($user)
 			->get(route('books.edit', ['book' => $book]))
 			->assertOk();
+	}
+
+	public function testUpdateHttpAnotherAuthorAppear()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager', 'with_book')
+			->create();
+
+		$user = $author->managers->first()->user;
+
+		$book = $author->books()->first();
+		$book->create_user_id = $user->id;
+		$book->save();
+
+		$this->assertTrue($book->isAccepted());
+		$this->assertTrue($user->can('update', $book));
+
+		$author = factory(Author::class)
+			->create(['last_name' => 'test']);
+
+		$post = [
+			'title' => $book->title,
+			'genres' => [$book->genres()->first()->id],
+			'writers' => [$book->writers()->first()->id, $author->id],
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete'
+		];
+
+		$this->actingAs($user)
+			->patch(route('books.update', $book), $post)
+			->assertSessionHasNoErrors()
+			->assertRedirect();
+
+		$book->refresh();
+
+		$this->assertTrue($book->isSentForReview());
+
+		$book->statusAccepted();
+		$book->save();
+		$book->refresh();
+
+		$post['ti_lb'] = 'EN';
+
+		$this->actingAs($user)
+			->patch(route('books.update', $book), $post)
+			->assertSessionHasNoErrors()
+			->assertRedirect();
+
+		$book->refresh();
+
+		$this->assertTrue($book->isAccepted());
+	}
+
+	public function testEditTitle()
+	{
+		$user = factory(User::class)
+			->create();
+		$user->group->edit_self_book = true;
+		$user->group->edit_other_user_book = true;
+		$user->push();
+
+		$book = factory(Book::class)
+			->states('with_writer', 'with_genre')
+			->create();
+
+		$array = $book->toArray();
+		$array = [
+			'title' => 'V.',
+			'genres' => $book->genres()->pluck('id')->toArray(),
+			'writers' => $book->writers()->any()->pluck('id')->toArray(),
+			'ti_lb' => 'RU', 'ti_olb' => 'RU', 'ready_status' => 'complete'
+		];
+
+		$this->actingAs($user)
+			->followingRedirects()
+			->get(route('books.edit', $book))
+			->assertOk();
+
+		$response = $this->patch(route('books.update', $book), $array)
+			->assertRedirect();
+
+		$response->assertSessionHasNoErrors();
+
+		$book->refresh();
+
+		$this->assertEquals('V.', $book->title);
+
+		$this->assertEquals($book->title_search_helper,
+			mb_strtolower($book->title));
 	}
 
 	public function testUpdateHttp()
@@ -523,4 +614,55 @@ class BookEditTest extends TestCase
 			->assertRedirect(route('books.edit', $book))
 			->assertSessionHasErrors(['is_si' => __('book.you_cant_set_the_si_label_if_the_translator_is_specified')]);
 	}
+
+	public function testCantCutAnnotationIfBookForSale()
+	{
+		config(['litlife.min_annotation_characters_count_for_sale' => 10]);
+
+		$author = factory(Author::class)
+			->states('with_book_for_sale', 'with_author_manager_can_sell')
+			->create();
+
+		$manager = $author->managers->first();
+		$book = $author->books->first();
+		$user = $manager->user;
+
+		$book->is_si = true;
+		$book->create_user()->associate($user);
+		$book->save();
+
+		$annotation = factory(Section::class)
+			->states('annotation')
+			->create(['book_id' => $book->id]);
+
+		$this->assertNotNull($book->fresh()->annotation);
+		$this->assertTrue($book->isForSale());
+
+		$input = [
+			'title' => $book->title,
+			'genres' => [$book->genres()->first()->id],
+			'writers' => $book->writers()->any()->pluck('id')->toArray(),
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete',
+			'annotation' => '123'
+		];
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', ['book' => $book]), $input)
+			->assertRedirect()
+			->assertSessionHasErrors(['annotation' => __('book.annotation_must_contain_at_least_characters_for_sale', [
+				'characters_count' => config('litlife.min_annotation_characters_count_for_sale')
+			])]);
+
+		$this->assertEquals('123', session('_old_input')['annotation']);
+
+		$input['annotation'] = '12345678910';
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', ['book' => $book]), $input)
+			->assertRedirect()
+			->assertSessionHasNoErrors();
+	}
+
 }

@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @property int $book_keyword_id
  * @property int $create_user_id
  * @property int $vote
- * @property int $time
+ * @property int $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookKeywordVote whereCreatedAt($value)
  * @method static Builder|BookKeywordVote whereCreator(\App\User $user)
  * @method static Builder|BookKeywordVote whereId($value)
- * @method static Builder|BookKeywordVote whereTime($value)
+ * @method static Builder|BookKeywordVote whereOldTime($value)
  * @method static Builder|BookKeywordVote whereUpdatedAt($value)
  * @method static Builder|BookKeywordVote whereVote($value)
  * @mixin Eloquent

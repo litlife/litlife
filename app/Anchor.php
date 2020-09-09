@@ -9,22 +9,12 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * App\Anchor
  *
- * @property int $id
- * @property int $book_id
- * @property int $section_id
- * @property string $name
- * @property int|null $link_to_section
  * @method static Builder|Anchor newModelQuery()
  * @method static Builder|Anchor newQuery()
  * @method static Builder|Model orderByField($column, $ids)
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Anchor query()
  * @method static Builder|Model void()
- * @method static Builder|Anchor whereBookId($value)
- * @method static Builder|Anchor whereId($value)
- * @method static Builder|Anchor whereLinkToSection($value)
- * @method static Builder|Anchor whereName($value)
- * @method static Builder|Anchor whereSectionId($value)
  * @mixin Eloquent
  */
 class Anchor extends Model

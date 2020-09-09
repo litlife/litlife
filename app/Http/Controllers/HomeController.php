@@ -11,6 +11,7 @@ use App\Library\BookSearchResource;
 use App\Post;
 use App\Topic;
 use App\Variable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
@@ -122,10 +123,14 @@ class HomeController extends Controller
 		$comments = Comment::latest()
 			->acceptedOrBelongsToAuthUser()
 			->showOnHomePage()
-			->book()
-			->whereHas('book', function ($query) {
-				$query->acceptedAndSentForReview();
-			})
+			->bookType()
+			->whereHasMorph(
+				'commentable',
+				['App\Book'],
+				function (Builder $query) {
+					$query->acceptedAndSentForReview();
+				}
+			)
 			->simplePaginate();
 
 		$comments->load('originCommentable')

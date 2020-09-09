@@ -12,13 +12,14 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @property int $book_id
  * @property int $user_id
- * @property int $code
- * @property int $time
+ * @property int $old_code
+ * @property int $old_time
  * @property \Illuminate\Support\Carbon|null $user_updated_at
  * @property int $id
  * @property int $status
  * @property int|null $origin_book_id
  * @property-read \App\Book $book
+ * @property mixed $code
  * @property-read \App\Book|null $originBook
  * @property-read \App\User $user
  * @method static Builder|BookStatus newModelQuery()
@@ -31,9 +32,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|BookStatus whereBookId($value)
  * @method static Builder|BookStatus whereCode($value)
  * @method static Builder|BookStatus whereId($value)
+ * @method static Builder|BookStatus whereOldCode($value)
+ * @method static Builder|BookStatus whereOldTime($value)
  * @method static Builder|BookStatus whereOriginBookId($value)
  * @method static Builder|BookStatus whereStatus($value)
- * @method static Builder|BookStatus whereTime($value)
  * @method static Builder|BookStatus whereUserId($value)
  * @method static Builder|BookStatus whereUserUpdatedAt($value)
  * @mixin Eloquent

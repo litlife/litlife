@@ -58,6 +58,7 @@ class DeleteInactiveUsers extends Command
 
 		foreach ($users as $user) {
 			$user->suspend();
+			$user->save();
 		}
 
 		$users = User::join('user_datas', 'users.id', '=', 'user_datas.user_id')
@@ -79,6 +80,7 @@ class DeleteInactiveUsers extends Command
 
 		foreach ($users as $user) {
 			$user->suspend();
+			$user->save();
 		}
 
 		User::cachedCountRefresh();

@@ -38,8 +38,6 @@ class UpdateSequenceBooksCount
 				->count();
 		}
 
-		//$this->sequence->ignoreObservableEvents();
 		$this->sequence->save();
-		//$this->sequence->unignoreObservableEvents();
 	}
 }

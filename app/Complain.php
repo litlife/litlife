@@ -24,12 +24,12 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $accepted_at
+ * @property string|null $old_accepted_at
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $sent_for_review_at
- * @property string|null $rejected_at
+ * @property string|null $old_sent_for_review_at
+ * @property string|null $old_rejected_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $complainable
  * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
@@ -63,7 +63,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unchecked()
  * @method static Builder|Model void()
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereAcceptedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreateUserId($value)
@@ -71,8 +70,9 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereSentForReviewAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain whereOldAcceptedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain whereOldRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain whereOldSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatusChangedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatusChangedUserId($value)

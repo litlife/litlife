@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Notification;
+namespace Tests\Feature\Job;
 
 use App\BookParse;
 use App\Jobs\Notification\BookFinishParseJob;

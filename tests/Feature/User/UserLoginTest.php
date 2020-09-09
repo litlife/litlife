@@ -318,6 +318,7 @@ class UserLoginTest extends TestCase
 		$email = $user->emails->first();
 
 		$user->suspend();
+		$user->save();
 
 		$response = $this->post(route('login'),
 			[
@@ -344,6 +345,7 @@ class UserLoginTest extends TestCase
 		$email = $user->emails->first();
 
 		$user->suspend();
+		$user->save();
 
 		$response = $this->post(route('login'),
 			[

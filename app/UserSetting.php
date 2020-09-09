@@ -15,16 +15,18 @@ use Illuminate\Support\Carbon;
  *
  * @property int $user_id
  * @property string|null $bookmark_folder_order
- * @property string|null $email_delivery
- * @property string|null $user_access
+ * @property string|null $old_email_delivery
+ * @property string|null $old_user_access
  * @property string|null $genre_blacklist
  * @property int|null $blog_top_record
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property array|null $permissions_to_act
+ * @property mixed|null $old_permissions_to_act
  * @property bool $login_with_id Можно ли использовать в качестве логина id
  * @property int $font_size_px
  * @property int|null $font_family
+ * @property mixed $email_delivery
+ * @property mixed $user_access
  * @property-read \App\Blog|null $top_blog_record
  * @property-read \App\User $user
  * @method static Builder|UserSetting disableCache()
@@ -37,14 +39,14 @@ use Illuminate\Support\Carbon;
  * @method static Builder|UserSetting whereBlogTopRecord($value)
  * @method static Builder|UserSetting whereBookmarkFolderOrder($value)
  * @method static Builder|UserSetting whereCreatedAt($value)
- * @method static Builder|UserSetting whereEmailDelivery($value)
  * @method static Builder|UserSetting whereFontFamily($value)
  * @method static Builder|UserSetting whereFontSizePx($value)
  * @method static Builder|UserSetting whereGenreBlacklist($value)
  * @method static Builder|UserSetting whereLoginWithId($value)
- * @method static Builder|UserSetting wherePermissionsToAct($value)
+ * @method static Builder|UserSetting whereOldEmailDelivery($value)
+ * @method static Builder|UserSetting whereOldPermissionsToAct($value)
+ * @method static Builder|UserSetting whereOldUserAccess($value)
  * @method static Builder|UserSetting whereUpdatedAt($value)
- * @method static Builder|UserSetting whereUserAccess($value)
  * @method static Builder|UserSetting whereUserId($value)
  * @method static Builder|UserSetting withCacheCooldownSeconds($seconds = null)
  * @mixin Eloquent
@@ -54,8 +56,11 @@ class UserSetting extends Model
 	use Cachable;
 
 	public $permissionCollection;
+
 	public $emailDeliveryCollection;
+
 	protected $primaryKey = 'user_id';
+
 	protected $attributes =
 		[
 			'bookmark_folder_order' => '',
@@ -64,12 +69,14 @@ class UserSetting extends Model
 			'font_size_px' => 15,
 			'font_family' => null
 		];
+
 	protected $fillable = [
 		'user_id',
 		'login_with_id',
 		'font_size_px',
 		'font_family'
 	];
+
 	protected $casts = [
 		'login_with_id' => 'boolean',
 		'permissions_to_act' => 'array'

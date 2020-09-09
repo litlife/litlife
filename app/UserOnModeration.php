@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
  * App\UserOnModeration
  *
  * @property int $user_id
- * @property int|null $time
+ * @property int|null $old_time
  * @property int $user_adds_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static Builder|Model void()
  * @method static Builder|UserOnModeration whereCreatedAt($value)
  * @method static Builder|UserOnModeration whereId($value)
- * @method static Builder|UserOnModeration whereTime($value)
+ * @method static Builder|UserOnModeration whereOldTime($value)
  * @method static Builder|UserOnModeration whereUpdatedAt($value)
  * @method static Builder|UserOnModeration whereUserAddsId($value)
  * @method static Builder|UserOnModeration whereUserId($value)

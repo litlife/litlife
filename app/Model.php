@@ -15,6 +15,9 @@ abstract class Model extends Eloquent
 	//use CacheQueryBuilder;
 	use PaginatableTrait;
 
+	// set default date Format
+	public $dateFormat = 'Y-m-d H:i:s';
+
 	public function scopeVoid($query)
 	{
 		return $query;

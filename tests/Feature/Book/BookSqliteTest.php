@@ -519,6 +519,17 @@ class BookSqliteTest extends TestCase
 			->assertSee('"' . route('books.old.page', ['book' => $this->book, 'page' => 1]) . '"', false)
 			->assertSee('"' . route('books.old.page', ['book' => $this->book, 'page' => 2]) . '#section_2"', false);
 	}
+
+	public function testListGoToChapters()
+	{
+		$this->createSectionsList();
+
+		$this->get(route('books.sections.list_go_to', ['book' => $this->book]))
+			->assertOk()
+			->assertViewHas('book', $this->book)
+			->assertViewHas('sections_count', 2)
+			->assertViewIs('book.chapter.old_page_format_list_go_to');
+	}
 }
 
 

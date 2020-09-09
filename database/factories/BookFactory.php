@@ -20,7 +20,7 @@ use Illuminate\Support\Str;
 $factory->define(App\Book::class, function (Faker $faker) {
 	return [
 		'title' => trim(mb_substr($faker->realText(500), 0, 100)) . ' ' . Str::random(10),
-		'page_count' => rand(1, 150),
+		'page_count' => 0,
 		'ti_lb' => 'EN',
 		'ti_olb' => 'RU',
 		'pi_bn' => $faker->realText(20),
@@ -427,4 +427,12 @@ $factory->afterCreatingState(App\Book::class, 'with_two_minor_books', function (
 		->create();
 
 	BookGroupJob::dispatch($book, $minorBook);
+});
+
+$factory->afterMakingState(App\Book::class, 'description_only', function ($faker) {
+	return [
+		'files_count' => 0,
+		'sections_count' => 0,
+		'page_count' => 0
+	];
 });

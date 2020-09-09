@@ -11,10 +11,10 @@ use Illuminate\Support\Carbon;
 /**
  * App\BookSimilarVote
  *
- * @property int|null $book_similar_id
+ * @property int|null $old_book_similar_id
  * @property int $create_user_id
  * @property int $vote
- * @property int $time
+ * @property int $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $book_id
@@ -30,13 +30,13 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookSimilarVote query()
  * @method static Builder|Model void()
  * @method static Builder|BookSimilarVote whereBookId($value)
- * @method static Builder|BookSimilarVote whereBookSimilarId($value)
  * @method static Builder|BookSimilarVote whereCreateUserId($value)
  * @method static Builder|BookSimilarVote whereCreatedAt($value)
  * @method static Builder|BookSimilarVote whereCreator(\App\User $user)
  * @method static Builder|BookSimilarVote whereId($value)
+ * @method static Builder|BookSimilarVote whereOldBookSimilarId($value)
+ * @method static Builder|BookSimilarVote whereOldTime($value)
  * @method static Builder|BookSimilarVote whereOtherBookId($value)
- * @method static Builder|BookSimilarVote whereTime($value)
  * @method static Builder|BookSimilarVote whereUpdatedAt($value)
  * @method static Builder|BookSimilarVote whereVote($value)
  * @mixin Eloquent

@@ -351,20 +351,23 @@ class AuthorPolicy extends Policy
 		if ($author->trashed())
 			return false;
 
-		$managers = $author->managers;
+		$this->deny(__('Submission of new applications for editors authors is closed'));
+		/*
+				$managers = $author->managers;
 
-		foreach ($managers as $manager) {
-			if ($manager->user_id == $auth_user->id) {
-				if ($manager->isSentForReview())
-					return false;
+				foreach ($managers as $manager) {
+					if ($manager->user_id == $auth_user->id) {
+						if ($manager->isSentForReview())
+							return false;
 
-				if ($manager->isPrivate())
-					return false;
+						if ($manager->isPrivate())
+							return false;
 
-				if ($manager->isAccepted())
-					return false;
-			}
-		}
+						if ($manager->isAccepted())
+							return false;
+					}
+				}
+				*/
 
 		return $auth_user->getPermission('author_editor_request');
 	}

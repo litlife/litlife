@@ -113,9 +113,11 @@ class BookFileObserver
 		if ($file->isSentForReview())
 			BookFile::flushCachedOnModerationCount();
 
-		if ($file->book->isFailedParse()) {
-			if ($file->isSource())
+		if ($file->book->parse->isFailed()) {
+			if ($file->isSource()) {
 				$file->book->parse->success();
+				$file->book->push();
+			}
 		}
 	}
 

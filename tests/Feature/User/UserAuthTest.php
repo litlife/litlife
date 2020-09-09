@@ -30,6 +30,7 @@ class UserAuthTest extends TestCase
 		$email = $user->emails()->first();
 
 		$user->suspend();
+		$user->save();
 		$user->refresh();
 
 		$response = $this->followingRedirects()
@@ -41,6 +42,7 @@ class UserAuthTest extends TestCase
 			->assertSeeText(__('auth.go_to_recover_password'));
 
 		$user->unsuspend();
+		$user->save();
 		$user->refresh();
 
 		$response = $this->followingRedirects()

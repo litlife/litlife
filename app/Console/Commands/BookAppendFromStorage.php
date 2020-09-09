@@ -162,7 +162,7 @@ class BookAppendFromStorage extends Command
 			fclose($stream);
 
 			$book->parse->wait();
-			$book->save();
+			$book->push();
 
 			return true;
 		});

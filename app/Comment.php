@@ -14,11 +14,8 @@ use App\Traits\NestedItems;
 use App\Traits\UserAgentTrait;
 use App\Traits\UserCreate;
 use Awobaz\Compoships\Compoships;
-use Eloquent;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -28,36 +25,36 @@ use Illuminate\Support\Facades\Cache;
  * @property int $commentable_id
  * @property int $old_commentable_type
  * @property int $create_user_id
- * @property int $time
+ * @property int $old_time
  * @property string $text
- * @property string|null $ip_old
+ * @property string|null $old_ip_old
  * @property int $vote_up
  * @property int $vote_down
- * @property int $is_spam
- * @property mixed|null $user_vote_for_spam
+ * @property int $old_is_spam
+ * @property mixed|null $old_user_vote_for_spam
  * @property string|null $bb_text
  * @property int|null $edit_user_id
- * @property int $edit_time
- * @property int $reputation_count
- * @property int $hide
- * @property int $hide_time
- * @property int $hide_user
- * @property string|null $complain_user_ids
- * @property int $checked
+ * @property int $old_edit_time
+ * @property int $old_reputation_count
+ * @property int $old_hide
+ * @property int $old_hide_time
+ * @property int $old_hide_user
+ * @property string|null $old_complain_user_ids
+ * @property int $old_checked
  * @property int $vote
- * @property int $action
+ * @property int $old_action
  * @property string|null $tree
  * @property int $children_count
  * @property int $hide_from_top
- * @property int $_lft
- * @property int $_rgt
+ * @property int $old__lft
+ * @property int $old__rgt
  * @property int|null $parent_id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $accepted_at
- * @property string|null $sent_for_review_at
+ * @property string|null $old_accepted_at
+ * @property string|null $old_sent_for_review_at
  * @property string $commentable_type
  * @property int $level
  * @property bool $external_images_downloaded
@@ -67,10 +64,9 @@ use Illuminate\Support\Facades\Cache;
  * @property bool $image_size_defined
  * @property string $ip
  * @property int|null $user_agent_id
- * @property string|null $rejected_at
+ * @property string|null $old_rejected_at
  * @property int|null $characters_count
  * @property int|null $origin_commentable_id
- * @property-read \App\Book $book
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $commentable
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
  * @property-read \App\User $create_user
@@ -110,7 +106,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment notTransferred()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment onlyChecked()
- * @method static Builder|Comment onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Comment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orDescendants($ids)
  * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderByOriginFirstAndLatest($commentable)
@@ -127,60 +123,60 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment unchecked()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment void()
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCharactersCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereChecked($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereChildrenCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereComplainUserIds($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereEditTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereEditUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereExternalImagesDownloaded($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereHide($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereHideFromTop($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereImageSizeDefined($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereIpOld($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereIsSpam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereLft($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldAcceptedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldAction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldChecked($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldCommentableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldComplainUserIds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldEditTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldHide($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldHideTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldHideUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldIpOld($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldIsSpam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldLft($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldRejectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldReputationCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldRgt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldSentForReviewAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldUserVoteForSpam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOriginCommentableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereParentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereReputationCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereRgt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereStatusChangedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereStatusChangedUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereStatusIn($statuses)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereStatusNot($status)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereTree($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUserAgentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUserEditedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUserVoteForSpam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVote($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVoteDown($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVoteUp($value)
- * @method static Builder|Comment withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|Comment withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment withUnchecked()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment withoutCheckedScope()
- * @method static Builder|Comment withoutTrashed()
- * @mixin Eloquent
+ * @method static \Illuminate\Database\Query\Builder|Comment withoutTrashed()
+ * @mixin \Eloquent
  */
 class Comment extends Model
 {
@@ -267,11 +263,6 @@ class Comment extends Model
 	function user()
 	{
 		return $this->belongsTo('App\User', 'create_user_id', 'id');
-	}
-
-	public function book()
-	{
-		return $this->belongsTo('App\Book', 'commentable_id', 'id');
 	}
 
 	public function commentable()
@@ -391,7 +382,7 @@ class Comment extends Model
 		return false;
 	}
 
-	public function scopeBook($query)
+	public function scopeBookType($query)
 	{
 		return $query->where('commentable_type', 'book');
 	}

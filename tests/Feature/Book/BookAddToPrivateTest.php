@@ -249,4 +249,24 @@ class BookAddToPrivateTest extends TestCase
 
 		$this->assertTrue($manager->isPrivate());
 	}
+
+	public function testReturnToPrivateIfBookPurchased()
+	{
+		$user = factory(User::class)->create();
+		$user->group->check_books = true;
+		$user->push();
+
+		$book = factory(Book::class)->create();
+		$book->bought_times_count = 0;
+		$book->push();
+
+		$this->assertTrue($user->can('addToPrivate', $book));
+
+		$book = factory(Book::class)->create();
+		$book->bought_times_count = 1;
+		$book->push();
+
+		$this->assertFalse($user->can('addToPrivate', $book));
+	}
+
 }

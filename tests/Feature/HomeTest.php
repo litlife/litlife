@@ -285,14 +285,4 @@ class HomeTest extends TestCase
 			->assertSeeText($post->text)
 			->assertDontSeeText($post_on_review->text);
 	}
-	/*
-		public function test()
-		{
-			for ($a = 0; $a < 100; $a++)
-			{
-				$this->get(route('test'))
-					->assertOk();
-			}
-		}
-		*/
 }

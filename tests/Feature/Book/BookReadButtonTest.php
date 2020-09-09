@@ -4,6 +4,7 @@ namespace Tests\Feature\Book;
 
 use App\Author;
 use App\Book;
+use App\Jobs\Book\UpdateBookPagesCount;
 use App\Section;
 use App\User;
 use Tests\TestCase;
@@ -249,6 +250,8 @@ class BookReadButtonTest extends TestCase
 		$section = factory(Section::class)
 			->states('private')
 			->create(['book_id' => $book->id]);
+
+		UpdateBookPagesCount::dispatch($book);
 
 		$this->get(route('books.show', ['book' => $book]))
 			->assertOk()

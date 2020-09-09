@@ -19,11 +19,11 @@ use Illuminate\Database\Query\Builder;
  * @property string|null $i_hate
  * @property string|null $about_self
  * @property string|null $favorite_quote
- * @property int|null $book_added_comment_count
+ * @property int|null $old_book_added_comment_count
  * @property int|null $blog_record_comment_count
- * @property string|null $last_ip
+ * @property string|null $old_last_ip
  * @property int $old_friends_news_last_time_watch
- * @property int|null $time_edit_profile
+ * @property int|null $old_time_edit_profile
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -49,7 +49,6 @@ use Illuminate\Database\Query\Builder;
  * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereAboutSelf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBlogRecordCommentCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBookAddedCommentCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBooksPurchasedCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereCreatedAuthorsCount($value)
@@ -66,13 +65,14 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereIHate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereILove($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereInvitationToTakeSurveyHasBeenSent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLastIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLastNewsViewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLastTimePasswordIsReset($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldBookAddedCommentCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldFriendsNewsLastTimeWatch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldLastIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldTimeEditProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData wherePasswordResetCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereReferUsersCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereTimeEditProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUserId($value)
  * @method static Builder|UserData withTrashed()
@@ -105,7 +105,6 @@ class UserData extends Model
 			'i_hate' => '',
 			'about_self' => '',
 			'favorite_quote' => '',
-			'book_added_comment_count' => 0,
 			'blog_record_comment_count' => 0,
 			'created_books_count' => 0,
 			'created_authors_count' => 0,

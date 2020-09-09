@@ -106,7 +106,8 @@ class BookAccessTest extends TestCase
 				'download_access' => true
 			])
 			->assertOk()
-			->assertSeeText(__('book.to_access_the_download_at_least_one_file_must_be_attached_to_the_book'));
+			->assertSeeText(__('book.to_access_the_download_at_least_one_file_must_be_attached_to_the_book'))
+			->assertSeeText(__('Click to find out how to attach a file'));
 
 		$book->refresh();
 		$this->assertFalse($book->isDownloadAccess());

@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $name
  * @property string|null $description
- * @property int $create_time
+ * @property int $old_create_time
  * @property int|null $create_user_id
  * @property int $topic_count
  * @property int $post_count
@@ -24,9 +24,9 @@ use Illuminate\Support\Carbon;
  * @property int|null $forum_group_id
  * @property string|null $obj_type
  * @property int|null $obj_id
- * @property int $hide
- * @property int $hide_time
- * @property int $hide_user
+ * @property int $old_hide
+ * @property int $old_hide_time
+ * @property int $old_hide_user
  * @property int $min_message_count
  * @property bool $private
  * @property string|null $private_user_ids
@@ -57,16 +57,12 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Forum query()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum void()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereAutofixFirstPostInCreatedTopics($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereForumGroupId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereIsIdeaForum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereLastPostId($value)
@@ -75,6 +71,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereObjId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereObjType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldCreateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldHide($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldHideTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOrderTopicsBasedOnFixPostLikes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum wherePostCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum wherePrivate($value)

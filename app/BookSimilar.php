@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * App\BookSimilar
  *
- * @property int $id
- * @property int $book_id
- * @property int $book_id2
- * @property int $rating
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookSimilarVote[] $votes
  * @method static Builder|BookSimilar newModelQuery()
  * @method static Builder|BookSimilar newQuery()
@@ -20,10 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookSimilar query()
  * @method static Builder|Model void()
- * @method static Builder|BookSimilar whereBookId($value)
- * @method static Builder|BookSimilar whereBookId2($value)
- * @method static Builder|BookSimilar whereId($value)
- * @method static Builder|BookSimilar whereRating($value)
  * @mixin Eloquent
  */
 class BookSimilar extends Model

@@ -71,7 +71,7 @@ class BookFilePolicyTest extends TestCase
 		$book->push();
 		$book->refresh();
 
-		$this->assertFalse($book->isParsed());
+		$this->assertFalse($book->parse->isSucceed());
 		$this->assertFalse($book->isDescriptionOnly());
 
 		$this->assertTrue($user->can('addFiles', $book));

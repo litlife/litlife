@@ -10,20 +10,11 @@ use App\Sequence;
 use App\User;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use Litlife\Fb2\Fb2;
 use Tests\TestCase;
 
 class BookAddFb2Test extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function setUp(): void
-	{
-		parent::setUp();
-	}
-
 	public function testAddFb2File()
 	{
 		Storage::fake(config('filesystems.default'));
@@ -582,5 +573,41 @@ EOF;
 
 		$this->assertEquals('Текст четвертой', $chapters->get(3)->title);
 		$this->assertEquals('<p>главы</p>', $chapters->get(3)->getContent());
+	}
+
+	public function testSequenceSearch()
+	{
+		Storage::fake(config('filesystems.default'));
+
+		$fb2 = new Fb2();
+		$fb2->setFile(__DIR__ . '/Books/test.fb2');
+
+		foreach ($fb2->description()->getFirstChild('title-info')->childs('sequences') as $sequence) {
+
+			$this->assertEquals('Title', $sequence->getNode()->getAttribute('name'));
+			$this->assertEquals('1', $sequence->getNode()->getAttribute('number'));
+		}
+
+		Sequence::where('name', 'ilike', 'Title')
+			->delete();
+
+		$book = factory(Book::class)->create([
+			'create_user_id' => 50000,
+			'is_si' => false,
+			'is_lp' => false,
+			'age' => 0
+		]);
+
+		$sequence = factory(Sequence::class)
+			->create(['name' => 'New title']);
+
+		$addFb2File = new AddFb2File();
+		$addFb2File->setBook($book);
+		$addFb2File->setFile(__DIR__ . '/Books/test.fb2');
+		$addFb2File->init();
+
+		$book->refresh();
+
+		$this->assertEquals('Title', $book->sequences->first()->name);
 	}
 }

@@ -12,11 +12,6 @@ use Tests\TestCase;
 
 class BookForbidToChangeTest extends TestCase
 {
-	public function setUp(): void
-	{
-		parent::setUp();
-	}
-
 	public function testAttribute()
 	{
 		$book = factory(Book::class)->create();

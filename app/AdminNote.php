@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int $admin_noteable_id
  * @property string|null $text
  * @property int|null $create_user_id
- * @property int|null $time
+ * @property int|null $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -38,8 +38,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereOldTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereUserEditedAt($value)
  * @method static Builder|AdminNote withTrashed()

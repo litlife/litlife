@@ -39,7 +39,7 @@ class CommentUpdateTest extends TestCase
 		$user->push();
 		$user->refresh();
 
-		$book = $comment->book;
+		$book = $comment->commentable;
 
 		$book->delete();
 		$comment->refresh();

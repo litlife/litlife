@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $create_user_id
  * @property string $title
- * @property int $time
+ * @property int $old_time
  * @property int $bookmark_count
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -35,7 +35,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereOldTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereUpdatedAt($value)
  * @method static Builder|BookmarkFolder withTrashed()

@@ -362,12 +362,12 @@ class CommentTest extends TestCase
 			->create();
 
 		$this->actingAs($comment->create_user)
-			->get(route('books.show', $comment->book->id))
+			->get(route('books.show', $comment->commentable->id))
 			->assertOk()
 			->assertSeeText($comment->text);
 
 		$this->actingAs($user)
-			->get(route('books.show', $comment->book->id))
+			->get(route('books.show', $comment->commentable->id))
 			->assertOk()
 			->assertDontSeeText($comment->text)
 			->assertSeeText(trans_choice('comment.on_check', 1));

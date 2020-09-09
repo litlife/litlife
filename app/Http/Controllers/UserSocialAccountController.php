@@ -169,6 +169,7 @@ class UserSocialAccountController extends Controller
 
 						if ($user->isSuspended()) {
 							$user->unsuspend();
+							$user->save();
 							$user->refresh();
 						}
 

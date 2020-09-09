@@ -342,7 +342,7 @@ class SequenceController extends Controller
 		if (count($books_ids) < 1) $books_ids = [];
 
 		$builder = Comment::whereIn('commentable_id', $books_ids)
-			->book();
+			->bookType();
 
 		$resource = (new CommentSearchResource(request(), $builder))
 			->setViewType('comment.list.default');

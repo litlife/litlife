@@ -17,20 +17,20 @@ use Illuminate\Support\Facades\DB;
  *
  * @property int $id
  * @property bool $is_read
- * @property bool|null $recepient_del
- * @property bool|null $sender_del
+ * @property bool|null $old_recepient_del
+ * @property bool|null $old_sender_del
  * @property int|null $recepient_id
  * @property int $create_user_id
  * @property string $text
- * @property int $create_time
- * @property bool $is_spam
+ * @property int $old_create_time
+ * @property bool $old_is_spam
  * @property string|null $bb_text
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property bool $external_images_downloaded
  * @property int $new Если 1, то сообщение новое (не прочитано), если 0, то прочитано
- * @property bool $image_size_defined
+ * @property bool $old_image_size_defined
  * @property int|null $conversation_id
  * @property string|null $deleted_at_for_created_user
  * @property Carbon|null $user_updated_at
@@ -61,7 +61,6 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder|Message void()
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereConversationId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Message whereCreateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereCreator(\App\User $user)
@@ -69,13 +68,14 @@ use Illuminate\Support\Facades\DB;
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereDeletedAtForCreatedUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereExternalImagesDownloaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Message whereImageSizeDefined($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereIsRead($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Message whereIsSpam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereNew($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Message whereRecepientDel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Message whereOldCreateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Message whereOldImageSizeDefined($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Message whereOldIsSpam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Message whereOldRecepientDel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Message whereOldSenderDel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereRecepientId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Message whereSenderDel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereUserUpdatedAt($value)

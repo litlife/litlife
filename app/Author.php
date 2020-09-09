@@ -30,15 +30,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $books_count
  * @property int $old_rating
  * @property string|null $lang
- * @property int $time
+ * @property int $old_time
  * @property string $nickname
  * @property string|null $home_page
  * @property string|null $email
- * @property int $action
+ * @property int $old_action
  * @property string|null $description
- * @property int $translate_books_count
+ * @property int $old_translate_books_count
  * @property int|null $create_user_id
- * @property int $hide
+ * @property int $old_hide
  * @property int|null $redirect_to_author_id
  * @property int $comments_count
  * @property string|null $wikipedia_url
@@ -49,11 +49,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $dead_place
  * @property string|null $years_creation
  * @property int|null $edit_user_id
- * @property int|null $edit_time
- * @property int|null $hide_time
- * @property int|null $delete_user_id
- * @property string|null $hide_reason
- * @property int $user_show
+ * @property int|null $old_edit_time
+ * @property int|null $old_hide_time
+ * @property int|null $old_delete_user_id
+ * @property string|null $old_hide_reason
+ * @property int $old_user_show
  * @property string|null $orig_last_name
  * @property string|null $orig_first_name
  * @property string|null $orig_middle_name
@@ -79,16 +79,16 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property Carbon|null $view_updated_at
  * @property string|null $merged_at
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $accepted_at
- * @property string|null $sent_for_review_at
- * @property int|null $check_user_id
+ * @property string|null $old_accepted_at
+ * @property string|null $old_sent_for_review_at
+ * @property int|null $old_check_user_id
  * @property string $gender
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property string|null $name_helper Вспомогательный столбец для быстрого trgm поиска
  * @property int|null $biography_id
- * @property string|null $rejected_at
+ * @property string|null $old_rejected_at
  * @property bool $rating_changed Если рейтинг у книг изменился, то значение будет true
  * @property int $admin_notes_count
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
@@ -173,25 +173,20 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author unaccepted()
  * @method static Builder|Author unchecked()
  * @method static Builder|Author void()
- * @method static Builder|Author whereAcceptedAt($value)
- * @method static Builder|Author whereAction($value)
  * @method static Builder|Author whereAddedToFavoritesCount($value)
  * @method static Builder|Author whereAdminNotesCount($value)
  * @method static Builder|Author whereBiographyId($value)
  * @method static Builder|Author whereBooksCount($value)
  * @method static Builder|Author whereBornDate($value)
  * @method static Builder|Author whereBornPlace($value)
- * @method static Builder|Author whereCheckUserId($value)
  * @method static Builder|Author whereCommentsCount($value)
  * @method static Builder|Author whereCreateUserId($value)
  * @method static Builder|Author whereCreatedAt($value)
  * @method static Builder|Author whereCreator(\App\User $user)
  * @method static Builder|Author whereDeadDate($value)
  * @method static Builder|Author whereDeadPlace($value)
- * @method static Builder|Author whereDeleteUserId($value)
  * @method static Builder|Author whereDeletedAt($value)
  * @method static Builder|Author whereDescription($value)
- * @method static Builder|Author whereEditTime($value)
  * @method static Builder|Author whereEditUserId($value)
  * @method static Builder|Author whereEmail($value)
  * @method static Builder|Author whereFirstName($value)
@@ -200,9 +195,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author whereGroupAddTime($value)
  * @method static Builder|Author whereGroupAddUser($value)
  * @method static Builder|Author whereGroupId($value)
- * @method static Builder|Author whereHide($value)
- * @method static Builder|Author whereHideReason($value)
- * @method static Builder|Author whereHideTime($value)
  * @method static Builder|Author whereHomePage($value)
  * @method static Builder|Author whereId($value)
  * @method static Builder|Author whereLang($value)
@@ -212,8 +204,21 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author whereMiddleName($value)
  * @method static Builder|Author whereNameHelper($value)
  * @method static Builder|Author whereNickname($value)
+ * @method static Builder|Author whereOldAcceptedAt($value)
+ * @method static Builder|Author whereOldAction($value)
+ * @method static Builder|Author whereOldCheckUserId($value)
+ * @method static Builder|Author whereOldDeleteUserId($value)
+ * @method static Builder|Author whereOldEditTime($value)
  * @method static Builder|Author whereOldGender($value)
+ * @method static Builder|Author whereOldHide($value)
+ * @method static Builder|Author whereOldHideReason($value)
+ * @method static Builder|Author whereOldHideTime($value)
  * @method static Builder|Author whereOldRating($value)
+ * @method static Builder|Author whereOldRejectedAt($value)
+ * @method static Builder|Author whereOldSentForReviewAt($value)
+ * @method static Builder|Author whereOldTime($value)
+ * @method static Builder|Author whereOldTranslateBooksCount($value)
+ * @method static Builder|Author whereOldUserShow($value)
  * @method static Builder|Author whereOldVoteAverage($value)
  * @method static Builder|Author whereOrigFirstName($value)
  * @method static Builder|Author whereOrigLastName($value)
@@ -222,19 +227,14 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author whereRating($value)
  * @method static Builder|Author whereRatingChanged($value)
  * @method static Builder|Author whereRedirectToAuthorId($value)
- * @method static Builder|Author whereRejectedAt($value)
- * @method static Builder|Author whereSentForReviewAt($value)
  * @method static Builder|Author whereStatus($value)
  * @method static Builder|Author whereStatusChangedAt($value)
  * @method static Builder|Author whereStatusChangedUserId($value)
  * @method static Builder|Author whereStatusIn($statuses)
  * @method static Builder|Author whereStatusNot($status)
- * @method static Builder|Author whereTime($value)
- * @method static Builder|Author whereTranslateBooksCount($value)
  * @method static Builder|Author whereUpdatedAt($value)
  * @method static Builder|Author whereUserEditedAt($value)
  * @method static Builder|Author whereUserLibCount($value)
- * @method static Builder|Author whereUserShow($value)
  * @method static Builder|Author whereViewAll($value)
  * @method static Builder|Author whereViewDay($value)
  * @method static Builder|Author whereViewMonth($value)
@@ -263,16 +263,19 @@ class Author extends Model
 	use FavoritableTrait;
 
 	protected static $recordEvents = [];
+
 	protected $attributes =
 		[
 			'status' => StatusEnum::Private
 		];
+
 	protected $indexConfigurator = AuthorIndexConfigurator::class;
 
 	// Here you can specify a mapping for a model fields.
 	protected $searchRules = [
 		//
 	];
+
 	protected $mapping = [
 		'properties' => [
 			'first_name' => [
@@ -337,19 +340,23 @@ class Author extends Model
 		'orig_first_name',
 		'orig_middle_name'
 	];
+
 	protected $appends = ['fullName'];
+
 	protected $dates = [
 		'status_changed_at',
 		'connected_at',
 		'view_updated_at',
 		'user_edited_at'
 	];
+
 	protected $casts = [
 		'nickname' => 'string',
 		'first_name' => 'string',
 		'last_name' => 'string',
 		'middle_name' => 'string'
 	];
+
 	protected $visible = [
 		'id',
 		'first_name',
@@ -366,6 +373,7 @@ class Author extends Model
 		'status_changed_at',
 		'like_count'
 	];
+
 	protected $perPage = 20;
 
 	const FAVORITABLE_PIVOT_TABLE = 'user_authors';
@@ -613,12 +621,12 @@ class Author extends Model
 		return $query;
 	}
 
-
 	public function getFullNameAttribute()
 	{
-		$model = &$this;
-
-		return trim(rtrim(rtrim($model->last_name . ' ' . $model->first_name) . ' ' . $model->middle_name) . ' ' . $model->nickname);
+		return trim(rtrim(rtrim($this->attributes['last_name'] . ' ' .
+			$this->attributes['first_name'] . ' ' .
+			$this->attributes['middle_name'] . ' ' .
+			$this->attributes['nickname'])));
 	}
 
 	public function getOriginalFullNameAttribute()
@@ -634,7 +642,7 @@ class Author extends Model
 
 		$arr = preg_split("/[\s,]+/", $name);
 
-		if (count($arr) < 1) return;
+		if (count($arr) < 1) return '';
 
 		if (count($arr) == 1) {
 			$this->attributes['nickname'] = $arr[0];

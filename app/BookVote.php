@@ -15,9 +15,9 @@ use Illuminate\Support\Carbon;
  *
  * @property int $book_id
  * @property int $create_user_id
- * @property int $rate
- * @property int $time
- * @property int $hide
+ * @property int $old_rate
+ * @property int $old_time
+ * @property int $old_hide
  * @property int $vote
  * @property string|null $ip
  * @property Carbon|null $created_at
@@ -42,12 +42,12 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookVote whereCreatedAt($value)
  * @method static Builder|BookVote whereCreator(\App\User $user)
  * @method static Builder|BookVote whereDeletedAt($value)
- * @method static Builder|BookVote whereHide($value)
  * @method static Builder|BookVote whereId($value)
  * @method static Builder|BookVote whereIp($value)
+ * @method static Builder|BookVote whereOldHide($value)
+ * @method static Builder|BookVote whereOldRate($value)
+ * @method static Builder|BookVote whereOldTime($value)
  * @method static Builder|BookVote whereOriginBookId($value)
- * @method static Builder|BookVote whereRate($value)
- * @method static Builder|BookVote whereTime($value)
  * @method static Builder|BookVote whereUpdatedAt($value)
  * @method static Builder|BookVote whereUserUpdatedAt($value)
  * @method static Builder|BookVote whereVote($value)

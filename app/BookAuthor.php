@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $book_id
  * @property int $author_id
- * @property int $time
+ * @property int $old_time
  * @property int|null $order
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -26,8 +26,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookAuthor whereAuthorId($value)
  * @method static Builder|BookAuthor whereBookId($value)
  * @method static Builder|BookAuthor whereCreatedAt($value)
+ * @method static Builder|BookAuthor whereOldTime($value)
  * @method static Builder|BookAuthor whereOrder($value)
- * @method static Builder|BookAuthor whereTime($value)
  * @method static Builder|BookAuthor whereType($value)
  * @method static Builder|BookAuthor whereUpdatedAt($value)
  * @mixin Eloquent

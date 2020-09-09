@@ -20,17 +20,17 @@ use Illuminate\Support\Carbon;
  * @property int $forum_id
  * @property string $name
  * @property string|null $description
- * @property int $create_time
+ * @property int $old_create_time
  * @property int $create_user_id
  * @property int $post_count
  * @property int $view_count
  * @property int|null $last_post_id
- * @property int $hide
- * @property int $hide_time
- * @property int $hide_user
+ * @property int $old_hide
+ * @property int $old_hide_time
+ * @property int $old_hide_user
  * @property bool $post_desc
  * @property int $main_priority
- * @property bool $first_post_on_top
+ * @property bool $old_first_post_on_top
  * @property int|null $top_post_id
  * @property int $forum_priority
  * @property bool $hide_from_main_page
@@ -72,25 +72,25 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic void()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereArchived($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereClosed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereFirstPostOnTop($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereForumId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereForumPriority($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereHide($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereHideFromMainPage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereLabel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereLastPostCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereLastPostId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereMainPriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldCreateTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldFirstPostOnTop($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldHide($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldHideTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic wherePostCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic wherePostDesc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereTopPostId($value)

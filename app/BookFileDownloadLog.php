@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $book_file_id
  * @property int|null $user_id
- * @property int|null $time
+ * @property int|null $old_time
  * @property string $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -28,7 +28,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookFileDownloadLog whereCreatedAt($value)
  * @method static Builder|BookFileDownloadLog whereId($value)
  * @method static Builder|BookFileDownloadLog whereIp($value)
- * @method static Builder|BookFileDownloadLog whereTime($value)
+ * @method static Builder|BookFileDownloadLog whereOldTime($value)
  * @method static Builder|BookFileDownloadLog whereUpdatedAt($value)
  * @method static Builder|BookFileDownloadLog whereUserId($value)
  * @mixin Eloquent

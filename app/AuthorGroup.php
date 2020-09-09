@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $last_name
  * @property string|null $first_name
  * @property int|null $create_user_id
- * @property int|null $time
+ * @property int|null $old_time
  * @property int $count
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -34,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AuthorGroup whereFirstName($value)
  * @method static Builder|AuthorGroup whereId($value)
  * @method static Builder|AuthorGroup whereLastName($value)
- * @method static Builder|AuthorGroup whereTime($value)
+ * @method static Builder|AuthorGroup whereOldTime($value)
  * @method static Builder|AuthorGroup whereUpdatedAt($value)
  * @mixin Eloquent
  */
