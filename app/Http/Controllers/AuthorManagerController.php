@@ -48,13 +48,12 @@ class AuthorManagerController extends Controller
 		], [], __('manager'));
 
 		$count = $author->managers()
-			->where('user_id', $request->user_id)
 			->where('character', 'author')
 			->count();
 
 		if ($count > 0) {
 			return back()
-				->withErrors(['user_id' => __('manager.error_author_already_attached')]);
+				->withErrors(['user_id' => __('The author has already been verified. Delete the other verification to add a new one')]);
 		}
 
 		$manager = new Manager;
