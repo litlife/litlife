@@ -19,6 +19,7 @@ class UserSettingReadStyleTest extends TestCase
 		$this->assertEquals('#eeeeee', $readStyle->background_color);
 		$this->assertEquals('#ffffff', $readStyle->card_color);
 		$this->assertEquals('#000000', $readStyle->font_color);
+		$this->assertEquals(false, $readStyle->show_sidebar);
 
 		$readStyle = factory(UserReadStyle::class)
 			->create([
@@ -52,7 +53,7 @@ class UserSettingReadStyleTest extends TestCase
 					'background_color' => '#000000',
 					'card_color' => '#111111',
 					'font_color' => '#222222',
-
+					'show_sidebar' => 0
 				])
 			->assertOk()
 			->assertSeeText(__('common.data_saved'));
@@ -65,6 +66,7 @@ class UserSettingReadStyleTest extends TestCase
 		$this->assertEquals('#000000', $user->readStyle->background_color);
 		$this->assertEquals('#111111', $user->readStyle->card_color);
 		$this->assertEquals('#222222', $user->readStyle->font_color);
+		$this->assertFalse($user->readStyle->show_sidebar);
 	}
 
 	public function testIncorrectFontLength()
@@ -173,6 +175,7 @@ class UserSettingReadStyleTest extends TestCase
 					'background_color' => '#00',
 					'card_color' => '#1111',
 					'font_color' => '#22222',
+					'show_sidebar' => 0
 				])
 			->assertRedirect()
 			->assertSessionHasErrors(['background_color' => __('validation.color', ['attribute' => __('user.read_style_array.background_color')])])
@@ -193,7 +196,7 @@ class UserSettingReadStyleTest extends TestCase
 					'background_color' => '#000000',
 					'card_color' => '#000000',
 					'font_color' => '#000000',
-
+					'show_sidebar' => 0
 				])
 			->assertSessionHasNoErrors()
 			->assertRedirect();

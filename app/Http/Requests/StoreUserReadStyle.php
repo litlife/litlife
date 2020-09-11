@@ -24,6 +24,7 @@ class StoreUserReadStyle extends FormRequest
 	public function rules()
 	{
 		return [
+			'show_sidebar' => 'required|boolean',
 			'font' => 'required|in:' . implode(',', config('litlife.read_allowed_fonts')),
 			'align' => 'required|in:' . implode(',', config('litlife.read_text_align')),
 			'size' => 'required|in:' . implode(',', config('litlife.read_font_size')),

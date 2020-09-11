@@ -19,6 +19,7 @@ import IdeasCardHide from "./components/IdeasCardHide";
 // show more text
 import ShowMoreCollapse from './components/show_more_collapse';
 import Search from "./components/search";
+import Sidebar from "./components/sidebar";
 
 new AddScrollOffset().init();
 
@@ -107,9 +108,15 @@ new scrollToTopBottom().init();
 
 require('./components/spoiler');
 require('./components/qrcode_dialog');
-require('./components/sidebar_toggle');
 require('./components/sceditor_extensions');
-require('./components/sidebar');
+
+let $sidebar = new Sidebar();
+$sidebar.sidebar = $('#sidebar');
+$sidebar.main = $('#main');
+$sidebar.footer = $('#footer');
+$sidebar.button = $("[data-target='#sidebar']");
+$sidebar.init();
+
 require('./components/anchor_offset');
 
 

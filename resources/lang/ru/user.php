@@ -114,7 +114,8 @@ return [
 			"Verdana" => "Verdana"
 		],
 		"font_color" => "Цвет шрифта",
-		"size" => "Размер шрифта"
+		"size" => "Размер шрифта",
+		"show_sidebar" => 'Показать сайдбар'
 	],
 	"register" => "Зарегистрироваться",
 	"remove_from_moderation" => "Снять с модерации",

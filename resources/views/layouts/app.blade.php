@@ -14,7 +14,7 @@
 	<div class="row mt-0">
 
 		<aside id="sidebar"
-			   class="@if (empty($errors->login)) d-none @endif @if (!request()->cookie('sidebar_hide')) d-sm-block @endif
+			   class="@if (empty($errors->login)) d-none @endif @if (!empty($showSidebar)) d-sm-block @endif
 					   sps sps--abv sidebar pl-0 pr-0 h-100">
 
 			@include('sidebar')
@@ -22,7 +22,7 @@
 		</aside>
 
 		<main id="main"
-			  class="col-12 py-3 @if (!request()->cookie('sidebar_hide')) pl-260px @endif @stack('main_classes')"
+			  class="col-12 py-3 @if (!empty($showSidebar)) pl-260px @endif @stack('main_classes')"
 			  style="min-height:300px;">
 
 			@auth
