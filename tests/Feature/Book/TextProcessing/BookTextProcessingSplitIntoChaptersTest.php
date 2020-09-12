@@ -244,6 +244,8 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$this->assertTrue($command->isSectionTitle('ЧАСТЬ ПЕРВАЯ. ЗАМКИ В ТУМАНЕ'));
 		$this->assertTrue($command->isSectionTitle('ГЛАВА ДВУХСОТАЯ'));
 		$this->assertTrue($command->isSectionTitle('ГЛАВА ШЕСТИСОТАЯ'));
+		$this->assertTrue($command->isSectionTitle('ГЛАВА СЕМНАДЦАТАЯ'));
+
 
 		$this->assertFalse($command->isSectionTitle('Глава3'));
 		$this->assertFalse($command->isSectionTitle('эпило'));
