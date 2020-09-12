@@ -342,6 +342,34 @@
 						</ul>
 					</dd>
 
+					<dt id="where_are_the_book_attachments_located">
+						<a href="#where_are_the_book_attachments_located">
+							Где находятся вложения книги?
+						</a>
+					</dt>
+
+					<dd>
+						<ul>
+							<li>Перейдите на страницу книги</li>
+							<li>Откройте меню книги и нажмите "редактировать"</li>
+							<li>В вернем навигационном меню нажмите "Вложения"</li>
+						</ul>
+					</dd>
+
+					<dt id="how_to_make_a_cover_image_from_a_book_attachment">
+						<a href="#how_to_make_a_cover_image_from_a_book_attachment">
+							Как сделать обложкой изображение из вложений книги?
+						</a>
+					</dt>
+
+					<dd>
+						<ul>
+							<li>Перейдите во <a href="#where_are_the_book_attachments_located" class="text-info">вложения книги</a></li>
+							<li>Надите нужное изображение</li>
+							<li>Откройте меню изображение и нажмите "Сделать обложкой"</li>
+						</ul>
+					</dd>
+
 				</div>
 
 				<h4 id="authors_and_veritication" class="mb-3">
