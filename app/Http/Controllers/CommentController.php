@@ -98,7 +98,7 @@ class CommentController extends Controller
 		$commentable = $model::findOrFail($commentable_id);
 
 		if (method_exists($commentable, 'isInGroup') and $commentable->isInGroup() and $commentable->isNotMainInGroup())
-			$mainCommentable = $commentable;
+			$mainCommentable = $commentable->mainBook;
 		else
 			$mainCommentable = $commentable;
 
@@ -118,11 +118,18 @@ class CommentController extends Controller
 		if (!empty($parent))
 			$comment->parent = $parent;
 
-		if ($request->leave_for_personal_access) {
-			if ($mainCommentable instanceof Book) {
+		if ($mainCommentable instanceof Book) {
+
+			if ($request->leave_for_personal_access) {
 				if (empty($parent)) {
 					$comment->statusPrivate();
 				}
+			}
+
+			if ($mainCommentable->is($commentable)) {
+				$comment->origin_commentable_id = $mainCommentable->id;
+			} else {
+				$comment->origin_commentable_id = $commentable->id;
 			}
 		}
 

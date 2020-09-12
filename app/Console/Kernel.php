@@ -152,6 +152,8 @@ class Kernel extends ConsoleKernel
 		Commands\Book\BookTextWaitedProcessingCommand::class,
 		Commands\SendInvitationToTakeSurvey::class,
 		Commands\Book\BookDeleteAllPagesWhereSectionWasNotFouncCommand::class,
+
+		Commands\Fix\CorrectionOfBookIDForComments::class,
 	];
 
 	/**
