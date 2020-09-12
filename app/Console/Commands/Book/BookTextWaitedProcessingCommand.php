@@ -263,7 +263,7 @@ class BookTextWaitedProcessingCommand extends Command
 					$array[$n]['content'] = '';
 				}
 
-				if (!empty($array[$n]['content']) and $this->isSectionTitle($title)) {
+				if ($this->isSectionTitle($title)) {
 					$n++;
 					$array[$n]['title'] = $title;
 					$array[$n]['title_id'] = $node->getAttribute('id');
@@ -284,7 +284,10 @@ class BookTextWaitedProcessingCommand extends Command
 					$newSection = new Section;
 					$newSection->scoped(['book_id' => $item->book->id, 'type' => $section->type]);
 					$newSection->title = $array[$number]['title'];
-					$newSection->content = $array[$number]['content'];
+
+					if (!empty($array[$number]['content']))
+						$newSection->content = $array[$number]['content'];
+
 					$newSection->book_id = $item->book->id;
 					$newSection->user_edited_at = now();
 					$newSection->setTitleId($array[$number]['title_id']);
@@ -330,10 +333,21 @@ class BookTextWaitedProcessingCommand extends Command
 			'одиннадцатая',
 			'двенадцатая',
 			'тринадцатая',
+			'четырнадцатая',
 			'пятнадцатая',
 			'шестнадцатая',
 			'восемнадцатая',
 			'девятнадцатая',
+			'двадцатая',
+			'тридцатая',
+			'сороковая',
+			'пятидесятая',
+			'шестидесятая',
+			'семидесятая',
+			'восмидесятая',
+			'девяностая',
+			'сотая',
+			'четвёртая'
 		];
 
 		if (preg_match('/^(?:Глава|Часть)([[:space:]]{1,})(.{0,30})(' . implode('|', $array) . ')(.{0,200})$/iu', $string))
