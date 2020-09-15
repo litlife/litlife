@@ -522,6 +522,8 @@ class BookPolicy extends Policy
 			// разрешаем только если пользователь создатель
 			if ($book->isUserCreator($auth_user))
 				return true;
+			else
+				return false;
 		}
 
 		if ($book->comments_closed)

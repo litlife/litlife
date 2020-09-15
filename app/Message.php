@@ -202,7 +202,7 @@ class Message extends Model
 		return $this->isViewed();
 	}
 
-	public function isViewed()
+	public function isViewed(): bool
 	{
 		if ($this->id <= $this->recepients_participations()->max('latest_seen_message_id'))
 			return true;

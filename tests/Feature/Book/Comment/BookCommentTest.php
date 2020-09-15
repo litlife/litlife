@@ -3,6 +3,7 @@
 namespace Tests\Feature\Book\Comment;
 
 use App\Book;
+use App\Comment;
 use App\User;
 use Tests\TestCase;
 
@@ -60,4 +61,13 @@ class BookCommentTest extends TestCase
 		$this->assertEquals('user', $activity->causer_type);
 	}
 
+	public function testBookComment()
+	{
+		$comment = factory(Comment::class)
+			->create(['commentable_type' => 'book']);
+
+		$this->assertEquals('book', $comment->commentable_type);
+		$this->assertEquals('Book', $comment->getCommentableModelName());
+		$this->assertTrue($comment->isBookType());
+	}
 }

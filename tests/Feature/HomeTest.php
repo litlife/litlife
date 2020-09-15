@@ -285,4 +285,24 @@ class HomeTest extends TestCase
 			->assertSeeText($post->text)
 			->assertDontSeeText($post_on_review->text);
 	}
+
+	public function testViewLatestIfOnReview()
+	{
+		$comment = factory(Comment::class)->create();
+		$comment->statusSentForReview();
+		$comment->save();
+
+		$user = factory(User::class)
+			->create();
+
+		$this->actingAs($comment->create_user)
+			->get(route('home.latest_comments'))
+			->assertOk()
+			->assertSeeText($comment->text);
+
+		$this->actingAs($user)
+			->get(route('home.latest_comments'))
+			->assertOk()
+			->assertDontSeeText($comment->text);
+	}
 }

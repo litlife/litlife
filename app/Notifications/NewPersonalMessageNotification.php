@@ -47,7 +47,16 @@ class NewPersonalMessageNotification extends Notification
 	 */
 	public function via($notifiable)
 	{
-		return ['mail'];
+		$array = [];
+
+		// проверяем хочет ли владелец комментария на который отправляется ответ получать уведомления об ответах
+		if ($notifiable->email_notification_setting->private_message) {
+			if (!empty($notifiable->notice_email->email)) {
+				$array[] = 'mail';
+			}
+		}
+
+		return $array;
 	}
 
 	/**

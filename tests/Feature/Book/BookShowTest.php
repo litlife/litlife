@@ -5,6 +5,7 @@ namespace Tests\Feature\Book;
 use App\Author;
 use App\Book;
 use App\BookFile;
+use App\Comment;
 use App\Jobs\Book\UpdateBookFilesCount;
 use App\User;
 use App\UserPurchase;
@@ -167,4 +168,42 @@ class BookShowTest extends TestCase
 			->assertDontSeeText($book_file->extension);
 	}
 
+	public function testIfCommentOnReview()
+	{
+		$comment = factory(Comment::class)
+			->states('sent_for_review')
+			->create();
+
+		$user = factory(User::class)
+			->create();
+
+		$this->actingAs($comment->create_user)
+			->get(route('books.show', $comment->commentable->id))
+			->assertOk()
+			->assertSeeText($comment->text);
+
+		$this->actingAs($user)
+			->get(route('books.show', $comment->commentable->id))
+			->assertOk()
+			->assertDontSeeText($comment->text)
+			->assertSeeText(trans_choice('comment.on_check', 1));
+	}
+
+	public function testIsOkIfBookDeleted()
+	{
+		$comment = factory(Comment::class)
+			->create();
+
+		$this->assertTrue($comment->isBookType());
+
+		$book = $comment->commentable;
+
+		$this->get(route('books.show', $book))
+			->assertOk();
+
+		$comment->commentable->delete();
+
+		$this->get(route('books.show', $book))
+			->assertNotFound();
+	}
 }
