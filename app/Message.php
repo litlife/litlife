@@ -165,19 +165,14 @@ class Message extends Model
 		return $query->where("sender_del", true);
 	}
 
-	function user()
-	{
-		return $this->hasOne('App\User', 'id', 'sender_id');
-	}
-
 	function recepient()
 	{
 		return $this->hasOne('App\User', 'id', 'recepient_id');
 	}
 
-	function sender()
+	function user_deletetions()
 	{
-		return $this->hasOne('App\User', 'id', 'sender_id');
+		return $this->hasMany('App\MessageDelete', 'message_id', 'id');
 	}
 
 	public function setBBTextAttribute($value)
@@ -197,14 +192,27 @@ class Message extends Model
 		$this->recepient_id = $value;
 	}
 
-	public function isReaded()
-	{
-		return $this->isViewed();
-	}
-
 	public function isViewed(): bool
 	{
 		if ($this->id <= $this->recepients_participations()->max('latest_seen_message_id'))
+			return true;
+		else
+			return false;
+	}
+
+	public function isViewedByUser(User $user): bool
+	{
+		if ($user->is($this->create_user))
+			return true;
+
+		$participation = $this->getRecepientsParticipations()
+			->where('user_id', $user->id)
+			->first();
+
+		if (empty($participation))
+			return false;
+
+		if ($this->id <= $participation->latest_seen_message_id)
 			return true;
 		else
 			return false;
@@ -217,24 +225,31 @@ class Message extends Model
 			->where('user_id', '!=', $this->create_user_id);
 	}
 
-	/*
-		public $max_latest_seen_message_id = null;
+	public function getRecepientsParticipations()
+	{
+		return $this->recepients_participations();
+	}
 
-		public function getMaxLatestSeenMessageExceptCreator()
-		{
-			if (!isset($this->max_latest_seen_message_id))
-				return $this->max_latest_seen_message_id = $this->recepients_participations()->max('latest_seen_message_id');
-			else
-				return 0;
-		}
-		*/
+	public function getFirstRecepientParticipation()
+	{
+		return $this->getRecepientsParticipations()
+			->first();
+	}
 
-	public function isUpdatedByUser()
+	public function getSenderParticipation()
+	{
+		return $this->conversation
+			->participations
+			->where('user_id', $this->create_user_id)
+			->first();
+	}
+
+	public function isUpdatedByUser(): bool
 	{
 		return (bool)$this->user_updated_at;
 	}
 
-	public function isDeletedForSender()
+	public function isDeletedForSender(): bool
 	{
 		if ($this->deleted_at_for_created_user)
 			return true;
@@ -242,13 +257,13 @@ class Message extends Model
 			return false;
 	}
 
-	public function isDeletedForUser($user)
+	public function isDeletedForUser($user): bool
 	{
 		$user_deletetion = $this->user_deletetions
 			->where('user_id', $user->id)
 			->first();
 
-		if (empty($user_deletetion))
+		if (!empty($user_deletetion))
 			return true;
 		else
 			return false;
@@ -298,102 +313,32 @@ class Message extends Model
 		return $value;
 	}
 
-	public function deleteForUser($user)
+	public function deleteForUser(User $user)
 	{
 		DB::transaction(function () use ($user) {
 
-			if ($this->isNotViewed()) {
+			$this->user_deletetions()
+				->firstOrCreate(
+					['user_id' => $user->id],
+					['deleted_at' => now()]
+				);
+
+			if (!$this->isViewed()) {
 
 				$this->delete();
 
-				foreach ($this->recepients_participations() as $participation) {
-					$participation->new_messages_count--;
-					$participation->save();
-					$participation->user->flushCacheNewMessages();
-				}
-
-				foreach ($this->conversation->participations as $participation) {
-					$participation->latest_message_id = optional($this->conversation
-						->messages()
-						->notDeletedForUser($participation->user)
-						->latestWithId()
-						->first())
-						->id;
-
-					if ($user->id == $participation->user_id) {
-						if (empty($participation->latest_message_id)) {
-							$participation->latest_seen_message_id = $this->id;
-						} else {
-							$participation->latest_seen_message_id = $participation->latest_message_id;
-						}
-					}
-
-					$participation->save();
-				}
-
-			} else {
-
-				$this->user_deletetions()
-					->firstOrCreate(
-						['user_id' => $user->id],
-						['deleted_at' => now()]
-					);
-
-				$participation = $this->conversation
-					->participations
-					->where('user_id', $user->id)
-					->first();
-
-				$participation->latest_message_id = optional($this->conversation
-					->messages()
-					->notDeletedForUser($user)
-					->first())
-					->id;
-
-				$participation->save();
-			}
-		});
-	}
-
-	public function isNotViewed()
-	{
-		return !$this->isViewed();
-	}
-
-	function user_deletetions()
-	{
-		return $this->hasMany('App\MessageDelete', 'message_id', 'id');
-	}
-
-	public function restoreForUser($user)
-	{
-		DB::transaction(function () use ($user) {
-			if ($this->trashed()) {
-				$this->restore();
-
-				$this->user_deletetions()
-					->where('user_id', $user->id)
-					->delete();
-
 				foreach ($this->conversation->participations as $participation) {
 
-					$latest_message = $this->conversation
-						->messages()
-						->notDeletedForUser($participation->user)
-						->latestWithId()
-						->first();
+					$participation->updateLatestMessage();
 
-					if ($this->create_user_id != $participation->user_id) {
-						$participation->new_messages_count = $participation->getNewMessagesCount();
+					if (!$this->isUserCreator($participation->user)) {
+						$participation->new_messages_count--;
 						$participation->user->flushCacheNewMessages();
 					}
 
-					if (!empty($latest_message)) {
-						$participation->latest_message_id = $latest_message->id;
-
-						if ($participation->user_id == $user->id) {
-							$participation->latest_seen_message_id = $participation->latest_message_id;
-						}
+					if ($user->is($participation->user)) {
+						if ($this->id > $participation->latest_seen_message_id)
+							$participation->latest_seen_message_id = $this->id;
 					}
 
 					$participation->save();
@@ -401,40 +346,66 @@ class Message extends Model
 
 			} else {
 
-				$this->user_deletetions()
+				$participation = $this->conversation
+					->participations
 					->where('user_id', $user->id)
-					->delete();
+					->first();
+
+				$participation->updateLatestMessage();
+				$participation->save();
+			}
+		});
+	}
+
+	public function restoreForUser(User $user)
+	{
+		DB::transaction(function () use ($user) {
+
+			$this->user_deletetions()
+				->where('user_id', $user->id)
+				->delete();
+
+			if ($this->trashed()) {
+				$this->restore();
+
+				foreach ($this->conversation->participations as $participation) {
+
+					$participation->updateLatestMessage();
+
+					if (!$this->isUserCreator($participation->user)) {
+						$participation->updateNewMessagesCount();
+						$participation->user->flushCacheNewMessages();
+					}
+
+					if (!empty($participation->latest_message_id)) {
+
+						if ($user->is($participation->user))
+							$participation->noNewMessages();
+					}
+
+					$participation->save();
+				}
+
+			} else {
 
 				$participation = $this->conversation
 					->participations
 					->where('user_id', $user->id)
 					->first();
 
-				$participation->latest_message_id = $this->conversation
-					->messages()
-					->notDeletedForUser($user)
-					->first()
-					->id;
+				$participation->updateLatestMessage();
 
-				if ($participation->user_id == $user->id)
-					$participation->latest_seen_message_id = $participation->latest_message_id;
+				if ($participation->user->is($user))
+					$participation->noNewMessages();
 
 				$participation->save();
 			}
 		});
 	}
 
-	public function trashed()
+	public function trashed(): bool
 	{
 		return !is_null($this->{$this->getDeletedAtColumn()}) or !empty($this->message_deletions_deleted_at);
-	}
-
-	public function sender_participation()
-	{
-		return $this->conversation
-			->participations
-			->where('user_id', $this->create_user_id)
-			->first();
 	}
 
 	public function getPreviewText($length = 100)

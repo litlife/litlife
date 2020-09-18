@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Message;
+namespace Tests\Feature\Message\Delete;
 
 use App\Message;
 use App\User;
@@ -58,19 +58,20 @@ class MessageDeleteTest extends TestCase
 			->create([
 				'create_user_id' => $sender_user->id,
 				'recepient_id' => $recepient_user->id
-			])
-			->fresh();
+			]);
 
 		$message_deleted = factory(Message::class)
 			->create([
 				'create_user_id' => $sender_user->id,
 				'recepient_id' => $recepient_user->id,
 				'created_at' => $message->created_at->addSeconds(5)
-			])
-			->fresh();
+			]);
 
-		$sender_participation = $message->sender_participation();
-		$recepient_participation = $message->recepients_participations()->first();
+		$message->refresh();
+		$message_deleted->refresh();
+
+		$sender_participation = $message->getSenderParticipation();
+		$recepient_participation = $message->getFirstRecepientParticipation();
 
 		$this->assertEquals($message_deleted->id, $sender_participation->latest_message_id);
 		$this->assertEquals($message_deleted->id, $sender_participation->latest_seen_message_id);
@@ -85,11 +86,11 @@ class MessageDeleteTest extends TestCase
 				dump('message ' . $message->id);
 				dump('message_to_delete ' . $message_deleted->id);
 		*/
-		$this->assertEquals($message_deleted->id, $message->sender_participation()->latest_message_id);
-		$this->assertEquals($message_deleted->id, $message->sender_participation()->latest_seen_message_id);
+		$this->assertEquals($message_deleted->id, $message->getSenderParticipation()->latest_message_id);
+		$this->assertEquals($message_deleted->id, $message->getSenderParticipation()->latest_seen_message_id);
 
-		$this->assertEquals($message_deleted->id, $message->recepients_participations()->first()->latest_message_id);
-		$this->assertNull($message->recepients_participations()->first()->latest_seen_message_id);
+		$this->assertEquals($message_deleted->id, $message->getFirstRecepientParticipation()->latest_message_id);
+		$this->assertNull($message->getFirstRecepientParticipation()->latest_seen_message_id);
 
 		$recepient_user->flushCacheNewMessages();
 		$this->assertEquals(2, $recepient_user->getNewMessagesCount());
@@ -109,8 +110,8 @@ class MessageDeleteTest extends TestCase
 		$this->assertEquals(1, $recepient_user->getNewMessagesCount());
 
 
-		$this->assertEquals($message->id, $message->fresh()->sender_participation()->latest_message_id);
-		$this->assertEquals($message->id, $message->fresh()->recepients_participations()->first()->latest_message_id);
+		$this->assertEquals($message->id, $message->fresh()->getSenderParticipation()->latest_message_id);
+		$this->assertEquals($message->id, $message->fresh()->getFirstRecepientParticipation()->latest_message_id);
 
 		$message_deleted->refresh();
 		$message->refresh();
@@ -121,8 +122,8 @@ class MessageDeleteTest extends TestCase
 		$message_deleted->refresh();
 		$message->refresh();
 
-		$sender_participation = $message->sender_participation();
-		$recepient_participation = $message->recepients_participations()->first();
+		$sender_participation = $message->getSenderParticipation();
+		$recepient_participation = $message->getFirstRecepientParticipation();
 
 		$this->assertEquals($message_deleted->id, $sender_participation->latest_message_id);
 		$this->assertEquals($message_deleted->id, $sender_participation->latest_seen_message_id);
@@ -143,8 +144,8 @@ class MessageDeleteTest extends TestCase
 		$this->assertEquals(2, $recepient_user->getNewMessagesCount());
 
 		/*
-				dump($message->sender_participation()->latest_message_id);
-				dump($message->recepients_participations()->first()->latest_message_id);
+				dump($message->getSenderParticipation()->latest_message_id);
+				dump($message->getFirstRecepientParticipation()->latest_message_id);
 		*/
 
 	}
@@ -170,8 +171,8 @@ class MessageDeleteTest extends TestCase
 		$this->assertEquals($message->conversation->id, $message_to_delete->conversation->id);
 		$this->assertEquals(2, $message->conversation->messages()->count());
 
-		$this->assertEquals($message->create_user_id, $message_to_delete->recepients_participations()->first()->user_id);
-		$this->assertEquals($message_to_delete->create_user_id, $message->recepients_participations()->first()->user_id);
+		$this->assertEquals($message->create_user_id, $message_to_delete->getFirstRecepientParticipation()->user_id);
+		$this->assertEquals($message_to_delete->create_user_id, $message->getFirstRecepientParticipation()->user_id);
 
 		$conversation = $message->conversation->fresh();
 
@@ -225,8 +226,8 @@ class MessageDeleteTest extends TestCase
 		$recepient->flushCacheNewMessages();
 		$this->assertEquals(0, $recepient->getNewMessagesCount());
 
-		$this->assertEquals(0, $message_to_delete->fresh()->sender_participation()->latest_message_id);
-		$this->assertEquals(0, $message_to_delete->fresh()->recepients_participations()->first()->latest_message_id);
+		$this->assertEquals(0, $message_to_delete->fresh()->getSenderParticipation()->latest_message_id);
+		$this->assertEquals(0, $message_to_delete->fresh()->getFirstRecepientParticipation()->latest_message_id);
 
 		// restore
 
@@ -241,8 +242,8 @@ class MessageDeleteTest extends TestCase
 		$recepient->flushCacheNewMessages();
 		$this->assertEquals(1, $recepient->getNewMessagesCount());
 
-		$this->assertEquals($message_to_delete->id, $message_to_delete->fresh()->sender_participation()->latest_message_id);
-		$this->assertEquals($message_to_delete->id, $message_to_delete->fresh()->recepients_participations()->first()->latest_message_id);
+		$this->assertEquals($message_to_delete->id, $message_to_delete->fresh()->getSenderParticipation()->latest_message_id);
+		$this->assertEquals($message_to_delete->id, $message_to_delete->fresh()->getFirstRecepientParticipation()->latest_message_id);
 	}
 
 	public function testDeleteRestoreOneMessage()

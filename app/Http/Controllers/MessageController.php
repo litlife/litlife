@@ -54,13 +54,13 @@ class MessageController extends Controller
 	{
 		//$this->authorize('write_private_messages', $user);
 
-		if ($user->id == auth()->id())
+		if (auth()->user()->is($user))
 			return redirect()->route('users.inbox', auth()->id());
 
 		if (!empty($conversation = Conversation::whereUsers($user->id, auth()->id())->first())) {
 			$messages = $conversation->messages()
 				->notDeletedForUser(auth()->id())
-				->with(['create_user.avatar', 'user.avatar'])
+				->with(['create_user.avatar', 'create_user.avatar'])
 				->latest()
 				->simplePaginate();
 
@@ -68,52 +68,24 @@ class MessageController extends Controller
 				->where('user_id', auth()->id())
 				->first();
 
-			$participation_updated = clone $participation;
+			if (isset($participation)) {
+				if ($participation->hasNewMessages()) {
 
-			if (!empty($participation_updated) and ($participation_updated->latest_seen_message_id != $participation_updated->latest_message_id)) {
-
-				$participation_updated->latest_seen_message_id = $participation_updated->latest_message_id;
-				$participation_updated->new_messages_count = 0;
-				$participation_updated->save();
-
-				//UpdateParticipationCounters::dispatch($participation_updated);
-
-				auth()->user()->flushCacheNewMessages();
-			}
-		}
-
-		/*
-				$messages = Message::where([
-					['sender_id', $user->id],
-					['recepient_id', auth()->id()],
-					['recepient_del', false]
-				])->orWhere([
-					['sender_id', auth()->id()],
-					['recepient_id', $user->id],
-					['sender_del', false]
-				])->with(['create_user.avatar', 'user.avatar'])
-					->latest()
-					->simplePaginate(10);
-
-				// обновляем сообщения как прочитанные
-
-				if ($ids = $messages->where("recepient_id", auth()->user()->id)
-					->where("new", '1')
-					->pluck('id')
-					->toArray()) {
-
-					Message::whereIn('id', $ids)
-						->update(['new' => '0']);
+					$participationCloned = clone $participation;
+					$participationCloned->noNewMessages();
+					$participationCloned->save();
 
 					auth()->user()->flushCacheNewMessages();
 				}
-		*/
+			}
+		}
+
 		js_put('auth_user_id', auth()->user()->id);
 
 		$array = [
 			'user' => $user,
 			'messages' => $messages ?? null,
-			'conversation' => $conversation,
+			'conversation' => $conversation ?? null,
 			'participation' => $participation ?? null
 		];
 

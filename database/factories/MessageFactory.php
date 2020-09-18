@@ -82,4 +82,6 @@ $factory->afterCreatingState(App\Message::class, 'viewed', function ($message, $
 		$participation->latest_message_id = $message->id;
 		$participation->save();
 	}
+
+	$message->refresh();
 });

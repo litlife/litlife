@@ -23,7 +23,7 @@ class MessageNotViewedByRecepientTest extends TestCase
 			])
 			->fresh();
 
-		$this->assertTrue($message->isNotViewed());
+		$this->assertFalse($message->isViewed());
 
 		$sender_participation = $sender_user->participations()->first();
 
@@ -118,7 +118,7 @@ class MessageNotViewedByRecepientTest extends TestCase
 			])
 			->fresh();
 
-		$this->assertTrue($message->isNotViewed());
+		$this->assertFalse($message->isViewed());
 
 		$this->actingAs($recepient_user)
 			->delete(route('messages.destroy', $message))

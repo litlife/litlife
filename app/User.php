@@ -1043,24 +1043,17 @@ class User extends Authenticatable
 		return $this->hasMany('App\Forum', 'create_user_id');
 	}
 
-	/*
-	 * Возвращает true если пользователь не удален и его аккаунт не отключен
-	 * @return bool
-	 *
-	 */
-
 	public function likes()
 	{
 		return $this->hasMany('App\Like', 'create_user_id');
 	}
 
 	/*
- * Возвращает true если у пользователя есть хотя бы один подтвержденный почтовый ящик
- * @return bool
- *
- */
-
-	function latest_new_particaipations_for_hour_count()
+    * Возвращает количество новых созданных диалогов с пользователями за послдений час
+    * @return bool
+    *
+    */
+	function latest_new_particaipations_for_hour_count(): int
 	{
 		return $this->participations()
 			->whereHas('latest_message',
@@ -1071,7 +1064,7 @@ class User extends Authenticatable
 			->count();
 	}
 
-	public function getNewFavoriteAuthorsBooksCount()
+	public function getNewFavoriteAuthorsBooksCount(): int
 	{
 		return Cache::tags([CacheTags::NewFavoriteAuthorsBooksCount])->remember($this->id, 86400, function () {
 
@@ -1106,7 +1099,7 @@ class User extends Authenticatable
 		Cache::tags([CacheTags::NewFavoriteAuthorsBooksCount])->pull($this->id);
 	}
 
-	public function getUnreadNotificationsCount()
+	public function getUnreadNotificationsCount(): int
 	{
 		return Cache::tags([CacheTags::UnreadNotifications])->remember($this->id, 86400, function () {
 
@@ -1133,7 +1126,7 @@ class User extends Authenticatable
 		$this->push();
 	}
 
-	public function isOnModeration()
+	public function isOnModeration(): bool
 	{
 		if ($this->on_moderate)
 			return true;
@@ -1141,7 +1134,7 @@ class User extends Authenticatable
 			return false;
 	}
 
-	public function getFavoriteBooksWithUpdatesCount()
+	public function getFavoriteBooksWithUpdatesCount(): int
 	{
 		return Cache::tags([CacheTags::FavoriteBooksWithUpdatesCount])->remember($this->id, 86400, function () {
 
@@ -1541,5 +1534,10 @@ class User extends Authenticatable
 	public function scopeOrderByPostsCountDesc($query)
 	{
 		return $query->orderBy('forum_message_count', 'desc');
+	}
+
+	public function hasNoticeEmail(): bool
+	{
+		return (bool)optional($this->notice_email)->email;
 	}
 }

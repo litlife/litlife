@@ -2,12 +2,90 @@
 
 namespace Tests\Feature\Message;
 
+use App\Conversation;
 use App\Message;
 use App\User;
 use Tests\TestCase;
 
 class MessageIsViewedTest extends TestCase
 {
+	public function testIsViewedFactoryState()
+	{
+		$recepient = factory(User::class)->create();
+
+		$message = factory(Message::class)
+			->states('viewed')
+			->create(['recepient_id' => $recepient->id]);
+
+		$this->assertTrue($message->isViewed());
+	}
+
+	public function testWithMessageFactoryState()
+	{
+		$conversation = factory(Conversation::class)
+			->states('with_not_viewed_message')
+			->create();
+
+		$message = $conversation->messages->first();
+
+		$this->assertFalse($message->isViewed());
+	}
+
+	public function testWithViewedMessageFactoryState()
+	{
+		$conversation = factory(Conversation::class)
+			->states('with_viewed_message')
+			->create();
+
+		$message = $conversation->messages->first();
+
+		$this->assertTrue($message->isViewed());
+	}
+
+	public function testTrueIfRecepientPaticipationHasLatestSeenMessageWithGreaterId()
+	{
+		$conversation = factory(Conversation::class)
+			->states('with_viewed_message')
+			->create();
+
+		$message = $conversation->messages()->first();
+
+		$participation = $message->getFirstRecepientParticipation();
+		$participation->latest_seen_message_id = $message->id + 1;
+		$participation->save();
+
+		$this->assertTrue($message->isViewed());
+	}
+
+	public function testTrueIfRecepientPaticipationHasLatestSeenMessageWithEqualsId()
+	{
+		$conversation = factory(Conversation::class)
+			->states('with_viewed_message')
+			->create();
+
+		$message = $conversation->messages()->first();
+
+		$participation = $message->getFirstRecepientParticipation();
+		$participation->latest_seen_message_id = $message->id;
+		$participation->save();
+
+		$this->assertTrue($message->isViewed());
+	}
+
+	public function testFalseIfRecepientPaticipationHasLatestSeenMessageWithLessId()
+	{
+		$conversation = factory(Conversation::class)
+			->states('with_viewed_message')
+			->create();
+
+		$message = $conversation->messages()->first();
+
+		$participation = $message->getFirstRecepientParticipation();
+		$participation->latest_seen_message_id = $message->id - 1;
+		$participation->save();
+
+		$this->assertFalse($message->isViewed());
+	}
 
 	public function testViewed()
 	{
@@ -70,16 +148,16 @@ class MessageIsViewedTest extends TestCase
 		//dump("message id: $message->id");
 		//dump("message2 id: $message2->id");
 
-		$this->assertNotNull($message->fresh()->sender_participation()->latest_seen_message_id);
-		$this->assertNull($message->fresh()->recepients_participations()->first()->latest_seen_message_id);
+		$this->assertNotNull($message->fresh()->getSenderParticipation()->latest_seen_message_id);
+		$this->assertNull($message->fresh()->getFirstRecepientParticipation()->latest_seen_message_id);
 
-		$this->assertNotNull($message2->fresh()->sender_participation()->latest_seen_message_id);
-		$this->assertNull($message2->fresh()->recepients_participations()->first()->latest_seen_message_id);
+		$this->assertNotNull($message2->fresh()->getSenderParticipation()->latest_seen_message_id);
+		$this->assertNull($message2->fresh()->getFirstRecepientParticipation()->latest_seen_message_id);
 
 		$this->assertFalse($message->isViewed());
 		$this->assertFalse($message2->isViewed());
-		$this->assertTrue($message->isNotViewed());
-		$this->assertTrue($message2->isNotViewed());
+		$this->assertFalse($message->isViewed());
+		$this->assertFalse($message2->isViewed());
 	}
 
 	public function testNotViewedShouldBeLastViewedToSender()
@@ -97,7 +175,7 @@ class MessageIsViewedTest extends TestCase
 			])
 			->fresh();
 
-		$this->assertTrue($message->isNotViewed());
+		$this->assertFalse($message->isViewed());
 
 		$sender_participation = $sender_user->participations()->first();
 

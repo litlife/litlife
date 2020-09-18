@@ -38,10 +38,16 @@ use Illuminate\Support\Carbon;
 class Participation extends Model
 {
 	const UPDATED_AT = null;
+
 	public $incrementing = false;
+
 	protected $primaryKey = [
 		'user_id',
 		'conversation_id'
+	];
+
+	protected $casts = [
+		'new_messages_count' => 'integer'
 	];
 
 	function latest_seen_message()
@@ -70,12 +76,48 @@ class Participation extends Model
 		return $query->where('latest_message_id', '>', 0);
 	}
 
-	public function getNewMessagesCount()
+	public function getNewMessagesCount(): int
 	{
 		return $this->conversation
 			->messages()
 			->notDeletedForUser($this->user_id)
 			->where('id', '>', $this->latest_seen_message_id ?? 0)
 			->count();
+	}
+
+	public function getLatestMessage()
+	{
+		return $this->conversation
+			->messages()
+			->notDeletedForUser($this->user_id)
+			->latestWithId()
+			->limit(1)
+			->first();
+	}
+
+	public function updateLatestMessage()
+	{
+		$latestMessage = $this->getLatestMessage();
+
+		if (!empty($latestMessage))
+			$this->latest_message_id = $latestMessage->id;
+		else
+			$this->latest_message_id = null;
+	}
+
+	public function updateNewMessagesCount()
+	{
+		$this->new_messages_count = $this->getNewMessagesCount();
+	}
+
+	public function noNewMessages()
+	{
+		$this->latest_seen_message_id = $this->latest_message_id;
+		$this->new_messages_count = 0;
+	}
+
+	public function hasNewMessages(): bool
+	{
+		return $this->new_messages_count > 0;
 	}
 }

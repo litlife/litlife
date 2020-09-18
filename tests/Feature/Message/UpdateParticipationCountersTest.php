@@ -28,8 +28,8 @@ class UpdateParticipationCountersTest extends TestCase
 			])->fresh();
 
 		$conversation = $message->conversation;
-		$auth_user_participation = $message->recepients_participations()->first();
-		$spamer_participation = $message->sender_participation();
+		$auth_user_participation = $message->getFirstRecepientParticipation();
+		$spamer_participation = $message->getSenderParticipation();
 
 		$this->assertNotNull($conversation);
 		$this->assertNotNull($auth_user_participation);
@@ -54,8 +54,8 @@ class UpdateParticipationCountersTest extends TestCase
 
 		$message->fresh();
 
-		$auth_user_participation = $message->recepients_participations()->first();
-		$spamer_participation = $message->sender_participation();
+		$auth_user_participation = $message->getFirstRecepientParticipation();
+		$spamer_participation = $message->getSenderParticipation();
 
 		$this->assertEmpty($auth_user_participation->latest_message_id);
 
@@ -78,19 +78,19 @@ class UpdateParticipationCountersTest extends TestCase
 				'recepient_id' => $auth_user->id,
 			])->fresh();
 
-		UpdateParticipationCounters::dispatch($message->recepients_participations()->first());
-		UpdateParticipationCounters::dispatch($message->sender_participation());
+		UpdateParticipationCounters::dispatch($message->getFirstRecepientParticipation());
+		UpdateParticipationCounters::dispatch($message->getSenderParticipation());
 
 		$message->refresh();
 
-		$this->assertEquals(1, $message->recepients_participations()->first()->new_messages_count);
-		$this->assertEquals(0, $message->sender_participation()->new_messages_count);
+		$this->assertEquals(1, $message->getFirstRecepientParticipation()->new_messages_count);
+		$this->assertEquals(0, $message->getSenderParticipation()->new_messages_count);
 
-		$this->assertEquals($message->id, $message->recepients_participations()->first()->latest_message_id);
-		$this->assertEquals($message->id, $message->sender_participation()->latest_message_id);
+		$this->assertEquals($message->id, $message->getFirstRecepientParticipation()->latest_message_id);
+		$this->assertEquals($message->id, $message->getSenderParticipation()->latest_message_id);
 
-		$this->assertEquals(0, $message->recepients_participations()->first()->latest_seen_message_id);
-		$this->assertEquals($message->id, $message->sender_participation()->latest_seen_message_id);
+		$this->assertEquals(0, $message->getFirstRecepientParticipation()->latest_seen_message_id);
+		$this->assertEquals($message->id, $message->getSenderParticipation()->latest_seen_message_id);
 	}
 
 	public function testViewed()
@@ -116,19 +116,19 @@ class UpdateParticipationCountersTest extends TestCase
 			])
 			->fresh();
 
-		UpdateParticipationCounters::dispatch($message->recepients_participations()->first());
-		UpdateParticipationCounters::dispatch($message->sender_participation());
+		UpdateParticipationCounters::dispatch($message->getFirstRecepientParticipation());
+		UpdateParticipationCounters::dispatch($message->getSenderParticipation());
 
 		$message->refresh();
 
-		$this->assertEquals(0, $message->recepients_participations()->first()->new_messages_count);
-		$this->assertEquals(0, $message->sender_participation()->new_messages_count);
+		$this->assertEquals(0, $message->getFirstRecepientParticipation()->new_messages_count);
+		$this->assertEquals(0, $message->getSenderParticipation()->new_messages_count);
 
-		$this->assertEquals($message2->id, $message->recepients_participations()->first()->latest_message_id);
-		$this->assertEquals($message2->id, $message->sender_participation()->latest_message_id);
+		$this->assertEquals($message2->id, $message->getFirstRecepientParticipation()->latest_message_id);
+		$this->assertEquals($message2->id, $message->getSenderParticipation()->latest_message_id);
 
-		$this->assertEquals($message2->id, $message->recepients_participations()->first()->latest_seen_message_id);
-		$this->assertEquals($message2->id, $message->sender_participation()->latest_seen_message_id);
+		$this->assertEquals($message2->id, $message->getFirstRecepientParticipation()->latest_seen_message_id);
+		$this->assertEquals($message2->id, $message->getSenderParticipation()->latest_seen_message_id);
 	}
 
 	public function testFixBugPost726240()
@@ -149,7 +149,7 @@ class UpdateParticipationCountersTest extends TestCase
 			])
 			->fresh();
 
-		$recepient_participation = $message->recepients_participations()->first();
+		$recepient_participation = $message->getFirstRecepientParticipation();
 
 		$this->assertEquals(0, $recepient_participation->new_messages_count);
 
@@ -165,7 +165,7 @@ class UpdateParticipationCountersTest extends TestCase
 
 		UpdateParticipationCounters::dispatch($recepient_participation);
 
-		$recepient_participation = $message->recepients_participations()->first();
+		$recepient_participation = $message->getFirstRecepientParticipation();
 
 		$this->assertEquals(0, $recepient_participation->new_messages_count);
 	}

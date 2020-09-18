@@ -33,17 +33,16 @@ class NewPersonalMessageNotificationJob
 	{
 		foreach ($this->message->conversation->participations as $participation) {
 
-			if ($participation->user_id != $this->message->create_user_id) {
+			if (!$this->message->create_user->is($participation->user)) {
+
 				if (!$participation->user->email_notification_setting->private_message)
 					return null;
 
-				if (empty($participation->user->notice_email->email))
+				if (!$participation->user->hasNoticeEmail())
 					return null;
 
 				$participation->user->notify(new NewPersonalMessageNotification($this->message));
 			}
 		}
-
-
 	}
 }

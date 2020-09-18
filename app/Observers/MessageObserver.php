@@ -17,7 +17,6 @@ class MessageObserver
 	 * @param Message $message
 	 * @return void
 	 */
-
 	public function creating(Message $message)
 	{
 		if ($message->recepient_id) {
@@ -40,10 +39,8 @@ class MessageObserver
 				$conversation->participations()->save($participation);
 			}
 
-			//$message->conversation = $conversation;
-			//$message->conversation_id = $conversation->id;
-
 			$message->conversation()->associate($conversation);
+			$message->setRelation('conversation', $conversation);
 		}
 	}
 
@@ -54,23 +51,20 @@ class MessageObserver
 
 	public function created(Message $message)
 	{
-		//UpdateConversationCounters::dispatch($message->conversation);
-
 		$participations = $message->conversation->participations;
 		$participations->loadMissing('user');
 
 		foreach ($participations as $participation) {
 
-			$participation->latest_message_id = $message->id;
-
-			if ($participation->user_id == $message->create_user_id) {
+			if ($message->isUserCreator($participation->user)) {
 				$participation->new_messages_count = 0;
 				$participation->latest_seen_message_id = $message->id;
-				$participation->save();
 			} else {
 				$participation->new_messages_count++;
-				$participation->save();
 			}
+
+			$participation->latest_message_id = $message->id;
+			$participation->save();
 
 			$participation->user->flushCacheNewMessages();
 		}

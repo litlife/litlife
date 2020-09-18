@@ -117,19 +117,19 @@ class MessageViewedBySenderTest extends TestCase
 
 		$message_deleted->deleteForUser($sender_user);
 
-		UpdateParticipationCounters::dispatch($message_deleted->recepients_participations()->first());
-		UpdateParticipationCounters::dispatch($message_deleted->sender_participation());
+		UpdateParticipationCounters::dispatch($message_deleted->getFirstRecepientParticipation());
+		UpdateParticipationCounters::dispatch($message_deleted->getSenderParticipation());
 
 		$message->refresh();
 		$message_deleted->refresh();
 
-		$recepient_participation = $message->recepients_participations()->first();
+		$recepient_participation = $message->getFirstRecepientParticipation();
 
 		$this->assertEquals(0, $recepient_participation->new_messages_count);
 		$this->assertEquals($message_deleted->id, $recepient_participation->latest_message_id);
 		$this->assertEquals($message_deleted->id, $recepient_participation->latest_seen_message_id);
 
-		$sender_participation = $message->sender_participation();
+		$sender_participation = $message->getSenderParticipation();
 
 		$this->assertEquals(0, $sender_participation->new_messages_count);
 		$this->assertEquals($message->id, $sender_participation->latest_message_id);
