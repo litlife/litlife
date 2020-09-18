@@ -11,22 +11,25 @@ class MessageUpdatePolicyTest extends TestCase
 {
 	public function testPolicy()
 	{
-		$user = factory(User::class)
+		$sender = factory(User::class)
 			->create();
 
-		$user2 = factory(User::class)
+		$recepient = factory(User::class)
 			->create();
 
 		$message = factory(Message::class)
-			->create(['create_user_id' => $user->id, 'recepient_id' => $user2->id]);
+			->create([
+				'create_user_id' => $sender->id,
+				'recepient_id' => $recepient->id
+			]);
 
-		$this->assertTrue($user->can('update', $message));
-		$this->assertFalse($user2->can('update', $message));
+		$this->assertTrue($sender->can('update', $message));
+		$this->assertFalse($recepient->can('update', $message));
 
 		$time = now()->addMinutes(config('litlife.time_that_can_edit_message'))->addMinute();
 		Carbon::setTestNow($time);
 
-		$this->assertFalse($user->can('update', $message));
-		$this->assertFalse($user2->can('update', $message));
+		$this->assertFalse($sender->can('update', $message));
+		$this->assertFalse($recepient->can('update', $message));
 	}
 }

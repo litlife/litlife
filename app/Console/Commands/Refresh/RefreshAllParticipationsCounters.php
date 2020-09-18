@@ -4,7 +4,6 @@ namespace App\Console\Commands\Refresh;
 
 use App\Enums\CacheTags;
 use App\Events\BookFilesCountChanged;
-use App\Jobs\UpdateParticipationCounters;
 use App\Participation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -60,13 +59,13 @@ class RefreshAllParticipationsCounters extends Command
 								$item->latest_seen_message_id = $item->latest_message_id;
 							}
 
-							$item->save();
 						} else {
 							//echo ($count);
 						}
 
-
-						UpdateParticipationCounters::dispatch($item);
+						$item->updateNewMessagesCount();
+						$item->updateLatestMessage();
+						$item->save();
 					});
 				}
 			});

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Message;
+namespace Tests\Feature\Message\Create;
 
 use App\Conversation;
 use App\Notifications\NewPersonalMessageNotification;

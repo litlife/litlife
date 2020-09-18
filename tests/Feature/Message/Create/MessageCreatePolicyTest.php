@@ -1,15 +1,14 @@
 <?php
 
-namespace Tests\Feature\Message;
+namespace Tests\Feature\Message\Create;
 
 use App\Enums\UserAccountPermissionValues;
 use App\Enums\UserRelationType;
-use App\Message;
 use App\User;
 use App\UserRelation;
 use Tests\TestCase;
 
-class MessagePolicyTest extends TestCase
+class MessageCreatePolicyTest extends TestCase
 {
 	public function testCreatePolicyIfUserInBlacklist()
 	{
@@ -154,7 +153,7 @@ class MessagePolicyTest extends TestCase
 
 		$this->assertTrue($first_user->isFriendOf($second_user));
 
-		$this->assertFalse($first_user->fresh()->can('write_private_messages', $first_user));
+		$this->assertFalse($first_user->can('write_private_messages', $first_user));
 
 		$second_user->account_permissions->write_private_messages = UserAccountPermissionValues::everyone;
 		$second_user->account_permissions->save();
@@ -186,7 +185,7 @@ class MessagePolicyTest extends TestCase
 		$user->account_permissions->write_private_messages = UserAccountPermissionValues::friends;
 		$user->account_permissions->save();
 
-		$this->assertFalse($admin->fresh()->can('write_private_messages', $user->fresh()));
+		$this->assertFalse($admin->can('write_private_messages', $user->fresh()));
 
 		$relation = factory(UserRelation::class)
 			->create([
@@ -195,49 +194,13 @@ class MessagePolicyTest extends TestCase
 				'user_id2' => $admin->id
 			]);
 
-		$this->assertTrue($user->fresh()->hasAddedToBlacklist($admin->fresh()));
+		$this->assertTrue($user->hasAddedToBlacklist($admin->fresh()));
 
-		$this->assertFalse($admin->fresh()->can('write_private_messages', $user->fresh()));
+		$this->assertFalse($admin->can('write_private_messages', $user->fresh()));
 
 		$admin->group->access_send_private_messages_avoid_privacy_and_blacklists = true;
 		$admin->push();
 
-		$this->assertTrue($admin->fresh()->can('write_private_messages', $user->fresh()));
-	}
-
-	public function testDeleteRestorePolicy()
-	{
-		$recepient = factory(User::class)->create()->fresh();
-
-		$other_user = factory(User::class)->create()->fresh();
-
-		$message = factory(Message::class)
-			->states('viewed')
-			->create([
-				'recepient_id' => $recepient->id
-			])
-			->fresh();
-
-		$this->assertTrue($recepient->can('delete', $message));
-		$this->assertFalse($recepient->can('restore', $message));
-
-		$this->assertTrue($message->create_user->can('delete', $message));
-		$this->assertFalse($message->create_user->can('restore', $message));
-
-		$this->assertFalse($other_user->can('delete', $message));
-		$this->assertFalse($other_user->can('restore', $message));
-
-		$message->deleteForUser($recepient);
-
-		$message = Message::joinUserDeletions($recepient->id)->findOrFail($message->id);
-		$this->assertTrue($recepient->can('restore', $message));
-		$this->assertFalse($recepient->can('delete', $message));
-
-		$message = Message::joinUserDeletions($message->create_user->id)->findOrFail($message->id);
-		$this->assertTrue($message->create_user->can('delete', $message));
-		$this->assertFalse($message->create_user->can('restore', $message));
-
-		$this->assertFalse($other_user->can('delete', $message));
-		$this->assertFalse($other_user->can('restore', $message));
+		$this->assertTrue($admin->can('write_private_messages', $user->fresh()));
 	}
 }

@@ -51,10 +51,9 @@ class MessageIndexTest extends TestCase
 			->create([
 				'create_user_id' => $deleted_user->id,
 				'recepient_id' => $user->id
-			])
-			->fresh();
+			]);
 
-		$this->assertEquals(0, $user->fresh()->getNewMessagesCount());
+		$this->assertEquals(0, $user->getNewMessagesCount());
 
 		$this->actingAs($user)
 			->get(route('users.inbox', $user))
@@ -67,7 +66,7 @@ class MessageIndexTest extends TestCase
 			->assertSeeText(__('user.deleted'))
 			->assertSeeText($message->text);
 
-		$this->assertEquals(0, $user->fresh()->getNewMessagesCount());
+		$this->assertEquals(0, $user->getNewMessagesCount());
 
 		$participation = $user->participations()->first();
 		$this->assertEquals(0, $participation->new_messages_count);
@@ -82,7 +81,7 @@ class MessageIndexTest extends TestCase
 		$this->assertEquals($message->id, $participation->latest_seen_message_id);
 		$this->assertEquals(0, $participation->new_messages_count);
 
-		$this->assertEquals(0, $user->fresh()->getNewMessagesCount());
+		$this->assertEquals(0, $user->getNewMessagesCount());
 	}
 
 	public function testMessagesViewed()
@@ -131,8 +130,8 @@ class MessageIndexTest extends TestCase
 				['bb_text' => $text])
 			->assertRedirect();
 
-		$this->assertEquals(1, $iam->fresh()->getNewMessagesCount());
-		$this->assertEquals(0, $user->fresh()->getNewMessagesCount());
+		$this->assertEquals(1, $iam->getNewMessagesCount());
+		$this->assertEquals(0, $user->getNewMessagesCount());
 
 		$my_participation = $iam->participations()->first();
 		$user_participation = $user->participations()->first();
@@ -148,7 +147,7 @@ class MessageIndexTest extends TestCase
 			->assertRedirect();
 		/*
 				$this->assertEquals($my_participation->latest_seen_message_id,
-					$iam->fresh()->participations()->first()->latest_seen_message_id);
+					$iam->participations()->first()->latest_seen_message_id);
 		*/
 		$this->actingAs($iam)
 			->get(route('users.messages.index', $user))
@@ -157,8 +156,8 @@ class MessageIndexTest extends TestCase
 			->assertSeeText($text2)
 			->assertDontSeeText(__('message.new_messages'));
 
-		$this->assertEquals(0, $iam->fresh()->getNewMessagesCount());
-		$this->assertEquals(1, $user->fresh()->getNewMessagesCount());
+		$this->assertEquals(0, $iam->getNewMessagesCount());
+		$this->assertEquals(1, $user->getNewMessagesCount());
 
 		$this->actingAs($user)
 			->get(route('users.messages.index', $iam))
@@ -167,7 +166,7 @@ class MessageIndexTest extends TestCase
 			->assertSeeText($text2)
 			->assertSeeText(__('message.new_messages'));
 
-		$this->assertEquals(0, $user->fresh()->getNewMessagesCount());
+		$this->assertEquals(0, $user->getNewMessagesCount());
 	}
 
 }

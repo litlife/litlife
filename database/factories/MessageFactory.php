@@ -1,6 +1,5 @@
 <?php
 
-use App\Jobs\UpdateParticipationCounters;
 use Faker\Generator as Faker;
 
 $factory->define(App\Message::class, function (Faker $faker) {
@@ -18,6 +17,17 @@ $factory->define(App\Message::class, function (Faker $faker) {
 });
 
 $factory->afterCreating(App\Message::class, function ($message, $faker) {
+
+	$participation = $message->getFirstRecepientParticipation();
+	$participation->updateNewMessagesCount();
+	$participation->updateLatestMessage();
+	$participation->save();
+
+	$participation = $message->getSenderParticipation();
+	$participation->updateNewMessagesCount();
+	$participation->updateLatestMessage();
+	$participation->save();
+
 	/*
 		$conversation = $message->conversation;
 
@@ -64,11 +74,15 @@ $factory->afterCreatingState(App\Message::class, 'new', function ($message, $fak
 
 		if ($participation->user_id != $message->create_user_id) {
 			$participation->latest_seen_message_id = 0;
+			$participation->updateNewMessagesCount();
+			$participation->updateLatestMessage();
 			$participation->save();
-
-			UpdateParticipationCounters::dispatch($participation);
 		}
 	}
+});
+
+$factory->afterCreatingState(App\Message::class, 'not_viewed', function ($message, $faker) {
+
 });
 
 $factory->afterCreatingState(App\Message::class, 'viewed', function ($message, $faker) {

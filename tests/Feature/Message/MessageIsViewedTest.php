@@ -89,40 +89,38 @@ class MessageIsViewedTest extends TestCase
 
 	public function testViewed()
 	{
-		$recepient = factory(User::class)->create()->fresh();
+		$recepient = factory(User::class)
+			->create();
 
 		$message = factory(Message::class)
 			->states('viewed')
-			->create(['recepient_id' => $recepient->id])
-			->fresh();
+			->create(['recepient_id' => $recepient->id]);
 
 		$message2 = factory(Message::class)
 			->states('viewed')
 			->create([
 				'recepient_id' => $message->create_user_id,
 				'create_user_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		$this->assertTrue($message->isViewed());
 		$this->assertTrue($message2->isViewed());
 
 		// two viewed messages from one user
 
-		$recepient = factory(User::class)->create()->fresh();
+		$recepient = factory(User::class)
+			->create();
 
 		$message = factory(Message::class)
 			->states('viewed')
-			->create(['recepient_id' => $recepient->id])
-			->fresh();
+			->create(['recepient_id' => $recepient->id]);
 
 		$message2 = factory(Message::class)
 			->states('viewed')
 			->create([
 				'create_user_id' => $message->create_user_id,
 				'recepient_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		$this->assertTrue($message->isViewed());
 		$this->assertTrue($message2->isViewed());
@@ -130,29 +128,28 @@ class MessageIsViewedTest extends TestCase
 
 		// // two not viewed messages from one user
 
-		$recepient = factory(User::class)->create()->fresh();
+		$recepient = factory(User::class)
+			->create();
 
 		//dump("recepient id: $recepient->id");
 
 		$message = factory(Message::class)
-			->create(['recepient_id' => $recepient->id])
-			->fresh();
+			->create(['recepient_id' => $recepient->id]);
 
 		$message2 = factory(Message::class)
 			->create([
 				'create_user_id' => $message->create_user_id,
 				'recepient_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		//dump("message id: $message->id");
 		//dump("message2 id: $message2->id");
 
-		$this->assertNotNull($message->fresh()->getSenderParticipation()->latest_seen_message_id);
-		$this->assertNull($message->fresh()->getFirstRecepientParticipation()->latest_seen_message_id);
+		$this->assertNotNull($message->getSenderParticipation()->latest_seen_message_id);
+		$this->assertNull($message->getFirstRecepientParticipation()->latest_seen_message_id);
 
-		$this->assertNotNull($message2->fresh()->getSenderParticipation()->latest_seen_message_id);
-		$this->assertNull($message2->fresh()->getFirstRecepientParticipation()->latest_seen_message_id);
+		$this->assertNotNull($message2->getSenderParticipation()->latest_seen_message_id);
+		$this->assertNull($message2->getFirstRecepientParticipation()->latest_seen_message_id);
 
 		$this->assertFalse($message->isViewed());
 		$this->assertFalse($message2->isViewed());
@@ -162,26 +159,26 @@ class MessageIsViewedTest extends TestCase
 
 	public function testNotViewedShouldBeLastViewedToSender()
 	{
-		$sender_user = factory(User::class)
+		$sender = factory(User::class)
 			->create();
 
-		$recepient_user = factory(User::class)
+		$recepient = factory(User::class)
 			->create();
 
 		$message = factory(Message::class)
 			->create([
-				'create_user_id' => $sender_user->id,
-				'recepient_id' => $recepient_user->id
-			])
-			->fresh();
+				'create_user_id' => $sender->id,
+				'recepient_id' => $recepient->id
+			]);
 
 		$this->assertFalse($message->isViewed());
 
-		$sender_participation = $sender_user->participations()->first();
+		$senderParticipation = $sender->participations()->first();
+		$sender->refresh();
 
-		$this->assertEquals($message->id, $sender_participation->latest_message_id);
-		$this->assertEquals($message->id, $sender_participation->latest_seen_message_id);
-		$this->assertEquals(0, $sender_participation->new_messages_count);
-		$this->assertEquals(0, $sender_user->fresh()->getNewMessagesCount());
+		$this->assertEquals($message->id, $senderParticipation->latest_message_id);
+		$this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
+		$this->assertEquals(0, $senderParticipation->new_messages_count);
+		$this->assertEquals(0, $sender->getNewMessagesCount());
 	}
 }

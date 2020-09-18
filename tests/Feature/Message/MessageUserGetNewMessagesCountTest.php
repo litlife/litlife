@@ -29,15 +29,13 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 	public function testCountNew()
 	{
 		$recepient = factory(User::class)
-			->create()
-			->fresh();
+			->create();
 
 		$message_viewed = factory(Message::class)
 			->states('viewed')
 			->create([
 				'recepient_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		$this->assertEquals($message_viewed->id, $message_viewed->getFirstRecepientParticipation()->latest_seen_message_id);
 		$this->assertEquals($message_viewed->id, $message_viewed->getFirstRecepientParticipation()->latest_message_id);
@@ -47,8 +45,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 			->create([
 				'create_user_id' => $message_viewed->create_user_id,
 				'recepient_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		$message_viewed->refresh();
 		$message->refresh();
@@ -61,8 +58,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 			->create([
 				'create_user_id' => $message_viewed->create_user_id,
 				'recepient_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		$message->refresh();
 		$message2->refresh();
@@ -76,8 +72,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 			->create([
 				'create_user_id' => $message_viewed->create_user_id,
 				'recepient_id' => $recepient->id
-			])
-			->fresh();
+			]);
 
 		$message->refresh();
 		$message3->refresh();
@@ -86,6 +81,6 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 
 		$this->assertEquals($message_viewed->id, $message->getFirstRecepientParticipation()->latest_seen_message_id);
 		$this->assertEquals($message3->id, $message->getFirstRecepientParticipation()->latest_message_id);
-		$this->assertEquals(3, $recepient->fresh()->getNewMessagesCount());
+		$this->assertEquals(3, $recepient->getNewMessagesCount());
 	}
 }

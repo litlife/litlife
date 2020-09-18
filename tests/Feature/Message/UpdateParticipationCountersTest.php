@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Message;
 
-use App\Jobs\UpdateParticipationCounters;
 use App\Message;
 use App\MessageDelete;
 use App\Participation;
@@ -25,7 +24,7 @@ class UpdateParticipationCountersTest extends TestCase
 				'create_user_id' => $spamer->id,
 				'recepient_id' => $auth_user->id,
 				'bb_text' => $text
-			])->fresh();
+			]);
 
 		$conversation = $message->conversation;
 		$auth_user_participation = $message->getFirstRecepientParticipation();
@@ -49,10 +48,18 @@ class UpdateParticipationCountersTest extends TestCase
 			->get(route('users.inbox', $auth_user))
 			->assertSee($text);
 
-		UpdateParticipationCounters::dispatch($auth_user_participation);
-		UpdateParticipationCounters::dispatch($spamer_participation);
+		$auth_user_participation = $message->getFirstRecepientParticipation();
+		$spamer_participation = $message->getSenderParticipation();
 
-		$message->fresh();
+		$auth_user_participation->updateNewMessagesCount();
+		$auth_user_participation->updateLatestMessage();
+		$auth_user_participation->save();
+
+		$spamer_participation->updateNewMessagesCount();
+		$spamer_participation->updateLatestMessage();
+		$spamer_participation->save();
+
+		$message->refresh();
 
 		$auth_user_participation = $message->getFirstRecepientParticipation();
 		$spamer_participation = $message->getSenderParticipation();
@@ -76,12 +83,7 @@ class UpdateParticipationCountersTest extends TestCase
 			->create([
 				'create_user_id' => $user->id,
 				'recepient_id' => $auth_user->id,
-			])->fresh();
-
-		UpdateParticipationCounters::dispatch($message->getFirstRecepientParticipation());
-		UpdateParticipationCounters::dispatch($message->getSenderParticipation());
-
-		$message->refresh();
+			]);
 
 		$this->assertEquals(1, $message->getFirstRecepientParticipation()->new_messages_count);
 		$this->assertEquals(0, $message->getSenderParticipation()->new_messages_count);
@@ -105,21 +107,14 @@ class UpdateParticipationCountersTest extends TestCase
 			->create([
 				'create_user_id' => $user->id,
 				'recepient_id' => $auth_user->id
-			])
-			->fresh();
+			]);
 
 		$message2 = factory(Message::class)
 			->states('viewed')
 			->create([
 				'create_user_id' => $auth_user->id,
 				'recepient_id' => $user->id
-			])
-			->fresh();
-
-		UpdateParticipationCounters::dispatch($message->getFirstRecepientParticipation());
-		UpdateParticipationCounters::dispatch($message->getSenderParticipation());
-
-		$message->refresh();
+			]);
 
 		$this->assertEquals(0, $message->getFirstRecepientParticipation()->new_messages_count);
 		$this->assertEquals(0, $message->getSenderParticipation()->new_messages_count);
@@ -135,38 +130,30 @@ class UpdateParticipationCountersTest extends TestCase
 	{
 		// https://litlife.club/posts/726240/go_to
 
-		$sender_user = factory(User::class)
+		$sender = factory(User::class)
 			->create();
 
-		$recepient_user = factory(User::class)
+		$recepient = factory(User::class)
 			->create();
 
 		$message = factory(Message::class)
 			->states('viewed')
 			->create([
-				'create_user_id' => $sender_user->id,
-				'recepient_id' => $recepient_user->id
-			])
-			->fresh();
+				'create_user_id' => $sender->id,
+				'recepient_id' => $recepient->id
+			]);
 
-		$recepient_participation = $message->getFirstRecepientParticipation();
+		$recepientParticipation = $message->getFirstRecepientParticipation();
 
-		$this->assertEquals(0, $recepient_participation->new_messages_count);
+		$this->assertEquals(0, $recepientParticipation->new_messages_count);
 
 		// delete
-		$this->actingAs($recepient_user)
+		$this->actingAs($recepient)
 			->delete(route('messages.destroy', $message))
 			->assertOk();
 
-		$recepient_participation->new_messages_count = 2;
-		$recepient_participation->latest_seen_message_id = null;
-		$recepient_participation->latest_message_id = null;
-		$recepient_participation->save();
+		$recepientParticipation = $message->getFirstRecepientParticipation();
 
-		UpdateParticipationCounters::dispatch($recepient_participation);
-
-		$recepient_participation = $message->getFirstRecepientParticipation();
-
-		$this->assertEquals(0, $recepient_participation->new_messages_count);
+		$this->assertEquals(0, $recepientParticipation->new_messages_count);
 	}
 }

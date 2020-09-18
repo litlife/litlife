@@ -4,7 +4,6 @@ namespace App\Console\Commands\Refresh;
 
 use App\Enums\ReadStatus;
 use App\Events\BookFilesCountChanged;
-use App\Jobs\UpdateParticipationCounters;
 use App\Jobs\User\UpdateUserAchievemetsCount;
 use App\Jobs\User\UpdateUserAchieventsCount;
 use App\Jobs\User\UpdateUserBlacklistsCount;
@@ -94,7 +93,9 @@ class RefreshUserCounters extends Command
 		$participations = $this->user->participations()->get();
 
 		foreach ($participations as $participation) {
-			UpdateParticipationCounters::dispatch($participation);
+			$participation->updateNewMessagesCount();
+			$participation->updateLatestMessage();
+			$participation->save();
 		}
 	}
 }

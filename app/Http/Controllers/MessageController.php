@@ -25,7 +25,7 @@ class MessageController extends Controller
 
 		$participations = $user->participations()
 			->with(['latest_message.create_user'])
-			->messagesExists()
+			->hasMessages()
 			->with(['conversation.participations' => function ($query) use ($user) {
 				$query->where('user_id', '!=', $user->id);
 			}])

@@ -26,8 +26,7 @@ class MessageUserInboxTest extends TestCase
 			->create([
 				'create_user_id' => $auth_user->id,
 				'recepient_id' => $user->id
-			])
-			->fresh();
+			]);
 
 		$message2 = factory(Message::class)
 			->states('viewed')
@@ -35,8 +34,7 @@ class MessageUserInboxTest extends TestCase
 				'recepient_id' => $auth_user->id,
 				'create_user_id' => $user->id,
 				'bb_text' => '[quote]text2[/quote]text'
-			])
-			->fresh();
+			]);
 
 		$this->actingAs($user)
 			->get(route('users.inbox', $user))

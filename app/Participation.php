@@ -71,9 +71,9 @@ class Participation extends Model
 		return $this->hasOne('App\Message', 'id', 'latest_message_id');
 	}
 
-	function scopeMessagesExists($query)
+	function scopeHasMessages($query)
 	{
-		return $query->where('latest_message_id', '>', 0);
+		return $query->whereNotNull('latest_message_id');
 	}
 
 	public function getNewMessagesCount(): int
@@ -119,5 +119,13 @@ class Participation extends Model
 	public function hasNewMessages(): bool
 	{
 		return $this->new_messages_count > 0;
+	}
+
+	public function getNewMessagesCountAttribute($value)
+	{
+		if ($value < 0)
+			$value = 0;
+
+		return intval($value);
 	}
 }

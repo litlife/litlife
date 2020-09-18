@@ -7,8 +7,8 @@ use App\Traits\BBCodeable;
 use App\Traits\LatestOldestWithIDTrait;
 use App\Traits\UserCreate;
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -120,54 +120,6 @@ class Message extends Model
 	public function conversation()
 	{
 		return $this->belongsTo('App\Conversation', 'conversation_id', 'id');
-	}
-
-	// сообщение ни кем не удалено
-	public function scopeMessageNobodyRemoved($query)
-	{
-		return $query->where('sender_del', false)
-			->where('recepient_del', false);
-	}
-
-	// сообщение уже прочитано
-	public function scopeMessageReaded($query)
-	{
-		return $query->where("is_read", true);
-	}
-
-	// сообщение еще прочитано
-	public function scopeMessageNotReaded($query)
-	{
-		return $query->where("is_read", false);
-	}
-
-	// соообщения отправленные пользователем
-	public function scopeSendedByUser($query, $user)
-	{
-		return $query->where("sender_id", $user->id);
-	}
-
-	// соообщения полученные пользователем
-	public function scopeReciviedByUser($query, $user)
-	{
-		return $query->where("recepient_id", $user->id);
-	}
-
-	// получатель удалил сообщение
-	public function scopeRecepientRemove($query)
-	{
-		return $query->where("recepient_del", true);
-	}
-
-	// отправитель удалил сообщение
-	public function scopeSenderRemove($query)
-	{
-		return $query->where("sender_del", true);
-	}
-
-	function recepient()
-	{
-		return $this->hasOne('App\User', 'id', 'recepient_id');
 	}
 
 	function user_deletetions()
@@ -282,11 +234,16 @@ class Message extends Model
 
 	public function scopeNotDeletedForUser($query, $user)
 	{
-		if (is_object($user))
+		if ($user instanceof User)
 			$user = $user->getKey();
 
+		// этот вариант быстрее работает, чем второй
 		return $query->joinUserDeletions($user)
 			->whereNull('message_deletions.deleted_at');
+		/*
+				return $query->whereDoesntHave('user_deletetions', function (Builder $query) use ($user) {
+					$query->where('user_id', $user);
+				});*/
 	}
 
 	public function scopeWithDeletedForUser($query, $user)
