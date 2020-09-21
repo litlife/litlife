@@ -7,18 +7,12 @@ use Stevebauman\Purify\Facades\Purify;
 
 trait BBCodeable
 {
-	private $forbidBBCodeTags = ['size'];
-
 	public function setBBCode($value)
 	{
 		$value = mb_substr($value, 0, 1000000);
 		$value = trim(replaceAsc194toAsc32($value));
 		$value = removeJsAdCode($value);
-		/*
-				if (count($this->forbidBBCodeTags) > 0)
-					$value = preg_replace('/\[(\/*)('.implode('|', $this->forbidBBCodeTags).')(\=*)([0-9]*)\]/iuU',
-						'', $value);
-		*/
+
 		$html = (new BBCode)->toHtml($value);
 
 		if (trim($html) == '')

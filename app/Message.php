@@ -322,9 +322,10 @@ class Message extends Model
 				->where('user_id', $user->id)
 				->delete();
 
-			if ($this->trashed()) {
+			if ($this->trashed())
 				$this->restore();
 
+			if (!$this->isViewed()) {
 				foreach ($this->conversation->participations as $participation) {
 
 					$participation->updateLatestMessage();
@@ -345,17 +346,15 @@ class Message extends Model
 
 			} else {
 
-				$participation = $this->conversation
-					->participations
-					->where('user_id', $user->id)
-					->first();
+				foreach ($this->conversation->participations as $participation) {
 
-				$participation->updateLatestMessage();
+					$participation->updateLatestMessage();
 
-				if ($participation->user->is($user))
-					$participation->noNewMessages();
+					if ($participation->user->is($user))
+						$participation->noNewMessages();
 
-				$participation->save();
+					$participation->save();
+				}
 			}
 		});
 	}

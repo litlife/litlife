@@ -32,6 +32,8 @@ class MessageRestoreForRecepientTest extends TestCase
 
 		$secondMessage->refresh();
 
+		$this->assertTrue($secondMessage->isViewed());
+
 		$recepientParticipation = $secondMessage->getFirstRecepientParticipation();
 
 		$this->assertEquals(0, $recepientParticipation->new_messages_count);
@@ -72,6 +74,8 @@ class MessageRestoreForRecepientTest extends TestCase
 
 		$firstMessage->refresh();
 
+		$this->assertTrue($secondMessage->isViewed());
+
 		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
 		$this->assertEquals(0, $recepientParticipation->new_messages_count);
@@ -102,10 +106,12 @@ class MessageRestoreForRecepientTest extends TestCase
 
 		$message->deleteForUser($recepient);
 		$message->refresh();
+
 		$message->restoreForUser($recepient);
 		$message->refresh();
 
 		$this->assertFalse($message->trashed());
+		$this->assertTrue($message->isViewed());
 
 		$message->refresh();
 
@@ -141,6 +147,8 @@ class MessageRestoreForRecepientTest extends TestCase
 		$message->refresh();
 		$message->restoreForUser($recepient);
 		$message->refresh();
+
+		$this->assertTrue($message->isViewed());
 
 		$recepientParticipation = $message->getFirstRecepientParticipation();
 
