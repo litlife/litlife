@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Sequence;
+namespace Tests\Feature\Job;
 
 use App\Book;
 use App\Jobs\Sequence\UpdateSequenceBooksCount;

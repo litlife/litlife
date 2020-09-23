@@ -41,7 +41,7 @@ class CommentObserver
 				$comment->hide_from_top = false;
 		}
 
-		$this->level($comment);
+		$comment->updateLevel();
 
 		$comment->user_agent_id = UserAgent::getCurrentId();
 
@@ -55,13 +55,6 @@ class CommentObserver
 
 		if (empty($comment->origin_commentable_id))
 			$comment->origin_commentable_id = $comment->commentable_id;
-	}
-
-	private function level(Comment $comment)
-	{
-		preg_match_all('/[0-9]+/iu', $comment->tree, $matches);
-
-		$comment->level = count($matches[0]);
 	}
 
 	public function updating(Comment $comment)

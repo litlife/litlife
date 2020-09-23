@@ -8,27 +8,28 @@ use Tests\TestCase;
 
 class UserVoteTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
-	public function testShowHttp()
+	public function testRouteIsOk()
 	{
 		$vote = factory(BookVote::class)
-			->create()
-			->fresh();
+			->create();
 
 		$this->actingAs($vote->create_user)
 			->get(route('users.votes', ['user' => $vote->create_user]))
 			->assertOk();
+	}
+
+	public function testRouteIsOkViewOtherUser()
+	{
+		$vote = factory(BookVote::class)
+			->create();
 
 		$user = factory(User::class)
-			->create()
-			->fresh();
+			->create();
 
 		$this->actingAs($user)
 			->get(route('users.votes', ['user' => $vote->create_user]))

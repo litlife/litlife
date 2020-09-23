@@ -315,4 +315,17 @@ class Sequence extends Model
 		return $query->orderBy('book_count', 'desc')
 			->orderBy('sequences.id', 'asc');
 	}
+
+	public function updateBooksCount()
+	{
+		if ($this->isPrivate()) {
+			$this->book_count = $this->books()
+				->acceptedOrBelongsToUser($this->create_user)
+				->count();
+		} else {
+			$this->book_count = $this->books()
+				->accepted()
+				->count();
+		}
+	}
 }

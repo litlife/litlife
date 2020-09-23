@@ -8,7 +8,9 @@ use App\BookVote;
 use App\Comment;
 use App\Jobs\Book\UpdateBookRating;
 use App\Post;
+use App\Topic;
 use App\User;
+use App\UsersAccessToForum;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -286,7 +288,7 @@ class HomeTest extends TestCase
 			->assertDontSeeText($post_on_review->text);
 	}
 
-	public function testViewLatestIfOnReview()
+	public function testViewLatestCommentsIfOnReview()
 	{
 		$comment = factory(Comment::class)->create();
 		$comment->statusSentForReview();
@@ -305,4 +307,87 @@ class HomeTest extends TestCase
 			->assertOk()
 			->assertDontSeeText($comment->text);
 	}
+
+	public function testViewPrivateMessageOnLatestPosts()
+	{
+		$post = factory(Post::class)
+			->create();
+
+		$forum = $post->forum;
+		$forum->private = true;
+		$forum->save();
+
+		$usersAccessToForum = new UsersAccessToForum;
+		$usersAccessToForum->user_id = $post->create_user_id;
+		$forum->user_access()->save($usersAccessToForum);
+
+		$response = $this->actingAs($post->create_user)
+			->get(route('home.latest_posts'))
+			->assertSeeText($post->text);
+
+		$other_user = factory(User::class)
+			->create();
+
+		$response = $this->actingAs($other_user)
+			->get(route('home.latest_posts'))
+			->assertDontSeeText($post->text);
+
+		$response = $this
+			->get(route('home.latest_posts'))
+			->assertDontSeeText($post->text);
+	}
+
+	public function testViewLatestPostsIfOnReview()
+	{
+		$post = factory(Post::class)->create();
+		$post->statusSentForReview();
+		$post->save();
+
+		$user = factory(User::class)
+			->create();
+
+		$this->actingAs($post->create_user)
+			->get(route('home.latest_posts'))
+			->assertSeeText($post->text);
+
+		$this->actingAs($user)
+			->get(route('home.latest_posts'))
+			->assertDontSeeText($post->text);
+	}
+
+	public function testViewPrivateTopicOnUserPostsList()
+	{
+		$post = factory(Post::class)
+			->create();
+
+		$forum = $post->forum;
+		$forum->private = true;
+		$forum->save();
+
+		$topic = $post->topic;
+
+		$usersAccessToForum = new UsersAccessToForum;
+		$usersAccessToForum->user_id = $post->create_user_id;
+		$forum->user_access()->save($usersAccessToForum);
+
+		$response = $this->actingAs($post->create_user)
+			->get(route('home.latest_posts', $topic->create_user))
+			->assertSeeText($topic->name);
+
+		$other_user = factory(User::class)
+			->create();
+
+		Topic::refreshLatestTopics();
+
+		$response = $this->actingAs($other_user)
+			->get(route('home.latest_posts', $topic->create_user))
+			->assertDontSeeText($topic->name);
+
+		Topic::refreshLatestTopics();
+
+		$response = $this
+			->get(route('home.latest_posts', $topic->create_user))
+			->assertDontSeeText($topic->name);
+	}
+
 }

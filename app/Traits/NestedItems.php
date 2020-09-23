@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Model;
+
 trait NestedItems
 {
 	public function scopeDescendants($query, $ids)
@@ -38,22 +40,20 @@ trait NestedItems
 
 	public function getRootAttribute()
 	{
-		$ar = explode(',', $this->tree);
+		$id = $this->getRootId();
 
-		if (isset($ar[1]) and $ar[1] != '')
-			return self::any()->find($ar[1]);
+		if (!empty($id))
+			return self::any()->find($id);
 		else
 			return null;
 	}
 
 	public function getParentAttribute()
 	{
-		$ar = explode(',', $this->tree);
+		$id = $this->getParentId();
 
-		$ar = array_reverse($ar);
-
-		if (isset($ar[1]) and $ar[1] != '')
-			return self::find($ar[1]);
+		if (!empty($id))
+			return self::find($id);
 		else
 			return null;
 	}
@@ -63,36 +63,25 @@ trait NestedItems
 		if (!is_object($parent))
 			$parent = self::find($parent);
 
-		$array = $parent->tree_array;
+		if (!is_integer($parent->id))
+			throw new \LogicException('Parent must be defined');
 
-		if (isset($parent->id)) {
-			$array[] = $parent->id;
-
-			$str = ',' . implode(',', $array) . ',';
-
-			$this->tree = $str;
-		}
+		$array = $parent->getTree();
+		array_push($array, $parent->id);
+		$this->tree = $array;
 	}
 
-
-	public function getTreeArrayAttribute()
+	public function getTree(): array
 	{
 		$array = explode(',', $this->tree);
-
-		$filtered = [];
-
-		foreach ($array as $value) {
-			if ($value != '') {
-				$filtered[] = $value;
-			}
-		}
-
-		return $filtered ?? [];
+		$array = array_filter($array);
+		$array = array_values($array ?? []);
+		return $array;
 	}
 
 	public function getLevelAttribute()
 	{
-		return count($this->treeArray);
+		return $this->getLevel();
 	}
 
 	public function getLevelWithLimitAttribute()
@@ -118,9 +107,9 @@ trait NestedItems
 		return false;
 	}
 
-	public function isRoot()
+	public function isRoot(): bool
 	{
-		if (empty($this->tree))
+		if ($this->getLevel() < 1)
 			return true;
 		else
 			return false;
@@ -134,15 +123,55 @@ trait NestedItems
 
 	public function updateLevel()
 	{
-		$ar = explode(',', $this->tree);
+		$array = explode(',', $this->tree);
+		$array = array_unique($array);
+		$array = array_filter($array);
+		$array = array_values($array ?? []);
+		$this->level = count($array);
+	}
 
-		$count = 0;
+	public function getLevel()
+	{
+		return $this->attributes['level'];
+	}
 
-		foreach ($ar as $v) {
-			if ($v) $count++;
+	public function isDescendantOf(Model $item): bool
+	{
+		return in_array($item->id, $this->getTree());
+	}
+
+	public function setTreeAttribute($value)
+	{
+		if (is_string($value))
+			$value = explode(',', $value);
+
+		$array = (array)$value;
+		$array = array_unique($array);
+		$array = array_filter($array);
+		$array = array_values($array ?? []);
+
+		if (count($array) > 0) {
+			$this->attributes['tree'] = ',' . implode(',', $array) . ',';
+			$this->attributes['level'] = count($array);
+		} else {
+			$this->attributes['tree'] = null;
+			$this->attributes['level'] = 0;
 		}
+	}
 
-		$this->level = $count;
-		$this->save();
+	public function getParentId()
+	{
+		$array = $this->getTree();
+
+		$array = array_reverse($array);
+
+		return $array[0] ?? null;
+	}
+
+	public function getRootId()
+	{
+		$array = $this->getTree();
+
+		return $array[0] ?? null;
 	}
 }

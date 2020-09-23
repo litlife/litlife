@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class UserFriendshipTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *

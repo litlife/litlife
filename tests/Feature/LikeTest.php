@@ -14,14 +14,11 @@ use Tests\TestCase;
 
 class LikeTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testShowUsersHttp()
 	{
 		$like = factory(Like::class)

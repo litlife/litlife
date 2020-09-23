@@ -9,8 +9,6 @@ use Tests\TestCase;
 
 class UserFavoriteBookTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *

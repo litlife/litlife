@@ -7,8 +7,6 @@ use App\User;
 
 class ForumPolicy extends Policy
 {
-
-
 	/**
 	 * Create a new policy instance.
 	 *
@@ -26,11 +24,17 @@ class ForumPolicy extends Policy
 	 * @param Forum $forum
 	 * @return bool
 	 */
-
 	public function create_topic(User $auth_user, Forum $forum)
 	{
 		if ($auth_user->forum_message_count < $forum->min_message_count)
 			return false;
+
+		if (!empty($forum)) {
+			if ($forum->isPrivate()) {
+				if (!$forum->hasUserInAccess($auth_user))
+					return false;
+			}
+		}
 
 		return (boolean)$auth_user->getPermission('add_forum_topic');
 	}
@@ -41,7 +45,6 @@ class ForumPolicy extends Policy
 	 * @param User $auth_user
 	 * @return boolean
 	 */
-
 	public function view(?User $auth_user, Forum $forum)
 	{
 		if (!$forum->isPrivate())
@@ -50,7 +53,7 @@ class ForumPolicy extends Policy
 			if (empty($auth_user))
 				return false;
 			else
-				return $forum->user_access->where('user_id', $auth_user->id)->first() ? true : false;
+				return $forum->hasUserInAccess($auth_user);
 		}
 	}
 

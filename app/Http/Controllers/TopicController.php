@@ -45,7 +45,7 @@ class TopicController extends Controller
 	 */
 	public function create(Forum $forum)
 	{
-		$this->authorize('create', new Topic);
+		$this->authorize('create', Topic::class);
 
 		return view('forum.topic.create', compact('forum'));
 	}
@@ -78,7 +78,8 @@ class TopicController extends Controller
 
 		$topic->fill($request->all());
 
-		$this->authorize('create', $topic);
+		$this->authorize('create', Topic::class);
+
 		$this->validate($request, (new StorePost)->rules(), [], __('post'));
 
 		$topic = $forum->topics()
@@ -270,6 +271,7 @@ class TopicController extends Controller
 		$this->authorize('open', $topic);
 
 		$topic->open();
+		$topic->save();
 
 		return back();
 	}
@@ -287,6 +289,7 @@ class TopicController extends Controller
 		$this->authorize('close', $topic);
 
 		$topic->close();
+		$topic->save();
 
 		return back();
 	}
@@ -303,6 +306,7 @@ class TopicController extends Controller
 		$this->authorize('archive', $topic);
 
 		$topic->archive();
+		$topic->save();
 
 		return back();
 	}
@@ -319,6 +323,7 @@ class TopicController extends Controller
 		$this->authorize('unarchive', $topic);
 
 		$topic->unarchive();
+		$topic->save();
 
 		return back();
 	}

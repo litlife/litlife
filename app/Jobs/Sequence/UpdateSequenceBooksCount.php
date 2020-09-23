@@ -14,6 +14,7 @@ class UpdateSequenceBooksCount
 	/**
 	 * Create a new job instance.
 	 *
+	 * @param Sequence $sequence
 	 * @return void
 	 */
 	public function __construct(Sequence $sequence)
@@ -28,16 +29,7 @@ class UpdateSequenceBooksCount
 	 */
 	public function handle()
 	{
-		if ($this->sequence->isPrivate()) {
-			$this->sequence->book_count = $this->sequence->books()
-				->acceptedOrBelongsToUser($this->sequence->create_user)
-				->count();
-		} else {
-			$this->sequence->book_count = $this->sequence->books()
-				->accepted()
-				->count();
-		}
-
+		$this->sequence->updateBooksCount();
 		$this->sequence->save();
 	}
 }

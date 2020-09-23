@@ -7,8 +7,6 @@ use App\User;
 
 class PostPolicy extends Policy
 {
-
-
 	/**
 	 * Create a new policy instance.
 	 *
@@ -26,7 +24,6 @@ class PostPolicy extends Policy
 	 * @param Post $post
 	 * @return boolean
 	 */
-
 	public function reply(User $auth_user, Post $post)
 	{
 		if ($post->isUserCreator($auth_user))
@@ -45,7 +42,6 @@ class PostPolicy extends Policy
 	 * @param Post $post
 	 * @return boolean
 	 */
-
 	public function update(User $auth_user, Post $post)
 	{
 		if ($post->isUserCreator($auth_user)) {
@@ -70,8 +66,8 @@ class PostPolicy extends Policy
 	 * @param User $auth_user
 	 * @param Post $post
 	 * @return boolean
+	 * @throws
 	 */
-
 	public function delete(User $auth_user, Post $post)
 	{
 		// сообщение уже удалено
@@ -94,7 +90,6 @@ class PostPolicy extends Policy
 	 * @param Post $post
 	 * @return boolean
 	 */
-
 	public function restore(User $auth_user, Post $post)
 	{
 		// сообщение не удалено
@@ -114,7 +109,6 @@ class PostPolicy extends Policy
 	 * @param User $auth_user
 	 * @return boolean
 	 */
-
 	public function move(User $auth_user)
 	{
 		return (boolean)$auth_user->getPermission('forum_move_post');
@@ -127,10 +121,12 @@ class PostPolicy extends Policy
 	 * @param Post $post
 	 * @return boolean
 	 */
-
 	public function fix(User $auth_user, Post $post)
 	{
 		if ($post->level > 0)
+			return false;
+
+		if ($post->isFixed())
 			return false;
 
 		return (boolean)$auth_user->getPermission('forum_post_manage');
@@ -143,7 +139,6 @@ class PostPolicy extends Policy
 	 * @param Post $post
 	 * @return boolean
 	 */
-
 	public function unfix(User $auth_user, Post $post)
 	{
 		if (!$post->isFixed())
@@ -159,7 +154,6 @@ class PostPolicy extends Policy
 	 * @param Post $post
 	 * @return boolean
 	 */
-
 	public function approve(User $auth_user, Post $post)
 	{
 		if (!$post->isSentForReview())

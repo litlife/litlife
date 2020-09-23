@@ -11,8 +11,6 @@ use Tests\TestCase;
 
 class NotificationTest extends TestCase
 {
-
-
 	/**
 	 * A basic feature test example.
 	 *
