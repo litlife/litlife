@@ -193,15 +193,15 @@ class Forum extends Model
 		return (bool)$this->is_idea_forum;
 	}
 
+	public function topics()
+	{
+		return $this->hasMany('App\Topic');
+	}
+
 	public function postsCountRefresh()
 	{
 		$this->post_count = $this->topics()
 			->sum('post_count');
-	}
-
-	public function topics()
-	{
-		return $this->hasMany('App\Topic');
 	}
 
 	public function topicsCountRefresh()
@@ -212,11 +212,27 @@ class Forum extends Model
 
 	public function lastPostRefresh()
 	{
-		$last_topic = $this->topics()
+		$topic = $this->topics()
 			->orderByWithNulls('last_post_created_at', 'desc', 'last')
 			->first();
 
-		$this->last_post_id = empty($last_topic->last_post) ? null : $last_topic->last_post->id;
-		$this->last_topic_id = empty($last_topic->id) ? null : $last_topic->id;
+		if (!empty($topic)) {
+			if (!empty($topic->last_post)) {
+				$this->last_post_id = $topic->last_post->id;
+			}
+
+			$this->last_topic_id = $topic->id;
+		} else {
+			$this->last_post_id = null;
+			$this->last_topic_id = null;
+		}
+	}
+
+	public function hasUserInAccess(User $user): bool
+	{
+		if (empty($this->user_access))
+			return false;
+
+		return (bool)$this->user_access->where('user_id', $user->id)->first();
 	}
 }

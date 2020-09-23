@@ -7,8 +7,6 @@ use Tests\TestCase;
 
 class UserImagesTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
@@ -25,5 +23,15 @@ class UserImagesTest extends TestCase
 
 		$this->assertFalse($user2->can('view_images', $user));
 		$this->assertTrue($user->can('view_images', $user));
+	}
+
+	public function testRouteIsOk()
+	{
+		$user = factory(User::class)
+			->create();
+
+		$this->actingAs($user)
+			->get(route('users.images.index', ['user' => $user]))
+			->assertOk();
 	}
 }

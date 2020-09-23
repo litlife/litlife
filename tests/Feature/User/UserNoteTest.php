@@ -9,14 +9,11 @@ use Tests\TestCase;
 
 class UserNoteTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testIndexHttp()
 	{
 		$user = factory(User::class)

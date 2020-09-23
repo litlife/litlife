@@ -54,5 +54,6 @@ class RefreshLevel extends Command
 		echo($item->id . "\n");
 
 		$item->updateLevel();
+		$item->save();
 	}
 }

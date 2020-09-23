@@ -15,3 +15,24 @@ $factory->define(App\Forum::class, function (Faker $faker) {
 		'private' => false
 	];
 });
+
+$factory->afterMakingState(App\Forum::class, 'private', function (\App\Forum $forum, $faker) {
+	$forum->private = true;
+});
+
+$factory->afterCreatingState(App\Forum::class, 'with_topic', function (\App\Forum $forum, $faker) {
+
+	$topic = factory(\App\Topic::class)
+		->make();
+
+	$forum->topics()->save($topic);
+});
+
+$factory->afterCreatingState(App\Forum::class, 'with_user_access', function (\App\Forum $forum, $faker) {
+
+	$user = factory(\App\User::class)
+		->create();
+
+	$forum->users_with_access()->sync([$user->id]);
+	$forum->refresh();
+});

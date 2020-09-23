@@ -35,4 +35,22 @@ $factory->afterMakingState(App\Topic::class, 'idea_in_progress', function (Topic
 	$topic->label = TopicLabelEnum::IdeaInProgress;
 });
 
+$factory->afterMakingState(App\Topic::class, 'archived', function (Topic $topic, $faker) {
+	$topic->archive();
+});
+
+$factory->afterMakingState(App\Topic::class, 'closed', function (Topic $topic, $faker) {
+	$topic->close();
+});
+
+$factory->afterCreatingState(App\Topic::class, 'with_post', function (Topic $topic, $faker) {
+	$post = factory(\App\Post::class)->make();
+	$topic->posts()->save($post);
+});
+
+$factory->afterCreatingState(App\Topic::class, 'with_fixed_post', function (Topic $topic, $faker) {
+	$post = factory(\App\Post::class)->make();
+	$topic->posts()->save($post);
+	$post->fix();
+});
 

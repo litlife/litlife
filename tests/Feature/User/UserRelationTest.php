@@ -11,14 +11,11 @@ use Tests\TestCase;
 
 class UserRelationTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testIndexHttp()
 	{
 		$user = factory(User::class)->create()->fresh();

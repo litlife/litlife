@@ -7,14 +7,11 @@ use Tests\TestCase;
 
 class AwayTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testParam()
 	{
 		$url = 'http://test.test/test';

@@ -22,7 +22,7 @@ class BlogObserver
 	{
 		$blog->autoAssociateAuthUser();
 
-		$this->level($blog);
+		$blog->updateLevel();
 
 		$blog->user_agent_id = UserAgent::getCurrentId();
 
@@ -33,13 +33,6 @@ class BlogObserver
 		} else {
 			$blog->statusAccepted();
 		}
-	}
-
-	private function level(Blog $blog)
-	{
-		preg_match_all('/[0-9]+/iu', $blog->tree, $matches);
-
-		$blog->level = count($matches[0]);
 	}
 
 	public function updating(Blog $blog)

@@ -28,23 +28,15 @@ class PostObserver
 		$post->forum_id = $post->topic->forum->id;
 		$post->private = $post->topic->forum->private;
 
-		// проверяем состоит ли пользователь на проверке комментариев и сообщений на форуме
 		if ($post->isMustBeSentForReview()) {
 			$post->statusSentForReview();
 		} else {
 			$post->statusAccepted();
 		}
 
-		$this->level($post);
+		$post->updateLevel();
 
 		$post->user_agent_id = UserAgent::getCurrentId();
-	}
-
-	private function level(Post $post)
-	{
-		preg_match_all('/[0-9]+/iu', $post->tree, $matches);
-
-		$post->level = count($matches[0]);
 	}
 
 	public function updating(Post $post)

@@ -35,10 +35,17 @@ class TopicPolicy extends Policy
 		if ($topic->trashed())
 			return false;
 
+		if (!empty($topic->forum)) {
+			if ($topic->forum->isPrivate()) {
+				if (!$topic->forum->hasUserInAccess($auth_user))
+					return false;
+			}
+		}
+
 		return (boolean)$auth_user->getPermission('add_forum_post');
 	}
 
-	public function create(User $auth_user, Topic $topic)
+	public function create(User $auth_user)
 	{
 		return (boolean)$auth_user->getPermission('add_forum_topic');
 	}

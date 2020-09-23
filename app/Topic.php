@@ -176,22 +176,6 @@ class Topic extends Model
 			->with("avatar");
 	}
 
-	/**
-	 * Обновляет количество постов в топике и последний пост
-	 *
-	 * @param Post $post
-	 */
-
-	public function updateCountOfPostsAndLastPost()
-	{
-		$this->post_count = $this->posts()->count();
-
-		if ($this->post_count > 0)
-			$this->last_post_id = $this->posts()->latest()->first()->id;
-
-		$this->save();
-	}
-
 	public function posts()
 	{
 		return $this->hasMany('App\Post', 'topic_id');
@@ -246,13 +230,11 @@ class Topic extends Model
 	public function open()
 	{
 		$this->closed = false;
-		$this->save();
 	}
 
 	public function close()
 	{
 		$this->closed = true;
-		$this->save();
 	}
 
 	public function scopeOpened($query)
@@ -289,13 +271,11 @@ class Topic extends Model
 	public function archive()
 	{
 		$this->archived = true;
-		$this->save();
 	}
 
 	public function unarchive()
 	{
 		$this->archived = false;
-		$this->save();
 	}
 
 	public function isArchived()
@@ -382,11 +362,26 @@ class Topic extends Model
 
 	public function lastPostRefresh()
 	{
-		$last_post = $this->posts()
+		$post = $this->posts()
 			->latestWithId()
 			->first();
 
-		$this->last_post_id = empty($last_post) ? null : $last_post->id;
-		$this->last_post_created_at = empty($last_post) ? null : $last_post->created_at;
+		if (!empty($post)) {
+			$this->last_post_id = $post->id;
+			$this->last_post_created_at = $post->created_at;
+		} else {
+			$this->last_post_id = null;
+			$this->last_post_created_at = null;
+		}
+	}
+
+	/**
+	 * Обновляет количество постов в теме и последний пост
+	 */
+	public function updateCountOfPostsAndLastPost()
+	{
+		$this->postsCountRefresh();
+		$this->lastPostRefresh();
+		$this->save();
 	}
 }

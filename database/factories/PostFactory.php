@@ -74,3 +74,8 @@ $factory->state(App\Post::class, 'idea_forum_posts', function ($faker) {
 $factory->afterCreatingState(App\Post::class, 'idea_forum_posts', function (Post $post, $faker) {
 	$post->fix();
 });
+
+$factory->afterCreatingState(App\Post::class, 'fixed', function (Post $post, $faker) {
+	$post->fix();
+	$post->refresh();
+});

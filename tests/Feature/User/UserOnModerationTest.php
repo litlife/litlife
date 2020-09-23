@@ -10,14 +10,11 @@ use Tests\TestCase;
 
 class UserOnModerationTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testCreateCommentHttp()
 	{
 		$user_on_moderation = factory(UserOnModeration::class)
