@@ -15,11 +15,17 @@ use Tests\TestCase;
 
 class UserPurchasesTest extends TestCase
 {
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
+	public function testRelation()
+	{
+		$purchase = factory(UserPurchase::class)
+			->states('book')
+			->create();
+
+		$this->assertEquals($purchase->buyer_user_id, $purchase->buyer->id);
+		$this->assertEquals($purchase->seller_user_id, $purchase->seller->id);
+		$this->assertEquals($purchase->purchasable_id, $purchase->buyer->purchased_books->first()->id);
+	}
+
 	public function testIsBook()
 	{
 		$purchase = factory(UserPurchase::class)

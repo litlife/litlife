@@ -7,6 +7,7 @@ use App\Book;
 use App\BookFile;
 use App\Comment;
 use App\Jobs\Book\UpdateBookFilesCount;
+use App\Section;
 use App\User;
 use App\UserPurchase;
 use Tests\TestCase;
@@ -205,5 +206,66 @@ class BookShowTest extends TestCase
 
 		$this->get(route('books.show', $book))
 			->assertNotFound();
+	}
+
+	public function testViewCounterIncrement()
+	{
+		$section = factory(Section::class)
+			->create();
+
+		$book = $section->book;
+		$book->statusAccepted();
+		$book->push();
+		$book->refresh();
+
+		$this->assertEquals(0, $book->view_count->day);
+		$this->assertEquals(0, $book->view_count->week);
+		$this->assertEquals(0, $book->view_count->month);
+		$this->assertEquals(0, $book->view_count->year);
+		$this->assertEquals(0, $book->view_count->all);
+
+		$this->get(route('books.show', $book))
+			->assertOk();
+
+		$book->refresh();
+
+		$this->assertEquals(1, $book->view_count->day);
+		$this->assertEquals(1, $book->view_count->week);
+		$this->assertEquals(1, $book->view_count->month);
+		$this->assertEquals(1, $book->view_count->year);
+		$this->assertEquals(1, $book->view_count->all);
+
+		$this->get(route('books.show', $book))
+			->assertOk();
+
+		$book->refresh();
+
+		$this->assertEquals(1, $book->view_count->day);
+		$this->assertEquals(1, $book->view_count->week);
+		$this->assertEquals(1, $book->view_count->month);
+		$this->assertEquals(1, $book->view_count->year);
+		$this->assertEquals(1, $book->view_count->all);
+
+		$this->get(route('books.show', $book), ['REMOTE_ADDR' => $this->faker->ipv4])
+			->assertOk();
+
+		$book->refresh();
+
+		$this->assertEquals(2, $book->view_count->day);
+		$this->assertEquals(2, $book->view_count->week);
+		$this->assertEquals(2, $book->view_count->month);
+		$this->assertEquals(2, $book->view_count->year);
+		$this->assertEquals(2, $book->view_count->all);
+
+		$this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]), ['REMOTE_ADDR' => $this->faker->ipv4])
+			->assertOk();
+
+		$book->refresh();
+
+		$this->assertEquals(3, $book->view_count->day);
+		$this->assertEquals(3, $book->view_count->week);
+		$this->assertEquals(3, $book->view_count->month);
+		$this->assertEquals(3, $book->view_count->year);
+		$this->assertEquals(3, $book->view_count->all);
 	}
 }

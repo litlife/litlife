@@ -34,3 +34,9 @@ $factory->afterCreatingState(App\BookKeyword::class, 'on_review', function ($boo
 	$book_keyword->push();
 });
 
+$factory->afterCreatingState(App\BookKeyword::class, 'accepted', function ($book_keyword, $faker) {
+	$book_keyword->keyword->statusAccepted();
+	$book_keyword->statusAccepted();
+	$book_keyword->push();
+});
+

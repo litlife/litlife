@@ -9,6 +9,12 @@ use Tests\TestCase;
 
 class AuthorSearchTest extends TestCase
 {
+	public function testIndexHttp()
+	{
+		$this->get(route('authors'))
+			->assertOk();
+	}
+
 	public function testSearch()
 	{
 		$author = factory(Author::class)

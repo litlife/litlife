@@ -2,11 +2,22 @@
 
 namespace Tests\Feature\Author;
 
+use App\Author;
 use App\User;
 use Tests\TestCase;
 
 class AuthorCreateTest extends TestCase
 {
+	public function testCreateAuthorAverageRatingDBRecord()
+	{
+		$author = factory(Author::class)
+			->create();
+
+		$this->assertDatabaseHas('author_average_rating_for_periods', [
+			'author_id' => $author->id
+		]);
+	}
+
 	public function testWithBiographyHttp()
 	{
 		$user = factory(User::class)

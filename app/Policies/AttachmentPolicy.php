@@ -7,8 +7,6 @@ use App\User;
 
 class AttachmentPolicy extends Policy
 {
-
-
 	/**
 	 * Create a new policy instance.
 	 *

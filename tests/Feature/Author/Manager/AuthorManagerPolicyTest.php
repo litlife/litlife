@@ -662,4 +662,91 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertTrue($user->can('vote', $book_keyword));
 		$this->assertTrue($user->can('viewOnCheck', $book_keyword));
 	}
+
+	public function testPolicyIfManager()
+	{
+		$user = factory(User::class)->create();
+		$user2 = factory(User::class)->create();
+
+		$book = factory(Book::class)
+			->states('with_translator', 'with_writer')
+			->create();
+
+		$book->refresh();
+
+		$this->assertFalse($user->can('manage', $book));
+		$this->assertFalse($user2->can('manage', $book));
+
+		$author_manager = factory(Manager::class)
+			->states('character_author')
+			->create([
+				'user_id' => $user->id,
+				'manageable_id' => $book->writers->first()->id,
+				'manageable_type' => 'author'
+			]);
+
+		$author_manager->statusSentForReview();
+		$author_manager->save();
+
+		$author_manager2 = factory(Manager::class)
+			->states('character_author')
+			->create([
+				'user_id' => $user2->id,
+				'manageable_id' => $book->translators->first()->id,
+				'manageable_type' => 'author'
+			]);
+
+		$author_manager2->statusSentForReview();
+		$author_manager2->save();
+
+		$book->refresh();
+
+		$this->assertFalse($user->can('manage', $book));
+		$this->assertFalse($user2->can('manage', $book));
+
+		$author_manager->statusAccepted();
+		$author_manager->save();
+		$author_manager2->statusAccepted();
+		$author_manager2->save();
+
+		$book->refresh();
+
+		$this->assertTrue($user->can('manage', $book));
+		$this->assertTrue($user2->can('manage', $book));
+
+		$author_manager->delete();
+		$author_manager2->delete();
+
+		$book->refresh();
+
+		$this->assertFalse($user->can('manage', $book));
+		$this->assertFalse($user2->can('manage', $book));
+	}
+
+	public function testAuthorPolicy()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager', 'with_book_for_sale')
+			->create();
+
+		$manager = $author->managers->first();
+		$book = $author->books->first();
+		$user = $manager->user;
+
+		$this->assertTrue($user->can('author', $book));
+
+		$user = factory(User::class)
+			->create();
+
+		$this->assertFalse($user->can('author', $book));
+
+		$author = factory(Author::class)
+			->states('with_author_manager', 'with_book_for_sale')
+			->create();
+
+		$manager = $author->managers->first();
+		$user = $manager->user;
+
+		$this->assertFalse($user->can('author', $book));
+	}
 }

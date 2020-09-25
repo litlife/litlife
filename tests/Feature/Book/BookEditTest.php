@@ -5,14 +5,30 @@ namespace Tests\Feature\Book;
 use App\Author;
 use App\Book;
 use App\Genre;
+use App\Http\Requests\StoreBook;
+use App\Keyword;
 use App\Section;
 use App\Sequence;
 use App\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class BookEditTest extends TestCase
 {
+	public function testValidateName()
+	{
+		$store = new StoreBook();
+
+		$validator = Validator::make(['title' => ''], $store->rules(), [], __('book'));
+
+		$this->assertContains(__('validation.required', ['attribute' => __('book.title')]), $validator->messages()->toArray()['title']);
+
+		$validator = Validator::make(['title' => 'Тест'], $store->rules(), [], __('book'));
+
+		$this->assertArrayNotHasKey('title', $validator->messages()->toArray());
+	}
+
 	public function testEditHttp()
 	{
 		$user = factory(User::class)
@@ -665,4 +681,135 @@ class BookEditTest extends TestCase
 			->assertSessionHasNoErrors();
 	}
 
+	public function testBookAutoSetAge()
+	{
+		$book = factory(Book::class)
+			->states('with_writer', 'with_create_user', 'private')
+			->create();
+
+		$user = $book->create_user;
+
+		$genre = factory(Genre::class)->create();
+		$genre->age = 18;
+		$genre->save();
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', $book),
+				[
+					'title' => $book->title,
+					'genres' => [$genre->id],
+					'writers' => $book->writers()->any()->pluck('id')->toArray(),
+					'ti_lb' => 'RU',
+					'ti_olb' => 'RU',
+					'ready_status' => 'complete'
+				]);
+		//dump(session('errors'));
+
+		$response->assertSessionHasNoErrors()
+			->assertRedirect(route('books.edit', $book));
+
+		$this->assertEquals(18, $book->fresh()->age);
+	}
+
+	public function testAddNewKeyword()
+	{
+		$book = factory(Book::class)
+			->states('with_writer', 'private', 'with_create_user', 'with_genre')
+			->create();
+
+		$user = $book->create_user;
+
+		$keyword = factory(Keyword::class)
+			->create();
+
+		$array = [
+			'title' => $book->title,
+			'genres' => $book->genres()->pluck('id')->toArray(),
+			'writers' => $book->writers()->any()->pluck('id')->toArray(),
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete',
+			'copy_protection' => false,
+			'keywords' => [
+				$keyword->text
+			]
+		];
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', $book), $array);
+		//dump(session('errors'));
+		$response->assertSessionHasNoErrors()
+			->assertRedirect(route('books.edit', $book));
+
+		$book->refresh();
+
+		$book_keywords = $book->book_keywords()->get();
+
+		$this->assertEquals(1, $book_keywords->count());
+		$this->assertTrue($book_keywords->first()->keyword->is($keyword));
+	}
+
+	public function testAddNewKeywordIfOtherExists()
+	{
+		$book = factory(Book::class)
+			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
+			->create();
+
+		$user = $book->create_user;
+
+		$keyword = factory(Keyword::class)
+			->create();
+
+		$book_keyword = $book->book_keywords()->first();
+
+		$array = [
+			'title' => $book->title,
+			'genres' => $book->genres()->pluck('id')->toArray(),
+			'writers' => $book->writers()->any()->pluck('id')->toArray(),
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete',
+			'copy_protection' => false,
+			'keywords' => [
+				$book_keyword->keyword->text,
+				$keyword->text
+			]
+		];
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', $book), $array)
+			->assertSessionHasNoErrors()
+			->assertRedirect(route('books.edit', $book));
+
+		$this->assertEquals(2, $book->book_keywords()->count());
+	}
+
+	public function testRemoveKeyword()
+	{
+		$book = factory(Book::class)
+			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
+			->create();
+
+		$user = $book->create_user;
+
+		$book_keyword = $book->book_keywords()->first();
+
+		$array = [
+			'title' => $book->title,
+			'genres' => $book->genres()->pluck('id')->toArray(),
+			'writers' => $book->writers()->any()->pluck('id')->toArray(),
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete',
+			'copy_protection' => false,
+			'keywords' => []
+		];
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', $book), $array)
+			->assertSessionHasNoErrors()
+			->assertRedirect(route('books.edit', $book));
+
+		$this->assertEquals(0, $book->book_keywords()->count());
+	}
 }

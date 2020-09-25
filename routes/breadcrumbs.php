@@ -351,13 +351,16 @@ Breadcrumbs::for('books.notes.show', function ($breadcrumbs, $book, $note) {
 		$book = \App\Book::findOrFail($book);
 
 	if (!is_object($note))
-		$note = $book->sections()->findInnerIdOrFail($note);
+		$note = $book->sections()->find($note);
 
-	if ($note->isNote())
-		$breadcrumbs->parent('books.notes.index', $book);
+	if ($note instanceof \App\Section) {
 
-	if (is_object($note)) {
-		$breadcrumbs->push($note->title, route('books.notes.show', ['book' => $book, 'note' => $note->inner_id]));
+		if ($note->isNote())
+			$breadcrumbs->parent('books.notes.index', $book);
+
+		if (is_object($note)) {
+			$breadcrumbs->push($note->title, route('books.notes.show', ['book' => $book, 'note' => $note->inner_id]));
+		}
 	}
 });
 

@@ -11,14 +11,11 @@ use Tests\TestCase;
 
 class BookAwardTest extends TestCase
 {
-
-
 	/**
 	 * A basic test example.
 	 *
 	 * @return void
 	 */
-
 	public function testStoreHttp()
 	{
 		$book = factory(Book::class)->create();

@@ -9,7 +9,6 @@ use Tests\TestCase;
 
 class AuthorDeleteRestoreTest extends TestCase
 {
-
 	public function testDeleteHttp()
 	{
 		config(['activitylog.enabled' => true]);

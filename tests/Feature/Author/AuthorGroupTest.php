@@ -9,8 +9,6 @@ use Tests\TestCase;
 
 class AuthorGroupTest extends TestCase
 {
-
-
 	public function testAuthorsGroupIndexHttp()
 	{
 		$author_group = factory(AuthorGroup::class)

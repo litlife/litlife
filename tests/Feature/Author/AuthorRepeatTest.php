@@ -9,7 +9,21 @@ use Tests\TestCase;
 
 class AuthorRepeatTest extends TestCase
 {
+	/**
+	 * A basic feature test example.
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void
+	{
+		parent::setUp();
 
+		foreach (AuthorRepeat::all() as $repeat) {
+			$repeat->delete();
+		}
+
+		AuthorRepeat::flushCachedOnModerationCount();
+	}
 
 	public function testCreateHttp()
 	{
@@ -117,8 +131,6 @@ class AuthorRepeatTest extends TestCase
 		$this->assertEquals($author2->id, $authors[0]->id);
 		$this->assertEquals($author3->id, $authors[1]->id);
 		$this->assertEquals($text, $authorRepeat->comment);
-
-
 	}
 
 	public function testDeleteHttp()
@@ -191,21 +203,5 @@ class AuthorRepeatTest extends TestCase
 			->assertSeeText(__('common.merge'))
 			->assertDontSeeText(__('common.edit'))
 			->assertSee(__('common.delete'));
-	}
-
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
-	protected function setUp(): void
-	{
-		parent::setUp();
-
-		foreach (AuthorRepeat::all() as $repeat) {
-			$repeat->delete();
-		}
-
-		AuthorRepeat::flushCachedOnModerationCount();
 	}
 }

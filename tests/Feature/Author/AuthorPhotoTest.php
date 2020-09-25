@@ -11,6 +11,18 @@ use Tests\TestCase;
 
 class AuthorPhotoTest extends TestCase
 {
+	/**
+	 * Setup the test environment.
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void
+	{
+		parent::setUp();
+
+		Storage::fake(config('filesystems.default'));
+	}
+
 	public function testStoreHttp()
 	{
 		config(['activitylog.enabled' => true]);
@@ -127,18 +139,6 @@ class AuthorPhotoTest extends TestCase
 
 		$this->get(route('authors.photos.index', ['author' => $author]))
 			->assertRedirect(route('authors.show', ['author' => $author]));
-	}
-
-	/**
-	 * Setup the test environment.
-	 *
-	 * @return void
-	 */
-	protected function setUp(): void
-	{
-		parent::setUp();
-
-		Storage::fake(config('filesystems.default'));
 	}
 
 	public function testShowHttp()

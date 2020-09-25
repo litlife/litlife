@@ -39,28 +39,4 @@ class AuthorPublishTest extends TestCase
 		$this->assertEquals($user->id, $activity->causer_id);
 		$this->assertEquals('user', $activity->causer_type);
 	}
-
-	public function testPolicyMakeAccepted()
-	{
-		$user = factory(User::class)->create();
-
-		$author = factory(Author::class)->create();
-		$author->statusAccepted();
-		$author->save();
-		$user->refresh();
-
-		$this->assertFalse($user->can('makeAccepted', $author));
-
-		$user->group->check_books = true;
-		$user->push();
-		$user->refresh();
-
-		$this->assertFalse($user->can('makeAccepted', $author));
-
-		$author->statusSentForReview();
-		$author->save();
-		$author->refresh();
-
-		$this->assertTrue($user->can('makeAccepted', $author));
-	}
 }
