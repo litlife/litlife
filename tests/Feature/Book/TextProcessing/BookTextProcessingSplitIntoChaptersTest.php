@@ -11,7 +11,6 @@ use Tests\TestCase;
 
 class BookTextProcessingSplitIntoChaptersTest extends TestCase
 {
-
 	public function testSplitIntoChapters()
 	{
 		$book = factory(Book::class)
@@ -430,4 +429,41 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$this->assertEquals('ГЛАВА ПЕРВАЯ', $sections[1]->title);
 		$this->assertEquals('<p>текст текст</p>', $sections[1]->getContent());
 	}
+	/*
+		public function test()
+		{
+			$book = factory(Book::class)
+				->create();
+
+			$content = '<p><b>Название 1</b></p><p>Текст 1</p><p><b>Название 2</b></p><p>Текст 2</p>';
+
+			$section = factory(Section::class)
+				->states('chapter')
+				->create([
+					'book_id' => $book->id,
+					'title' => 'тест',
+					'content' => $content
+				]);
+
+			$processing = factory(BookTextProcessing::class)
+				->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+
+			Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
+
+			$processing->refresh();
+			$section->refresh();
+
+			$this->assertTrue($processing->isCompleted());
+
+			$sections = $book->sections()
+				->chapter()
+				->defaultOrder()
+				->get();
+
+			//$this->assertEquals('Название 1', $sections[0]->title);
+			$this->assertEquals('Текст 1', $sections[0]->getContent());
+			$this->assertEquals('Название 2', $sections[1]->title);
+			$this->assertEquals('Текст 2', $sections[1]->getContent());
+		}
+		*/
 }
