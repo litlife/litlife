@@ -174,4 +174,14 @@ trait NestedItems
 
 		return $array[0] ?? null;
 	}
+
+	public function isChildOf(Model $item): bool
+	{
+		$array = array_reverse($this->getTree());
+
+		if (!isset($array[0]))
+			return false;
+
+		return $item->id == $array[0];
+	}
 }
