@@ -38,7 +38,7 @@
 
 			@can ('see_ads', \App\User::class)
 				@can('display_ads', $book)
-					@include('ads.read_online')
+					<x-ad-block name="read_online"/>
 				@endcan
 			@endcan
 

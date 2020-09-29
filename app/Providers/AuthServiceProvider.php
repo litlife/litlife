@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Achievement;
+use App\AdBlock;
 use App\AdminNote;
 use App\Attachment;
 use App\Authentication\UserProvider;
@@ -28,6 +29,7 @@ use App\Manager;
 use App\Message;
 use App\Page;
 use App\Policies\AchievementPolicy;
+use App\Policies\AdBlockPolicy;
 use App\Policies\AdminNotePolicy;
 use App\Policies\AttachmentPolicy;
 use App\Policies\AuthorPhotoPolicy;
@@ -118,7 +120,8 @@ class AuthServiceProvider extends ServiceProvider
 		Award::class => AwardPolicy::class,
 		AuthorPhoto::class => AuthorPhotoPolicy::class,
 		UserPaymentTransaction::class => UserPaymentTransactionPolicy::class,
-		Page::class => PagePolicy::class
+		Page::class => PagePolicy::class,
+		AdBlock::class => AdBlockPolicy::class
 	];
 
 	/**

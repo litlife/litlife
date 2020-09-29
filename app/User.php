@@ -906,7 +906,7 @@ class User extends Authenticatable
 			return true;
 	}
 
-	public function getPermission($value)
+	public function getPermission($value): bool
 	{
 		$value = Str::snake($value);
 

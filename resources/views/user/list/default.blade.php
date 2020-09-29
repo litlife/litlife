@@ -66,7 +66,7 @@
 	@if (!empty($loop) and $loop->index == $rand)
 		@can('see_ads', \App\User::class)
 			<div class="col-12 mb-3">
-				@include('ads.adaptive_horizontal')
+				<x-ad-block name="adaptive_horizontal"/>
 			</div>
 		@endcan
 	@endif

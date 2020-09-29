@@ -53,6 +53,12 @@
   "Submission of new applications for editors authors is closed": "Подача новых заявок на редакторов авторов закрыта",
   "Requests for verification": "Заявки на верификацию",
   "The author has already been verified. Delete the other verification to add a new one": "Автор уже верифицирован. Удалите другую верификацию, чтобы добавить новую",
-  "": "",
-  "": ""
+  "Edit": "Редактировать",
+  "Create": "Создать",
+  "Delete": "Удалить",
+  "Ad block created successfully": "Рекламный блок успешно создан",
+  "The data was successfully stored": "Данные успешно сохранены",
+  "Ad block was successfully deleted": "Рекламный блок успешно удален",
+  "Ad blocks": "Рекламные блоки",
+  "No blocks found": "Ни один блок не найден"
 }

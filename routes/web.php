@@ -552,6 +552,9 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/surveys', 'SurveyController@store')->name('surveys.store');
 
 	Route::post('/questions', 'TopicController@storeQuestion')->name('questions.store');
+
+	Route::resource('ad_blocks', 'AdBlockController', ['except' => 'show']);
+	Route::get('ad_blocks/{ad_block}/delete', 'AdBlockController@destroy')->name('ad_blocks.delete');
 });
 
 Route::get('/books/{book}/pages', 'SectionController@page')->name('books.pages');

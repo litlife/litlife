@@ -3,7 +3,7 @@
 	<div class="pb-3">
 
 		@can ('see_ads', \App\User::class)
-			@include('ads.bottom')
+			<x-ad-block name="bottom"/>
 		@endcan
 
 		@if (!empty(session()->get('geoip')))

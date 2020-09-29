@@ -419,7 +419,8 @@ class UserGroup extends Model
 			'manage_mailings' => false,
 			'create_text_processing_books' => false,
 			'view_user_surveys' => false,
-			'deleting_online_read_and_files' => false
+			'deleting_online_read_and_files' => false,
+			'manage_ad_blocks' => false
 		];
 	protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 

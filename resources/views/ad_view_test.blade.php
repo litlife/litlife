@@ -9,9 +9,7 @@
 
 	<div class="card">
 		<div class="card-body">
-
-			<div id="grf_litlifeclub_2"></div>
-
+			<x-ad-block name="test"/>
 		</div>
 	</div>
 

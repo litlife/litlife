@@ -1545,3 +1545,17 @@ Breadcrumbs::for('surveys.store', function ($breadcrumbs) {
 Breadcrumbs::for('faq', function ($breadcrumbs) {
 	$breadcrumbs->push(__('Answers to frequently asked questions'), route('faq'));
 });
+
+Breadcrumbs::for('ad_blocks.index', function ($breadcrumbs) {
+	$breadcrumbs->push(__('Ad blocks'), route('ad_blocks.index'));
+});
+
+Breadcrumbs::for('ad_blocks.create', function ($breadcrumbs) {
+	$breadcrumbs->parent('ad_blocks.index');
+	$breadcrumbs->push(__('Create'), route('ad_blocks.create'));
+});
+
+Breadcrumbs::for('ad_blocks.edit', function ($breadcrumbs, $adBlock) {
+	$breadcrumbs->parent('ad_blocks.index');
+	$breadcrumbs->push(__('Edit'), route('ad_blocks.edit', ['ad_block' => $adBlock->id]));
+});

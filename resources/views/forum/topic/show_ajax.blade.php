@@ -18,7 +18,7 @@
 		@if ($loop->index == $rand)
 			@can('see_ads', \App\User::class)
 				<div class="col-12 p-2">
-					@include('ads.adaptive_horizontal')
+					<x-ad-block name="adaptive_horizontal"/>
 				</div>
 			@endcan
 		@endif
@@ -26,7 +26,7 @@
 		@if ($loop->index == $rand + 3)
 			@can('see_ads', \App\User::class)
 				<div class="col-12 p-2">
-					@include('ads.adaptive_horizontal_second')
+					<x-ad-block name="adaptive_horizontal_second"/>
 				</div>
 			@endcan
 		@endif

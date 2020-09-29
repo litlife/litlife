@@ -52,7 +52,7 @@
 						@can('see_ads', \App\User::class)
 							<tr>
 								<td colspan="100%">
-									@include('ads.adaptive_horizontal')
+									<x-ad-block name="adaptive_horizontal"/>
 								</td>
 							</tr>
 						@endcan
@@ -264,7 +264,7 @@
 			@if ($loop->index == $rand)
 				@can('see_ads', \App\User::class)
 					<div class="pb-3">
-						@include('ads.adaptive_horizontal')
+						<x-ad-block name="adaptive_horizontal"/>
 					</div>
 				@endcan
 			@endif

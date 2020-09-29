@@ -19,7 +19,7 @@
 					@can('see_ads', \App\User::class)
 						<tr>
 							<td colspan="100%">
-								@include('ads.adaptive_horizontal')
+								<x-ad-block name="adaptive_horizontal"/>
 							</td>
 						</tr>
 					@endcan
