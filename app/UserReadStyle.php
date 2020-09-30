@@ -51,7 +51,7 @@ class UserReadStyle extends Model
 		'background_color' => 'eeeeee',
 		'card_color' => 'ffffff',
 		'font_color' => '000000',
-		'show_sidebar' => false
+		'show_sidebar' => true
 	];
 
 	protected $fillable = [
