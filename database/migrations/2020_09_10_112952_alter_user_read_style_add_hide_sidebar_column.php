@@ -14,7 +14,7 @@ class AlterUserReadStyleAddHideSidebarColumn extends Migration
 	public function up()
 	{
 		Schema::table('user_read_styles', function (Blueprint $table) {
-			$table->boolean('show_sidebar')->default(false)->comment(__('user.read_style_array.show_sidebar'));
+			$table->boolean('show_sidebar')->default(true)->comment(__('user.read_style_array.show_sidebar'));
 		});
 	}
 
