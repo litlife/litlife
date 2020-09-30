@@ -29,7 +29,7 @@ class StoreCollection extends FormRequest
 	{
 		return [
 			'title' => 'required|string|min:2|max:255',
-			'description' => 'nullable|string|min:2|max:255',
+			'description' => 'nullable|string|min:2|max:1000',
 			'status' => [
 				'required',
 				Rule::in(['0', '3']),

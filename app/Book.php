@@ -37,6 +37,7 @@ use Cache;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 /**
  * App\Book
@@ -440,6 +441,7 @@ class Book extends Model
 	use ComplainableTrait;
 	use FavoritableTrait;
 	use Commentable;
+	use HasRelationships;
 
 	protected static $logAttributes = [
 		'title',
@@ -2252,6 +2254,12 @@ class Book extends Model
 			return 0;
 
 		return $number;
+	}
+
+	public function collections()
+	{
+		return $this->hasManyDeep(Collection::class, [CollectedBook::class], ['book_id', 'id'], ['id', 'collection_id'])
+			->withIntermediate('App\CollectedBook', ['create_user_id', 'number', 'comment']);
 	}
 }
 

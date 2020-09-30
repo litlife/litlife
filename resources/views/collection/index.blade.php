@@ -10,7 +10,8 @@
 
 		<div class="row mb-3">
 			<div class="col-12 ">
-				<a class="btn btn-primary" href="{{ route('collections.create')  }}">{{ __('collection.create') }}</a>
+				<a class="btn btn-primary"
+				   href="{{ route('collections.create') }}">{{ __('collection.create') }}</a>
 			</div>
 		</div>
 	@endcan

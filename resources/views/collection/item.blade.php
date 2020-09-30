@@ -24,7 +24,7 @@
 					 aria-labelledby="collectionDropdownMenuButton_{{ $item->id }}">
 
 					@can('addBook', $item)
-						<a class="dropdown-item text-lowercase"
+						<a class="dropdown-item text-lowercase" target="_blank"
 						   href="{{ route("collections.books.select", $item) }}">
 							{{ __('collection.attach_book') }}
 						</a>

@@ -105,6 +105,8 @@ Route::group(['middleware' => ['guest']], function () {
 
 Route::group(['middleware' => ['auth']], function () {
 
+	Route::get('books/{book}/collections', 'BookController@collections')->name('books.collections.index');
+
 	Route::resource('collections', 'CollectionController', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
 	Route::get('/collections/{collection}/favorite/toggle', 'CollectionController@toggleToFavorites')->name('collections.favorite.toggle');

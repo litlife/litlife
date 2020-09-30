@@ -66,7 +66,7 @@
 						{{ __('collection.comment') }}
 					</label>
 					<div class="col-md-9 col-lg-10">
-                        <textarea id="comment" name="comment"
+                        <textarea id="comment" name="comment" rows="5"
 								  class="form-control{{ $errors->has('comment') ? ' is-invalid' : '' }}">{{ old('comment') }}</textarea>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 					<div class="modal fade" id="selectBookModal" tabindex="-1" role="dialog"
 						 aria-labelledby="exampleModalCenterTitle"
 						 aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title"
@@ -188,7 +188,7 @@
 
 						on_list_ready();
 
-						$('html, body').animate({
+						modal.animate({
 							scrollTop: list.offset().top - 80
 						}, 100);
 

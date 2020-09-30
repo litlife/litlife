@@ -153,6 +153,13 @@
 			</div>
 		@endif
 
+			@if (!empty($collectionsCount))
+				<div>
+					<a href="{{ route('books.collections.index', $book) }}">
+						<span class="font-weight-bold small">{{ __('Found in collections') }}:</span>
+						<span>{{ $collectionsCount }}</span></a>
+				</div>
+			@endif
 
 	</div>
 	<div class="col-lg-6">

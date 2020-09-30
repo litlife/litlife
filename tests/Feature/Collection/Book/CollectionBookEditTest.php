@@ -39,7 +39,8 @@ class CollectionBookEditTest extends TestCase
 				'book_id' => $book->id
 			])
 			->assertSessionHasNoErrors()
-			->assertRedirect(route('collections.books.edit', ['collection' => $collection, 'book' => $book]));
+			->assertRedirect(route('collections.books.edit', ['collection' => $collection, 'book' => $book]))
+			->assertSessionHas('success', __('The book data in the collection was saved successfully'));
 
 		$collected_book->refresh();
 		$collection->refresh();

@@ -16,6 +16,7 @@ use App\Genre;
 use App\Http\Requests\StoreBook;
 use App\Http\Requests\StoreDate;
 use App\Http\Resources\BookCollection;
+use App\Http\SearchResource\CollectionSearchResource;
 use App\Jobs\Author\UpdateAuthorBooksCount;
 use App\Jobs\Book\BookAddKeywordsJob;
 use App\Jobs\Book\BookDeleteKeywordsThatAreNotInTheListJob;
@@ -531,6 +532,10 @@ class BookController extends Controller
 				}
 			}
 		}
+
+		$collectionsCount = $book->collections()
+			->acceptedOrBelongsToAuthUser()
+			->count();
 
 		if (!empty($book->ti_lb))
 			OpenGraph::addProperty('locale', strtolower($book->ti_lb) . '_' . strtoupper($book->ti_lb));
@@ -2503,5 +2508,38 @@ class BookController extends Controller
 				->renderSections()['cover'];
 		else
 			return view('book.cover.show', ['book' => $book]);
+	}
+
+	/**
+	 * Список подборок к которым принадлежит книга
+	 *
+	 * @param Book $book
+	 * @return Response
+	 * @throws
+	 */
+	public function collections(Request $request, Book $book)
+	{
+		$builder = $book->collections()
+			->acceptedOrBelongsToAuthUser();
+
+		$resource = (new CollectionSearchResource(request(), $builder));
+		$vars = $resource->getVars();
+
+		$vars['collections'] = $resource->getQuery()
+			->with('latest_books.writers')
+			->simplePaginate();
+
+		if (auth()->check()) {
+			$vars['collections']->load(['collectionUser' => function ($query) {
+				$query->where('user_id', auth()->id());
+			}]);
+		}
+
+		$vars['collections']->load('authUserLike');
+
+		if (request()->ajax())
+			return view('collection.list', $vars);
+
+		return view('book.collections', $vars);
 	}
 }

@@ -1559,3 +1559,8 @@ Breadcrumbs::for('ad_blocks.edit', function ($breadcrumbs, $adBlock) {
 	$breadcrumbs->parent('ad_blocks.index');
 	$breadcrumbs->push(__('Edit'), route('ad_blocks.edit', ['ad_block' => $adBlock->id]));
 });
+
+Breadcrumbs::for('books.collections.index', function ($breadcrumbs, $book) {
+	$breadcrumbs->parent('books.show', $book);
+	$breadcrumbs->push(__('In the collections'), route('books.collections.index', ['book' => $book]));
+});

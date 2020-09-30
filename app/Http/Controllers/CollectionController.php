@@ -499,7 +499,8 @@ class CollectionController extends Controller
 		$collection->save();
 
 		return redirect()
-			->route('collections.books.edit', ['collection' => $collection, 'book' => $book]);
+			->route('collections.books.edit', ['collection' => $collection, 'book' => $book])
+			->with(['success' => __('The book data in the collection was saved successfully')]);
 	}
 
 	/**

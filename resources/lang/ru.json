@@ -60,5 +60,8 @@
   "The data was successfully stored": "Данные успешно сохранены",
   "Ad block was successfully deleted": "Рекламный блок успешно удален",
   "Ad blocks": "Рекламные блоки",
-  "No blocks found": "Ни один блок не найден"
+  "No blocks found": "Ни один блок не найден",
+  "The book data in the collection was saved successfully": "Данные книги в подборке успешно сохранены",
+  "In the collections": "В подборках",
+  "Found in collections": "Входит в подборки"
 }
