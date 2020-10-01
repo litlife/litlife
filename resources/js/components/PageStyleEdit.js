@@ -1,3 +1,5 @@
+import Sidebar from "./sidebar";
+
 require("bootstrap-colorpicker/dist/js/bootstrap-colorpicker");
 
 export default function PageStyleEdit() {
@@ -24,6 +26,12 @@ export default function PageStyleEdit() {
 	};
 
 	this.init = function () {
+
+		self.sidebar = new Sidebar();
+		self.sidebar.sidebar = $('#sidebar');
+		self.sidebar.main = $('#main');
+		self.sidebar.footer = $('#footer');
+		self.sidebar.button = $("[data-target='#sidebar']");
 
 		self.book_text = $('.book_text');
 		self.card = $('.card');
@@ -64,6 +72,16 @@ export default function PageStyleEdit() {
 		self.form.find('[name=font_color]').change(function () {
 			self.valuesToCss();
 		});
+
+		self.form.find('[name=show_sidebar]').change(function () {
+
+			if ($(this).prop('checked'))
+				$(this).prop('checked', true);
+			else
+				$(this).prop('checked', false);
+
+			self.valuesToCss();
+		});
 	};
 
 	this.onFormSubmit = function (event) {
@@ -95,11 +113,20 @@ export default function PageStyleEdit() {
 		self.form.find('[name=card_color]').val($('#card_color').data('default'));
 		self.form.find('[name=font_color]').val($('#font_color').data('default'));
 
+		const $show_sidebar_checkbox = self.form.find('[name=show_sidebar][type="checkbox"]').first();
+
+		if ($show_sidebar_checkbox.data('default')) {
+			$show_sidebar_checkbox.prop('checked', true);
+		} else
+			$show_sidebar_checkbox.prop('checked', false);
+
 		self.valuesToCss();
 
 		self.background_color_colorpicker.colorpicker('setValue', $('#background_color').data('default'));
 		self.card_color_colorpicker.colorpicker('setValue', $('#card_color').data('default'));
 		self.font_color_colorpicker.colorpicker('setValue', $('#font_color').data('default'));
+
+		self.sidebarToggle();
 	};
 
 	this.valuesToCss = function () {
@@ -118,6 +145,8 @@ export default function PageStyleEdit() {
 			self.body.css('background-color', self.form.find('[name=background_color]').val());
 			self.card.css('background-color', self.form.find('[name=card_color]').val());
 			self.book_text.css('color', self.form.find('[name=font_color]').val());
+
+			self.sidebarToggle();
 		}
 	};
 
@@ -130,8 +159,20 @@ export default function PageStyleEdit() {
 			self.background_color_colorpicker.colorpicker('setValue', self.body.css('background-color'));
 			self.card_color_colorpicker.colorpicker('setValue', self.card.css('background-color'));
 			self.font_color_colorpicker.colorpicker('setValue', self.book_text.css('color'));
+
+			self.sidebarToggle();
 		}
 	};
+
+	this.sidebarToggle = function () {
+
+		console.log('sidebarToggle');
+
+		if (self.form.find('[name=show_sidebar][type="checkbox"]').prop('checked'))
+			self.sidebar.show();
+		else
+			self.sidebar.hide();
+	}
 }
 
 

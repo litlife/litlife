@@ -1,4 +1,4 @@
-<footer id="footer" class="col-12 footer @if (!request()->cookie('sidebar_hide')) pl-260px @endif">
+<footer id="footer" class="col-12 footer @if (!empty($showSidebar)) pl-260px @endif">
 
 	<div class="pb-3">
 

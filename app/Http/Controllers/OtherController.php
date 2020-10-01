@@ -71,14 +71,14 @@ class OtherController extends Controller
 
 	public function sidebarShow()
 	{
-		return response(['sidebar_hide' => false])
-			->cookie('sidebar_hide', false, 0);
+		return response(['show_sidebar' => true])
+			->cookie('show_sidebar', true, 0);
 	}
 
 	public function sidebarHide()
 	{
-		return response(['sidebar_hide' => true])
-			->cookie('sidebar_hide', true, 180);
+		return response(['show_sidebar' => false])
+			->cookie('show_sidebar', false, 180000);
 	}
 
 	public function userPassAgeRestriction()

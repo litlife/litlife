@@ -28,9 +28,7 @@ class AppTest extends TestCase
 
 	public function test404Error2()
 	{
-		$s = rawurldecode('/%F8');
-
-		$this->call('get', $s)
+		$this->get('/%F8')
 			->assertNotFound();
 	}
 

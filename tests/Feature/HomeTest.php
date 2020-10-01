@@ -24,10 +24,11 @@ class HomeTest extends TestCase
 	 */
 	public function testHomeHttp()
 	{
-		$this->get(route('home'))
+		$response = $this->get(route('home'))
 			->assertOk()
 			->assertViewIs('home.popular_books')
 			->assertViewHas('period', 'week')
+			//->assertViewHas('showSidebar', true)
 			->assertCookieMissing('latest_route');
 	}
 

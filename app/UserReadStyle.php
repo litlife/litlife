@@ -50,7 +50,8 @@ class UserReadStyle extends Model
 		'size' => 18,
 		'background_color' => 'eeeeee',
 		'card_color' => 'ffffff',
-		'font_color' => '000000'
+		'font_color' => '000000',
+		'show_sidebar' => true
 	];
 
 	protected $fillable = [
@@ -60,7 +61,8 @@ class UserReadStyle extends Model
 		'background_color',
 		'card_color',
 		'font_color',
-		'user_id'
+		'user_id',
+		'show_sidebar'
 	];
 
 	public function user()

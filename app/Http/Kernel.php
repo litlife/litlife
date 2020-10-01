@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateOnceWithBasicAuth;
@@ -15,6 +14,7 @@ use App\Http\Middleware\RefreshUserLastActivity;
 use App\Http\Middleware\RemeberSessionGeoIpAndBrowser;
 use App\Http\Middleware\ReplaceAsc194ToSpace;
 use App\Http\Middleware\SEOMiddleware;
+use App\Http\Middleware\SidebarShowMiddleware;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\UserReferenceCookieSave;
@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
 			RemeberSessionGeoIpAndBrowser::class,
 			AuthenticateSession::class,
 			ShareErrorsFromSession::class,
+			SidebarShowMiddleware::class,
 			VerifyCsrfToken::class,
 			SubstituteBindings::class,
 			RefreshUserLastActivity::class,
@@ -111,6 +112,7 @@ class Kernel extends HttpKernel
 	protected $middlewarePriority = [
 		StartSession::class,
 		ShareErrorsFromSession::class,
+		SidebarShowMiddleware::class,
 		Authenticate::class,
 		RedirectIfAuthenticated::class,
 		AuthenticateSession::class,
