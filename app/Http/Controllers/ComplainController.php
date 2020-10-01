@@ -109,13 +109,25 @@ class ComplainController extends Controller
 	 */
 	public function create_edit($type, $id)
 	{
-		$this->authorize('create', Complain::class);
-
 		$item = $this->getItem($type, $id);
 
 		$this->authorize('complain', $item);
 
-		$complain = $item->complaints()->where(['create_user_id' => auth()->id()])->first() ?? [];
+		$complain = $item->complaints()
+			->onCheck()
+			->where('create_user_id', auth()->id())
+			->first();
+
+		if (empty($complain))
+			$this->authorize('create', Complain::class);
+		else {
+			if (!$complain->isSentForReview()) {
+				return redirect()
+					->route('complaints.show', $complain);
+			}
+
+			$this->authorize('update', $complain);
+		}
 
 		return view('complain.create_edit', compact('item', 'type', 'id', 'complain'));
 	}
@@ -131,18 +143,28 @@ class ComplainController extends Controller
 	 */
 	public function save(StoreComplain $request, $type, $id)
 	{
-		$this->authorize('create', Complain::class);
-
 		$item = $this->getItem($type, $id);
 
 		$this->authorize('complain', $item);
 
-		$complain = $item->complaints()->where(['create_user_id' => auth()->id()])->first();
+		$complain = $item->complaints()
+			->onCheck()
+			->where('create_user_id', auth()->id())
+			->first();
 
 		if (empty($complain)) {
+			$this->authorize('create', Complain::class);
+
 			$complain = new Complain();
 			$complain->complainable_type = $type;
 			$complain->complainable_id = $item->id;
+		} else {
+			if (!$complain->isSentForReview()) {
+				return redirect()
+					->route('complaints.show', $complain);
+			}
+
+			$this->authorize('update', $complain);
 		}
 
 		$complain->fill($request->all());

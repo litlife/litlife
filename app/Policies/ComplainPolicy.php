@@ -29,6 +29,27 @@ class ComplainPolicy extends Policy
 	}
 
 	/**
+	 * Можно ли пользователю редактировать жалобу
+	 *
+	 * @param User $auth_user
+	 * @param Complain $complain
+	 * @return boolean
+	 */
+	public function update(User $auth_user, Complain $complain)
+	{
+		if ($complain->isAccepted())
+			return false;
+
+		if ($complain->isReviewStarts())
+			return false;
+
+		if ($auth_user->is($complain->create_user))
+			return $auth_user->getPermission('Complain');
+
+		return false;
+	}
+
+	/**
 	 * Можно ли пользователю проверять жалобы
 	 *
 	 * @param User $auth_user

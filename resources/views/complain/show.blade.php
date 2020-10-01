@@ -8,6 +8,18 @@
 		</div>
 	@endif
 
+	@if ($complain->isReviewStarts())
+		<div class="alert alert-info">
+			{{ __('Сomplaint is currently under review') }}
+		</div>
+	@endif
+
+	@if ($complain->isAccepted())
+		<div class="alert alert-success">
+			{{ __('Сomplaint has been reviewed') }}
+		</div>
+	@endif
+
 	@if (session('success'))
 		<div class="alert alert-success alert-dismissable">
 			{{ session('success') }}
