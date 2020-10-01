@@ -63,5 +63,8 @@
   "No blocks found": "Ни один блок не найден",
   "The book data in the collection was saved successfully": "Данные книги в подборке успешно сохранены",
   "In the collections": "В подборках",
-  "Found in collections": "Входит в подборки"
+  "Found in collections": "Входит в подборки",
+  "In collection": "В подборке",
+  "The book was successfully added to the collection": "Книга успешно добавлена в подборку",
+  "The book was successfully removed from the collection": "Книга успешно удалена из подборки"
 }

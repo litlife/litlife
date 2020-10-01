@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Collection\Book;
 
-use App\Book;
+use App\CollectedBook;
 use App\Collection;
 use App\User;
 use Tests\TestCase;
@@ -21,7 +21,29 @@ class CollectionBookSelectTest extends TestCase
 
 		$this->actingAs($user)
 			->get(route('collections.books.select', $collection))
-			->assertOk();
+			->assertOk()
+			->assertViewIs('collection.book.attach');
+	}
+
+	public function testBooksSelectMaxCollectionNumber()
+	{
+		$user = factory(User::class)
+			->states('admin')
+			->create();
+
+		$number = rand(10, 100);
+
+		$collected = factory(CollectedBook::class)
+			->create(['number' => $number]);
+
+		$collection = $collected->collection;
+		$collection->who_can_add = 'everyone';
+		$collection->save();
+
+		$this->actingAs($user)
+			->get(route('collections.books.select', ['collection' => $collection]))
+			->assertOk()
+			->assertViewHas('max', $number + 1);
 	}
 
 	public function testIsOkIfOpenCollectionWithNoAccess()
@@ -41,12 +63,46 @@ class CollectionBookSelectTest extends TestCase
 		$title = uniqid();
 		$isbn = rand(100, 999) . '-' . rand(1, 9) . '-' . rand(100, 999) . '-' . rand(10000, 99999) . '-' . rand(1, 9);
 
-		$book = factory(Book::class)
-			->create(['title' => $title, 'pi_isbn' => $isbn]);
+		$collected = factory(CollectedBook::class)
+			->create();
+
+		$book = $collected->book;
+		$book->title = $title;
+		$book->pi_isbn = $isbn;
+		$book->save();
+
+		$collection = factory(Collection::class)
+			->create();
 
 		$this->actingAs($user)
-			->get(route('collections.books.list', ['query' => $isbn]))
+			->ajax()
+			->get(route('collections.books.list', ['collection' => $collection, 'query' => $isbn]))
 			->assertOk()
-			->assertSeeText($book->title);
+			->assertSeeText($book->title)
+			->assertDontSeeText(__('In collection'));
+	}
+
+	public function testSearchByIsbnSeeBookInCollection()
+	{
+		$user = factory(User::class)->states('admin')->create();
+
+		$title = uniqid();
+		$isbn = rand(100, 999) . '-' . rand(1, 9) . '-' . rand(100, 999) . '-' . rand(10000, 99999) . '-' . rand(1, 9);
+
+		$collected = factory(CollectedBook::class)
+			->create();
+
+		$collection = $collected->collection;
+		$book = $collected->book;
+		$book->title = $title;
+		$book->pi_isbn = $isbn;
+		$book->save();
+
+		$this->actingAs($user)
+			->ajax()
+			->get(route('collections.books.list', ['collection' => $collection, 'query' => $isbn]))
+			->assertOk()
+			->assertSeeText($book->title)
+			->assertSeeText(__('In collection'));
 	}
 }

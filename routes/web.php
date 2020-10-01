@@ -118,7 +118,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/collections/{collection}/event_notification_subcriptions/toggle', 'CollectionController@eventNotificationSubcriptionsToggle')
 		->name('collections.event_notification_subcriptions.toggle');
 
-	Route::get('/collections/books/list', 'CollectionController@booksList')->name('collections.books.list');
+	Route::get('/collections/{collection}/books/search/list', 'CollectionController@searchList')->name('collections.books.list');
 	Route::get('/collections/books/selected/{book}/item', 'CollectionController@booksSelectedItem')->name('collections.books.selected.item');
 
 	Route::get('financial_statistics', 'FinancialStatisticController@index')->name('financial_statistic.index');

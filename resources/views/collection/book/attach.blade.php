@@ -40,7 +40,7 @@
 
 						<div class="selected_book mb-2">
 							@if (!empty($book))
-								@include('collection.book_selected_item', ['book' => $book])
+								@include('collection.book.book_selected_item', ['book' => $book])
 							@endif
 						</div>
 						<!-- Button trigger modal -->
@@ -57,7 +57,7 @@
 					<div class="col-md-9 col-lg-10">
 						<input id="number" name="number" type="text"
 							   class="form-control{{ $errors->has('number') ? ' is-invalid' : '' }}"
-							   value="{{ old('number') }}"/>
+							   value="{{ old('number') ?? $max }}"/>
 					</div>
 				</div>
 
@@ -87,8 +87,11 @@
 								</div>
 								<div class="modal-body">
 
-									<form class="select_book" role="form" action="{{ route('collections.books.list') }}"
+									<form class="select_book" role="form" action="{{ route('collections.books.list', ['collection' => $collection]) }}"
 										  method="get">
+
+										@csrf
+
 										<div class="form-group">
 											<input name="query" type="text" class="form-control"
 												   placeholder="{{ __('collection.enter_book_title_author_or_book_id') }}">

@@ -34,7 +34,8 @@ class CollectionBookAttachTest extends TestCase
 				'comment' => $comment
 			])
 			->assertSessionHasNoErrors()
-			->assertRedirect(route('collections.books', $collection));
+			->assertRedirect(route('collections.books', $collection))
+			->with('success', __('The book was successfully added to the collection'));
 
 		$collection->refresh();
 

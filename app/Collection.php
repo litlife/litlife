@@ -237,6 +237,11 @@ class Collection extends Model
 		$this->books_count = $this->books()->count();
 	}
 
+	public function collected()
+	{
+		return $this->hasMany('App\CollectedBook');
+	}
+
 	public function books()
 	{
 		return $this->hasManyDeep(Book::class, [CollectedBook::class],

@@ -88,9 +88,17 @@ class CommentPolicy extends Policy
 			return true;
 		}
 
+		if ($comment->isCollectionType()) {
+			if ($comment->isUserCreator($auth_user)) {
+				return true;
+			}
+		}
+
 		if ($auth_user->getPermission('DeleteOtherUserComment')) {
 			return true;
 		}
+
+		return false;
 	}
 
 	/**

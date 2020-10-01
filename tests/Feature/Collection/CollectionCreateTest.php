@@ -4,6 +4,7 @@ namespace Tests\Feature\Collection;
 
 use App\Enums\UserAccountPermissionValues;
 use App\User;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CollectionCreateTest extends TestCase
@@ -55,7 +56,9 @@ class CollectionCreateTest extends TestCase
 
 	public function testStoreNotPrivateHttp()
 	{
-		$user = factory(User::class)->states('with_user_permissions')->create();
+		$user = factory(User::class)
+			->states('with_user_permissions')
+			->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -64,7 +67,7 @@ class CollectionCreateTest extends TestCase
 			'who_can_add' => UserAccountPermissionValues::getRandomKey(),
 			'who_can_comment' => UserAccountPermissionValues::getRandomKey(),
 			'url' => $this->faker->url,
-			'url_title' => $this->faker->realText(50),
+			'url_title' => Str::random(10)
 		];
 
 		$response = $this->actingAs($user)
