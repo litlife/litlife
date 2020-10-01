@@ -11,7 +11,7 @@ class UserEmailObserver
 {
 	public function creating(UserEmail $email)
 	{
-
+		$email->isValidRefresh();
 	}
 
 	public function created(UserEmail $email)

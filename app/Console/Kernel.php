@@ -99,6 +99,7 @@ class Kernel extends ConsoleKernel
 		Commands\Refresh\RefreshSequenceCounters::class,
 		Commands\Refresh\RefreshAllSequencesCounters::class,
 		Commands\Refresh\RefreshBookTitleSearchHelper::class,
+		Commands\Refresh\RefreshAllUserEmailsIsValidColumn::class,
 
 		Commands\BookAppendFromStorage::class,
 		Commands\BookFillDBFromSource::class,

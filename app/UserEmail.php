@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * App\UserEmail
@@ -218,5 +219,25 @@ class UserEmail extends Model
 				$this->user->save();
 			}
 		});
+	}
+
+	public function isValid(): bool
+	{
+		$validator = Validator::make([
+			'email' => $this->email
+		], [
+			'email' => 'email:rfc',
+		]);
+
+		if ($validator->fails()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public function isValidRefresh()
+	{
+		$this->is_valid = $this->isValid();
 	}
 }

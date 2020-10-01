@@ -247,6 +247,7 @@ class UserEmailTest extends TestCase
 
 		$this->assertNotNull($unconfirmed_email);
 		$this->assertFalse($unconfirmed_email->isConfirmed());
+		$this->assertTrue($unconfirmed_email->is_valid);
 	}
 
 	public function testDeleteHttpErrorAtLeastOneEmailMustBeConfirmed()

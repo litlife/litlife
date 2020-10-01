@@ -41,5 +41,6 @@ return [
 	'error_user_deleted' => 'Пользователь, которому принадлежит данный почтовый ящик, удален',
 	'you_must_have_at_least_one_mailbox_to_send_notifications' => "У вас должен быть как минимум один почтовый ящик для отправления уведомлений",
 	'mailbox_not_enabled_for_rescue' => 'Почтовый ящик не включен для восстановления',
-	'you_have_already_added_such_a_mailbox' => 'Вы уже добавили такой почтовый ящик'
+	'you_have_already_added_such_a_mailbox' => 'Вы уже добавили такой почтовый ящик',
+	'is_valid' => 'Соответствует ли адрес RFC'
 ];
