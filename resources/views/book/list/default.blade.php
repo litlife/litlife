@@ -135,7 +135,7 @@
 											<x-book-vote :vote="$user_vote->vote"/>
                                         </span>
 										{{ __('common.voted') }}
-										<x-time :time="$user_vote->created_at"/>
+										<x-time :time="$user_vote->user_updated_at"/>
 									@endif
 
 									@if ($user_read_status = $book->statuses->where('user_id', auth()->id())->first()

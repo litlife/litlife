@@ -19,7 +19,7 @@ class UserSettingReadStyleTest extends TestCase
 		$this->assertEquals('#eeeeee', $readStyle->background_color);
 		$this->assertEquals('#ffffff', $readStyle->card_color);
 		$this->assertEquals('#000000', $readStyle->font_color);
-		$this->assertEquals(false, $readStyle->show_sidebar);
+		$this->assertEquals(true, $readStyle->show_sidebar);
 
 		$readStyle = factory(UserReadStyle::class)
 			->create([
