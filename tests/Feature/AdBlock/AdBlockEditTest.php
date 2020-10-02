@@ -57,5 +57,6 @@ class AdBlockEditTest extends TestCase
 		$this->assertEquals($blockNew->name, $block->name);
 		$this->assertEquals($blockNew->code, $block->code);
 		$this->assertEquals($blockNew->description, $block->description);
+		$this->assertNotNull($block->user_updated_at);
 	}
 }

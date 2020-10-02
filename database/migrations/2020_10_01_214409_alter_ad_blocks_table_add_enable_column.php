@@ -18,6 +18,7 @@ class AlterAdBlocksTableAddEnableColumn extends Migration
 			$table->string('description')->nullable()->comment(__('ad_block.description'));
 			$table->dropUnique('ad_blocks_name_unique');
 			$table->index('name');
+			$table->timestamp('user_updated_at')->nullable();
 		});
 	}
 
@@ -33,6 +34,7 @@ class AlterAdBlocksTableAddEnableColumn extends Migration
 			$table->dropIndex('ad_blocks_name_index');
 			$table->unique('name');
 			$table->dropColumn('description');
+			$table->dropColumn('user_updated_at');
 		});
 	}
 }

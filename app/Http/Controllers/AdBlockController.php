@@ -46,6 +46,7 @@ class AdBlockController extends Controller
 		$this->authorize('create', AdBlock::class);
 
 		$adBlock = new AdBlock($request->all());
+		$adBlock->user_updated_at = now();
 		$adBlock->save();
 
 		return redirect()
@@ -78,6 +79,7 @@ class AdBlockController extends Controller
 		$this->authorize('update', $adBlock);
 
 		$adBlock->fill($request->all());
+		$adBlock->user_updated_at = now();
 		$adBlock->save();
 
 		return redirect()

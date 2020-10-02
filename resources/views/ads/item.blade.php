@@ -1,6 +1,11 @@
 <div class="card mb-3">
 	<div class="card-header">
 		{{ $block->name }}
+
+		@if ($block->user_updated_at)
+			{{ __('Date of update') }}:
+			<x-time :time="$block->user_updated_at"/>
+		@endif
 	</div>
 	<div class="card-body">
 		{{ $block->description }}

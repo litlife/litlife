@@ -44,6 +44,7 @@ class AdBlockCreateTest extends TestCase
 		$this->assertEquals($blockNew->code, $block->code);
 		$this->assertEquals($blockNew->description, $block->description);
 		$this->assertFalse($block->isEnabled());
+		$this->assertNotNull($block->user_updated_at);
 	}
 
 	public function testStoreUniqueName()
