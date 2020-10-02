@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AdBlock;
 use App\Http\Requests\StoreAdBlock;
+use Illuminate\Support\Facades\DB;
 
 class AdBlockController extends Controller
 {
@@ -99,5 +100,48 @@ class AdBlockController extends Controller
 		return redirect()
 			->route('ad_blocks.index')
 			->with(['success' => __('Ad block was successfully deleted')]);
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param \App\AdBlock $adBlock
+	 * @return \Illuminate\Http\Response
+	 */
+	public function enable(AdBlock $adBlock)
+	{
+		$this->authorize('enable', $adBlock);
+
+		DB::transaction(function () use ($adBlock) {
+			AdBlock::where('name', $adBlock->name)
+				->update(['enabled' => false]);
+
+			$adBlock->enable();
+			$adBlock->save();
+		});
+
+		return redirect()
+			->route('ad_blocks.index')
+			->with(['success' => __('Ad block :name enabled', ['name' => $adBlock->name])]);
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param \App\AdBlock $adBlock
+	 * @return \Illuminate\Http\Response
+	 */
+	public function disable(AdBlock $adBlock)
+	{
+		$this->authorize('disable', $adBlock);
+
+		DB::transaction(function () use ($adBlock) {
+			$adBlock->disable();
+			$adBlock->save();
+		});
+
+		return redirect()
+			->route('ad_blocks.index')
+			->with(['success' => __('Ad block :name disabled', ['name' => $adBlock->name])]);
 	}
 }

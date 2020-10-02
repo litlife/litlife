@@ -555,6 +555,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::resource('ad_blocks', 'AdBlockController', ['except' => 'show']);
 	Route::get('ad_blocks/{ad_block}/delete', 'AdBlockController@destroy')->name('ad_blocks.delete');
+	Route::get('ad_blocks/{ad_block}/enable', 'AdBlockController@enable')->name('ad_blocks.enable');
+	Route::get('ad_blocks/{ad_block}/disable', 'AdBlockController@disable')->name('ad_blocks.disable');
 });
 
 Route::get('/books/{book}/pages', 'SectionController@page')->name('books.pages');

@@ -41,6 +41,14 @@
 							  rows="5">{{ old('code') ?? $block->code }}</textarea>
 				</div>
 
+				<div class="form-group">
+
+					<label for="description" class="col-form-label">{{ __('ad_block.description') }}</label>
+
+					<textarea name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}"
+							  rows="5">{{ old('description') ?? $block->description }}</textarea>
+				</div>
+
 				<button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
 
 			</form>

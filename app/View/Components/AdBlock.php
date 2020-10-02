@@ -17,7 +17,7 @@ class AdBlock extends Component
 	public function __construct($name)
 	{
 		$this->name = $name;
-		$this->block = \App\AdBlock::name($name)->first();
+		$this->block = \App\AdBlock::name($name)->enabled()->first();
 
 		if ($this->block)
 			$this->code = $this->block->code;

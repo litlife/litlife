@@ -11,6 +11,7 @@ class AdBlockComponentTest extends TestCase
 	public function testIfExists()
 	{
 		$block = factory(AdBlock::class)
+			->states('enabled')
 			->create();
 
 		$component = new Component($block->name);
@@ -22,6 +23,7 @@ class AdBlockComponentTest extends TestCase
 	public function testIfNotExists()
 	{
 		$block = factory(AdBlock::class)
+			->states('enabled')
 			->make();
 
 		$component = new Component($block->name);

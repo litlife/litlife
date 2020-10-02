@@ -22,6 +22,15 @@ class AdBlockEditTest extends TestCase
 			->assertOk();
 	}
 
+	public function testEditIfGuest()
+	{
+		$block = factory(AdBlock::class)
+			->create();
+
+		$this->get(route('ad_blocks.edit', ['ad_block' => $block->id]))
+			->assertStatus(401);
+	}
+
 	public function testUpdate()
 	{
 		$user = factory(User::class)->create();
@@ -37,7 +46,8 @@ class AdBlockEditTest extends TestCase
 		$this->actingAs($user)
 			->patch(route('ad_blocks.update', ['ad_block' => $block->id]), [
 				'name' => $blockNew->name,
-				'code' => $blockNew->code
+				'code' => $blockNew->code,
+				'description' => $blockNew->description
 			])->assertSessionHasNoErrors()
 			->assertRedirect(route('ad_blocks.index'))
 			->assertSessionHas('success', __('The data was successfully stored'));
@@ -46,5 +56,6 @@ class AdBlockEditTest extends TestCase
 
 		$this->assertEquals($blockNew->name, $block->name);
 		$this->assertEquals($blockNew->code, $block->code);
+		$this->assertEquals($blockNew->description, $block->description);
 	}
 }

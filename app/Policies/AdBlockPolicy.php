@@ -36,4 +36,14 @@ class AdBlockPolicy extends Policy
 	{
 		return $auth_user->getPermission('manage_ad_blocks');
 	}
+
+	public function enable(User $auth_user, AdBlock $adBlock)
+	{
+		return $auth_user->getPermission('manage_ad_blocks');
+	}
+
+	public function disable(User $auth_user, AdBlock $adBlock)
+	{
+		return $auth_user->getPermission('manage_ad_blocks');
+	}
 }

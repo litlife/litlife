@@ -1557,5 +1557,7 @@ Breadcrumbs::for('ad_blocks.create', function ($breadcrumbs) {
 
 Breadcrumbs::for('ad_blocks.edit', function ($breadcrumbs, $adBlock) {
 	$breadcrumbs->parent('ad_blocks.index');
-	$breadcrumbs->push(__('Edit'), route('ad_blocks.edit', ['ad_block' => $adBlock->id]));
+
+	if ($adBlock instanceof \App\AdBlock)
+		$breadcrumbs->push(__('Edit'), route('ad_blocks.edit', ['ad_block' => $adBlock->id]));
 });

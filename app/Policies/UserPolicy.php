@@ -6,7 +6,6 @@ use App\Enums\TransactionType;
 use App\Enums\UserAccountPermissionValues;
 use App\Enums\UserGroupEnum;
 use App\User;
-use Illuminate\Support\Facades\App;
 
 class UserPolicy extends Policy
 {
@@ -572,9 +571,10 @@ class UserPolicy extends Policy
 	 */
 	public function see_ads(?User $auth_user)
 	{
+		/*
 		if (App::environment('local'))
 			return false;
-
+*/
 		if (isset($auth_user)) {
 			if (!empty($auth_user->getPermission('NotShowAd')))
 				return false;
