@@ -15,7 +15,7 @@ class UserHasRegisteredNotificationTest extends TestCase
 
 		$notification = new UserHasRegisteredNotification($user);
 
-		$this->assertEquals(['mail'], $notification->via($user));
+		$this->assertEquals(['mail', 'database'], $notification->via($user));
 	}
 
 	public function testMail()
@@ -34,7 +34,7 @@ class UserHasRegisteredNotificationTest extends TestCase
 
 		$this->assertEquals(__('notification.user_has_registered.line'), $mail->introLines[0]);
 
-		$this->assertEquals(4, count($mail->introLines));
+		$this->assertGreaterThanOrEqual(4, count($mail->introLines));
 
 		$this->assertEquals(__('notification.user_has_registered.line2'), $mail->introLines[1]);
 
@@ -46,7 +46,13 @@ class UserHasRegisteredNotificationTest extends TestCase
 			'password' => __('password.your_entered_password')
 		]), $mail->introLines[3]);
 
-		$this->assertEquals(route('profile', ['user' => $user]), $mail->actionUrl);
+		$this->assertEquals(route('welcome'), $mail->actionUrl);
 		$this->assertEquals(__('notification.user_has_registered.action'), $mail->actionText);
+	}
+
+	public function testPreviewRoute()
+	{
+		$this->get(route('preview.welcome_notification'))
+			->assertOk();
 	}
 }

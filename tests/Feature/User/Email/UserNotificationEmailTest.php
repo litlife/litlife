@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class UserNotificationEmailTest extends TestCase
 {
-	public function tesFound()
+	public function testFound()
 	{
 		$user = factory(User::class)
 			->states('with_confirmed_email')

@@ -9,7 +9,6 @@ use App\Notifications\AuthorManagerAcceptedNotification;
 use App\Notifications\AuthorManagerRejectedNotification;
 use App\User;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AuthorManagerTest extends TestCase
@@ -578,25 +577,6 @@ class AuthorManagerTest extends TestCase
 		$this->assertFalse($admin->can('startReview', $manager));
 	}
 
-	public function testManagerOnCheckSeeAuthorIsNotPublished()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
-
-		$manager = factory(Manager::class)
-			->states('on_review')
-			->create();
-
-		$author = $manager->manageable;
-		$author->statusPrivate();
-		$author->save();
-
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertDontSeeText(__('manager.the_author_is_not_published'));
-	}
 
 	public function testSalesDisableHttp()
 	{
@@ -694,34 +674,6 @@ class AuthorManagerTest extends TestCase
 		$this->assertSoftDeleted($saleRequest);
 	}
 
-	public function testIsManagersOnReviewPageOkIfAuthorDeleted()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
-
-		$manager = factory(Manager::class)
-			->states(['author', 'on_review'])
-			->create();
-
-		$author = $manager->manageable;
-		$author->statusAccepted();
-		$author->save();
-
-		$author->delete();
-
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertSeeText(__('manager.the_author_is_deleted'));
-
-		$author->forceDelete();
-
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertDontSeeText(__('manager.the_author_is_deleted'));
-	}
 
 	public function testCanStartReviewIfAuthorDeleted()
 	{
@@ -836,26 +788,6 @@ class AuthorManagerTest extends TestCase
 		$manager->refresh();
 
 		$this->assertFalse($manager->trashed());
-	}
-
-	public function testDontShowPrivateManagerOnCheckPage()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
-
-		$manager = factory(Manager::class)
-			->states(['author', 'private'])
-			->create();
-
-		$author = $manager->manageable;
-		$author->first_name = Str::random(10);
-		$author->save();
-
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertDontSeeText($author->first_name);
 	}
 
 	public function testIsUserVerifiedAuthorOfBookIsTrue()

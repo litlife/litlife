@@ -349,4 +349,17 @@ class OtherController extends Controller
 
 		return view('faq', ['forum' => $forum ?? null]);
 	}
+
+	public function welcomeNotification()
+	{
+		$user = factory(User::class)
+			->states('with_confirmed_email')
+			->create();
+
+		$message = (new UserHasRegisteredNotification($user))->toMail($user);
+
+		$markdown = new Markdown(view(), config('mail.markdown'));
+
+		return $markdown->render('vendor.notifications.email', $message->toArray());
+	}
 }

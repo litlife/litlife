@@ -5,6 +5,7 @@ namespace Tests\Feature\User;
 use App\Blog;
 use App\Like;
 use App\User;
+use App\UserEmail;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -80,5 +81,35 @@ class UserShowTest extends TestCase
 
 		$top_blog_record = $response->viewData('top_blog_record');
 		$this->assertEquals(1, $top_blog_record->likes->count());
+	}
+
+	public function testSeeEmailIfShowInProfile()
+	{
+		$email = factory(UserEmail::class)
+			->states('show_in_profile')
+			->create();
+
+		$user = $email->user;
+
+		$this->assertTrue($email->isShowInProfile());
+
+		$this->get(route('profile', $user))
+			->assertOk()
+			->assertSeeText($email->email);
+	}
+
+	public function testDontSeeEmailIfDontShowInProfile()
+	{
+		$email = factory(UserEmail::class)
+			->states('dont_show_in_profile')
+			->create();
+
+		$user = $email->user;
+
+		$this->assertFalse($email->isShowInProfile());
+
+		$this->get(route('profile', $user))
+			->assertOk()
+			->assertDontSeeText($email->email);
 	}
 }

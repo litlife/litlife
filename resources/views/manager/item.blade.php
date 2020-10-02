@@ -1,7 +1,7 @@
 @component('components.comment', get_defined_vars())
 
 	@slot('avatar')
-		<x-user-avatar :user="$item->create_user" width="50" height="50"/>
+		<x-user-avatar :user="$item->user" width="50" height="50"/>
 	@endslot
 
 	@slot('data_attributes')

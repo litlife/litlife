@@ -35,7 +35,7 @@ class UserHasRegisteredNotification extends Notification
 	 */
 	public function via($notifiable)
 	{
-		return ['mail'];
+		return ['mail', 'database'];
 	}
 
 	/**
@@ -50,14 +50,33 @@ class UserHasRegisteredNotification extends Notification
 			->confirmed()
 			->first();
 
+		$markdown = \App\TextBlock::latestVersion('Приветствие')
+			->getMarkdown();
+
+		$lines = explode("\n", $markdown);
+
 		$mail = (new MailMessage)
 			->subject(__('notification.user_has_registered.subject'))
-			->greeting(__('notification.greeting') . ', ' . $this->user->userName . '!')
 			->line(__('notification.user_has_registered.line'))
 			->line(__('notification.user_has_registered.line2'))
 			->line(__('notification.user_has_registered.line3', ['email' => $email->email]))
 			->line(__('notification.user_has_registered.line4', ['password' => $this->password]));
 
-		return $mail->action(__('notification.user_has_registered.action'), route('profile', ['user' => $this->user]));
+		foreach ($lines as $line)
+			$mail->line($line);
+
+		$mail->greeting(__('notification.greeting') . ', ' . $this->user->userName . '!')
+			->action(__('notification.user_has_registered.action'), route('welcome'));
+
+		return $mail;
+	}
+
+	public function toArray($notifiable)
+	{
+		return [
+			'title' => __('notification.user_has_registered.subject'),
+			'description' => __('Click to go to the welcome page'),
+			'url' => route('welcome')
+		];
 	}
 }

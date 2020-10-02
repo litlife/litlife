@@ -128,6 +128,9 @@ class UserEmailController extends Controller
 	{
 		$email = UserEmail::findOrFail($id);
 
+		if (!$email->isValid())
+			return view('error', ['error' => __('The address of the mailbox has an invalid format. Please add a mailbox with the correct address.')]);
+
 		if ($email->isConfirmed())
 			return view('error', ['error' => __('user_email.already_confirmed')]);
 

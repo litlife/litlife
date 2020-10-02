@@ -659,6 +659,7 @@ Route::get('/preview/comment', 'OtherController@previewComment')->name('preview.
 Route::get('/preview/sceditor', 'OtherController@previewSceditor')->name('preview.sceditor');
 Route::get('/preview/error/500', 'OtherController@previewError500')->name('preview.error.500');
 Route::get('/preview/invitation_take_survey', 'OtherController@previewInvitationToTakeSurvey')->name('preview.invitation_take_survey');
+Route::get('/preview/welcome_notification', 'OtherController@welcomeNotification')->name('preview.welcome_notification');
 
 Route::get('/examples/tables/v1', 'OtherController@exampleTable1');
 Route::get('/examples/tables/v2', 'OtherController@exampleTable2');

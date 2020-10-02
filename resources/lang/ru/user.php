@@ -190,7 +190,6 @@ return [
 	'book_votes' => 'Оценки книг',
 	'other_settings' => 'Другие настройки',
 	'blacklist_users' => 'Пользователи в черном списке',
-	'now_you_can_enter_to_your_profile' => 'Теперь вы можете перейти в свой профиль',
 	'change_miniature' => 'Изменить миниатюру',
 	'change_miniature_helper' => 'Пожалуйста, выделите необходимую область в поле ниже и нажмите "' . __('common.save') . '"',
 	'referred_users' => 'Привлеченные пользователи',
