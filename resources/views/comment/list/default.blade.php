@@ -59,7 +59,7 @@
 						{{ trans_choice('comment.comments_count', $item->create_user->comment_count) }}</a> &nbsp;
 				@endif
 
-				@if ($author = $item->getCreateUserBookAuthor())
+				@if ($item->isBookType() and ($author = $item->getCreateUserBookAuthor()))
 
 					<a href="{{ route('authors.show', ['author' => $author]) }}"
 					   class="badge badge-pill badge-secondary badge-author">
@@ -117,7 +117,7 @@
 				@endif
 			@elseif ($item->isCollectionType())
 				<h6 class="mb-2">
-					@include ('collection.name', ['item' => $item->commentable])
+					@include ('collection.name', ['item' => $item->originCommentable])
 				</h6>
 			@endif
 		@endif

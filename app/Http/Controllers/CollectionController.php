@@ -19,6 +19,7 @@ use App\UserFavoriteCollection;
 use App\UserSubscriptionsEventNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class CollectionController extends Controller
 {
@@ -196,13 +197,17 @@ class CollectionController extends Controller
 			->with([
 				'create_user.avatar',
 				'create_user.groups',
-				'commentable',
 				'create_user.latest_user_achievements.achievement.image',
 				'votes' => function ($query) {
 					$query->where("create_user_id", auth()->id());
 				}
 			])
 			->paginate(config('litlife.comments_on_page_count'));
+
+		foreach ($comments as $comment)
+			$comment->setRelation('originCommentable', $collection);
+
+		$comments->loadMissing('originCommentable.collectionUser');
 
 		if (auth()->check()) {
 			$subscription = $collection->eventNotificationSubscriptions()
@@ -275,10 +280,12 @@ class CollectionController extends Controller
 	 * @return Response
 	 * @throws
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
 		$item = Collection::any()
 			->findOrFail($id);
+
+		DB::beginTransaction();
 
 		if ($item->trashed()) {
 			$this->authorize('restore', $item);
@@ -290,7 +297,14 @@ class CollectionController extends Controller
 			$item->delete();
 		}
 
-		return $item;
+		DB::commit();
+
+		if ($request->ajax())
+			return $item;
+		else
+			return redirect()
+				->route('collections.index')
+				->with(['success' => __('The collection was successfully deleted')]);
 	}
 
 	/**
@@ -709,5 +723,19 @@ class CollectionController extends Controller
 			return $collectionUser;
 		else
 			return redirect()->route('collections.users.index', $collection);
+	}
+
+	/**
+	 * Подтверждение удаления подборки
+	 *
+	 * @param Collection $collection
+	 * @return Response
+	 * @throws
+	 */
+	public function deleteConfirmation(Collection $collection)
+	{
+		$this->authorize('delete', $collection);
+
+		return view('collection.delete_confirmation', ['collection' => $collection]);
 	}
 }

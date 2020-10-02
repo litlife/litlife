@@ -548,7 +548,6 @@ Breadcrumbs::for('users.books.not_read', function ($breadcrumbs, $user) {
 
 Breadcrumbs::for('users.books.comments', function ($breadcrumbs, $user) {
 	$breadcrumbs->parent('profile', $user);
-	$breadcrumbs->push(trans_choice('book.books', 2), route('books'));
 	$breadcrumbs->push(trans_choice('comment.comments', 2), route('users.books.comments', ['user' => $user]));
 });
 
@@ -1463,6 +1462,11 @@ Breadcrumbs::for('collections.create', function ($breadcrumbs) {
 Breadcrumbs::for('collections.edit', function ($breadcrumbs, $collection) {
 	$breadcrumbs->parent('collections.show', $collection);
 	$breadcrumbs->push(__('collection.edit_collection'), route('collections.edit', $collection));
+});
+
+Breadcrumbs::for('collections.delete.confirmation', function ($breadcrumbs, $collection) {
+	$breadcrumbs->parent('collections.show', $collection);
+	$breadcrumbs->push(__('Confirm the deletion'), route('collections.delete.confirmation', $collection));
 });
 
 Breadcrumbs::for('collections.books.select', function ($breadcrumbs, $collection) {

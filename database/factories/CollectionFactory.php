@@ -36,3 +36,12 @@ $factory->afterCreating(App\Collection::class, function (Collection $collection,
 	$collection->refreshUsersCount();
 	$collection->save();
 });
+
+$factory->afterCreatingState(App\Collection::class, 'with_comment', function (Collection $collection, $faker) {
+
+	$comment = \factory(\App\Comment::class)
+		->make();
+
+	$collection->comments()
+		->save($comment);
+});

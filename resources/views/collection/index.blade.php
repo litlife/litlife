@@ -6,6 +6,13 @@
 
 @section('content')
 
+	@if (session('success'))
+		<div class="alert alert-success alert-dismissable">
+			{{ session('success') }}
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		</div>
+	@endif
+
 	@can ('create', \App\Collection::class)
 
 		<div class="row mb-3">

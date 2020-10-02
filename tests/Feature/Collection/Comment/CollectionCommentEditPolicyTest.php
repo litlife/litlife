@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature\Collection\Book;
+namespace Tests\Feature\Collection\Comment;
 
 use App\Collection;
 use App\Comment;
 use App\User;
 use Tests\TestCase;
 
-class CollectionCommentDeletePolicyTest extends TestCase
+class CollectionCommentEditPolicyTest extends TestCase
 {
 	public function testCanIfHasPermission()
 	{
@@ -23,7 +23,7 @@ class CollectionCommentDeletePolicyTest extends TestCase
 
 		$collection->comments()->save($comment);
 
-		$this->assertTrue($user->can('delete', $comment));
+		$this->assertTrue($user->can('update', $comment));
 	}
 
 	public function testCantIfDoesntHavePermission()
@@ -40,6 +40,6 @@ class CollectionCommentDeletePolicyTest extends TestCase
 
 		$collection->comments()->save($comment);
 
-		$this->assertFalse($user->can('delete', $comment));
+		$this->assertFalse($user->can('update', $comment));
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Collection;
+namespace Tests\Feature\Collection\Comment;
 
 use App\Collection;
 use App\CollectionUser;

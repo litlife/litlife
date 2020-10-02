@@ -66,5 +66,9 @@
   "Found in collections": "Входит в подборки",
   "In collection": "В подборке",
   "The book was successfully added to the collection": "Книга успешно добавлена в подборку",
-  "The book was successfully removed from the collection": "Книга успешно удалена из подборки"
+  "The book was successfully removed from the collection": "Книга успешно удалена из подборки",
+  "Do you really want to delete a collection without being able to restore it?": "Вы действительно хотите удалить подборку без возможности восстановления?",
+  "Comments will also be deleted": "Комментарии также будут удалены",
+  "Confirm the deletion": "Подтверждение удаления",
+  "The collection was successfully deleted": "Подборка успешно удалена"
 }
