@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\User;
 
-use App\Book;
 use App\User;
 use Tests\TestCase;
 
@@ -23,24 +22,6 @@ class UserTest extends TestCase
 		$author = User::FulltextSearch('Время&—&детство!')->get();
 
 		$this->assertTrue(true);
-	}
-
-	public function testSetCookiePassAgeRestriction()
-	{
-		$age = 12;
-
-		$user = factory(User::class)
-			->create();
-
-		$book = factory(Book::class)
-			->create(['age' => 18]);
-
-		$this->actingAs($user)
-			->get(route('user_pass_age_restriction', ['age' => $age]))
-			->assertOk()
-			->assertJson(['pass_age' => $age])
-			->assertCookie('pass_age', $age)
-			->assertCookieNotExpired('pass_age');
 	}
 
 	public function testUseShopPolicy()

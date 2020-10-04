@@ -81,16 +81,15 @@ class OtherController extends Controller
 			->cookie('show_sidebar', false, 180000);
 	}
 
-	public function userPassAgeRestriction()
+	public function userPassAgeRestriction(Request $request)
 	{
-		$age = intval(request()->age);
+		$age = intval($request->age);
 
-		if ($age > 21) $age = 21;
+		if ($age > 21)
+			$age = 21;
 
-		$minutes = now()->addMonth()->addHour()->diffInMinutes(now());
-
-		return response(['pass_age' => $age])
-			->cookie('pass_age', $age, $minutes);
+		return response(['can_pass_age' => $age])
+			->cookie('can_pass_age', $age, 180000);
 	}
 
 	public function away(Request $request)
