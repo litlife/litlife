@@ -130,12 +130,13 @@
 
 				let form = body.find('form:first');
 
+				modal.modal('show');
+
 				modal.on('show.bs.modal', function (e) {
 					if ($.trim(list.html()) === '') {
 						form.formChange('inputChange');
 					}
 				});
-
 
 				form.formChange({
 					timeout: 500,

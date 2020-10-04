@@ -132,6 +132,8 @@
 
 				let form = body.find('form:first');
 
+				modal.modal('show');
+
 				form.formChange({
 					timeout: 500,
 					onShow: function () {

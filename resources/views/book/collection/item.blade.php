@@ -10,7 +10,7 @@
 	<div class="mb-2 d-flex flex-row">
 		<div class="mr-3">
 			@if ($item->books->count())
-				{{ __('In collection') }}
+				<span class="text-nowrap">{{ __('In collection') }}</span>
 			@else
 				<button class="select btn btn-primary">{{ __('Select') }}</button>
 			@endif
