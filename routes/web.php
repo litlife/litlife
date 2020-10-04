@@ -98,6 +98,10 @@ Route::group(['middleware' => ['guest']], function () {
 Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('books/{book}/collections', 'BookController@collections')->name('books.collections.index');
+	Route::get('books/{book}/collections/search', 'BookController@collectionSearch')->name('books.collections.search');
+	Route::get('books/{book}/collections/create', 'BookController@collectionCreate')->name('books.collections.create');
+	Route::get('books/{book}/collections/{collection}/selected', 'BookController@collectionSelected')->name('books.collections.selected');
+	Route::post('books/{book}/collections', 'BookController@collectionStore')->name('books.collections.store');
 
 	Route::resource('collections', 'CollectionController', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
@@ -121,7 +125,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('/collections/{collection}/books/search/list', 'CollectionController@searchList')->name('collections.books.list');
 	Route::get('/collections/books/selected/{book}/item', 'CollectionController@booksSelectedItem')->name('collections.books.selected.item');
-
 	Route::get('financial_statistics', 'FinancialStatisticController@index')->name('financial_statistic.index');
 	Route::get('financial_statistics/all_transactions', 'FinancialStatisticController@allTransactionHisory')->name('financial_statistic.all_transactions');
 	Route::get('financial_statistics/purchases', 'FinancialStatisticController@purchases')->name('financial_statistic.purchases');

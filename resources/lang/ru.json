@@ -70,5 +70,13 @@
   "Do you really want to delete a collection without being able to restore it?": "Вы действительно хотите удалить подборку без возможности восстановления?",
   "Comments will also be deleted": "Комментарии также будут удалены",
   "Confirm the deletion": "Подтверждение удаления",
-  "The collection was successfully deleted": "Подборка успешно удалена"
+  "The collection was successfully deleted": "Подборка успешно удалена",
+  "Add": "Добавить",
+  "None of the collection is not found": "Ни одна подборка не найдена",
+  "Add to the collection": "Добавить в подборку",
+  "Select a collection": "Выбрать подборку",
+  "Collection": "Подборка",
+  "Add a book to a collection": "Добавить книгу в подборку",
+  "Start entering the name of the collection": "Начните вводить название подборки",
+  "Select": "Выбрать"
 }

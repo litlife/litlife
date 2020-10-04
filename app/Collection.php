@@ -180,6 +180,17 @@ class Collection extends Model
 		}
 	}
 
+	public function scopeWhereUserCanAddBooks($query, User $user)
+	{
+		return $query->where('who_can_add', UserAccountPermissionValues::everyone)
+			->orWhere($this->getTable() . '.create_user_id', $user->id)
+			->orWhereHas('collectionUser', function (Builder $query) use ($user) {
+				$query->select('id')
+					->where('user_id', $user->id)
+					->where('can_add_books', true);
+			});
+	}
+
 	public function scopeFulltextSearch($query, $searchText)
 	{
 		$searchText = replaceSimilarSymbols($searchText);

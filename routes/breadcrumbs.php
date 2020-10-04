@@ -1568,3 +1568,8 @@ Breadcrumbs::for('books.collections.index', function ($breadcrumbs, $book) {
 	$breadcrumbs->parent('books.show', $book);
 	$breadcrumbs->push(__('In the collections'), route('books.collections.index', ['book' => $book]));
 });
+
+Breadcrumbs::for('books.collections.create', function ($breadcrumbs, $book) {
+	$breadcrumbs->parent('books.show', $book);
+	$breadcrumbs->push(__('Add a book to a collection'), route('books.collections.create', ['book' => $book]));
+});
