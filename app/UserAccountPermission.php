@@ -35,7 +35,6 @@ use Illuminate\Support\Carbon;
  */
 class UserAccountPermission extends Model
 {
-
 	public $possible_values = [
 		'write_on_the_wall' => [
 			UserAccountPermissionValues::me,

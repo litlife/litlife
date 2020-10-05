@@ -548,7 +548,6 @@ Breadcrumbs::for('users.books.not_read', function ($breadcrumbs, $user) {
 
 Breadcrumbs::for('users.books.comments', function ($breadcrumbs, $user) {
 	$breadcrumbs->parent('profile', $user);
-	$breadcrumbs->push(trans_choice('book.books', 2), route('books'));
 	$breadcrumbs->push(trans_choice('comment.comments', 2), route('users.books.comments', ['user' => $user]));
 });
 
@@ -1465,6 +1464,11 @@ Breadcrumbs::for('collections.edit', function ($breadcrumbs, $collection) {
 	$breadcrumbs->push(__('collection.edit_collection'), route('collections.edit', $collection));
 });
 
+Breadcrumbs::for('collections.delete.confirmation', function ($breadcrumbs, $collection) {
+	$breadcrumbs->parent('collections.show', $collection);
+	$breadcrumbs->push(__('Confirm the deletion'), route('collections.delete.confirmation', $collection));
+});
+
 Breadcrumbs::for('collections.books.select', function ($breadcrumbs, $collection) {
 	$breadcrumbs->parent('collections.books', $collection);
 	$breadcrumbs->push(__('collection.attach_book'), route('collections.books.select', $collection));
@@ -1560,4 +1564,14 @@ Breadcrumbs::for('ad_blocks.edit', function ($breadcrumbs, $adBlock) {
 
 	if ($adBlock instanceof \App\AdBlock)
 		$breadcrumbs->push(__('Edit'), route('ad_blocks.edit', ['ad_block' => $adBlock->id]));
+});
+
+Breadcrumbs::for('books.collections.index', function ($breadcrumbs, $book) {
+	$breadcrumbs->parent('books.show', $book);
+	$breadcrumbs->push(__('In the collections'), route('books.collections.index', ['book' => $book]));
+});
+
+Breadcrumbs::for('books.collections.create', function ($breadcrumbs, $book) {
+	$breadcrumbs->parent('books.show', $book);
+	$breadcrumbs->push(__('Add a book to a collection'), route('books.collections.create', ['book' => $book]));
 });

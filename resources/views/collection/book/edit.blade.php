@@ -42,7 +42,7 @@
 					<div class="col-md-9 col-lg-10">
 						<input id="number" name="number" type="text"
 							   class="form-control{{ $errors->has('number') ? ' is-invalid' : '' }}"
-							   value="{{ $collected_book->number ?? old('number') }}"/>
+							   value="{{ old('number') ?? $collected_book->number }}"/>
 					</div>
 				</div>
 
@@ -51,8 +51,8 @@
 						{{ __('collection.comment') }}
 					</label>
 					<div class="col-md-9 col-lg-10">
-                        <textarea id="comment" name="comment"
-								  class="form-control{{ $errors->has('comment') ? ' is-invalid' : '' }}">{{ $collected_book->comment ?? old('comment') }}</textarea>
+                        <textarea id="comment" name="comment" class="form-control{{ $errors->has('comment') ? ' is-invalid' : '' }}"
+								  rows="5">{{ old('comment') ?? $collected_book->comment }}</textarea>
 					</div>
 				</div>
 

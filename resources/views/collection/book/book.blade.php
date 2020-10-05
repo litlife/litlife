@@ -82,7 +82,7 @@
 											@endcan
 
 											@can('editBookDescription', $collection)
-												<a class="dropdown-item text-lowercase"
+												<a class="dropdown-item text-lowercase" target="_blank"
 												   href="{{ route('collections.books.edit', ['collection' => $collection, 'book' => $book]) }}">
 													{{ __('collection.edit_description_of_book_in_selection') }}
 												</a>

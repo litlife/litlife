@@ -67,16 +67,8 @@ Route::get('/qrcode', 'OtherController@qrcode')->name('qrcode');
 Route::get('/drip', 'DripController@drip')->name('drip');
 Route::get('keywords/search', 'BookKeywordController@search')->name('books.keywords.search');
 Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
-Route::get('/users/{user}/collections/created', 'UserController@createdCollections')->name('users.collections.created');
-Route::get('/users/{user}/collections/favorite', 'UserController@favoriteCollections')->name('users.collections.favorite');
 Route::get('/collections/{collection}/comments', 'CollectionController@comments')->name('collections.comments');
 Route::get('/collections/{collection}/books', 'CollectionController@books')->name('collections.books');
-Route::get('/collections/{collection}/users', 'CollectionController@users')->name('collections.users.index');
-Route::get('/collections/{collection}/users/create', 'CollectionController@createUser')->name('collections.users.create');
-Route::post('/collections/{collection}/users', 'CollectionController@storeUser')->name('collections.users.store');
-Route::get('/collections/{collection}/users/{user}/edit', 'CollectionController@editUser')->name('collections.users.edit');
-Route::patch('/collections/{collection}/users/{user}', 'CollectionController@updateUser')->name('collections.users.update');
-Route::get('/collections/{collection}/users/{user}/delete', 'CollectionController@deleteUser')->name('collections.users.delete');
 
 Route::get('/users/where/nick', 'UserController@searchUserWithNick')->name('users.where.nick');
 
@@ -105,8 +97,15 @@ Route::group(['middleware' => ['guest']], function () {
 
 Route::group(['middleware' => ['auth']], function () {
 
+	Route::get('books/{book}/collections', 'BookController@collections')->name('books.collections.index');
+	Route::get('books/{book}/collections/search', 'BookController@collectionSearch')->name('books.collections.search');
+	Route::get('books/{book}/collections/create', 'BookController@collectionCreate')->name('books.collections.create');
+	Route::get('books/{book}/collections/{collection}/selected', 'BookController@collectionSelected')->name('books.collections.selected');
+	Route::post('books/{book}/collections', 'BookController@collectionStore')->name('books.collections.store');
+
 	Route::resource('collections', 'CollectionController', ['only' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
+	Route::get('/collections/{collection}/delete/confirmation', 'CollectionController@deleteConfirmation')->name('collections.delete.confirmation');
 	Route::get('/collections/{collection}/favorite/toggle', 'CollectionController@toggleToFavorites')->name('collections.favorite.toggle');
 	Route::get('/collections/{collection}/books/select', 'CollectionController@booksSelect')->name('collections.books.select');
 	Route::post('/collections/{collection}/books/attach', 'CollectionController@booksAttach')->name('collections.books.attach');
@@ -115,10 +114,17 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/collections/{collection}/books/{book}/update', 'CollectionController@collectedBookUpdate')->name('collections.books.update');
 	Route::get('/collections/{collection}/event_notification_subcriptions/toggle', 'CollectionController@eventNotificationSubcriptionsToggle')
 		->name('collections.event_notification_subcriptions.toggle');
+	Route::get('/users/{user}/collections/created', 'UserController@createdCollections')->name('users.collections.created');
+	Route::get('/collections/{collection}/users', 'CollectionController@users')->name('collections.users.index');
+	Route::get('/users/{user}/collections/favorite', 'UserController@favoriteCollections')->name('users.collections.favorite');
+	Route::get('/collections/{collection}/users/create', 'CollectionController@createUser')->name('collections.users.create');
+	Route::post('/collections/{collection}/users', 'CollectionController@storeUser')->name('collections.users.store');
+	Route::get('/collections/{collection}/users/{user}/edit', 'CollectionController@editUser')->name('collections.users.edit');
+	Route::patch('/collections/{collection}/users/{user}', 'CollectionController@updateUser')->name('collections.users.update');
+	Route::get('/collections/{collection}/users/{user}/delete', 'CollectionController@deleteUser')->name('collections.users.delete');
 
-	Route::get('/collections/books/list', 'CollectionController@booksList')->name('collections.books.list');
+	Route::get('/collections/{collection}/books/search/list', 'CollectionController@searchList')->name('collections.books.list');
 	Route::get('/collections/books/selected/{book}/item', 'CollectionController@booksSelectedItem')->name('collections.books.selected.item');
-
 	Route::get('financial_statistics', 'FinancialStatisticController@index')->name('financial_statistic.index');
 	Route::get('financial_statistics/all_transactions', 'FinancialStatisticController@allTransactionHisory')->name('financial_statistic.all_transactions');
 	Route::get('financial_statistics/purchases', 'FinancialStatisticController@purchases')->name('financial_statistic.purchases');

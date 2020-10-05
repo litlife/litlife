@@ -105,7 +105,10 @@ class CommentListController extends Controller
 	{
 		$this->before();
 
-		$resource = (new CommentSearchResource(request(), $user->comments()->acceptedAndSentForReviewOrBelongsToAuthUser()));
+		$query = $user->comments()
+			->acceptedAndSentForReviewOrBelongsToAuthUser();
+
+		$resource = (new CommentSearchResource(request(), $query));
 
 		return $resource->view();
 	}

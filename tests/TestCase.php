@@ -212,5 +212,11 @@ abstract class TestCase extends BaseTestCase
 		return $this->withHeader('Accept', 'application/json');
 	}
 
-
+	protected function withOldInput($key, $value)
+	{
+		$input = $this->app['session']->get('_old_input');
+		$input[$key] = $value;
+		$this->session(['_old_input' => $input]);
+		return $this;
+	}
 }

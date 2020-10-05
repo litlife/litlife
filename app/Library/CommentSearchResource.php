@@ -3,6 +3,7 @@
 namespace App\Library;
 
 use App\Book;
+use App\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class CommentSearchResource extends SearchResource
@@ -65,11 +66,13 @@ class CommentSearchResource extends SearchResource
 			'votes' => function ($query) {
 				$query->where('create_user_id', auth()->id());
 			},
-			'commentable',
 			'originCommentable' => function (MorphTo $morphTo) {
 				$morphTo->morphWith([
 					Book::class => [
 						'authors.managers'
+					],
+					Collection::class => [
+						'collectionUser'
 					]
 				]);
 			}]);

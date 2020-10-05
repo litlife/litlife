@@ -174,14 +174,16 @@ class CollectionPolicy extends Policy
 			case UserAccountPermissionValues::everyone:
 				return true;
 				break;
-			case UserAccountPermissionValues::friends:
-				if ($auth_user->isFriendOf($collection->create_user))
-					return true;
-				break;
-			case UserAccountPermissionValues::friends_and_subscribers:
-				if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
-					return true;
-				break;
+			/*
+		case UserAccountPermissionValues::friends:
+			if ($auth_user->isFriendOf($collection->create_user))
+				return true;
+			break;
+		case UserAccountPermissionValues::friends_and_subscribers:
+			if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
+				return true;
+			break;
+			*/
 			case UserAccountPermissionValues::me:
 				if ($collection->isUserCreator($auth_user))
 					return true;
@@ -215,14 +217,16 @@ class CollectionPolicy extends Policy
 			case UserAccountPermissionValues::everyone:
 				return true;
 				break;
-			case UserAccountPermissionValues::friends:
-				if ($auth_user->isFriendOf($collection->create_user))
-					return true;
-				break;
-			case UserAccountPermissionValues::friends_and_subscribers:
-				if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
-					return true;
-				break;
+			/*
+		case UserAccountPermissionValues::friends:
+			if ($auth_user->isFriendOf($collection->create_user))
+				return true;
+			break;
+		case UserAccountPermissionValues::friends_and_subscribers:
+			if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
+				return true;
+			break;
+			*/
 			case UserAccountPermissionValues::me:
 				if ($collection->isUserCreator($auth_user))
 					return true;
@@ -256,14 +260,16 @@ class CollectionPolicy extends Policy
 			case UserAccountPermissionValues::everyone:
 				return true;
 				break;
-			case UserAccountPermissionValues::friends:
-				if ($auth_user->isFriendOf($collection->create_user))
-					return true;
-				break;
-			case UserAccountPermissionValues::friends_and_subscribers:
-				if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
-					return true;
-				break;
+			/*
+		case UserAccountPermissionValues::friends:
+			if ($auth_user->isFriendOf($collection->create_user))
+				return true;
+			break;
+		case UserAccountPermissionValues::friends_and_subscribers:
+			if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
+				return true;
+			break;
+			*/
 			case UserAccountPermissionValues::me:
 				if ($collection->isUserCreator($auth_user))
 					return true;
@@ -297,14 +303,16 @@ class CollectionPolicy extends Policy
 			case UserAccountPermissionValues::everyone:
 				return true;
 				break;
-			case UserAccountPermissionValues::friends:
-				if ($auth_user->isFriendOf($collection->create_user))
-					return true;
-				break;
-			case UserAccountPermissionValues::friends_and_subscribers:
-				if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
-					return true;
-				break;
+			/*
+		case UserAccountPermissionValues::friends:
+			if ($auth_user->isFriendOf($collection->create_user))
+				return true;
+			break;
+		case UserAccountPermissionValues::friends_and_subscribers:
+			if ($auth_user->isFriendOf($collection->create_user) or $auth_user->isSubscriberOf($collection->create_user))
+				return true;
+			break;
+			*/
 			case UserAccountPermissionValues::me:
 				if ($collection->isUserCreator($auth_user))
 					return true;

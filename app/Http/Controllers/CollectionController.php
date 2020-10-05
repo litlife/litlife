@@ -19,6 +19,7 @@ use App\UserFavoriteCollection;
 use App\UserSubscriptionsEventNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class CollectionController extends Controller
 {
@@ -80,7 +81,7 @@ class CollectionController extends Controller
 		$collection->save();
 
 		return redirect()
-			->route('users.collections.created', ['user' => $collection->create_user])
+			->route('users.collections.created', ['user' => $collection->create_user, 'order' => 'created_at_desc'])
 			->with(['success' => __('collection.successfully_created')]);
 	}
 
@@ -136,7 +137,7 @@ class CollectionController extends Controller
 			->addOrder('latest_added_to_collection', function ($query) {
 				$query->orderBy('collected_books.created_at', 'desc');
 			})
-			->setViewType('collection.book');
+			->setViewType('collection.book.book');
 
 		$vars = $resource->getVars();
 
@@ -196,13 +197,17 @@ class CollectionController extends Controller
 			->with([
 				'create_user.avatar',
 				'create_user.groups',
-				'commentable',
 				'create_user.latest_user_achievements.achievement.image',
 				'votes' => function ($query) {
 					$query->where("create_user_id", auth()->id());
 				}
 			])
 			->paginate(config('litlife.comments_on_page_count'));
+
+		foreach ($comments as $comment)
+			$comment->setRelation('originCommentable', $collection);
+
+		$comments->loadMissing('originCommentable.collectionUser');
 
 		if (auth()->check()) {
 			$subscription = $collection->eventNotificationSubscriptions()
@@ -275,10 +280,12 @@ class CollectionController extends Controller
 	 * @return Response
 	 * @throws
 	 */
-	public function destroy($id)
+	public function destroy(Request $request, $id)
 	{
 		$item = Collection::any()
 			->findOrFail($id);
+
+		DB::beginTransaction();
 
 		if ($item->trashed()) {
 			$this->authorize('restore', $item);
@@ -290,7 +297,14 @@ class CollectionController extends Controller
 			$item->delete();
 		}
 
-		return $item;
+		DB::commit();
+
+		if ($request->ajax())
+			return $item;
+		else
+			return redirect()
+				->route('collections.index')
+				->with(['success' => __('The collection was successfully deleted')]);
 	}
 
 	/**
@@ -338,9 +352,13 @@ class CollectionController extends Controller
 		if (old('book_id'))
 			$book = Book::findOrFail(old('book_id'));
 
-		return view('collection.book_attach', [
+		$max = intval($collection->collected()
+			->max('number'));
+
+		return view('collection.book.attach', [
 			'collection' => $collection,
-			'book' => $book ?? null
+			'book' => $book ?? null,
+			'max' => $max + 1
 		]);
 	}
 
@@ -373,7 +391,8 @@ class CollectionController extends Controller
 		$collection->save();
 
 		return redirect()
-			->route('collections.books', $collection);
+			->route('collections.books', $collection)
+			->with(['success' => __('The book was successfully added to the collection')]);
 	}
 
 	/**
@@ -399,38 +418,48 @@ class CollectionController extends Controller
 		$collection->save();
 
 		return redirect()
-			->route('collections.books', $collection);
+			->route('collections.books', $collection)
+			->with(['success' => __('The book was successfully removed from the collection')]);
 	}
 
 	/**
 	 * Список книг для добавления в подборку
 	 *
 	 * @param Request $request
+	 * @param Collection $collection
 	 * @return Response
 	 * @throws
 	 */
-	public function booksList(Request $request)
+	public function searchList(Request $request, Collection $collection)
 	{
+		if (!$request->ajax())
+			return redirect()->route('collections.books.select', ['collection' => $collection]);
+
 		$str = trim($request->input('query'));
 
 		if (is_numeric($str)) {
-			$books = Book::acceptedOrBelongsToAuthUser()
-				->where('id', $str)
+			$query = Book::where('id', $str)
 				->simplePaginate(10);
 		} else {
 
-			$books = Book::where(function ($query) use ($str) {
+			$query = Book::where(function ($query) use ($str) {
 				return $query->titleAuthorsFulltextSearch($str)
 					->when((mb_strlen($str) > 10), function ($query) use ($str) {
 						return $query->orWhere('pi_isbn', 'ilike', '%' . $str . '%');
 					});
-			})
-				->acceptedOrBelongsToAuthUser()
-				->orderByRatingDesc()
-				->simplePaginate(10);
+			})->orderByRaw('"main_book_id" nulls first')
+				->orderByRatingDesc();
 		}
 
-		$books->load(['authors', 'sequences']);
+		$books = $query->acceptedOrBelongsToAuthUser()
+			->with([
+				'authors.managers',
+				'sequences',
+				'cover',
+				'collections' => function ($query) use ($collection) {
+					$query->where('collections.id', $collection->id);
+				}])
+			->simplePaginate(10);
 
 		foreach ($books as $book) {
 			$book->setRelation('writers', $book->getAuthorsWithType(AuthorEnum::Writer));
@@ -440,7 +469,7 @@ class CollectionController extends Controller
 			$book->setRelation('compilers', $book->getAuthorsWithType(AuthorEnum::Compiler));
 		}
 
-		return view('collection.book_list', compact('books'));
+		return view('collection.book.list', compact('books'));
 	}
 
 	/**
@@ -453,7 +482,7 @@ class CollectionController extends Controller
 	 */
 	public function booksSelectedItem(Book $book)
 	{
-		return view('collection.book_selected_item', compact('book'));
+		return view('collection.book.selected_item', compact('book'));
 	}
 
 	/**
@@ -472,7 +501,7 @@ class CollectionController extends Controller
 			->where('book_id', $book->id)
 			->first();
 
-		return view('collection.book_edit', compact('collection', 'book', 'collected_book'));
+		return view('collection.book.edit', compact('collection', 'book', 'collected_book'));
 	}
 
 	/**
@@ -499,7 +528,8 @@ class CollectionController extends Controller
 		$collection->save();
 
 		return redirect()
-			->route('collections.books.edit', ['collection' => $collection, 'book' => $book]);
+			->route('collections.books.edit', ['collection' => $collection, 'book' => $book])
+			->with(['success' => __('The book data in the collection was saved successfully')]);
 	}
 
 	/**
@@ -693,5 +723,19 @@ class CollectionController extends Controller
 			return $collectionUser;
 		else
 			return redirect()->route('collections.users.index', $collection);
+	}
+
+	/**
+	 * Подтверждение удаления подборки
+	 *
+	 * @param Collection $collection
+	 * @return Response
+	 * @throws
+	 */
+	public function deleteConfirmation(Collection $collection)
+	{
+		$this->authorize('delete', $collection);
+
+		return view('collection.delete_confirmation', ['collection' => $collection]);
 	}
 }

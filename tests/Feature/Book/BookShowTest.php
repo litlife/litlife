@@ -5,6 +5,7 @@ namespace Tests\Feature\Book;
 use App\Author;
 use App\Book;
 use App\BookFile;
+use App\CollectedBook;
 use App\Comment;
 use App\Jobs\Book\UpdateBookFilesCount;
 use App\Section;
@@ -267,5 +268,17 @@ class BookShowTest extends TestCase
 		$this->assertEquals(3, $book->view_count->month);
 		$this->assertEquals(3, $book->view_count->year);
 		$this->assertEquals(3, $book->view_count->all);
+	}
+
+	public function testInCollection()
+	{
+		$collectedBook = factory(CollectedBook::class)->create();
+
+		$book = $collectedBook->book;
+		$collection = $collectedBook->collection;
+
+		$this->get(route('books.show', $book))
+			->assertOk()
+			->assertViewHas('collectionsCount', 1);
 	}
 }

@@ -54,13 +54,20 @@ class CommentPolicy extends Policy
 			return true;
 
 		if ($comment->isUserCreator($auth_user)) {
-			if ($auth_user->getPermission('comment_self_edit_only_time')) {
-				if (now()->lessThan($comment->created_at->addSeconds(604800)))
+			if ($comment->isBookType()) {
+
+				if ($auth_user->getPermission('comment_self_edit_only_time')) {
+					if (now()->lessThan($comment->created_at->addSeconds(604800)))
+						return true;
+				}
+
+				if ($auth_user->getPermission('CommentEditMy'))
+					return true;
+
+			} elseif ($comment->isCollectionType()) {
+				if ($auth_user->getPermission('edit_or_delete_your_comments_to_collections'))
 					return true;
 			}
-
-			if ($auth_user->getPermission('CommentEditMy'))
-				return true;
 		}
 
 		if ($auth_user->getPermission('CommentEditOtherUser'))
@@ -84,13 +91,18 @@ class CommentPolicy extends Policy
 		if ($comment->trashed())
 			return false;
 
-		if (($comment->isUserCreator($auth_user)) and ($auth_user->getPermission('DeleteMyComment'))) {
-			return true;
+		if ($comment->isUserCreator($auth_user)) {
+			if ($comment->isBookType()) {
+				if ($auth_user->getPermission('DeleteMyComment'))
+					return true;
+
+			} elseif ($comment->isCollectionType()) {
+				if ($auth_user->getPermission('edit_or_delete_your_comments_to_collections'))
+					return true;
+			}
 		}
 
-		if ($auth_user->getPermission('DeleteOtherUserComment')) {
-			return true;
-		}
+		return $auth_user->getPermission('DeleteOtherUserComment');
 	}
 
 	/**
@@ -102,16 +114,24 @@ class CommentPolicy extends Policy
 	 */
 	public function restore(User $auth_user, Comment $comment)
 	{
+		if ($comment->isPrivate())
+			return true;
+
 		if (!$comment->trashed())
 			return false;
 
-		if (($comment->isUserCreator($auth_user)) and ($auth_user->getPermission('DeleteMyComment'))) {
-			return true;
+		if ($comment->isUserCreator($auth_user)) {
+			if ($comment->isBookType()) {
+				if ($auth_user->getPermission('DeleteMyComment'))
+					return true;
+
+			} elseif ($comment->isCollectionType()) {
+				if ($auth_user->getPermission('edit_or_delete_your_comments_to_collections'))
+					return true;
+			}
 		}
 
-		if ($auth_user->getPermission('DeleteOtherUserComment')) {
-			return true;
-		}
+		return $auth_user->getPermission('DeleteOtherUserComment');
 	}
 
 	/**
@@ -123,11 +143,26 @@ class CommentPolicy extends Policy
 	 */
 	public function view(?User $auth_user, Comment $comment)
 	{
+		if (!empty($auth_user) and $comment->isUserCreator($auth_user))
+			return true;
+
 		if ($comment->isPrivate()) {
 			if (!empty($auth_user) and $comment->isUserCreator($auth_user))
 				return true;
 			else
 				return false;
+		}
+
+		if ($comment->isCollectionType()) {
+			if ($comment->originCommentable->isPrivate()) {
+				if ($comment->originCommentable->isUserCreator($auth_user))
+					return true;
+
+				if ($collectionUser = $comment->originCommentable->collectionUser->where('user_id', $auth_user->id)->first())
+					return true;
+				else
+					return false;
+			}
 		}
 
 		return true;

@@ -1799,4 +1799,19 @@ class BookPolicy extends Policy
 				return (boolean)$auth_user->getPermission('edit_other_user_book');
 		}
 	}
+
+	/**
+	 * Может ли пользователь пожаловаться на книгу
+	 *
+	 * @param User $auth_user
+	 * @param Book $book
+	 * @return bool
+	 */
+	public function addToCollection(User $auth_user, Book $book)
+	{
+		if ($book->isPrivate())
+			return false;
+
+		return true;
+	}
 }
