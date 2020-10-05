@@ -567,7 +567,7 @@ class BookTest extends DuskTestCase
 
 			$browser->pause(2000);
 
-			$browser->assertHasCookie('pass_age')
+			$browser->assertHasCookie('can_pass_age')
 				->visit(route('books.show', $book))
 				->assertMissing('#askAgeModal');
 
