@@ -162,9 +162,11 @@
 
 				@endif
 
+				@can('addToCollection', $book)
 				<a class="btn btn-sm btn-outline-primary" href="{{ route('books.collections.create', $book) }}">
 					{{ __('Add to the collection') }}
 				</a>
+				@endcan
 			</div>
 	</div>
 	<div class="col-lg-6">
