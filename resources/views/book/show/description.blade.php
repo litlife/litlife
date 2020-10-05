@@ -152,7 +152,8 @@
 				@endauth
 			</div>
 		@endif
-			<div>
+
+			<div class="mt-2">
 				@if (!empty($collectionsCount))
 
 					<a href="{{ route('books.collections.index', $book) }}">

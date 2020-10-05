@@ -36,7 +36,7 @@ class CollectionCreateTest extends TestCase
 			->post(route('collections.store', $post))
 			->assertSessionHasNoErrors();
 		//dump(session('errors'));
-		$response->assertRedirect(route('users.collections.created', $user));
+		$response->assertRedirect(route('users.collections.created', ['user' => $user, 'order' => 'created_at_desc']));
 
 		$collection = $user->created_collections()->first();
 
@@ -74,7 +74,7 @@ class CollectionCreateTest extends TestCase
 			->post(route('collections.store', $post))
 			->assertSessionHasNoErrors();
 		//dump(session('errors'));
-		$response->assertRedirect(route('users.collections.created', $user));
+		$response->assertRedirect(route('users.collections.created', ['user' => $user, 'order' => 'created_at_desc']));
 
 		$collection = $user->created_collections()->first();
 

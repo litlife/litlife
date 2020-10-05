@@ -45,6 +45,8 @@
 						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectModal">
 							{{ __('Select a collection') }}
 						</button>
+
+						<a href="{{ route('collections.create') }}" class="btn btn-primary">{{ __('Create collection') }}</a>
 					</div>
 				</div>
 
@@ -130,10 +132,9 @@
 
 				let form = body.find('form:first');
 
-				modal.modal('show');
-
 				modal.on('show.bs.modal', function (e) {
 					if ($.trim(list.html()) === '') {
+						console.log('input change');
 						form.formChange('inputChange');
 					}
 				});
@@ -228,6 +229,14 @@
 			});
 
 		</script>
+
+		@if (empty($collection))
+			<script type="text/javascript">
+				$(window).on('load', function () {
+					$('#selectModal').modal('show');
+				});
+			</script>
+		@endif
 
 	@endpush
 

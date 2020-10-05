@@ -81,7 +81,7 @@ class CollectionController extends Controller
 		$collection->save();
 
 		return redirect()
-			->route('users.collections.created', ['user' => $collection->create_user])
+			->route('users.collections.created', ['user' => $collection->create_user, 'order' => 'created_at_desc'])
 			->with(['success' => __('collection.successfully_created')]);
 	}
 

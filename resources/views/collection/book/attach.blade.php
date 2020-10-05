@@ -40,7 +40,7 @@
 
 						<div class="selected_book mb-2">
 							@if (!empty($book))
-								@include('collection.book.book_selected_item', ['book' => $book])
+								@include('collection.book.selected_item', ['book' => $book])
 							@endif
 						</div>
 						<!-- Button trigger modal -->
@@ -132,8 +132,6 @@
 
 				let form = body.find('form:first');
 
-				modal.modal('show');
-
 				form.formChange({
 					timeout: 500,
 					onShow: function () {
@@ -223,6 +221,14 @@
 			});
 
 		</script>
+
+		@if (empty($book))
+			<script type="text/javascript">
+				$(window).on('load', function () {
+					$('#selectBookModal').modal('show');
+				});
+			</script>
+		@endif
 
 	@endpush
 
