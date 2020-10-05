@@ -6,8 +6,7 @@
 
 	@auth
 		<a class="btn btn-primary"
-		   href="{{ route('profile', auth()->user()) }}">{{ __('user.now_you_can_enter_to_your_profile') }}</a>
+		   href="{{ route('profile', auth()->user()) }}">{{ __('Go to my page') }}</a>
 	@endauth
-
 
 @endsection

@@ -6,8 +6,6 @@
 
 @section('content')
 
-	@include('collection.show_navbar')
-
 	@if ($errors->any())
 		<div class="alert alert-danger">
 			<ul>
@@ -28,25 +26,27 @@
 	<div class="card">
 		<div class="card-body">
 
-			<form role="form" method="POST" action="{{ route('collections.books.attach', $collection) }}"
+			<form role="form" method="POST" action="{{ route('books.collections.store', $book) }}"
 				  enctype="multipart/form-data">
 				@csrf
 
 				<div class="row form-group">
 					<label for="book_id" class="col-md-3 col-lg-2 col-form-label">
-						{{ __('collection.book') }}
+						{{ __('Collection') }}
 					</label>
 					<div class="col-md-9 col-lg-10">
 
-						<div class="selected_book mb-2">
-							@if (!empty($book))
-								@include('collection.book_selected_item', ['book' => $book])
+						<div class="selected_collection mb-2">
+							@if (!empty($collection))
+								@include('book.collection.selected', ['collection' => $collection])
 							@endif
 						</div>
-						<!-- Button trigger modal -->
-						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectBookModal">
-							{{ __('collection.select_book') }}
+
+						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#selectModal">
+							{{ __('Select a collection') }}
 						</button>
+
+						<a href="{{ route('collections.create') }}" class="btn btn-primary">{{ __('Create collection') }}</a>
 					</div>
 				</div>
 
@@ -66,36 +66,39 @@
 						{{ __('collection.comment') }}
 					</label>
 					<div class="col-md-9 col-lg-10">
-                        <textarea id="comment" name="comment"
+                        <textarea id="comment" name="comment" rows="5"
 								  class="form-control{{ $errors->has('comment') ? ' is-invalid' : '' }}">{{ old('comment') }}</textarea>
 					</div>
 				</div>
 
 				@push('body_append')
 				<!-- Modal -->
-					<div class="modal fade" id="selectBookModal" tabindex="-1" role="dialog"
+					<div class="modal fade" id="selectModal" tabindex="-1" role="dialog"
 						 aria-labelledby="exampleModalCenterTitle"
 						 aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-dialog" role="document">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title"
-										id="exampleModalCenterTitle">{{ __('collection.book_selection') }}</h5>
+										id="exampleModalCenterTitle">{{ __('Select a collection') }}</h5>
 									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
 								</div>
 								<div class="modal-body">
 
-									<form class="select_book" role="form" action="{{ route('collections.books.list') }}"
+									<form class="select_book" role="form" action="{{ route('books.collections.search', ['book' => $book]) }}"
 										  method="get">
+
+										@csrf
+
 										<div class="form-group">
-											<input name="query" type="text" class="form-control"
-												   placeholder="{{ __('collection.enter_book_title_author_or_book_id') }}">
+											<input name="search" type="text" class="form-control"
+												   placeholder="{{ __('Start entering the name of the collection') }}">
 										</div>
 									</form>
 
-									<div class="result_books">
+									<div class="result">
 
 									</div>
 								</div>
@@ -106,7 +109,7 @@
 
 				<div class="row form-group">
 					<div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2">
-						<button type="submit" class="btn btn-primary">{{ __('collection.attach_book') }}</button>
+						<button type="submit" class="btn btn-primary">{{ __('Add a book to a collection') }}</button>
 					</div>
 				</div>
 
@@ -121,13 +124,20 @@
 
 			$(function () {
 
-				let modal = $('#selectBookModal:first');
+				let modal = $('#selectModal:first');
 
-				let list = modal.find('.result_books:first');
+				let list = modal.find('.result:first');
 
 				let body = modal.find('.modal-body');
 
 				let form = body.find('form:first');
+
+				modal.on('show.bs.modal', function (e) {
+					if ($.trim(list.html()) === '') {
+						console.log('input change');
+						form.formChange('inputChange');
+					}
+				});
 
 				form.formChange({
 					timeout: 500,
@@ -188,7 +198,7 @@
 
 						on_list_ready();
 
-						$('html, body').animate({
+						modal.animate({
 							scrollTop: list.offset().top - 80
 						}, 100);
 
@@ -199,18 +209,19 @@
 
 				function on_list_ready() {
 
-					list.find('.book').each(function () {
+					list.find('.collection').each(function () {
 						let item = $(this);
 						let button = item.find('.select');
-						let id = item.data('book-id');
+						let id = item.data('collection-id');
+						let book_id = item.data('book-id');
 
 						button.click(function () {
 
 							$.ajax({
-								url: '/collections/books/selected/' + id + '/item'
+								url: '/books/' + book_id + '/collections/' + id + '/selected'
 							}).done(function (data) {
 								modal.modal('hide');
-								$('.selected_book').html(data);
+								$('.selected_collection').html(data);
 							});
 						});
 					});
@@ -218,6 +229,14 @@
 			});
 
 		</script>
+
+		@if (empty($collection))
+			<script type="text/javascript">
+				$(window).on('load', function () {
+					$('#selectModal').modal('show');
+				});
+			</script>
+		@endif
 
 	@endpush
 

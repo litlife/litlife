@@ -4,9 +4,9 @@
 	</div>
 @else
 
-	<div class="list-group books mb-3" style="height: 300px; overflow-y: auto">
+	<div class="list-group books mb-3">
 		@foreach ($books as $book)
-			@include('collection.book_list_item')
+			@include('collection.book.list_item')
 		@endforeach
 	</div>
 

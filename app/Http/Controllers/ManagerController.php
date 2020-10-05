@@ -33,6 +33,7 @@ class ManagerController extends Controller
 			'manageable' => function ($query) {
 				$query->any();
 			},
+			'manageable.managers',
 			'status_changed_user'
 		])
 			->whereStatusNot('Private')

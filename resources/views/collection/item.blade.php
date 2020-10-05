@@ -24,7 +24,7 @@
 					 aria-labelledby="collectionDropdownMenuButton_{{ $item->id }}">
 
 					@can('addBook', $item)
-						<a class="dropdown-item text-lowercase"
+						<a class="dropdown-item text-lowercase" target="_blank"
 						   href="{{ route("collections.books.select", $item) }}">
 							{{ __('collection.attach_book') }}
 						</a>
@@ -42,19 +42,12 @@
 						{{ __('collection.who_likes') }}
 					</a>
 
-					<a class="delete pointer dropdown-item text-lowercase" disabled="disabled"
-					   href="{{ route("collections.destroy", $item) }}"
-					   data-loading-text="{{ __('common.deleting') }}..."
+					<a class="pointer dropdown-item text-lowercase"
+					   href="{{ route("collections.delete.confirmation", $item) }}"
 					   @cannot ('delete', $item) style="display:none;"@endcannot>
-						{{ __('common.delete') }}
+						{{ __('Delete') }}
 					</a>
 
-					<a class="restore pointer dropdown-item text-lowercase" disabled="disabled"
-					   href="{{ route("collections.destroy", $item) }}"
-					   data-loading-text="{{ __('common.restoring') }}..."
-					   @cannot ('restore', $item) style="display:none;"@endcannot>
-						{{ __('common.restore') }}
-					</a>
 				</div>
 			</div>
 		</div>

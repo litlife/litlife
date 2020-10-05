@@ -1116,13 +1116,12 @@ class BookPolicy extends Policy
 	 * @param Book $book
 	 * @return boolean
 	 */
-
 	public function pass_age_restriction(?User $auth_user, Book $book)
 	{
 		if (empty($book->age) or ($book->age < 18))
 			return true;
 
-		if (!empty($pass_age = request()->cookie('pass_age'))) {
+		if (!empty($pass_age = request()->cookie('can_pass_age'))) {
 			if ($pass_age >= $book->age)
 				return true;
 		}
@@ -1799,5 +1798,20 @@ class BookPolicy extends Policy
 			else
 				return (boolean)$auth_user->getPermission('edit_other_user_book');
 		}
+	}
+
+	/**
+	 * Может ли пользователь пожаловаться на книгу
+	 *
+	 * @param User $auth_user
+	 * @param Book $book
+	 * @return bool
+	 */
+	public function addToCollection(User $auth_user, Book $book)
+	{
+		if ($book->isPrivate())
+			return false;
+
+		return true;
 	}
 }

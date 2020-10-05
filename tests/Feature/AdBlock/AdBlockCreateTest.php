@@ -4,6 +4,7 @@ namespace Tests\Feature\AdBlock;
 
 use App\AdBlock;
 use App\User;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class AdBlockCreateTest extends TestCase
@@ -31,7 +32,8 @@ class AdBlockCreateTest extends TestCase
 		$this->actingAs($user)
 			->post(route('ad_blocks.store', [
 				'name' => $blockNew->name,
-				'code' => $blockNew->code
+				'code' => $blockNew->code,
+				'description' => $blockNew->description
 			]))->assertSessionHasNoErrors()
 			->assertRedirect(route('ad_blocks.index'))
 			->assertSessionHas('success', __('Ad block created successfully'));
@@ -40,6 +42,9 @@ class AdBlockCreateTest extends TestCase
 
 		$this->assertEquals($blockNew->name, $block->name);
 		$this->assertEquals($blockNew->code, $block->code);
+		$this->assertEquals($blockNew->description, $block->description);
+		$this->assertFalse($block->isEnabled());
+		$this->assertNotNull($block->user_updated_at);
 	}
 
 	public function testStoreUniqueName()
@@ -49,14 +54,49 @@ class AdBlockCreateTest extends TestCase
 		$user->push();
 
 		$block = factory(AdBlock::class)
+			->states('enabled')
 			->create();
+
+		Carbon::setTestNow(now()->addMinute());
 
 		$this->actingAs($user)
 			->post(route('ad_blocks.store', [
 				'name' => $block->name,
-				'code' => $block->code
+				'code' => $block->code,
+				'description' => $block->description
 			]))
-			->assertSessionHasErrors('name')
+			->assertSessionHasNoErrors()
 			->assertRedirect();
+
+		$this->assertEquals(2, AdBlock::where('name', $block->name)->count());
+
+		$block->refresh();
+
+		$this->assertTrue($block->isEnabled());
+
+		$block2 = AdBlock::where('name', $block->name)
+			->latest()
+			->first();
+
+		$this->assertFalse($block2->isEnabled());
+	}
+
+	public function testCodeAsViewError()
+	{
+		$user = factory(User::class)->create();
+		$user->group->manage_ad_blocks = true;
+		$user->push();
+
+		$blockNew = factory(AdBlock::class)
+			->make();
+
+		$this->actingAs($user)
+			->post(route('ad_blocks.store', [
+				'name' => $blockNew->name,
+				'code' => 'test',
+				'description' => $blockNew->description
+			]))
+			->assertRedirect()
+			->assertSessionHasErrors(['code' => __('The code cannot be the same as the path to the view file')]);
 	}
 }

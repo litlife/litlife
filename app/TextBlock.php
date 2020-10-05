@@ -8,6 +8,7 @@ use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use League\HTMLToMarkdown\HtmlConverter;
 
 /**
  * App\TextBlock
@@ -81,5 +82,11 @@ class TextBlock extends Model
 	public function getCreateUserIdColumn()
 	{
 		return 'user_id';
+	}
+
+	public function getMarkdown()
+	{
+		$converter = new HtmlConverter(['strip_tags' => true]);
+		return $converter->convert($this->text);
 	}
 }

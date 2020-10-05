@@ -15,7 +15,11 @@
 				@endforeach
 			</p>
 			<p class="mb-1">
-				<button class="select btn btn-primary">{{ __('common.select') }}</button>
+				@if ($book->collections->first())
+					{{ __('In collection') }}
+				@else
+					<button class="select btn btn-primary">{{ __('common.select') }}</button>
+				@endif
 			</p>
 		</div>
 	</div>

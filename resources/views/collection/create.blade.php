@@ -46,7 +46,7 @@
 						{{ __('collection.description') }}
 					</label>
 					<div class="col-md-9 col-lg-10">
-                        <textarea id="description" name="description"
+                        <textarea id="description" name="description" rows="5"
 								  class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}">{{ old('description') }}</textarea>
 					</div>
 				</div>

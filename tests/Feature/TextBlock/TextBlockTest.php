@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\TextBlock;
 
 use App\Enums\TextBlockShowEnum;
 use App\TextBlock;

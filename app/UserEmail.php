@@ -212,6 +212,7 @@ class UserEmail extends Model
 			}
 
 			$this->confirm = true;
+			$this->isValidRefresh();
 			$this->save();
 
 			if (!empty($this->user)) {

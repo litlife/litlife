@@ -9,13 +9,17 @@ use App\BookKeyword;
 use App\BookSimilarVote;
 use App\BookStatus;
 use App\BookVote;
+use App\CollectedBook;
+use App\Collection;
 use App\Comment;
 use App\Enums\AuthorEnum;
 use App\Events\BookViewed;
 use App\Genre;
 use App\Http\Requests\StoreBook;
+use App\Http\Requests\StoreBookCollected;
 use App\Http\Requests\StoreDate;
 use App\Http\Resources\BookCollection;
+use App\Http\SearchResource\CollectionSearchResource;
 use App\Jobs\Author\UpdateAuthorBooksCount;
 use App\Jobs\Book\BookAddKeywordsJob;
 use App\Jobs\Book\BookDeleteKeywordsThatAreNotInTheListJob;
@@ -54,7 +58,6 @@ use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
 use Litlife\Unitpay\Facades\UnitPay;
 use Litlife\Url\Url;
-
 
 class BookController extends Controller
 {
@@ -531,6 +534,10 @@ class BookController extends Controller
 				}
 			}
 		}
+
+		$collectionsCount = $book->collections()
+			->acceptedOrBelongsToAuthUser()
+			->count();
 
 		if (!empty($book->ti_lb))
 			OpenGraph::addProperty('locale', strtolower($book->ti_lb) . '_' . strtoupper($book->ti_lb));
@@ -2503,5 +2510,152 @@ class BookController extends Controller
 				->renderSections()['cover'];
 		else
 			return view('book.cover.show', ['book' => $book]);
+	}
+
+	/**
+	 * Список подборок к которым принадлежит книга
+	 *
+	 * @param Book $book
+	 * @return Response
+	 * @throws
+	 */
+	public function collections(Request $request, Book $book)
+	{
+		$builder = $book->collections()
+			->acceptedOrBelongsToAuthUser();
+
+		$resource = (new CollectionSearchResource(request(), $builder));
+		$vars = $resource->getVars();
+
+		$vars['collections'] = $resource->getQuery()
+			->with('latest_books.writers')
+			->simplePaginate();
+
+		if (auth()->check()) {
+			$vars['collections']->load(['collectionUser' => function ($query) {
+				$query->where('user_id', auth()->id());
+			}]);
+		}
+
+		$vars['collections']->load('authUserLike');
+
+		if (request()->ajax())
+			return view('collection.list', $vars);
+
+		return view('book.collections', $vars);
+	}
+
+	/**
+	 * Страница для выбора подборки в которую нужно добавить книгу
+	 *
+	 * @param Book $book
+	 * @return Response
+	 * @throws
+	 */
+	public function collectionCreate(Request $request, Book $book)
+	{
+		$this->authorize('addToCollection', $book);
+
+		if (old('collection_id'))
+			$collection = Collection::findOrFail(old('collection_id'));
+
+		return view('book.collection.create', [
+			'book' => $book,
+			'collection' => $collection ?? null
+		]);
+	}
+
+	/**
+	 * Список подборок к которым принадлежит книга
+	 *
+	 * @param Book $book
+	 * @return Response
+	 * @throws
+	 */
+	public function collectionSearch(Request $request, Book $book)
+	{
+		$query = Collection::query()
+			->whereUserCanAddBooks(auth()->user())
+			->with('create_user');
+
+		if (!empty($request->search)) {
+			$query->fulltextSearch($request->search);
+		} else {
+			$latestCollectionsIds = CollectedBook::selectRaw('collection_id, MAX("created_at") AS latest_created_at')
+				->whereCreator(auth()->user())
+				->groupBy('collection_id')
+				->orderBy('latest_created_at', 'desc')
+				->limit(10)
+				->get()
+				->pluck('collection_id')
+				->toArray();
+
+			if (count($latestCollectionsIds) > 0) {
+				$query->whereIn('id', $latestCollectionsIds)
+					->orderByField('id', $latestCollectionsIds);
+			}
+		}
+
+		$query->with(['books' => function ($query) use ($book) {
+			$query->where('books.id', $book->id);
+		}]);
+
+		$collections = $query->simplePaginate();
+
+		return view('book.collection.list', [
+			'book' => $book,
+			'collections' => $collections
+		]);
+	}
+
+	/**
+	 * Отображение выбранной подборки
+	 *
+	 * @param Book $book
+	 * @param Collection $collection
+	 * @return Response
+	 * @throws
+	 */
+	public function collectionSelected(Book $book, Collection $collection)
+	{
+		$this->authorize('addToCollection', $book);
+		$this->authorize('addBook', $collection);
+
+		return view('book.collection.selected', ['collection' => $collection]);
+	}
+
+	/**
+	 * Список подборок к которым принадлежит книга
+	 *
+	 * @param StoreBookCollected $request
+	 * @param Book $book
+	 * @return Response
+	 * @throws
+	 */
+	public function collectionStore(StoreBookCollected $request, Book $book)
+	{
+		$this->authorize('addToCollection', $book);
+
+		$collection = Collection::findOrFail($request->collection_id);
+
+		$this->authorize('addBook', $collection);
+
+		CollectedBook::updateOrCreate(
+			[
+				'collection_id' => $collection->id,
+				'book_id' => $book->id
+			],
+			[
+				'number' => $request->number,
+				'comment' => $request->comment
+			]
+		);
+
+		$collection->latest_updates_at = now();
+		$collection->save();
+
+		return redirect()
+			->route('books.show', $book)
+			->with('success', __('The book was successfully added to the collection'));
 	}
 }

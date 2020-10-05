@@ -81,16 +81,15 @@ class OtherController extends Controller
 			->cookie('show_sidebar', false, 180000);
 	}
 
-	public function userPassAgeRestriction()
+	public function userPassAgeRestriction(Request $request)
 	{
-		$age = intval(request()->age);
+		$age = intval($request->age);
 
-		if ($age > 21) $age = 21;
+		if ($age > 21)
+			$age = 21;
 
-		$minutes = now()->addMonth()->addHour()->diffInMinutes(now());
-
-		return response(['pass_age' => $age])
-			->cookie('pass_age', $age, $minutes);
+		return response(['can_pass_age' => $age])
+			->cookie('can_pass_age', $age, 180000);
 	}
 
 	public function away(Request $request)
@@ -348,5 +347,18 @@ class OtherController extends Controller
 		$forum = Forum::find($id);
 
 		return view('faq', ['forum' => $forum ?? null]);
+	}
+
+	public function welcomeNotification()
+	{
+		$user = factory(User::class)
+			->states('with_confirmed_email')
+			->create();
+
+		$message = (new UserHasRegisteredNotification($user))->toMail($user);
+
+		$markdown = new Markdown(view(), config('mail.markdown'));
+
+		return $markdown->render('vendor.notifications.email', $message->toArray());
 	}
 }

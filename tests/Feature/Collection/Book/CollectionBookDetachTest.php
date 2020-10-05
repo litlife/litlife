@@ -30,7 +30,8 @@ class CollectionBookDetachTest extends TestCase
 
 		$this->actingAs($user)
 			->get(route('collections.books.detach', ['collection' => $collection, 'book' => $book]))
-			->assertRedirect(route('collections.books', $collection));
+			->assertRedirect(route('collections.books', $collection))
+			->with('success', __('The book was successfully removed from the collection'));
 
 		$collection->refresh();
 

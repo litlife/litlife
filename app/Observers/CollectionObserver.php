@@ -40,6 +40,16 @@ class CollectionObserver
 	public function deleted(Collection $collection)
 	{
 		$this->updateUserCreatedCollectionsCount($collection->create_user);
+
+		$collection->comments()
+			->delete();
+	}
+
+	public function restoring(Collection $collection)
+	{
+		$collection->comments()
+			->where('deleted_at', '>=', $collection->deleted_at)
+			->restore();
 	}
 
 	public function restored(Collection $collection)
