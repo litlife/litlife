@@ -563,6 +563,11 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('ad_blocks/{ad_block}/delete', 'AdBlockController@destroy')->name('ad_blocks.delete');
 	Route::get('ad_blocks/{ad_block}/enable', 'AdBlockController@enable')->name('ad_blocks.enable');
 	Route::get('ad_blocks/{ad_block}/disable', 'AdBlockController@disable')->name('ad_blocks.disable');
+
+	Route::get('/preview/notification/user_registered', 'OtherController@previewUserRegisteredNotification')->name('preview.notification.user_registered');
+	Route::get('/preview/notification/invoice_was_successfully_paid', 'OtherController@previewInvoiceWasSuccessfullyPaidNotification')->name('preview.notification.invoice_was_successfully_paid');
+	Route::get('/preview/invitation_take_survey', 'OtherController@previewInvitationToTakeSurvey')->name('preview.invitation_take_survey');
+	Route::get('/preview/welcome_notification', 'OtherController@welcomeNotification')->name('preview.welcome_notification');
 });
 
 Route::get('/books/{book}/pages', 'SectionController@page')->name('books.pages');
@@ -657,15 +662,11 @@ Route::get('/phpinfo', 'OtherController@phpinfo');
 Route::get('/unitpay/handler', 'UnitPayController@handler')->name('unitpay.handler');
 
 Route::get('/preview/notification', 'OtherController@previewNotification')->name('preview.notification');
-Route::get('/preview/notification/user_registered', 'OtherController@previewUserRegisteredNotification')->name('preview.notification.user_registered');
-Route::get('/preview/notification/invoice_was_successfully_paid', 'OtherController@previewInvoiceWasSuccessfullyPaidNotification')->name('preview.notification.invoice_was_successfully_paid');
 Route::get('/preview/book_styles', 'OtherController@previewBookStyles')->name('preview.book_styles');
 Route::get('/preview/book_styles_for_epub', 'OtherController@previewBookStylesForEpubBooks')->name('preview.book_styles_for_epub');
 Route::get('/preview/comment', 'OtherController@previewComment')->name('preview.comment');
 Route::get('/preview/sceditor', 'OtherController@previewSceditor')->name('preview.sceditor');
 Route::get('/preview/error/500', 'OtherController@previewError500')->name('preview.error.500');
-Route::get('/preview/invitation_take_survey', 'OtherController@previewInvitationToTakeSurvey')->name('preview.invitation_take_survey');
-Route::get('/preview/welcome_notification', 'OtherController@welcomeNotification')->name('preview.welcome_notification');
 
 Route::get('/examples/tables/v1', 'OtherController@exampleTable1');
 Route::get('/examples/tables/v2', 'OtherController@exampleTable2');

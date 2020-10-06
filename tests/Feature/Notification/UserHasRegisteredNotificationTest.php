@@ -52,7 +52,12 @@ class UserHasRegisteredNotificationTest extends TestCase
 
 	public function testPreviewRoute()
 	{
-		$this->get(route('preview.welcome_notification'))
+		$user = factory(User::class)
+			->states('with_confirmed_email')
+			->create();
+
+		$this->actingAs($user)
+			->get(route('preview.welcome_notification'))
 			->assertOk();
 	}
 }
