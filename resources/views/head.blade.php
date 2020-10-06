@@ -12,7 +12,7 @@
 
 <title>{{ \DaveJamesMiller\Breadcrumbs\Facades\Breadcrumbs::pageTitle() }}</title>
 
-<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
+@include('layouts.favicons')
 
 <link href="{{ mix('css/app.css', config('litlife.assets_path')) }}" rel="stylesheet">
 

@@ -12,7 +12,6 @@ use App\Notifications\SendingInvitationToTakeSurveyNotification;
 use App\Notifications\TestNotification;
 use App\Notifications\UserHasRegisteredNotification;
 use App\UrlShort;
-use App\User;
 use App\UserPaymentTransaction;
 use App\Variable;
 use Artesaos\SEOTools\Facades\SEOMeta;
@@ -155,7 +154,7 @@ class OtherController extends Controller
 		$environment = App::environment();
 
 		if (App::environment(['local'])) {
-			$user = factory(User::class)->create();
+			$user = auth()->user();
 
 			$message = (new UserHasRegisteredNotification($user, Str::random(10)))->toMail('test@email.com');
 
@@ -324,9 +323,7 @@ class OtherController extends Controller
 
 		if (App::environment(['local'])) {
 
-			$user = factory(User::class)
-				->states('with_confirmed_email')
-				->create();
+			$user = auth()->user();
 
 			$message = (new SendingInvitationToTakeSurveyNotification($user))->toMail($user);
 
@@ -351,9 +348,7 @@ class OtherController extends Controller
 
 	public function welcomeNotification()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = auth()->user();
 
 		$message = (new UserHasRegisteredNotification($user))->toMail($user);
 
