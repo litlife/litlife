@@ -11,7 +11,7 @@
 			</div>
 			<p class="mb-1">
 				@foreach ($book->writers as $author)
-					<x-author-name :author="$author"/>{{ $loop->last ? '' : ', ' }}
+					<x-author-name :author="$author" showOnline="0"/>{{ $loop->last ? '' : ', ' }}
 				@endforeach
 			</p>
 			<p class="mb-1">

@@ -36,7 +36,7 @@ class SearchController extends Controller
 			}
 		}
 
-		$booksQuery = Book::titleAuthorsFulltextSearch($query)
+		$booksQuery = Book::titleFulltextSearch($query)
 			->acceptedOrBelongsToAuthUser()
 			->orderByRatingDesc()
 			->with(["authors", "genres", "sequences", "language",

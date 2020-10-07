@@ -1313,6 +1313,16 @@ class Book extends Model
 		$s = replaceSimilarSymbols($s);
 
 		$this->attributes['title_search_helper'] = mb_strtolower($s);
+
+		$s = trim($this->attributes['title']);
+
+		foreach ($this->getAuthorsWithType('writers') as $author) {
+			$s .= ' ' . $author->fullName;
+		}
+
+		$s = replaceSimilarSymbols($s);
+
+		$this->attributes['title_author_search_helper'] = mb_strtolower($s);
 	}
 
 	public function scopeWherePublishYearRange($query, $from = null, $till = null)
@@ -1819,7 +1829,7 @@ class Book extends Model
 		return $query->where('pi_isbn', 'ILIKE', '%' . preg_quote($value) . '%');
 	}
 
-	public function scopeTitleAuthorsFulltextSearch($query, $searchText)
+	public function scopeTitleFulltextSearch($query, $searchText)
 	{
 		$searchText = trim($searchText);
 
@@ -1832,6 +1842,28 @@ class Book extends Model
 
 			if ($array) {
 				$s = "to_tsvector('english', \"title_search_helper\") ";
+				$s .= " @@ to_tsquery(quote_literal(quote_literal(?)) || ':*')";
+
+				return $query->whereRaw($s, implode('+', $array));
+			}
+		}
+
+		return $query;
+	}
+
+	public function scopeTitleAuthorFulltextSearch($query, $searchText)
+	{
+		$searchText = trim($searchText);
+
+		if (preg_match('/^\"([[:print:]]+)\"$/iu', $searchText, $matches)) {
+			$query->where('title', 'ILIKE', $matches[1]);
+		} else {
+			$searchText = replaceSimilarSymbols($searchText);
+
+			$array = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
+
+			if ($array) {
+				$s = "to_tsvector('english', \"title_author_search_helper\") ";
 				$s .= " @@ to_tsquery(quote_literal(quote_literal(?)) || ':*')";
 
 				return $query->whereRaw($s, implode('+', $array));

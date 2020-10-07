@@ -438,12 +438,11 @@ class CollectionController extends Controller
 		$str = trim($request->input('query'));
 
 		if (is_numeric($str)) {
-			$query = Book::where('id', $str)
-				->simplePaginate(10);
+			$query = Book::where('id', $str);
 		} else {
 
 			$query = Book::where(function ($query) use ($str) {
-				return $query->titleAuthorsFulltextSearch($str)
+				return $query->titleAuthorFulltextSearch($str)
 					->when((mb_strlen($str) > 10), function ($query) use ($str) {
 						return $query->orWhere('pi_isbn', 'ilike', '%' . $str . '%');
 					});
@@ -453,7 +452,7 @@ class CollectionController extends Controller
 
 		$books = $query->acceptedOrBelongsToAuthUser()
 			->with([
-				'authors.managers',
+				'authors.managers.user',
 				'sequences',
 				'cover',
 				'collections' => function ($query) use ($collection) {

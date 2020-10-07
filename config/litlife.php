@@ -12,7 +12,7 @@ return [
 		'odt' => 'application/vnd.oasis.opendocument.text',
 		'rtf' => 'application/rtf',
 		'txt' => 'text/plain',
-		'doc' => ['application/msword', 'text/rtf'],
+		'doc' => ['application/msword', 'text/rtf', 'application/CDFV2'],
 		'mp3' => 'audio/mpeg',
 		'ogg' => 'audio/ogg',
 		'pdf' => 'application/pdf',
