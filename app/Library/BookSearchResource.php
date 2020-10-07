@@ -104,7 +104,7 @@ class BookSearchResource extends SearchResource
 			if (mb_strlen($this->input['search']) <= 2)
 				$this->query->where('title', 'ILIKE', $this->input['search'] . '%');
 			else
-				$this->query->titleAuthorsFulltextSearch($this->input['search']);
+				$this->query->titleFulltextSearch($this->input['search']);
 		}
 
 		$this->genres();

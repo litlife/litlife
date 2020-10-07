@@ -2109,7 +2109,7 @@ class BookController extends Controller
 				->simplePaginate();
 		} else {
 
-			$books = Book::titleAuthorsFulltextSearch($str)
+			$books = Book::titleFulltextSearch($str)
 				->acceptedOrBelongsToAuthUser()
 				//->orderByRatingDesc()
 				->simplePaginate();

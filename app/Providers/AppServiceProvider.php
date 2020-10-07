@@ -145,9 +145,12 @@ class AppServiceProvider extends ServiceProvider
 
 		Validator::extend('book_file_extension', function ($attribute, $value, $parameters, $validator) {
 
-			$mimes = collect(config('litlife.allowed_mime_types'))->flatten()->toArray();
+			$mimes = collect(config('litlife.allowed_mime_types'))->flatten()
+				->map(function ($value) {
+					return mb_strtolower($value);
+				})->toArray();
 
-			if (in_array($value->getMimeType(), $mimes))
+			if (in_array(mb_strtolower($value->getMimeType()), $mimes))
 				return true;
 			else
 				return false;

@@ -38,7 +38,9 @@ class RefreshBookTitleSearchHelper extends Command
 	 */
 	public function handle()
 	{
-		Book::any()->chunkById($this->argument('limit'), function ($items) {
+		Book::any()
+			->with('authors')
+			->chunkById($this->argument('limit'), function ($items) {
 			foreach ($items as $item) {
 				$this->item($item);
 			}

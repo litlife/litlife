@@ -41,8 +41,8 @@ class BookTest extends TestCase
 			->states('with_create_user')
 			->create(['title' => 'ё' . $title]);
 
-		$this->assertEquals(1, Book::query()->titleAuthorsFulltextSearch('ё' . $title)->count());
-		$this->assertEquals(1, Book::query()->titleAuthorsFulltextSearch('е' . $title)->count());
+		$this->assertEquals(1, Book::query()->titleFulltextSearch('ё' . $title)->count());
+		$this->assertEquals(1, Book::query()->titleFulltextSearch('е' . $title)->count());
 	}
 
 	public function testPrivateBookPolicy()
