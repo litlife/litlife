@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Book\File;
 
+use App\Author;
 use App\Book;
 use App\User;
 use Tests\TestCase;
@@ -123,6 +124,22 @@ class BookFileCreatePolicyTest extends TestCase
 		$user->group->book_file_add = true;
 		$user->push();
 		$user->refresh();
+
+		$this->assertTrue($user->can('addFiles', $book));
+	}
+
+	public function testCanIfUserVerifiedAuthorOfBookAndBookHasNoDownloadAccess()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager', 'with_book')
+			->create();
+
+		$user = $author->managers()->first()->user;
+
+		$book = $author->books()->first();
+		$book->downloadAccessDisable();
+		$book->readAccessDisable();
+		$book->save();
 
 		$this->assertTrue($user->can('addFiles', $book));
 	}

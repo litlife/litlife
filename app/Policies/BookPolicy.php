@@ -65,8 +65,7 @@ class BookPolicy extends Policy
 
 			if ($book->isUserCreator($auth_user)) {
 				return (boolean)$auth_user->getPermission('edit_self_book');
-			}
-			else {
+			} else {
 				return (boolean)$auth_user->getPermission('edit_other_user_book');
 			}
 		}
@@ -403,19 +402,19 @@ class BookPolicy extends Policy
 		if ($book->isForSale())
 			return false;
 
-		if (!$auth_user->getPermission('access_to_closed_books') and !$book->isDownloadAccess())
-			return false;
-
 		if ($book->isPrivate()) {
 			// если книга из личного облака и если книга добавлена пользователем, то разрешаем
 			if ($book->isUserCreator($auth_user))
 				return true;
 		} else {
 
-			if ($auth_user->getPermission('BookFileAdd'))
+			if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author')
 				return true;
 
-			if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author')
+			if (!$auth_user->getPermission('access_to_closed_books') and !$book->isDownloadAccess())
+				return false;
+
+			if ($auth_user->getPermission('BookFileAdd'))
 				return true;
 		}
 
