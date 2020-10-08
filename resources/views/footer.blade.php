@@ -137,36 +137,17 @@
 					(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
 					ym(34745015, "init", {
-						id: 34745015,
 						clickmap: true,
 						trackLinks: true,
-						accurateTrackBounce: true
+						accurateTrackBounce: true,
+						webvisor: true
 					});
 				</script>
 				<noscript>
-					<div><img class="lazyload" src="https://mc.yandex.ru/watch/34745015"
-							  style="position:absolute; left:-9999px;" alt=""/></div>
+					<div><img class="lazyload" src="https://mc.yandex.ru/watch/34745015" style="position:absolute; left:-9999px;" alt=""/></div>
 				</noscript>
 				<!-- /Yandex.Metrika counter -->
 
-				<!-- не пользуюсь статистикой гугла, поэтому и убрал
-					<script>
-						(function (i, s, o, g, r, a, m) {
-							i['GoogleAnalyticsObject'] = r;
-							i[r] = i[r] || function () {
-								(i[r].q = i[r].q || []).push(arguments)
-							}, i[r].l = 1 * new Date();
-							a = s.createElement(o),
-								m = s.getElementsByTagName(o)[0];
-							a.async = 1;
-							a.src = g;
-							m.parentNode.insertBefore(a, m)
-						})(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-						ga('create', 'UA-78712453-1', 'auto');
-						ga('send', 'pageview');
-					</script>
-					-->
 				@endenv
 			</div>
 
