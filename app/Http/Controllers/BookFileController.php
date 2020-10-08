@@ -12,7 +12,9 @@ use App\Rules\ZipRule;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Litlife\Url\Url;
 
@@ -86,8 +88,19 @@ class BookFileController extends Controller
 
 		if ($request->file('file')->getMimeType() == 'application/zip')
 			$this->validate($request, ['file' => ['bail', new ZipRule(), new ZipContainsBookFileRule()]], [], __('book_file'));
-		else
+		else {
+			$validator = Validator::make($request->all(), ['file' => 'book_file_extension']);
+
+			if ($validator->fails()) {
+				Log::warning(
+					'UserId: ' . auth()->id()
+					. ' MimeType:' . $request->file('file')->getMimeType()
+					. ' Filename:' . $request->file('file')->getClientOriginalName()
+				);
+			}
+
 			$this->validate($request, ['file' => 'book_file_extension',], [], __('book_file'));
+		}
 
 		$file = new BookFile;
 		$file->zip = true;
