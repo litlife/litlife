@@ -27,7 +27,7 @@ trait UserCreate
 		$this->create_user()->associate(auth()->user());
 	}
 
-	public function isUserCreator(User $user)
+	public function isUserCreator(User $user): bool
 	{
 		if ($user->id == $this->{$this->getCreateUserIdColumn()})
 			return true;

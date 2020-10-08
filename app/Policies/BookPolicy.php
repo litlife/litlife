@@ -402,23 +402,16 @@ class BookPolicy extends Policy
 		if ($book->isForSale())
 			return false;
 
-		if ($book->isPrivate()) {
-			// если книга из личного облака и если книга добавлена пользователем, то разрешаем
-			if ($book->isUserCreator($auth_user))
-				return true;
-		} else {
+		if ($book->isPrivate())
+			return $book->isUserCreator($auth_user);
 
-			if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author')
-				return true;
+		if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author')
+			return true;
 
-			if (!$auth_user->getPermission('access_to_closed_books') and !$book->isDownloadAccess())
-				return false;
+		if (!$auth_user->getPermission('access_to_closed_books') and !$book->isDownloadAccess())
+			return false;
 
-			if ($auth_user->getPermission('BookFileAdd'))
-				return true;
-		}
-
-		return false;
+		return $auth_user->getPermission('BookFileAdd');
 	}
 
 	/**
@@ -443,12 +436,8 @@ class BookPolicy extends Policy
 			}
 		}
 
-		// книга в личном облаке
-		if ($book->isPrivate()) {
-			// разрешаем только если пользователь создатель
-			if ($book->isUserCreator($auth_user))
-				return true;
-		}
+		if ($book->isPrivate())
+			return $book->isUserCreator($auth_user);
 
 		if ($book->isReadAccess()) {
 			if ($book->bought_times_count > 0)

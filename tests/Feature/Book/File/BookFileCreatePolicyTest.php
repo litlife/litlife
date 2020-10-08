@@ -9,48 +9,70 @@ use Tests\TestCase;
 
 class BookFileCreatePolicyTest extends TestCase
 {
-	public function testIfBookDownloadAccessDisablePermissions()
+	public function testCanIfBookPrivateAndUserCreator()
 	{
-		$user = factory(User::class)->create();
-		$user->group->book_file_add = true;
-		$user->save();
-
-		$book = factory(Book::class)->create();
-		$book->statusAccepted();
+		$book = factory(Book::class)
+			->states('private', 'with_create_user')
+			->create();
 		$book->downloadAccessEnable();
 		$book->save();
 
-		$this->assertTrue($user->can('addFiles', $book));
+		$user = $book->create_user;
+		$user->group->book_file_add = false;
+		$user->save();
 
-		$book->downloadAccessDisable();
+		$this->assertTrue($user->can('addFiles', $book));
+	}
+
+	public function testCantIfDoesntHavePermissions()
+	{
+		$user = factory(User::class)->create();
+		$user->group->book_file_add = false;
+		$user->save();
+
+		$book = factory(Book::class)->states('accepted')->create();
+		$book->downloadAccessEnable();
 		$book->save();
-		$book->refresh();
 
 		$this->assertFalse($user->can('addFiles', $book));
 	}
 
-	public function testIfBookDownloadAccessDisableAndAccessToClosedBooksEnablePermissions()
+	public function testCanIfHasPermissionBookDownloadAccessEnable()
 	{
 		$user = factory(User::class)->create();
-		$user->group->access_to_closed_books = true;
+		$user->group->book_file_add = true;
 		$user->save();
 
-		$book = factory(Book::class)->create();
-		$book->statusAccepted();
+		$book = factory(Book::class)->states('accepted')->create();
 		$book->downloadAccessEnable();
 		$book->save();
 
-		$this->assertFalse($user->can('addFiles', $book));
-
-		$user->group->book_file_add = true;
-		$user->push();
-		$user->refresh();
-
 		$this->assertTrue($user->can('addFiles', $book));
+	}
 
+	public function testCantIfHasPermissionAndBookDownloadAccessDisable()
+	{
+		$user = factory(User::class)->create();
+		$user->group->book_file_add = true;
+		$user->save();
+
+		$book = factory(Book::class)->states('accepted')->create();
 		$book->downloadAccessDisable();
 		$book->save();
-		$book->refresh();
+
+		$this->assertFalse($user->can('addFiles', $book));
+	}
+
+	public function testCanIfHasPermissionAndHaveAccessToClosedBookAndDownloadAccessDisabled()
+	{
+		$user = factory(User::class)->create();
+		$user->group->book_file_add = true;
+		$user->group->access_to_closed_books = true;
+		$user->save();
+
+		$book = factory(Book::class)->states('accepted')->create();
+		$book->downloadAccessDisable();
+		$book->save();
 
 		$this->assertTrue($user->can('addFiles', $book));
 	}
@@ -100,7 +122,7 @@ class BookFileCreatePolicyTest extends TestCase
 		$this->assertTrue($user->can('addFiles', $book));
 	}
 
-	public function testCantAttachBookFileIfBookIsOnSale()
+	public function testCantIfBookIsOnSale()
 	{
 		$user = factory(User::class)
 			->states('admin')
@@ -111,21 +133,6 @@ class BookFileCreatePolicyTest extends TestCase
 			->create(['price' => 100]);
 
 		$this->assertFalse($user->can('addFiles', $book));
-	}
-
-	public function testAddFilePolicy()
-	{
-		$book = factory(Book::class)->states('with_writer', 'with_read_and_download_access')->create();
-
-		$user = factory(User::class)->create();
-
-		$this->assertFalse($user->can('addFiles', $book));
-
-		$user->group->book_file_add = true;
-		$user->push();
-		$user->refresh();
-
-		$this->assertTrue($user->can('addFiles', $book));
 	}
 
 	public function testCanIfUserVerifiedAuthorOfBookAndBookHasNoDownloadAccess()
