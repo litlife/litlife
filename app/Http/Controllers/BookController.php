@@ -53,6 +53,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\View\View;
@@ -107,10 +108,22 @@ class BookController extends Controller
 		], [], __('book'));
 
 		if ($request->file('file')) {
+
 			if ($request->file('file')->getMimeType() == 'application/zip')
 				$this->validate($request, ['file' => ['bail', new ZipRule, new ZipContainsBookFileRule]], [], __('book'));
-			else
+			else {
+				$validator = Validator::make($request->all(), ['file' => 'book_file_extension']);
+
+				if ($validator->fails()) {
+					Log::warning(
+						'UserId: ' . auth()->id()
+						. ' MimeType:' . $request->file('file')->getMimeType()
+						. ' Filename:' . $request->file('file')->getClientOriginalName()
+					);
+				}
+
 				$this->validate($request, ['file' => 'book_file_extension'], [], __('book'));
+			}
 
 			$filename = trim(Url::fromString($request->file->getClientOriginalName())->getFilename());
 			$filename = empty($filename) ? 'Title' : $filename;
