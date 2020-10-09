@@ -26,7 +26,7 @@ class StoreCollectedBook extends FormRequest
 		return [
 			'book_id' => 'required|integer',
 			'number' => 'nullable|integer',
-			'comment' => 'nullable|string|max:255'
+			'comment' => 'nullable|string|max:1000'
 		];
 	}
 
