@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink">
+ <description>
+  <title-info>
+   <genre>prose_classic</genre>
+   <author>
+    <first-name>FirstName</first-name>
+    <middle-name>MiddleName</middle-name>
+    <last-name>LastName</last-name>
+    <nickname>NickName</nickname>
+    <home-page>https://example.com</home-page>
+    <email>test@example.com</email>
+   </author>
+   <book-title>Title</book-title>
+   <annotation>
+    <p></p>
+   </annotation>
+   <keywords>keyword1, keyword2</keywords>
+   <date></date>
+   <lang>ru</lang>
+   <src-lang>en</src-lang>
+   <sequence name="Title" number="1"/>
+  </title-info>
+  <document-info>
+   <author>
+    <first-name>Your</first-name>
+    <last-name>Name</last-name>
+   </author>
+   <program-used>editor, FictionBook Editor Release 2.6.6</program-used>
+   <date value="2000-01-01">01 January 2000</date>
+   <id>B03A1B16-FE48-4D29-A8B1-51E628AE04ED</id>
+   <version>1.0</version>
+  </document-info>
+  <publish-info>
+   <publisher>Publisher</publisher>
+   <city>City</city>
+   <year>2000</year>
+   <isbn>1-11-111111</isbn>
+  </publish-info>
+ </description>
+ <body>
+  <section>
+   <title>
+    <p>Первая глава</p><p>Название первой главы</p>
+   </title>
+  <section>
+   <title>
+    <p>Первая подглава</p><p>Название первой подглавы</p>
+   </title>
+   <p>текст</p>
+  </section>
+  </section>
+ </body>
+</FictionBook>

@@ -610,4 +610,66 @@ EOF;
 
 		$this->assertEquals('Title', $book->sequences->first()->name);
 	}
+
+	public function testTwoParagrphsInTitlte()
+	{
+		$book = factory(Book::class)->create([
+			'create_user_id' => 50000,
+			'is_si' => false,
+			'is_lp' => false,
+			'age' => 0
+		]);
+
+		$addFb2File = new AddFb2File();
+		$addFb2File->setBook($book);
+		$addFb2File->setFile(__DIR__ . '/Books/test_two_paragraphs_in_title.fb2');
+		$addFb2File->init();
+
+		$book->refresh();
+
+		$chapters = $book->sections()->chapter()
+			->defaultOrder()
+			->get();
+
+		$chapter = $chapters->first();
+
+		$this->assertEquals('Первая глава Название первой главы', $chapter->title);
+
+		$subChapter = $chapter->children->first();
+
+		$this->assertNotNull($subChapter);
+
+		$this->assertEquals('Первая подглава Название первой подглавы', $subChapter->title);
+	}
+
+	public function testTitleWithoutPagraraph()
+	{
+		$book = factory(Book::class)->create([
+			'create_user_id' => 50000,
+			'is_si' => false,
+			'is_lp' => false,
+			'age' => 0
+		]);
+
+		$addFb2File = new AddFb2File();
+		$addFb2File->setBook($book);
+		$addFb2File->setFile(__DIR__ . '/Books/test_title_without_paragraphs.fb2');
+		$addFb2File->init();
+
+		$book->refresh();
+
+		$chapters = $book->sections()->chapter()
+			->defaultOrder()
+			->get();
+
+		$chapter = $chapters->first();
+
+		$this->assertEquals('Первая глава Название первой главы', $chapter->title);
+
+		$subChapter = $chapter->children->first();
+
+		$this->assertNotNull($subChapter);
+
+		$this->assertEquals('Первая подглава Название первой подглавы', $subChapter->title);
+	}
 }

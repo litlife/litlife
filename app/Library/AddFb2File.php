@@ -640,14 +640,23 @@ class AddFb2File
 
 	public function getSectionTitle(Tag $section)
 	{
-		$nodeList = $this->fb2->xpath->query("./*[local-name()='title']", $section->getNode());
+		$titleNodesList = $this->fb2->xpath->query("./*[local-name()='title']", $section->getNode());
 
 		$title = '';
 
-		if ($nodeList->length) {
+		if ($titleNodesList->length) {
 
-			foreach ($nodeList as $node) {
-				$title .= $node->nodeValue . ' ';
+			foreach ($titleNodesList as $titleNode) {
+
+				$paragraphNodesList = $this->fb2->xpath->query("./*[local-name()='p']", $titleNode);
+
+				if ($paragraphNodesList->length > 0) {
+					foreach ($paragraphNodesList as $paragraphNode) {
+						$title .= $paragraphNode->nodeValue . ' ';
+					}
+				} else {
+					$title .= $titleNode->nodeValue . ' ';
+				}
 			}
 		}
 
