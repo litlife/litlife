@@ -696,6 +696,7 @@ class BookSaleTest extends TestCase
 		$new_author = factory(Author::class)->create();
 
 		$array = [
+			'is_si' => true,
 			'title' => $book->title,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => [$new_author->id],
@@ -733,6 +734,7 @@ class BookSaleTest extends TestCase
 
 		$array = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => [$new_author->id],
 			'ti_lb' => 'RU',
@@ -1471,6 +1473,7 @@ class BookSaleTest extends TestCase
 		$book->save();
 
 		$post = [
+			'is_si' => true,
 			'title' => $book->title,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
@@ -1520,6 +1523,7 @@ class BookSaleTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',

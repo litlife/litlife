@@ -65,6 +65,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => [$book->writers()->first()->id, $author->id],
 			'ti_lb' => 'RU',
@@ -112,6 +113,7 @@ class BookEditTest extends TestCase
 		$array = $book->toArray();
 		$array = [
 			'title' => 'V.',
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU', 'ti_olb' => 'RU', 'ready_status' => 'complete'
@@ -252,6 +254,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_lp' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => [$writer->id],
 			'ti_lb' => 'RU',
@@ -341,6 +344,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => [$writer->id],
 			'ti_lb' => 'RU',
@@ -380,6 +384,7 @@ class BookEditTest extends TestCase
 
 		$array = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',
@@ -450,6 +455,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',
@@ -482,6 +488,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',
@@ -521,6 +528,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => [$writer->id],
 			'ti_lb' => 'RU',
@@ -557,6 +565,7 @@ class BookEditTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => [$writer->id],
 			'ti_lb' => 'RU',
@@ -656,6 +665,7 @@ class BookEditTest extends TestCase
 
 		$input = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',
@@ -697,6 +707,7 @@ class BookEditTest extends TestCase
 			->patch(route('books.update', $book),
 				[
 					'title' => $book->title,
+					'is_si' => true,
 					'genres' => [$genre->id],
 					'writers' => $book->writers()->any()->pluck('id')->toArray(),
 					'ti_lb' => 'RU',
@@ -724,6 +735,7 @@ class BookEditTest extends TestCase
 
 		$array = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',
@@ -764,6 +776,7 @@ class BookEditTest extends TestCase
 
 		$array = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',
@@ -796,6 +809,37 @@ class BookEditTest extends TestCase
 
 		$array = [
 			'title' => $book->title,
+			'is_si' => true,
+			'genres' => $book->genres()->pluck('id')->toArray(),
+			'writers' => $book->writers()->any()->pluck('id')->toArray(),
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete',
+			'copy_protection' => false,
+			'keywords' => []
+		];
+
+		$response = $this->actingAs($user)
+			->patch(route('books.update', $book), $array)
+			->assertSessionHasNoErrors()
+			->assertRedirect(route('books.edit', $book));
+
+		$this->assertEquals(0, $book->book_keywords()->count());
+	}
+
+	public function test()
+	{
+		$book = factory(Book::class)
+			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
+			->create();
+
+		$user = $book->create_user;
+
+		$book_keyword = $book->book_keywords()->first();
+
+		$array = [
+			'title' => $book->title,
+			'is_si' => true,
 			'genres' => $book->genres()->pluck('id')->toArray(),
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU',

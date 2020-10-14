@@ -103,6 +103,7 @@ class BookCreateTest extends TestCase
 
 		$post = [
 			'title' => $book->title,
+			'is_si' => true,
 			'genres' => [$book->genres()->first()->id],
 			'writers' => [$book->authors()->get()->pluck('id')->toArray()],
 			'ti_lb' => 'RU',
