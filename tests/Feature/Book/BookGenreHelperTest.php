@@ -51,6 +51,7 @@ class BookGenreHelperTest extends TestCase
 
 		$post = [
 			'title' => 'текст ' . $book->title,
+			'is_si' => true,
 			'genres' => [$genre->id, $genre2->id, $genre3->id],
 			'writers' => $book->writers()->any()->pluck('id')->toArray(),
 			'ti_lb' => 'RU', 'ti_olb' => 'RU', 'ready_status' => 'complete'

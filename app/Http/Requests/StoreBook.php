@@ -71,9 +71,18 @@ class StoreBook extends FormRequest
 				$validator->errors()->add('is_si', __('book.set_the_label_either_samizdat_or_amateur_translation'));
 			}
 		});
+
+		$validator->after(function ($validator) {
+			if ($this->isNotSiAndNotLpAndPublicationDetailsAreEmpty()) {
+				$validator->errors()
+					->add('pi_pub', __('If the book was published, please fill in the details (name of the publisher, year of publication, ISBN).'))
+					->add('is_si', __('If the book was not published, please set the label Samizdat.'))
+					->add('is_lp', __('If the book is an Amateur translation, please mark it as an Amateur translation.'));
+			}
+		});
 	}
 
-	public function isSiLabelIsTrueAndPublishFieldsIsNotEmpty()
+	public function isSiLabelIsTrueAndPublishFieldsIsNotEmpty(): bool
 	{
 		if ($this->is_si) {
 			if (trim($this->pi_pub) != '' or
@@ -87,12 +96,38 @@ class StoreBook extends FormRequest
 		return false;
 	}
 
-	public function isSiAndLp()
+	public function isSiAndLp(): bool
 	{
 		if ($this->is_si and $this->is_lp)
 			return true;
 		else
 			return false;
+	}
+
+	public function isPublicationDetailsAreEmpty(): bool
+	{
+		if (trim($this->pi_pub) == '' and
+			trim($this->pi_city) == '' and
+			trim($this->pi_year) == '' and
+			trim($this->pi_isbn) == ''
+		)
+			return true;
+		else
+			return false;
+	}
+
+	public function isNotSiAndNotLpAndPublicationDetailsAreEmpty(): bool
+	{
+		if ($this->is_si)
+			return false;
+
+		if ($this->is_lp)
+			return false;
+
+		if (!$this->isPublicationDetailsAreEmpty())
+			return false;
+
+		return true;
 	}
 
 	public function attributes()
