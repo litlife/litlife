@@ -936,4 +936,29 @@ class BookSearchTest extends TestCase
 		$this->get(route('books', ['kw[]' => '']))
 			->assertOk();
 	}
+
+	public function testIfYouUseAFormatFilterThenSetAccessToTheDownloadOpen()
+	{
+		$response = $this->get(route('books', ['Formats' => ['fb2'], 'download_access' => 'any']))
+			->assertOk();
+
+		$data = $response->original->getData();
+
+		$this->assertEquals('open', $data['input']['download_access']);
+	}
+
+	public function testIfYouUseAFormatFilterThenDontSetAccessToTheDownload()
+	{
+		$user = factory(User::class)->create();
+		$user->group->access_to_closed_books = true;
+		$user->push();
+
+		$response = $this->actingAs($user)
+			->get(route('books', ['Formats' => ['fb2'], 'download_access' => 'any']))
+			->assertOk();
+
+		$data = $response->original->getData();
+
+		$this->assertEquals('any', $data['input']['download_access']);
+	}
 }

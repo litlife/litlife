@@ -211,6 +211,12 @@ class BookSearchResource extends SearchResource
 
 			if (count($formats) > 0) {
 				$this->query->whereRaw('jsonb_exists_any("formats", array[' . implode(', ', array_fill(0, count($formats), '?')) . '])', $formats);
+
+				if (!auth()->check() or !auth()->user()->getPermission('access_to_closed_books')) {
+					$this->query->where('download_access', true);
+
+					$this->setInputValue('download_access', 'open');
+				}
 			}
 		}
 
