@@ -58,12 +58,20 @@ class OtherController extends Controller
 		}
 	}
 
-	public function qrcode()
+	public function qrcode(Request $request)
 	{
-		if (empty(request()->str))
+		$url = $request->str;
+
+		if (empty($url))
 			abort(400);
 
-		$urlShortener = UrlShort::init(request()->str);
+		try {
+			$url = Url::fromString($url);
+		} catch (Exception $exception) {
+			abort(400);
+		}
+
+		$urlShortener = UrlShort::init($url);
 
 		return view('qrcode', ['size' => 200, 'str' => $urlShortener->getShortUrl()]);
 	}

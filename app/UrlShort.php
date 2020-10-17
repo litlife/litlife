@@ -46,7 +46,7 @@ class UrlShort extends Model
 		parent::boot();
 	}
 
-	static function init($url)
+	static function init(string $url)
 	{
 		$url = (string)Url::fromString($url)
 			->getPathQueryFragment();

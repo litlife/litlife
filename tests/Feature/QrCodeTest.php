@@ -37,4 +37,14 @@ class QrCodeTest extends TestCase
 		$this->get(route('qrcode'))
 			->assertStatus(400);
 	}
+
+	public function testWrongScheme()
+	{
+		$text = route('qrcode');
+
+		$text = 'ns' . $text;
+
+		$response = $this->get(route('qrcode', ['str' => $text]))
+			->assertStatus(400);
+	}
 }
