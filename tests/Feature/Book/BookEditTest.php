@@ -856,4 +856,43 @@ class BookEditTest extends TestCase
 
 		$this->assertEquals(0, $book->book_keywords()->count());
 	}
+
+	public function testBookOnSaleChangeGenre()
+	{
+		$author = factory(Author::class)
+			->states('with_author_manager_can_sell', 'with_book_for_sale')
+			->create();
+
+		$manager = $author->managers->first();
+		$book = $author->books->first();
+		$user = $manager->user;
+		$book->create_user()->associate($user);
+		$book->save();
+
+		$this->assertTrue($book->isForSale());
+
+		$genre = factory(Genre::class)->create();
+
+		$array = [
+			'title' => $book->title,
+			'is_si' => true,
+			'genres' => [$genre->id],
+			'writers' => [$author->id],
+			'ti_lb' => 'RU',
+			'ti_olb' => 'RU',
+			'ready_status' => 'complete',
+			'is_public' => true,
+			'year_public' => rand(2000, 2010),
+			'annotation' => $this->faker->realText(1000)
+		];
+
+		$this->actingAs($user)
+			->patch(route('books.update', $book), $array)
+			->assertSessionHasNoErrors()
+			->assertRedirect();
+
+		$book->refresh();
+
+		$this->assertTrue($genre->is($book->genres()->first()));
+	}
 }

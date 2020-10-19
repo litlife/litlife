@@ -75,7 +75,13 @@
 		{{ Form::label('', '', ['class' => 'col-md-3 col-lg-2 col-form-label']) }}
 		<div class="col-md-9 col-lg-10">
 			<div class="form-check form-check-inline">
-				<input name="is_si" type="hidden" value="0">
+
+				@if ($cantEditSiLpPublishFields or $book->isForSale())
+					<input name="is_si" type="hidden" @if ($book->is_si) value="1" @else value="0" @endif>
+				@else
+					<input name="is_si" type="hidden" value="0">
+				@endif
+
 				<input name="is_si" class="form-check-input" type="checkbox" id="is_si" value="1"
 					   @if (old('is_si') ?? $book->is_si) checked="checked" @endif
 					   @if ($cantEditSiLpPublishFields or $book->isForSale()) disabled="disabled" @endif>
@@ -83,7 +89,13 @@
 			</div>
 
 			<div class="form-check form-check-inline">
-				<input name="is_lp" type="hidden" value="0">
+
+				@if ($cantEditSiLpPublishFields or $book->isForSale())
+					<input name="is_lp" type="hidden" @if ($book->is_lp) value="1" @else value="0" @endif>
+				@else
+					<input name="is_lp" type="hidden" value="0">
+				@endif
+
 				<input name="is_lp" class="form-check-input" type="checkbox" id="is_lp" value="1"
 					   @if (old('is_lp') ?? $book->is_lp) checked="checked" @endif
 					   @if ($cantEditSiLpPublishFields or $book->isForSale()) disabled="disabled" @endif>
@@ -262,7 +274,7 @@
 		<div class="col-md-9 col-lg-10">
 			<input id="pi_pub" name="pi_pub" class="form-control{{ $errors->has('pi_pub') ? ' is-invalid' : '' }}"
 				   type="text"
-				   @if ($cantEditSiLpPublishFields or $book->isForSale()) disabled="disabled" @endif
+				   @if ($cantEditSiLpPublishFields or $book->isForSale()) readonly="readonly" @endif
 				   value="{{ old('pi_pub') ?: $book->pi_pub }}"/>
 			<small class="form-text text-muted">
 				{{ __('book.pi_pub_helper') }}
@@ -275,7 +287,7 @@
 		<div class="col-md-9 col-lg-10">
 			<input id="pi_city" name="pi_city" class="form-control{{ $errors->has('pi_city') ? ' is-invalid' : '' }}"
 				   type="text"
-				   @if ($cantEditSiLpPublishFields or $book->isForSale()) disabled="disabled" @endif
+				   @if ($cantEditSiLpPublishFields or $book->isForSale()) readonly="readonly" @endif
 				   value="{{ old('pi_city') ?: $book->pi_city }}"/>
 			<small class="form-text text-muted">
 				{{ __('book.pi_city_helper') }}
@@ -288,7 +300,7 @@
 		<div class="col-md-9 col-lg-10">
 			<input id="pi_year" name="pi_year" class="form-control{{ $errors->has('pi_year') ? ' is-invalid' : '' }}"
 				   type="text"
-				   @if ($cantEditSiLpPublishFields or $book->isForSale()) disabled="disabled" @endif
+				   @if ($cantEditSiLpPublishFields or $book->isForSale()) readonly="readonly" @endif
 				   value="{{ old('pi_year') ?: $book->pi_year }}"/>
 			<small class="form-text text-muted">
 				{{ __('book.pi_year_helper') }}
@@ -301,7 +313,7 @@
 		<div class="col-md-9 col-lg-10">
 			<input id="pi_isbn" name="pi_isbn" class="form-control{{ $errors->has('pi_isbn') ? ' is-invalid' : '' }}"
 				   type="text"
-				   @if ($cantEditSiLpPublishFields or $book->isForSale()) disabled="disabled" @endif
+				   @if ($cantEditSiLpPublishFields or $book->isForSale()) readonly="readonly" @endif
 				   value="{{ old('pi_isbn') ?: $book->pi_isbn }}"/>
 			<small class="form-text text-muted">
 				{{ __('book.pi_isbn_hepler') }}
