@@ -13,8 +13,12 @@ class CssTest extends TestCase
 		$epub->setFile(__DIR__ . '/books/test.epub');
 
 		$css = new Css($epub);
-		$css->loadCss('.content {}');
 		$css->setPath('OEBPS/Styles/main.css');
+		$css->setContent('.content {}');
+
+		$this->assertEquals($epub->getAllFilesList(), $css->getEpub()->getAllFilesList());
+
+		$this->assertTrue($css->isExists());
 
 		$epub->opf()->appendToManifest('main.css', 'Styles/main.css', 'text/css');
 
@@ -22,8 +26,11 @@ class CssTest extends TestCase
 
 		$epub = new Epub;
 		$epub->setFile($string);
+		$css = $epub->getFileByPath('OEBPS/Styles/main.css');
 
-		$this->assertInstanceOf(Css::class, $epub->getFileByPath('OEBPS/Styles/main.css'));
-		$this->assertEquals('.content {}', $epub->getFileByPath('OEBPS/Styles/main.css')->getContent());
+		$this->assertTrue($css->isFoundInZip());
+
+		$this->assertInstanceOf(Css::class, $css);
+		$this->assertEquals('.content {}', $css->getContent());
 	}
 }

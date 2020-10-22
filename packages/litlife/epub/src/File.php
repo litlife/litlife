@@ -11,7 +11,9 @@ class File
 	function __construct(Epub &$epub, $path = null)
 	{
 		$this->epub = &$epub;
-		$this->path = $path;
+
+		if (!empty($path))
+			$this->setPath($path);
 	}
 
 	public function getStream()
@@ -32,6 +34,7 @@ class File
 	public function setPath($path)
 	{
 		$this->path = $path;
+		$this->epub->files[$path] = $this;
 	}
 
 	public function getDirname()
@@ -61,33 +64,28 @@ class File
 
 	public function getContent()
 	{
-		if (empty($this->content))
-			$this->content = $this->epub->zipFile->getEntryContents($this->path);
-
 		return $this->content;
 	}
 
 	public function setContent($content)
 	{
-		if ($this->isExists())
-			$this->delete();
-
 		$this->content = $content;
-
-		$this->epub->zipFile->addFromString($this->path, $content);
 	}
 
-	public function isExists()
+	public function isExists(): bool
 	{
-		if (!$this->epub->zipFile->hasEntry($this->getPath()))
-			return false;
-		else
-			return true;
+		return isset($this->epub->files[$this->getPath()]);
+	}
+
+	public function isFoundInZip(): bool
+	{
+		return $this->epub->zipFile->hasEntry($this->getPath());
 	}
 
 	public function delete()
 	{
-		$this->epub->zipFile->deleteFromName($this->path);
+		//$this->epub->zipFile->deleteFromName($this->path);
+		unset($this->epub->files[$this->getPath()]);
 	}
 
 	public function getMd5()
@@ -107,5 +105,20 @@ class File
 	public function save()
 	{
 		$this->epub->zipFile->addFromString($this->getPath(), $this->getContent());
+	}
+
+	public function loadContent()
+	{
+		$this->content = $this->epub->zipFile->getEntryContents($this->path);
+	}
+
+	public function writeInArchive()
+	{
+		$this->epub->zipFile->addFromString($this->getPath(), $this->content);
+	}
+
+	public function getEpub(): Epub
+	{
+		return $this->epub;
 	}
 }

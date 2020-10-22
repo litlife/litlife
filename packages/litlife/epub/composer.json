@@ -16,12 +16,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Litlife\\Epub\\": "src/"
+      "Litlife\\Epub\\": "src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Litlife\\Epub\\Tests\\": "tests/"
+      "Litlife\\Epub\\Tests\\": "tests"
     }
   }
 }

@@ -7,8 +7,6 @@ use ImagickDraw;
 use ImagickPixel;
 use Litlife\Fb2\Binary;
 use Litlife\Fb2\Fb2;
-use Litlife\Fb2\Fb2Description;
-use Litlife\Fb2\Fb2TitleInfo;
 use PHPUnit\Framework\TestCase;
 
 class Fb2BinaryTest extends TestCase

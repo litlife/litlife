@@ -3,8 +3,6 @@
 namespace Litlife\Fb2\Tests;
 
 use DOMElement;
-use Litlife\Fb2\Fb2Description;
-use Litlife\Fb2\Fb2TitleInfo;
 use Litlife\Fb2\Scheme;
 use PHPUnit\Framework\TestCase;
 

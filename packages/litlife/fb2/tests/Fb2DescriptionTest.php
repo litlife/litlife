@@ -4,8 +4,6 @@ namespace Litlife\Fb2\Tests;
 
 use DOMElement;
 use Litlife\Fb2\Fb2;
-use Litlife\Fb2\Fb2Description;
-use Litlife\Fb2\Fb2TitleInfo;
 use PHPUnit\Framework\TestCase;
 
 class Fb2DescriptionTest extends TestCase

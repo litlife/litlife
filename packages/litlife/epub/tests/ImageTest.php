@@ -12,21 +12,30 @@ class ImageTest extends TestCase
 		$epub = new Epub();
 		$epub->setFile(__DIR__ . '/books/test.epub');
 
-		$this->assertInstanceOf(Image::class, $epub->getImageByFilePath('OEBPS/Images/test.png'));
-
 		$image = $epub->getImageByFilePath('OEBPS/Images/test.png');
 
-		$image->rename('test2.png');
+		$this->assertContainsEquals('OEBPS/Images/test.png', $epub->getAllFilesList());
+		$this->assertNotContainsEquals('OEBPS/Images/test2.png', $epub->getAllFilesList());
+
+		$this->assertInstanceOf(Image::class, $image);
+		$this->assertTrue($image->isExists());
+
+		$this->assertTrue($image->rename('test2.png'));
 
 		$section = $epub->getSectionByFilePath('OEBPS/Text/Section0001.xhtml');
 		$this->assertEquals('../Images/test2.png', $section->dom()->getElementsByTagName('img')->item(0)->getAttribute('src'));
 
-		$this->assertNull($epub->getImageByFilePath('OEBPS/Images/test.png'));
-		$this->assertInstanceOf(Image::class, $epub->getImageByFilePath('OEBPS/Images/test2.png'));
+		$this->assertTrue($image->isExists());
+		$this->assertEquals('OEBPS/Images/test2.png', $image->getPath());
 
 		$image = $epub->getImageByFilePath('OEBPS/Images/test2.png');
+
+		$this->assertTrue($image->isExists());
 		$this->assertNotNull($image->getContent());
 		$this->assertNotNull($image->getSize());
+
+		$this->assertNotContainsEquals('OEBPS/Images/test.png', $epub->getAllFilesList());
+		$this->assertContainsEquals('OEBPS/Images/test2.png', $epub->getAllFilesList());
 	}
 
 	public function testSaveOpen()
@@ -56,6 +65,7 @@ class ImageTest extends TestCase
 		$epub->setFile($string);
 
 		$image = $epub->getFileByPath($epub->default_folder . '/Images/test.jpeg');
+		$image->loadContent();
 		$this->assertInstanceOf(Image::class, $image);
 		$this->assertEquals($size, strlen($image->getContent()));
 		$this->assertEquals($md5, md5($image->getContent()));
@@ -98,9 +108,9 @@ class ImageTest extends TestCase
 		$epub = new Epub();
 		$epub->setFile(__DIR__ . '/books/test.epub');
 
-		$file = $epub->getFileByPath('OEBPS/Images/test.png');
+		$image = $epub->getFileByPath('OEBPS/Images/test.png');
 
-		$this->assertInstanceOf(Image::class, $file);
-		$this->assertTrue($file->isValid());
+		$this->assertInstanceOf(Image::class, $image);
+		$this->assertTrue($image->isValid());
 	}
 }

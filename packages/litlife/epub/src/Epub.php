@@ -19,6 +19,7 @@ class Epub
 	public $files = [];
 	public $container;
 	private $unifyTagIds;
+	public $ignoreMissingFiles = false;
 
 	function __construct()
 	{
@@ -94,37 +95,51 @@ class Epub
 		$query = "//*[local-name()='item'][@href]";
 
 		foreach ($this->opf()->xpath()->query($query, $this->opf()->spine()) as $node) {
+			$this->loadFile($node);
+		}
+	}
 
-			$id = $node->getAttribute('id');
+	private function loadFile(\DOMNode $node)
+	{
+		$id = $node->getAttribute('id');
 
-			$mimeType = $node->getAttribute('media-type');
+		$mimeType = $node->getAttribute('media-type');
 
-			$href = urldecode($node->getAttribute('href'));
+		$href = urldecode($node->getAttribute('href'));
 
-			$fullPath = (string)Url::fromString($href)
-				->getPathRelativelyToAnotherUrl($this->opf()->getPath())
-				->withoutFragment();
+		$fullPath = (string)Url::fromString($href)
+			->getPathRelativelyToAnotherUrl($this->opf()->getPath())
+			->withoutFragment();
 
-			if ($mimeType == 'application/xhtml+xml') {
-				$section = new Section($this, $fullPath);
+		if ($mimeType == 'application/xhtml+xml') {
+			$file = new Section($this, $fullPath);
 
-				if ($itemref = $this->opf()->xpath()->query('//*[local-name()=\'itemref\'][@idref="' . $id . '"]', $this->opf()->spine())->item(0)) {
-					$linear = trim($itemref->getAttribute('linear'));
+			if ($itemref = $this->opf()->xpath()->query('//*[local-name()=\'itemref\'][@idref="' . $id . '"]', $this->opf()->spine())->item(0)) {
+				$linear = trim($itemref->getAttribute('linear'));
 
-					if (!empty($linear))
-						$section->setLinear($linear);
-				}
+				if (!empty($linear))
+					$file->setLinear($linear);
+			}
 
-				$this->files[$fullPath] = $section;
+		} elseif ($mimeType == 'application/x-dtbncx+xml') {
+			$file = new Ncx($this, $fullPath);
+		} elseif (preg_match('/image\/([[:alpha:]]+)/iu', $mimeType)) {
+			$file = new Image($this, $fullPath);
+		} elseif ($mimeType == 'text/css') {
+			$file = new Css($this, $fullPath);
+		} else {
+			$file = new File($this, $fullPath);
+		}
 
-			} elseif ($mimeType == 'application/x-dtbncx+xml') {
-				$this->files[$fullPath] = new Ncx($this, $fullPath);
-			} elseif (preg_match('/image\/([[:alpha:]]+)/iu', $mimeType)) {
-				$this->files[$fullPath] = new Image($this, $fullPath);
-			} elseif ($mimeType == 'text/css') {
-				$this->files[$fullPath] = new Css($this, $fullPath);
+		if ($file->isFoundInZip()) {
+			$file->loadContent();
+			$this->files[$fullPath] = $file;
+		} else {
+			if (!$this->ignoreMissingFiles) {
+				$file->loadContent();
+				$this->files[$fullPath] = $file;
 			} else {
-				$this->files[$fullPath] = new File($this, $fullPath);
+				$file->delete();
 			}
 		}
 	}
@@ -307,18 +322,18 @@ class Epub
 		return $this->addSectionsIds;
 	}
 
-	public function getSectionByFilePath($id)
+	public function getSectionByFilePath($path)
 	{
-		if (isset($this->files[$id]))
-			return $this->files[$id];
+		if (isset($this->files[$path]))
+			return $this->files[$path];
 		else
 			return null;
 	}
 
-	public function getImageByFilePath($id)
+	public function getImageByFilePath($path)
 	{
-		if (isset($this->files[$id]))
-			return $this->files[$id];
+		if (isset($this->files[$path]))
+			return $this->files[$path];
 		else
 			return null;
 	}
@@ -329,6 +344,11 @@ class Epub
 			return $this->files[$path];
 		else
 			return null;
+	}
+
+	public function getAllFilesInArchive()
+	{
+		return $this->zipFile->getListFiles();
 	}
 
 	public function getAllFilesList()

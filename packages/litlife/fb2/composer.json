@@ -16,7 +16,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Litlife\\Fb2\\": "tests"
+      "Litlife\\Fb2\\Tests\\": "tests"
     }
   }
 }

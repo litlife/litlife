@@ -3,8 +3,6 @@
 namespace Litlife\Fb2\Tests;
 
 use Litlife\Fb2\Fb2;
-use Litlife\Fb2\Fb2Description;
-use Litlife\Fb2\Fb2TitleInfo;
 use Litlife\Fb2\Tag;
 use PHPUnit\Framework\TestCase;
 

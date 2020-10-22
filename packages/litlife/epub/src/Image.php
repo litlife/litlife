@@ -17,10 +17,6 @@ class Image extends File
 	function __construct(&$epub, string $path = null)
 	{
 		parent::__construct($epub, $path);
-
-		if (!empty($path)) {
-			$this->content = $this->epub->zipFile->getEntryContents($this->path);
-		}
 	}
 
 	public function isValid()
@@ -41,11 +37,6 @@ class Image extends File
 		}
 
 		return $this->imagick;
-	}
-
-	public function getContent()
-	{
-		return $this->content;
 	}
 
 	public function setContent($content)
@@ -133,8 +124,6 @@ class Image extends File
 				$node->setAttribute('id', $newName);
 			}
 		}
-
-		$this->epub->files[$newPath] = &$this;
 
 		$this->setPath($newPath);
 
