@@ -1540,4 +1540,27 @@ class User extends Authenticatable
 	{
 		return (bool)optional($this->notice_email)->email;
 	}
+
+	public function getAge()
+	{
+		if ($this->born_date instanceof Carbon)
+			return $this->born_date->diffInYears();
+		else
+			return null;
+	}
+
+	public function getJsonForYandexMetrika()
+	{
+		$array = [];
+
+		if ($this->getAge())
+			$array['age'] = $this->getAge();
+
+		if ($this->id) {
+			$array['UserID'] = $this->id;
+			$array['gender'] = $this->gender;
+		}
+
+		return json_encode($array);
+	}
 }

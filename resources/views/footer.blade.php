@@ -142,6 +142,11 @@
 						accurateTrackBounce: true,
 						webvisor: true
 					});
+
+					@auth
+					ym(34745015, 'userParams', {!! auth()->user()->getJsonForYandexMetrika() !!});
+					@endauth
+
 				</script>
 				<noscript>
 					<div><img class="lazyload" src="https://mc.yandex.ru/watch/34745015" style="position:absolute; left:-9999px;" alt=""/></div>
