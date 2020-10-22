@@ -22,6 +22,7 @@ class AddEpubFile
 	public function __construct(Book &$book = null)
 	{
 		$this->epub = new EpubDescription();
+		$this->epub->ignoreMissingFiles = true;
 
 		if (empty($book))
 			$this->book = new Book;
@@ -56,6 +57,7 @@ class AddEpubFile
 	public function getAttachmentsSignatureArray()
 	{
 		foreach ($this->epub->getImages() as $image) {
+
 			$this->binarySignatureArray[$image->getPath()][] = $image->getImagick()->getImageSignature();
 
 			$attachment = new Attachment();

@@ -416,7 +416,7 @@ class CreateEpubFile
 	private function addStyles()
 	{
 		$css = new Css($this->epub);
-		$css->loadCss(file_get_contents(public_path() . '/assets/css/styles_for_epub_books.css'));
+		$css->setContent(file_get_contents(public_path() . '/assets/css/styles_for_epub_books.css'));
 		$css->setPath($this->getOebpsPath() . '/Styles/main.css');
 
 		$this->epub->opf()->appendToManifest('main.css', 'Styles/main.css', 'text/css');

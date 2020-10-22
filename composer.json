@@ -135,7 +135,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+          "Tests\\": "tests/",
+          "Litlife\\Epub\\Tests\\": "packages/litlife/epub/tests"
         }
     },
     "minimum-stability": "dev",
