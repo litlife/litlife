@@ -144,7 +144,8 @@
 					});
 
 					@auth
-					ym(34745015, 'userParams', {!! auth()->user()->getJsonForYandexMetrika() !!});
+					var json = JSON.parse('{!! auth()->user()->getJsonForYandexMetrika() !!}');
+					ym(34745015, 'userParams', json);
 					@endauth
 
 				</script>
@@ -154,6 +155,7 @@
 				<!-- /Yandex.Metrika counter -->
 
 				@endenv
+
 			</div>
 
 		</div>

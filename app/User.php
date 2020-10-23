@@ -1554,13 +1554,15 @@ class User extends Authenticatable
 		$array = [];
 
 		if ($this->getAge())
-			$array['age'] = $this->getAge();
+			$array['age'] = (int)$this->getAge();
 
 		if ($this->id) {
-			$array['UserID'] = $this->id;
+			$array['UserID'] = (int)$this->id;
 			$array['gender'] = $this->gender;
 		}
 
-		return json_encode($array);
+		$object = (object)$array;
+
+		return json_encode($object, JSON_NUMERIC_CHECK);
 	}
 }

@@ -33,6 +33,6 @@ class UserGetJsonForYandexMetrikaTest extends TestCase
 	{
 		$user = new User();
 
-		$this->assertEquals('[]', $user->getJsonForYandexMetrika());
+		$this->assertEquals('{}', $user->getJsonForYandexMetrika());
 	}
 }
