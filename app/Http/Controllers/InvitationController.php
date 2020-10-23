@@ -96,6 +96,8 @@ class InvitationController extends Controller
 	 */
 	public function user(StoreRegistrationUser $request, $token)
 	{
+		DB::beginTransaction();
+
 		$count = User::wherePassword($request->password)->count();
 
 		if ($count >= config('auth.max_frequent_password_count')) {
@@ -106,15 +108,14 @@ class InvitationController extends Controller
 		if (!$invitation = Invitation::whereToken($token)->first())
 			return redirect()
 				->route('invitation')
-				->withErrors([__('invitation.invitation_not_found_or_expired_please_send_a_new_invitation')], 'registration');
+				->withErrors(['error' => __('invitation.invitation_not_found_or_expired_please_send_a_new_invitation')], 'registration');
 
 		if (UserEmail::whereEmail($invitation->email)
 			->confirmed()
 			->count())
 			return redirect()
-				->route('invitation');
-
-		DB::beginTransaction();
+				->route('invitation')
+				->withErrors(['error' => __('The user with this confirmed mailbox is already registered')], 'registration');
 
 		$user = new User;
 		$user->email = $invitation->email;
@@ -127,7 +128,6 @@ class InvitationController extends Controller
 		 * новый пользователь зарегистрирован, поэтому теперь его почтовый ящик должен стать подтвержденным,
 		 * использоваться для отправки уведомлений и для восстановления
 		 * */
-
 		$email = new UserEmail;
 		$email->email = $invitation->email;
 		$email->confirm = true;
@@ -135,10 +135,8 @@ class InvitationController extends Controller
 		$email->notice = true;
 		$user->emails()->save($email);
 
-		/*
-		 * удаляем приглашение
-		 */
-		$invitation->delete();
+		$email->confirmEmail();
+		$email->save();
 
 		/*
 		 * делаем пользователя зарегистрированным
@@ -148,6 +146,13 @@ class InvitationController extends Controller
 		event(new Registered($user));
 
 		$user->notify(new UserHasRegisteredNotification($user, __('password.your_entered_password')));
+
+		$invitation->refresh();
+
+		if ($invitation->trashed())
+			throw new \Exception(__('The invitation has already been deleted'));
+		else
+			$invitation->delete();
 
 		DB::commit();
 

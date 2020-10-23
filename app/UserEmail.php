@@ -190,26 +190,25 @@ class UserEmail extends Model
 	{
 		DB::transaction(function () {
 
-			$other_emails = UserEmail::email($this->email)
+			UserEmail::email($this->email)
 				->whereNotIn('id', [$this->id])
-				->get();
+				->with('user')
+				->each(function ($email) {
+					// если есть другие копии подтвержденного ящика, то удаляем остальные
+					//$other_email->delete();
+					$email->confirm = false;
+					$email->save();
 
-			foreach ($other_emails as $other_email) {
-				// если есть другие копии подтвержденного ящика, то удаляем остальные
-				//$other_email->delete();
-				$other_email->confirm = false;
-				$other_email->save();
+					if (!empty($email->user)) {
+						$email->user->refreshConfirmedMailboxCount();
 
-				if (!empty($other_email->user)) {
-					$other_email->user->refreshConfirmedMailboxCount();
+						if ($email->user->emails()->confirmed()->count() < 1) {
+							$email->user->setting->loginWithIdEnable();
+						}
 
-					if ($other_email->user->emails()->confirmed()->count() < 1) {
-						$other_email->user->setting->loginWithIdEnable();
+						$email->user->push();
 					}
-
-					$other_email->user->push();
-				}
-			}
+				});
 
 			$this->confirm = true;
 			$this->isValidRefresh();

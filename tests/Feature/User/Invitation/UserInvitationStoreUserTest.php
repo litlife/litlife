@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\User\Invitation;
 
-use Anhskohbo\NoCaptcha\Facades\NoCaptcha;
 use App\Enums\UserGroupEnum;
 use App\Invitation;
 use App\Notifications\UserHasRegisteredNotification;
@@ -72,6 +71,18 @@ class UserInvitationStoreUserTest extends TestCase
 		$this->assertEquals(__('bookmark_folder.default_title'), $bookmark_folder->title);
 		$this->assertTrue(Cache::get('users_count_refresh'));
 
+		$invitation->refresh();
+
+		$this->assertTrue($invitation->trashed());
+
+		$email = $user->emails()->first();
+
+		$this->assertNotNull($email);
+		$this->assertEquals($invitation->email, $email->email);
+		$this->assertTrue($email->confirm);
+		$this->assertTrue($email->rescue);
+		$this->assertTrue($email->notice);
+
 		Notification::assertSentTo(
 			$user,
 			UserHasRegisteredNotification::class,
@@ -84,33 +95,17 @@ class UserInvitationStoreUserTest extends TestCase
 	public function testSameEmailUnconfirmedExists()
 	{
 		$email = factory(UserEmail::class)
+			->states('confirmed')
 			->create([
 				'confirm' => false,
 			]);
 
-		$emailbox = $email->email;
+		$invitation = factory(Invitation::class)
+			->create([
+				'email' => $email->email,
+			]);
 
-		// prevent validation error on captcha
-		NoCaptcha::shouldReceive('verifyResponse')
-			->once()
-			->andReturn(true);
-
-		$response = $this->post(route('invitation.store'),
-			[
-				'g-recaptcha-response' => '1',
-				'email' => $emailbox
-			]
-		)->assertRedirect();
-		var_dump(session('errors'));
-		$response->assertSessionHasNoErrors();
-
-		$invitation = Invitation::latest()->limit(1)->first();
-
-		$this->assertNotNull($invitation);
-		$this->assertEquals($emailbox, $invitation->email);
-
-		$email->confirm = true;
-		$email->save();
+		$this->assertEquals($email->email, $invitation->email);
 
 		$password = $this->getPassword();
 
@@ -127,10 +122,9 @@ class UserInvitationStoreUserTest extends TestCase
 				'password' => $password,
 				'password_confirmation' => $password,
 				'name_show_type' => 'FullLastNameFirstName'
-			]);
-		if (!empty(session('errors'))) var_dump(session('errors'));
-		$response->assertSessionHasNoErrors()
-			->assertRedirect(route('invitation'));
+			])
+			->assertRedirect(route('invitation'))
+			->assertSessionHasErrors('error', __('invitation.invitation_not_found_or_expired_please_send_a_new_invitation'), 'registration');
 	}
 
 	public function testStoreNewUserDate()
@@ -266,4 +260,61 @@ class UserInvitationStoreUserTest extends TestCase
 			null, 'registration');
 	}
 
+	public function testIfInvitationDeleted()
+	{
+		$invitation = factory(Invitation::class)
+			->create();
+
+		$password = $this->getPassword();
+		$ip = $this->faker->ipv4;
+
+		$user = factory(User::class)
+			->make();
+
+		$invitation->delete();
+
+		$response = $this->post(route('users.store', ['token' => $invitation->token]),
+			[
+				'nick' => $user->nick,
+				'first_name' => $user->first_name,
+				'last_name' => $user->last_name,
+				'middle_name' => '',
+				'gender' => 'male',
+				'password' => $password,
+				'password_confirmation' => $password,
+				'name_show_type' => 'FullLastNameFirstName'
+			])
+			->assertRedirect(route('invitation'))
+			->assertSessionHasErrors('error', __('invitation.invitation_not_found_or_expired_please_send_a_new_invitation'), 'registration');
+	}
+
+	public function testIfSameEmailConfirmedExists()
+	{
+		$email = factory(UserEmail::class)
+			->states('confirmed')
+			->create();
+
+		$invitation = factory(Invitation::class)
+			->create(['email' => $email->email]);
+
+		$password = $this->getPassword();
+		$ip = $this->faker->ipv4;
+
+		$user = factory(User::class)
+			->make();
+
+		$response = $this->post(route('users.store', ['token' => $invitation->token]),
+			[
+				'nick' => $user->nick,
+				'first_name' => $user->first_name,
+				'last_name' => $user->last_name,
+				'middle_name' => '',
+				'gender' => 'male',
+				'password' => $password,
+				'password_confirmation' => $password,
+				'name_show_type' => 'FullLastNameFirstName'
+			])
+			->assertRedirect(route('invitation'))
+			->assertSessionHasErrors('error', __('The user with this confirmed mailbox is already registered'), 'registration');
+	}
 }
