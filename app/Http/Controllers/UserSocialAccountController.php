@@ -151,10 +151,11 @@ class UserSocialAccountController extends Controller
 
 						$email = new UserEmail;
 						$email->email = $email_array[0];
-						$email->confirm = true;
 						$email->notice = true;
 						$email->rescue = true;
 						$user->emails()->save($email);
+
+						$email->confirmEmail();
 
 						$user->notify(new UserHasRegisteredNotification($user, $password));
 
@@ -174,8 +175,7 @@ class UserSocialAccountController extends Controller
 						}
 
 						if ($email->isCreatedBeforeMoveToNewEngine()) {
-							$email->confirm = true;
-							$email->save();
+							$email->confirmEmail();
 						}
 
 						$is_new_user = false;

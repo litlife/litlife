@@ -298,42 +298,40 @@
 						{{ __('user.born_date') }}
 					</label>
 					<div class="col-md-9 col-lg-10">
-						<div class="form-row">
-							<div class="form-group">
-								<select name="born_day" style="width:5rem;"
-										class="form-control d-inline-block {{ $errors->user->has('born_day') ? ' is-invalid' : '' }}">
-									<option value="">{{ __('date.select_day') }}</option>
-									@for ($a = 1; $a <= 31; $a++)
-										<option value="{{ $a }}"
-												@if ((old('born_day') ?? optional($user->born_date)->day) == $a) selected @endif>
-											{{ $a }}
-										</option>
-									@endfor
-								</select>
 
-								<select name="born_month" style="width:8rem;"
-										class="form-control d-inline-block {{ $errors->user->has('born_month') ? ' is-invalid' : '' }}">
-									<option value="">{{ __('date.select_month') }}</option>
-									@for ($a = 1; $a <= 12; $a++)
-										<option value="{{ $a }}"
-												@if ((old('born_month') ?? optional($user->born_date)->month) == $a) selected @endif>
-											{{ __('date.month.'.$a) }}
-										</option>
-									@endfor
-								</select>
+						<select name="born_day" style="width:5rem;"
+								class="form-control d-inline-block {{ $errors->user->has('born_day') ? ' is-invalid' : '' }}">
+							<option value="">{{ __('date.select_day') }}</option>
+							@for ($a = 1; $a <= 31; $a++)
+								<option value="{{ $a }}"
+										@if ((old('born_day') ?? optional($user->born_date)->day) == $a) selected @endif>
+									{{ $a }}
+								</option>
+							@endfor
+						</select>
 
-								<select name="born_year" style="width:7rem;"
-										class="form-control d-inline-block {{ $errors->user->has('born_year') ? ' is-invalid' : '' }}">
-									<option value="">{{ __('date.select_year') }}</option>
-									@for ($a = (date('Y') - 8); $a >= 1900; $a--)
-										<option value="{{ $a }}"
-												@if ((old('born_year') ?? optional($user->born_date)->year)  == $a) selected @endif>
-											{{ $a }}
-										</option>
-									@endfor
-								</select>
-							</div>
-						</div>
+						<select name="born_month" style="width:8rem;"
+								class="form-control d-inline-block {{ $errors->user->has('born_month') ? ' is-invalid' : '' }}">
+							<option value="">{{ __('date.select_month') }}</option>
+							@for ($a = 1; $a <= 12; $a++)
+								<option value="{{ $a }}"
+										@if ((old('born_month') ?? optional($user->born_date)->month) == $a) selected @endif>
+									{{ __('date.month.'.$a) }}
+								</option>
+							@endfor
+						</select>
+
+						<select name="born_year" style="width:7rem;"
+								class="form-control d-inline-block {{ $errors->user->has('born_year') ? ' is-invalid' : '' }}">
+							<option value="">{{ __('date.select_year') }}</option>
+							@for ($a = (date('Y') - 8); $a >= 1900; $a--)
+								<option value="{{ $a }}"
+										@if ((old('born_year') ?? optional($user->born_date)->year)  == $a) selected @endif>
+									{{ $a }}
+								</option>
+							@endfor
+						</select>
+
 					</div>
 				</div>
 
