@@ -1565,4 +1565,14 @@ class User extends Authenticatable
 
 		return json_encode($object, JSON_NUMERIC_CHECK);
 	}
+
+	public function createdSupportRequests()
+	{
+		return $this->hasMany('App\SupportRequest', 'create_user_id');
+	}
+
+	public function createdSupportMessages()
+	{
+		return $this->hasMany('App\SupportRequestMessage', 'create_user_id');
+	}
 }

@@ -118,7 +118,8 @@ class AppServiceProvider extends ServiceProvider
 		App\Collection::observe(App\Observers\CollectionObserver::class);
 		App\CollectedBook::observe(App\Observers\CollectedBookObserver::class);
 		App\UserSurvey::observe(App\Observers\UserSurveyObserver::class);
-
+		App\SupportRequest::observe(App\Observers\SupportRequestObserver::class);
+		App\SupportRequestMessage::observe(App\Observers\SupportRequestMessageObserver::class);
 
 		Validator::extend('wikipedia', function ($attribute, $value, $parameters, $validator) {
 			$host = parse_url($value, PHP_URL_HOST);

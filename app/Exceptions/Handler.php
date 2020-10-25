@@ -3,9 +3,11 @@
 namespace App\Exceptions;
 
 use Exception;
+use Facade\Ignition\Exceptions\ViewException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -91,6 +93,22 @@ class Handler extends ExceptionHandler
 			}
 			// Redirect to error page instead
 			return response()->view('errors.401', ['exception' => $exception], 401);
+		}
+
+		if (App::environment() == 'testing') {
+			//dd(config('app.debug'));
+
+			if ($exception instanceof QueryException) {
+				throw $exception;
+			}
+
+			if ($exception instanceof ViewException) {
+				throw $exception;
+			}
+
+			if ($exception instanceof \InvalidArgumentException) {
+				throw $exception;
+			}
 		}
 
 		return parent::render($request, $exception);

@@ -421,7 +421,9 @@ class UserGroup extends Model
 			'view_user_surveys' => false,
 			'deleting_online_read_and_files' => false,
 			'manage_ad_blocks' => false,
-			'edit_or_delete_your_comments_to_collections' => true
+			'edit_or_delete_your_comments_to_collections' => true,
+			'send_a_support_request' => true,
+			'reply_to_support_service' => false
 		];
 	protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 

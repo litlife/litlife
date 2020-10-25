@@ -568,6 +568,15 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/preview/notification/invoice_was_successfully_paid', 'OtherController@previewInvoiceWasSuccessfullyPaidNotification')->name('preview.notification.invoice_was_successfully_paid');
 	Route::get('/preview/invitation_take_survey', 'OtherController@previewInvitationToTakeSurvey')->name('preview.invitation_take_survey');
 	Route::get('/preview/welcome_notification', 'OtherController@welcomeNotification')->name('preview.welcome_notification');
+
+	Route::get('/support_requests', 'SupportRequestController@index')->name('support_requests.index');
+	Route::get('/support_requests/create', 'SupportRequestController@create')->name('support_requests.create');
+	Route::get('/support_requests/{support_request}', 'SupportRequestController@show')->name('support_requests.show');
+	Route::post('/support_request_messages', 'SupportRequestMessageController@store')->name('support_request_messages.store');
+	Route::get('/support_requests/{support_request}/start_review', 'SupportRequestController@startReview')->name('support_requests.start_review');
+	Route::get('/support_requests/{support_request}/approve', 'SupportRequestController@approve')->name('support_requests.approve');
+	Route::get('/support_requests/{support_request}/decline', 'SupportRequestController@decline')->name('support_requests.decline');
+	Route::get('/support_requests/{support_request}/stop_review', 'SupportRequestController@decline')->name('support_requests.stop_review');
 });
 
 Route::get('/books/{book}/pages', 'SectionController@page')->name('books.pages');
