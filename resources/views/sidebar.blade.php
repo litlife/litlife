@@ -355,6 +355,28 @@
 				<div class="card">
 					<div class="list-group list-group-flush">
 
+						@can ('view_unsolved', \App\SupportRequest::class)
+							@php($userNumberOfUnsolved = \Illuminate\Support\Facades\Auth::user()->getNumberOfUnsolved())
+							@php($numberOfUnsolved = \App\SupportRequest::getNumberOfUnsolved())
+
+							<a href="{{ $userNumberOfUnsolved ? route('support_requests.in_process_of_solving') : route('support_requests.unsolved') }}"
+							   title="{{ __('Support') }}" data-boundary="window" data-toggle="tooltip"
+							   data-placement="right"
+							   class="list-group-item list-group-item-action d-flex {{ active('support_requests.unsolved') }}">
+								<span class="text-nowrap text-truncate">{{ __('Support') }}</span>
+
+								<span class="ml-auto">
+									@if ($userNumberOfUnsolved)
+										<span class="badge badge-info badge-pill">{{ $userNumberOfUnsolved }}</span>
+									@endif
+
+									@if ($numberOfUnsolved)
+										<span class="badge badge-primary badge-pill">{{ $numberOfUnsolved }}</span>
+									@endif
+								</span>
+							</a>
+						@endcan
+
 						@can ('view_on_moderation', auth()->user())
 							<a href="{{ route('users.on_moderation') }}"
 							   title="{{ __('navbar.users_on_moderation') }}" data-boundary="window" data-toggle="tooltip"
@@ -389,7 +411,7 @@
 							@endif
 						@endcan
 
-							@can ('viewOnReviewList', App\Complain::class)
+						@can ('viewOnReviewList', App\Complain::class)
 
 							<a href="{{ route('complaints.index') }}"
 							   class="list-group-item list-group-item-action d-flex {{ active('complaints.index') }}">
@@ -520,12 +542,12 @@
 							</a>
 						@endcan
 
-							@can ('viewUserSurveys', App\User::class)
-								<a href="{{ route('surveys.index') }}"
-								   class="list-group-item list-group-item-action d-flex {{ active('surveys.index') }}">
-									<span class="text-nowrap text-truncate">{{ __('survey.survey_result') }}</span>
-								</a>
-							@endcan
+						@can ('viewUserSurveys', App\User::class)
+							<a href="{{ route('surveys.index') }}"
+							   class="list-group-item list-group-item-action d-flex {{ active('surveys.index') }}">
+								<span class="text-nowrap text-truncate">{{ __('survey.survey_result') }}</span>
+							</a>
+						@endcan
 					</div>
 				</div>
 			</div>

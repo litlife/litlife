@@ -720,4 +720,26 @@ class UserController extends Controller
 
 		return view('user.avatar.show', ['user' => $user]);
 	}
+
+	/**
+	 * Support requests
+	 *
+	 * @param User $user
+	 * @return Response
+	 * @throws
+	 */
+	public function supportRequests(User $user)
+	{
+		$this->authorize('view_list_support_requests', $user);
+
+		if (!$user->createdSupportRequests()->first())
+			return redirect()
+				->route('support_requests.create', ['user' => $user]);
+
+		$supportRequests = $user->createdSupportRequests()
+			->orderBy('last_message_created_at', 'desc')
+			->simplePaginate();
+
+		return view('user.support_request.index', ['user' => $user, 'supportRequests' => $supportRequests]);
+	}
 }

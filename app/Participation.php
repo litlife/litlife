@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property-read \App\Message|null $latest_message
  * @property-read \App\Message|null $latest_seen_message
  * @property-read \App\User $user
- * @method static Builder|Participation messagesExists()
+ * @method static Builder|Participation hasMessages()
  * @method static Builder|Participation newModelQuery()
  * @method static Builder|Participation newQuery()
  * @method static Builder|Model orderByField($column, $ids)

@@ -2,15 +2,19 @@
 
 namespace Tests\Feature\SupportRequest\Message;
 
+use App\Events\NumberOfUnsolvedSupportRequestsHasChanged;
 use App\SupportRequest;
 use App\SupportRequestMessage;
 use App\User;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class SupportRequestMessageStoreTest extends TestCase
 {
 	public function testStoreNewRequest()
 	{
+		Event::fake(NumberOfUnsolvedSupportRequestsHasChanged::class);
+
 		$messageNew = factory(SupportRequestMessage::class)
 			->make();
 
@@ -35,6 +39,11 @@ class SupportRequestMessageStoreTest extends TestCase
 		$this->assertEquals($supportRequest->id, $message->support_request_id);
 		$this->assertEquals($user->id, $message->create_user_id);
 		$this->assertEquals($messageNew->text, $message->text);
+
+		$this->assertEquals(1, $supportRequest->number_of_messages);
+		$this->assertEquals($message->id, $supportRequest->latest_message_id);
+
+		Event::assertDispatched(NumberOfUnsolvedSupportRequestsHasChanged::class);
 	}
 
 	public function testStoreInExistedRequest()
@@ -54,10 +63,15 @@ class SupportRequestMessageStoreTest extends TestCase
 			->assertRedirect(route('support_requests.show', ['support_request' => $supportRequest->id]))
 			->assertSessionHas('success', __('The message has been successfully sent'));
 
-		$message = $supportRequest->messages()->first();
+		$supportRequest->refresh();
+
+		$message = $supportRequest->messages()->orderBy('id', 'desc')->first();
 
 		$this->assertEquals($supportRequest->id, $message->support_request_id);
 		$this->assertEquals($user->id, $message->create_user_id);
 		$this->assertEquals($messageNew->text, $message->text);
+
+		$this->assertEquals(1, $supportRequest->number_of_messages);
+		$this->assertEquals($message->id, $supportRequest->latest_message_id);
 	}
 }

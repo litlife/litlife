@@ -14,7 +14,7 @@ class SupportRequestCreateTest extends TestCase
 		$user->push();
 
 		$this->actingAs($user)
-			->get(route('support_requests.create'))
+			->get(route('support_requests.create', ['user' => $user]))
 			->assertOk();
 	}
 }

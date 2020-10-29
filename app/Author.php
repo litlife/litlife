@@ -92,6 +92,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property bool $rating_changed Если рейтинг у книг изменился, то значение будет true
  * @property int $admin_notes_count
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
+ * @property int|null $user_id ID пользователя к которому верифицирована эта страница автора
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
  * @property-read \App\AdminNote|null $admin_note
@@ -234,6 +235,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author whereStatusNot($status)
  * @method static Builder|Author whereUpdatedAt($value)
  * @method static Builder|Author whereUserEditedAt($value)
+ * @method static Builder|Author whereUserId($value)
  * @method static Builder|Author whereUserLibCount($value)
  * @method static Builder|Author whereViewAll($value)
  * @method static Builder|Author whereViewDay($value)

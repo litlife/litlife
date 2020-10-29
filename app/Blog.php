@@ -65,7 +65,6 @@ use Stevebauman\Purify\Facades\Purify;
  * @property-read mixed $level_with_limit
  * @property mixed $parent
  * @property-read mixed $root
- * @property-read mixed $tree_array
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
  * @property-read \App\User $owner
  * @property-write mixed $b_b_text

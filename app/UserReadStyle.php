@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string|null $background_color
  * @property string|null $font_color
  * @property string|null $card_color
+ * @property bool $show_sidebar Показать сайдбар
  * @property-read \App\User $user
  * @method static Builder|UserReadStyle disableCache()
  * @method static CachedBuilder|UserReadStyle newModelQuery()
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|UserReadStyle whereCardColor($value)
  * @method static Builder|UserReadStyle whereFont($value)
  * @method static Builder|UserReadStyle whereFontColor($value)
+ * @method static Builder|UserReadStyle whereShowSidebar($value)
  * @method static Builder|UserReadStyle whereSize($value)
  * @method static Builder|UserReadStyle whereUserId($value)
  * @method static Builder|UserReadStyle withCacheCooldownSeconds($seconds = null)

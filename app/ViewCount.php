@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @property int $book_id
  * @property int $all
- * @property int $week
  * @property int $year
  * @property int $month
+ * @property int $week
  * @property int $day
  * @property-read \App\Book $book
  * @method static Builder|ViewCount newModelQuery()

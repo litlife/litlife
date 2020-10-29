@@ -14,7 +14,7 @@
 
 	<div class="card">
 		<div class="card-body">
-			@include('support_request.message.form')
+			@include('support_request.form')
 		</div>
 	</div>
 

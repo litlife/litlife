@@ -75,7 +75,6 @@ use Illuminate\Support\Facades\Cache;
  * @property Post|null $parent
  * @property-read mixed $root
  * @property-read mixed $text
- * @property-read mixed $tree_array
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
  * @property-write mixed $b_b_text
  * @property-read \App\User|null $status_changed_user

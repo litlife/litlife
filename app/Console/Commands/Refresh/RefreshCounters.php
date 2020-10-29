@@ -9,6 +9,7 @@ use App\Comment;
 use App\Events\BookFilesCountChanged;
 use App\Manager;
 use App\Post;
+use App\SupportRequest;
 use App\UserOnModeration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -52,5 +53,9 @@ class RefreshCounters extends Command
 		Manager::flushCachedOnModerationCount();
 		UserOnModeration::flushCachedCount();
 		AuthorSaleRequest::flushCachedOnModerationCount();
+
+		SupportRequest::flushNumberOfUnsolved();
+		SupportRequest::flushNumberInProcess();
+		SupportRequest::flushNumberOfSolved();
 	}
 }

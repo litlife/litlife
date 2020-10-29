@@ -134,6 +134,10 @@ use Illuminate\Support\Str;
  * @property string|null $key Код группы
  * @property bool $view_user_surveys Просматривать опросы пользователей
  * @property bool $deleting_online_read_and_files Может ли пользователь использовать функцию: "удалить все файлы, главы книги и изображения (кроме обложки)"
+ * @property bool $manage_ad_blocks Добавлять жанры
+ * @property bool $edit_or_delete_your_comments_to_collections Редактировать или удалять свои комментарии к подборкам
+ * @property bool $send_a_support_request Может ли пользователь написать в поддержку
+ * @property bool $reply_to_support_service Может ли пользователь написать в поддержку
  * @property-read mixed $rules
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup disableCache()
@@ -213,6 +217,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditFieldOfPublicDomain($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditForumOtherUserTopic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditForumSelfTopic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOrDeleteYourCommentsToCollections($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOtherProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOtherUserBook($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOtherUserCollections($value)
@@ -235,6 +240,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereLikeClick($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereManageAdBlocks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereManageCollections($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereManageMailings($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereManageUsersGroups($value)
@@ -246,8 +252,10 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereNotifyAssignment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereOldPermissions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRefreshCounters($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereReplyToSupportService($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRetryFailedBookParse($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSeeDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendASupportRequest($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSequenceDelete($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSequenceEdit($value)

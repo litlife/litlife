@@ -40,6 +40,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int|null $users_count Количество участников
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
  * @property-read \App\Like|null $authUserLike
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\CollectedBook[] $collected
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\CollectionUser[] $collectionUser
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
@@ -109,6 +110,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Collection whereUpdatedAt($value)
  * @method static Builder|Collection whereUrl($value)
  * @method static Builder|Collection whereUrlTitle($value)
+ * @method static Builder|Collection whereUserCanAddBooks(\App\User $user)
  * @method static Builder|Collection whereUsersCount($value)
  * @method static Builder|Collection whereViewsCount($value)
  * @method static Builder|Collection whereWhoCanAdd($value)

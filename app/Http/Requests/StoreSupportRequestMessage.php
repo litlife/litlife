@@ -24,7 +24,7 @@ class StoreSupportRequestMessage extends FormRequest
 	public function rules()
 	{
 		return [
-			'text' => 'required|min:10'
+			'text' => 'required|min:2'
 		];
 	}
 

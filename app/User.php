@@ -118,6 +118,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSearchSetting[] $booksSearchSettings
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books_read_statuses
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportRequestMessage[] $createdSupportMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportRequest[] $createdSupportRequests
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorRepeat[] $created_author_repeats
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $created_authors
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookFile[] $created_book_files
@@ -1574,5 +1576,22 @@ class User extends Authenticatable
 	public function createdSupportMessages()
 	{
 		return $this->hasMany('App\SupportRequestMessage', 'create_user_id');
+	}
+
+	public function getNumberOfUnsolved(): int
+	{
+		return Cache::tags([CacheTags::NumberOfUnsolvedRequests])->remember($this->id, 86400, function () {
+
+			$count = SupportRequest::whereStatusIn(['ReviewStarts'])
+				->whereLastResponseByUser()
+				->count();
+
+			return (int)$count;
+		});
+	}
+
+	public function flushNumberOfUnsolved()
+	{
+		Cache::tags([CacheTags::NumberOfUnsolvedRequests])->pull($this->id);
 	}
 }

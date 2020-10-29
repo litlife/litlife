@@ -1575,3 +1575,49 @@ Breadcrumbs::for('books.collections.create', function ($breadcrumbs, $book) {
 	$breadcrumbs->parent('books.show', $book);
 	$breadcrumbs->push(__('Add a book to a collection'), route('books.collections.create', ['book' => $book]));
 });
+
+Breadcrumbs::for('users.support_requests.index', function ($breadcrumbs, $user) {
+	$breadcrumbs->push(__('Support requests'), route('users.support_requests.index', $user));
+});
+
+Breadcrumbs::for('support_requests.create', function ($breadcrumbs, $user) {
+	$breadcrumbs->parent('users.support_requests.index', ['user' => $user]);
+	$breadcrumbs->push(__('New support request'), route('support_requests.create', $user));
+});
+
+Breadcrumbs::for('support_requests.show', function ($breadcrumbs, $supportRequest) {
+
+	if ($supportRequest instanceof \App\SupportRequest) {
+		if (\Illuminate\Support\Facades\Auth::user()->is($supportRequest->create_user)) {
+			$breadcrumbs->parent('users.support_requests.index', ['user' => $supportRequest->create_user]);
+		} else {
+			if ($supportRequest->isAccepted())
+				$breadcrumbs->parent('support_requests.solved');
+			elseif ($supportRequest->isReviewStarts())
+				$breadcrumbs->parent('support_requests.in_process_of_solving');
+			elseif ($supportRequest->isSentForReview())
+				$breadcrumbs->parent('support_requests.unsolved');
+		}
+
+		$breadcrumbs->push($supportRequest->title, route('support_requests.show', ['support_request' => $supportRequest]));
+	}
+});
+
+Breadcrumbs::for('support_requests.unsolved', function ($breadcrumbs) {
+	$breadcrumbs->parent('support_requests.index');
+	$breadcrumbs->push(__('Unsolved requests'), route('support_requests.unsolved'));
+});
+
+Breadcrumbs::for('support_requests.solved', function ($breadcrumbs) {
+	$breadcrumbs->parent('support_requests.index');
+	$breadcrumbs->push(__('Solved requests'), route('support_requests.solved'));
+});
+
+Breadcrumbs::for('support_requests.in_process_of_solving', function ($breadcrumbs) {
+	$breadcrumbs->parent('support_requests.index');
+	$breadcrumbs->push(__('In process'), route('support_requests.in_process_of_solving'));
+});
+
+Breadcrumbs::for('support_requests.index', function ($breadcrumbs) {
+	$breadcrumbs->push(__('Support requests'), route('support_requests.index'));
+});

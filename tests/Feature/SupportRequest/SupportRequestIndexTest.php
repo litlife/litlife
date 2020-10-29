@@ -8,18 +8,25 @@ use Tests\TestCase;
 
 class SupportRequestIndexTest extends TestCase
 {
-	public function testIsOk()
+	public function testRedirectIfNoSupportRequestCreated()
 	{
 		$user = factory(User::class)->create();
-		$user->group->reply_to_support_service = true;
-		$user->push();
-
-		$request = factory(SupportRequest::class)
-			->create();
 
 		$this->actingAs($user)
-			->get(route('support_requests.index'))
-			->assertOk()
-			->assertViewHas('supportRequests');
+			->get(route('users.support_requests.index', ['user' => $user]))
+			->assertRedirect(route('support_requests.create', ['user' => $user]));
+	}
+
+	public function testIsOk()
+	{
+		$supportRequest = factory(SupportRequest::class)
+			->states('with_message')
+			->create();
+
+		$user = $supportRequest->create_user;
+
+		$this->actingAs($user)
+			->get(route('users.support_requests.index', ['user' => $user]))
+			->assertOk();
 	}
 }

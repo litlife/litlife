@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Validator;
  * @property bool $rescue
  * @property bool $notice
  * @property string|null $domain
+ * @property bool|null $is_valid Соответствует ли адрес RFC
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserEmailToken[] $tokens
  * @property-read \App\User $user
  * @method static Builder|UserEmail confirmed()
@@ -46,6 +47,7 @@ use Illuminate\Support\Facades\Validator;
  * @method static Builder|UserEmail whereEmail($value)
  * @method static Builder|UserEmail whereId($value)
  * @method static Builder|UserEmail whereInEmails($emails)
+ * @method static Builder|UserEmail whereIsValid($value)
  * @method static Builder|UserEmail whereNotice($value)
  * @method static Builder|UserEmail whereRescue($value)
  * @method static Builder|UserEmail whereShowInProfile($value)

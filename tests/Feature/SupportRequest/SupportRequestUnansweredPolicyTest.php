@@ -6,7 +6,7 @@ use App\SupportRequest;
 use App\User;
 use Tests\TestCase;
 
-class SupportRequestIndexPolicyTest extends TestCase
+class SupportRequestUnsolvedPolicyTest extends TestCase
 {
 	public function testCanIfHasPermissions()
 	{
@@ -14,7 +14,7 @@ class SupportRequestIndexPolicyTest extends TestCase
 		$user->group->reply_to_support_service = true;
 		$user->push();
 
-		$this->assertTrue($user->can('index', SupportRequest::class));
+		$this->assertTrue($user->can('view_unsolved', SupportRequest::class));
 	}
 
 	public function testCantIfDoesntHavePermissions()
@@ -23,6 +23,6 @@ class SupportRequestIndexPolicyTest extends TestCase
 		$user->group->reply_to_support_service = false;
 		$user->push();
 
-		$this->assertFalse($user->can('index', SupportRequest::class));
+		$this->assertFalse($user->can('view_unsolved', SupportRequest::class));
 	}
 }

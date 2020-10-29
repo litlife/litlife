@@ -98,6 +98,8 @@ class Handler extends ExceptionHandler
 		if (App::environment() == 'testing') {
 			//dd(config('app.debug'));
 
+			throw $exception;
+
 			if ($exception instanceof QueryException) {
 				throw $exception;
 			}
@@ -109,6 +111,13 @@ class Handler extends ExceptionHandler
 			if ($exception instanceof \InvalidArgumentException) {
 				throw $exception;
 			}
+
+			if ($exception instanceof \ArgumentCountError) {
+				throw $exception;
+			}
+
+			if ($exception instanceof \BadMethodCallException)
+				throw $exception;
 		}
 
 		return parent::render($request, $exception);

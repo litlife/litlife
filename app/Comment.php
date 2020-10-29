@@ -78,7 +78,6 @@ use Illuminate\Support\Facades\Cache;
  * @property-read mixed $level_with_limit
  * @property mixed $parent
  * @property-read mixed $root
- * @property-read mixed $tree_array
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $originCommentable
  * @property-write mixed $b_b_text
  * @property-read \App\User|null $status_changed_user
@@ -94,7 +93,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment acceptedOrBelongsToUser($user)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment any()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment author($author)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment book()
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment bookType()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment checked()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment checkedAndOnCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment checkedOrBelongsToUser($user)

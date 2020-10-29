@@ -164,6 +164,11 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int|null $editions_count
  * @property float|null $previous_price Предыдущая цена
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
+ * @property string|null $title_author_search_helper Название книги начинается с заглавной буквы и пишется строчными буквами. Исключения аббревиатуры типа: STALKER<br/>
+ *                         Название и номер серии в названии книги не указывается.<br/>
+ *                         Если книга не вычитана в названии книги это не указывается, а вместо этого необходимо добавить в аннотацию
+ *                         предупреждение: "Предупреждение: Не вычитано".<br/>
+ *                         Редакторы, составители, иллюстраторы, художники указываются в полях ниже
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
  * @property-read \App\User|null $add_user
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
@@ -283,7 +288,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Book rememberCount($minutes = 5, $refresh = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Book sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Book similaritySearch($searchText)
- * @method static \Illuminate\Database\Eloquent\Builder|Book titleAuthorsFulltextSearch($searchText)
+ * @method static \Illuminate\Database\Eloquent\Builder|Book titleAuthorFulltextSearch($searchText)
+ * @method static \Illuminate\Database\Eloquent\Builder|Book titleFulltextSearch($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|Book unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Book unchecked()
  * @method static \Illuminate\Database\Eloquent\Builder|Book void()
@@ -404,6 +410,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereTiLb($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereTiOlb($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Book whereTitleAuthorSearchHelper($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereTitleSearchHelper($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereUserEditedAt($value)

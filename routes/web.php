@@ -569,14 +569,20 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/preview/invitation_take_survey', 'OtherController@previewInvitationToTakeSurvey')->name('preview.invitation_take_survey');
 	Route::get('/preview/welcome_notification', 'OtherController@welcomeNotification')->name('preview.welcome_notification');
 
-	Route::get('/support_requests', 'SupportRequestController@index')->name('support_requests.index');
-	Route::get('/support_requests/create', 'SupportRequestController@create')->name('support_requests.create');
+	Route::get('/users/{user}/support_requests', 'UserController@supportRequests')->name('users.support_requests.index');
+	Route::get('/users/{user}/support_requests/create', 'SupportRequestController@create')->name('support_requests.create');
+	Route::post('/users/{user}/support_requests', 'SupportRequestController@store')->name('support_requests.store');
+
 	Route::get('/support_requests/{support_request}', 'SupportRequestController@show')->name('support_requests.show');
 	Route::post('/support_request_messages', 'SupportRequestMessageController@store')->name('support_request_messages.store');
 	Route::get('/support_requests/{support_request}/start_review', 'SupportRequestController@startReview')->name('support_requests.start_review');
 	Route::get('/support_requests/{support_request}/approve', 'SupportRequestController@approve')->name('support_requests.approve');
-	Route::get('/support_requests/{support_request}/decline', 'SupportRequestController@decline')->name('support_requests.decline');
-	Route::get('/support_requests/{support_request}/stop_review', 'SupportRequestController@decline')->name('support_requests.stop_review');
+	Route::get('/support_requests/{support_request}/stop_review', 'SupportRequestController@stopReview')->name('support_requests.stop_review');
+	Route::get('/support_requests/{support_request}/solve', 'SupportRequestController@solve')->name('support_requests.solve');
+	Route::get('/support_requests', 'SupportRequestController@index')->name('support_requests.index');
+	Route::get('/support_requests/solved', 'SupportRequestController@solved')->name('support_requests.solved');
+	Route::get('/support_requests/in_process_of_solving', 'SupportRequestController@inProcessOfSolving')->name('support_requests.in_process_of_solving');
+	Route::get('/support_requests/unsolved', 'SupportRequestController@unsolved')->name('support_requests.unsolved');
 });
 
 Route::get('/books/{book}/pages', 'SectionController@page')->name('books.pages');

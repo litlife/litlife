@@ -2340,6 +2340,8 @@ namespace PHPSTORM_META {
 		'App\Section' => \App\SectionFactoryBuilder::class,
 		'App\Sequence' => \App\SequenceFactoryBuilder::class,
 		'App\Smile' => \App\SmileFactoryBuilder::class,
+		'App\SupportRequest' => \App\SupportRequestFactoryBuilder::class,
+		'App\SupportRequestMessage' => \App\SupportRequestMessageFactoryBuilder::class,
 		'App\TextBlock' => \App\TextBlockFactoryBuilder::class,
 		'App\Topic' => \App\TopicFactoryBuilder::class,
 		'App\UrlShort' => \App\UrlShortFactoryBuilder::class,
