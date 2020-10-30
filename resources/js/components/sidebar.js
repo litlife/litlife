@@ -13,8 +13,12 @@ export default function Sidebar() {
 
 				let count = 0;
 
-				collapse.find('.list-group-item .badge-primary').each(function (i) {
-					count = count + parseInt($(this).text(), 10);
+				collapse.find('.list-group-item .badge').each(function (i) {
+					let $badge = $(this);
+
+					if ($badge.hasClass('badge-primary') || $badge.hasClass('badge-info')) {
+						count = count + parseInt($(this).text(), 10);
+					}
 				});
 
 				if (count > 0) {

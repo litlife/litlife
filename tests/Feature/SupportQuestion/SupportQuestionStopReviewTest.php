@@ -5,6 +5,7 @@ namespace Tests\Feature\SupportQuestion;
 use App\Jobs\SupportQuestion\UpdateNumberInProgressQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfAnsweredQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfNewQuestions;
+use App\Jobs\User\UpdateUserNumberInProgressQuestions;
 use App\SupportQuestion;
 use App\User;
 use Illuminate\Support\Facades\Bus;
@@ -41,6 +42,9 @@ class SupportQuestionStopReviewTest extends TestCase
 		Bus::assertDispatched(UpdateNumberInProgressQuestions::class);
 		Bus::assertNotDispatched(UpdateNumberOfAnsweredQuestions::class);
 		Bus::assertDispatched(UpdateNumberOfNewQuestions::class);
+		Bus::assertDispatched(UpdateUserNumberInProgressQuestions::class, function ($job) use ($supportQuestion) {
+			return $supportQuestion->status_changed_user->is($job->user);
+		});
 	}
 
 	public function testWithAjax()

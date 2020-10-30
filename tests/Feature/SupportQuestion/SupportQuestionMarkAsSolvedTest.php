@@ -6,6 +6,7 @@ use App\Events\NumberOfUnsolvedSupportQuestionsHasChanged;
 use App\Jobs\SupportQuestion\UpdateNumberInProgressQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfAnsweredQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfNewQuestions;
+use App\Jobs\User\UpdateUserNumberInProgressQuestions;
 use App\SupportQuestion;
 use App\SupportQuestionMessage;
 use Illuminate\Support\Facades\Bus;
@@ -38,6 +39,9 @@ class SupportQuestionMarkAsSolvedTest extends TestCase
 		Bus::assertDispatched(UpdateNumberInProgressQuestions::class);
 		Bus::assertDispatched(UpdateNumberOfAnsweredQuestions::class);
 		Bus::assertNotDispatched(UpdateNumberOfNewQuestions::class);
+		Bus::assertDispatched(UpdateUserNumberInProgressQuestions::class, function ($job) use ($supportQuestion) {
+			return $supportQuestion->status_changed_user->is($job->user);
+		});
 	}
 
 	public function testWithAjax()

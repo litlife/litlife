@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSupportQuestion;
 use App\Jobs\SupportQuestion\UpdateNumberInProgressQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfAnsweredQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfNewQuestions;
+use App\Jobs\User\UpdateUserNumberInProgressQuestions;
 use App\SupportQuestion;
 use App\SupportQuestionMessage;
 use App\User;
@@ -199,6 +200,10 @@ class SupportQuestionController extends Controller
 		UpdateNumberOfAnsweredQuestions::dispatch();
 		UpdateNumberInProgressQuestions::dispatch();
 
+		if ($supportQuestion->status_changed_user) {
+			UpdateUserNumberInProgressQuestions::dispatch($supportQuestion->status_changed_user);
+		}
+
 		if (request()->ajax())
 			return view('support_question.status', ['item' => $supportQuestion]);
 		else {
@@ -249,11 +254,20 @@ class SupportQuestionController extends Controller
 	{
 		$this->authorize('stopReview', $supportQuestion);
 
+		if ($supportQuestion->status_changed_user) {
+			UpdateUserNumberInProgressQuestions::dispatch($supportQuestion->status_changed_user);
+		}
+
 		$supportQuestion->statusSentForReview();
 		$supportQuestion->save();
+		$supportQuestion->refresh();
 
 		UpdateNumberOfNewQuestions::dispatch();
 		UpdateNumberInProgressQuestions::dispatch();
+
+		if ($supportQuestion->status_changed_user) {
+			UpdateUserNumberInProgressQuestions::dispatch($supportQuestion->status_changed_user);
+		}
 
 		if (request()->ajax())
 			return view('support_question.status', ['item' => $supportQuestion]);
