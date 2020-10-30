@@ -90,8 +90,6 @@ class SupportQuestionPolicy extends Policy
 		if ($request->isUserCreator($auth_user)) {
 			if (!$request->isLatestMessageByCreatedUser())
 				return true;
-			else
-				return false;
 		}
 
 		if (!$request->isReviewStarts())
