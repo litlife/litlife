@@ -1576,48 +1576,48 @@ Breadcrumbs::for('books.collections.create', function ($breadcrumbs, $book) {
 	$breadcrumbs->push(__('Add a book to a collection'), route('books.collections.create', ['book' => $book]));
 });
 
-Breadcrumbs::for('users.support_requests.index', function ($breadcrumbs, $user) {
-	$breadcrumbs->push(__('Support requests'), route('users.support_requests.index', $user));
+Breadcrumbs::for('users.support_questions.index', function ($breadcrumbs, $user) {
+	$breadcrumbs->push(__('Support questions'), route('users.support_questions.index', $user));
 });
 
-Breadcrumbs::for('support_requests.create', function ($breadcrumbs, $user) {
-	$breadcrumbs->parent('users.support_requests.index', ['user' => $user]);
-	$breadcrumbs->push(__('New support request'), route('support_requests.create', $user));
+Breadcrumbs::for('support_questions.create', function ($breadcrumbs, $user) {
+	$breadcrumbs->parent('users.support_questions.index', ['user' => $user]);
+	$breadcrumbs->push(__('New question'), route('support_questions.create', $user));
 });
 
-Breadcrumbs::for('support_requests.show', function ($breadcrumbs, $supportRequest) {
+Breadcrumbs::for('support_questions.show', function ($breadcrumbs, $supportQuestion) {
 
-	if ($supportRequest instanceof \App\SupportRequest) {
-		if (\Illuminate\Support\Facades\Auth::user()->is($supportRequest->create_user)) {
-			$breadcrumbs->parent('users.support_requests.index', ['user' => $supportRequest->create_user]);
+	if ($supportQuestion instanceof \App\SupportQuestion) {
+		if (\Illuminate\Support\Facades\Auth::user()->is($supportQuestion->create_user)) {
+			$breadcrumbs->parent('users.support_questions.index', ['user' => $supportQuestion->create_user]);
 		} else {
-			if ($supportRequest->isAccepted())
-				$breadcrumbs->parent('support_requests.solved');
-			elseif ($supportRequest->isReviewStarts())
-				$breadcrumbs->parent('support_requests.in_process_of_solving');
-			elseif ($supportRequest->isSentForReview())
-				$breadcrumbs->parent('support_requests.unsolved');
+			if ($supportQuestion->isAccepted())
+				$breadcrumbs->parent('support_questions.solved');
+			elseif ($supportQuestion->isReviewStarts())
+				$breadcrumbs->parent('support_questions.in_process_of_solving');
+			elseif ($supportQuestion->isSentForReview())
+				$breadcrumbs->parent('support_questions.unsolved');
 		}
 
-		$breadcrumbs->push($supportRequest->title, route('support_requests.show', ['support_request' => $supportRequest]));
+		$breadcrumbs->push($supportQuestion->title, route('support_questions.show', ['support_question' => $supportQuestion]));
 	}
 });
 
-Breadcrumbs::for('support_requests.unsolved', function ($breadcrumbs) {
-	$breadcrumbs->parent('support_requests.index');
-	$breadcrumbs->push(__('Unsolved requests'), route('support_requests.unsolved'));
+Breadcrumbs::for('support_questions.unsolved', function ($breadcrumbs) {
+	$breadcrumbs->parent('support_questions.index');
+	$breadcrumbs->push(__('New questions'), route('support_questions.unsolved'));
 });
 
-Breadcrumbs::for('support_requests.solved', function ($breadcrumbs) {
-	$breadcrumbs->parent('support_requests.index');
-	$breadcrumbs->push(__('Solved requests'), route('support_requests.solved'));
+Breadcrumbs::for('support_questions.solved', function ($breadcrumbs) {
+	$breadcrumbs->parent('support_questions.index');
+	$breadcrumbs->push(__('Solved questions'), route('support_questions.solved'));
 });
 
-Breadcrumbs::for('support_requests.in_process_of_solving', function ($breadcrumbs) {
-	$breadcrumbs->parent('support_requests.index');
-	$breadcrumbs->push(__('In process'), route('support_requests.in_process_of_solving'));
+Breadcrumbs::for('support_questions.in_process_of_solving', function ($breadcrumbs) {
+	$breadcrumbs->parent('support_questions.index');
+	$breadcrumbs->push(__('In process'), route('support_questions.in_process_of_solving'));
 });
 
-Breadcrumbs::for('support_requests.index', function ($breadcrumbs) {
-	$breadcrumbs->push(__('Support requests'), route('support_requests.index'));
+Breadcrumbs::for('support_questions.index', function ($breadcrumbs) {
+	$breadcrumbs->push(__('Support questions'), route('support_questions.index'));
 });

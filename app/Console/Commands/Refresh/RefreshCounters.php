@@ -7,9 +7,11 @@ use App\Book;
 use App\BookFile;
 use App\Comment;
 use App\Events\BookFilesCountChanged;
+use App\Jobs\SupportQuestion\UpdateNumberInProgressQuestions;
+use App\Jobs\SupportQuestion\UpdateNumberOfAnsweredQuestions;
+use App\Jobs\SupportQuestion\UpdateNumberOfNewQuestions;
 use App\Manager;
 use App\Post;
-use App\SupportRequest;
 use App\UserOnModeration;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -54,8 +56,8 @@ class RefreshCounters extends Command
 		UserOnModeration::flushCachedCount();
 		AuthorSaleRequest::flushCachedOnModerationCount();
 
-		SupportRequest::flushNumberOfUnsolved();
-		SupportRequest::flushNumberInProcess();
-		SupportRequest::flushNumberOfSolved();
+		UpdateNumberOfNewQuestions::dispatch();
+		UpdateNumberOfAnsweredQuestions::dispatch();
+		UpdateNumberInProgressQuestions::dispatch();
 	}
 }

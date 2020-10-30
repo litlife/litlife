@@ -355,15 +355,15 @@
 				<div class="card">
 					<div class="list-group list-group-flush">
 
-						@can ('view_unsolved', \App\SupportRequest::class)
-							@php($userNumberOfUnsolved = \Illuminate\Support\Facades\Auth::user()->getNumberOfUnsolved())
-							@php($numberOfUnsolved = \App\SupportRequest::getNumberOfUnsolved())
+						@can ('view_index', \App\SupportQuestion::class)
+							@php($userNumberOfUnsolved = \Illuminate\Support\Facades\Auth::user()->getNumberInProgressQuestions())
+							@php($numberOfUnsolved = \App\SupportQuestion::getNumberOfNewQuestions())
 
-							<a href="{{ $userNumberOfUnsolved ? route('support_requests.in_process_of_solving') : route('support_requests.unsolved') }}"
+							<a href="{{ $userNumberOfUnsolved ? route('support_questions.in_process_of_solving') : route('support_questions.unsolved') }}"
 							   title="{{ __('Support') }}" data-boundary="window" data-toggle="tooltip"
 							   data-placement="right"
-							   class="list-group-item list-group-item-action d-flex {{ active('support_requests.unsolved') }}">
-								<span class="text-nowrap text-truncate">{{ __('Support') }}</span>
+							   class="list-group-item list-group-item-action d-flex {{ active('support_questions.unsolved') }}">
+								<span class="text-nowrap text-truncate">{{ __('Support questions') }}</span>
 
 								<span class="ml-auto">
 									@if ($userNumberOfUnsolved)

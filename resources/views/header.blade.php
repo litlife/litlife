@@ -58,16 +58,6 @@
 				</td>
 				<td>
 					<div class="nav-item">
-						<a class="nav-link text-nowrap"
-						   href="{{ route('books', ['order' => 'rating_week_desc', 'paid_access' => 'paid_only',
-						   'read_access' => 'any', 'download_access' => 'any']) }}">
-							<i class="fas fa-coins"></i>
-							<h2 class="h6 d-inline  font-weight-normal"> {{ __('navbar.on_sale') }}</h2>
-						</a>
-					</div>
-				</td>
-				<td>
-					<div class="nav-item">
 						<a class="nav-link text-nowrap {{ isActiveRoute('sequences') }}" href="{{ route('sequences') }}"
 						   @if (cache('sequences_count') > 0) title="{{ __('header.sequences') }}: {{ cache('sequences_count') }}" @endif>
 							<h2 class="h6 d-inline font-weight-normal">
@@ -95,13 +85,25 @@
 					</div>
 				</td>
 				<td>
-					<div class="nav-item ">
+					<div class="nav-item">
 						<a class="nav-link text-nowrap {{ isActiveRoute('users') }}" href="{{ route('users') }}"
 						   title="{{ __('header.users') }}: {{ cache('users_count') }} @if (cache('users_online_count') > 0) {{ __('header.users_online') }}: {{ cache('users_online_count') }} @endif">
 							<i class="fas fa-users"></i>
 						</a>
 					</div>
 				</td>
+
+				@can('create_support_questions', auth()->user())
+					<td>
+						<div class="nav-item">
+							<a class="nav-link text-nowrap"
+							   href="{{ route('support') }}">
+								{{ __('Support') }}
+							</a>
+						</div>
+					</td>
+				@endcan
+
 				<td>
 					<div class="nav-item">
 
@@ -156,7 +158,7 @@
 					</div>
 				</td>
 				<td>
-					<div class="nav-item ml-1 mr-3">
+					<div class="nav-item ml-1">
 						<a class="nav-link" title="{{ __('navbar.qrcode') }}" style="cursor: pointer;">
 							<i data-toggle="modal" data-target="#QRCodeDialog" class="fas fa-qrcode"></i>
 						</a>

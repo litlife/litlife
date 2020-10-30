@@ -126,8 +126,8 @@ class EventServiceProvider extends ServiceProvider
 			'App\Listeners\UpdateBookKeywordRating'
 		],
 
-		'App\Events\NumberOfUnsolvedSupportRequestsHasChanged' => [
-			'App\Listeners\FlushCachedNumberOfUnsolvedSupportRequests'
+		'App\Events\NumberOfUnsolvedSupportQuestionsHasChanged' => [
+			'App\Listeners\FlushCachedNumberOfUnsolvedSupportQuestions'
 		],
 
 		'Illuminate\Notifications\Events\NotificationSent' => [

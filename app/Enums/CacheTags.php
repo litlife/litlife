@@ -25,9 +25,9 @@ final class CacheTags extends Enum
 	const LatestTopicsQuery = 17;
 	const BlogPostsOnModerationCount = 18;
 	const UserPrivateChaptersCount = 19;
-	const NumberOfUnsolvedRequests = 20;
-	const NumberInProcessSupportRequests = 21;
-	const NumberOfSolvedSupportRequests = 22;
+	const NumberOfNewSupportQuestions = 20;
+	const NumberInProcessSupportQuestions = 21;
+	const NumberOfSolvedSupportQuestions = 22;
 
 	/*
 	const GenresCount = 4; // genres_count

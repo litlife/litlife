@@ -1155,29 +1155,17 @@ class UserPolicy extends Policy
 	}
 
 	/**
-	 * View a list of support requests
+	 * Create a support questions
 	 *
 	 * @param User $auth_user
 	 * @param User $user
 	 * @return boolean
 	 */
-	public function view_list_support_requests(User $auth_user, User $user)
-	{
-		return $auth_user->is($user);
-	}
-
-	/**
-	 * Create a support requests
-	 *
-	 * @param User $auth_user
-	 * @param User $user
-	 * @return boolean
-	 */
-	public function create_support_requests(User $auth_user, User $user)
+	public function create_support_questions(User $auth_user, User $user)
 	{
 		if (!$auth_user->is($user))
 			return false;
 
-		return $auth_user->getPermission('send_a_support_request');
+		return $auth_user->getPermission('send_a_support_question');
 	}
 }

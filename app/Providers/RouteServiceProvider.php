@@ -46,7 +46,7 @@ class RouteServiceProvider extends ServiceProvider
 		Route::pattern('award', '[0-9]{1,9}');
 		Route::pattern('genre', '[0-9]{1,9}(.*)');
 		Route::pattern('complain', '[0-9]{1,9}');
-		Route::pattern('support_request', '[0-9]{1,9}');
+		Route::pattern('support_question', '[0-9]{1,9}');
 
 		Route::bind('genre', function ($value) {
 			return Genre::whereIdWithSlug($value)->first() ?? abort(404);

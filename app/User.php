@@ -118,8 +118,8 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSearchSetting[] $booksSearchSettings
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books_read_statuses
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportRequestMessage[] $createdSupportMessages
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportRequest[] $createdSupportRequests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestionMessage[] $createdSupportMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestion[] $createdSupportQuestions
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorRepeat[] $created_author_repeats
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $created_authors
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookFile[] $created_book_files
@@ -1568,21 +1568,21 @@ class User extends Authenticatable
 		return json_encode($object, JSON_NUMERIC_CHECK);
 	}
 
-	public function createdSupportRequests()
+	public function createdSupportQuestions()
 	{
-		return $this->hasMany('App\SupportRequest', 'create_user_id');
+		return $this->hasMany('App\SupportQuestion', 'create_user_id');
 	}
 
 	public function createdSupportMessages()
 	{
-		return $this->hasMany('App\SupportRequestMessage', 'create_user_id');
+		return $this->hasMany('App\SupportQuestionMessage', 'create_user_id');
 	}
 
-	public function getNumberOfUnsolved(): int
+	public function getNumberInProgressQuestions(): int
 	{
-		return Cache::tags([CacheTags::NumberOfUnsolvedRequests])->remember($this->id, 86400, function () {
+		return Cache::tags([CacheTags::NumberInProcessSupportQuestions])->remember($this->id, 86400, function () {
 
-			$count = SupportRequest::whereStatusIn(['ReviewStarts'])
+			$count = SupportQuestion::whereStatusIn(['ReviewStarts'])
 				->whereLastResponseByUser()
 				->count();
 
@@ -1590,8 +1590,8 @@ class User extends Authenticatable
 		});
 	}
 
-	public function flushNumberOfUnsolved()
+	public function flushNumberInProgressQuestions()
 	{
-		Cache::tags([CacheTags::NumberOfUnsolvedRequests])->pull($this->id);
+		Cache::tags([CacheTags::NumberInProcessSupportQuestions])->pull($this->id);
 	}
 }

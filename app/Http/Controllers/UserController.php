@@ -722,7 +722,7 @@ class UserController extends Controller
 	}
 
 	/**
-	 * Support requests
+	 * Support questions
 	 *
 	 * @param User $user
 	 * @return Response
@@ -730,16 +730,17 @@ class UserController extends Controller
 	 */
 	public function supportRequests(User $user)
 	{
-		$this->authorize('view_list_support_requests', $user);
+		$this->authorize('create_support_questions', $user);
 
-		if (!$user->createdSupportRequests()->first())
-			return redirect()
-				->route('support_requests.create', ['user' => $user]);
-
-		$supportRequests = $user->createdSupportRequests()
+		$supportQuestions = $user->createdSupportQuestions()
+			->with('create_user', 'latest_message.create_user')
 			->orderBy('last_message_created_at', 'desc')
 			->simplePaginate();
 
-		return view('user.support_request.index', ['user' => $user, 'supportRequests' => $supportRequests]);
+		if ($supportQuestions->count() < 1)
+			return redirect()
+				->route('support_questions.create', ['user' => $user]);
+
+		return view('user.support_question.index', ['user' => $user, 'supportQuestions' => $supportQuestions]);
 	}
 }

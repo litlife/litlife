@@ -131,6 +131,6 @@ return [
 	'view_user_surveys' => 'Просматривать опросы пользователей',
 	'manage_ad_blocks' => 'Управлять рекламными блоками',
 	'edit_or_delete_your_comments_to_collections' => 'Редактировать или удалять свои комментарии к подборкам',
-	'send_a_support_request' => 'Может ли пользователь написать в поддержку',
+	'send_a_support_question' => 'Может ли пользователь написать в поддержку',
 	'reply_to_support_service' => 'Может ли пользователь отвечать в службе поддержки'
 ];

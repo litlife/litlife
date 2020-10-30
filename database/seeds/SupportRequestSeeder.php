@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class SupportRequestSeeder extends Seeder
+class SupportQuestionSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.

@@ -98,7 +98,7 @@ class Handler extends ExceptionHandler
 		if (App::environment() == 'testing') {
 			//dd(config('app.debug'));
 
-			throw $exception;
+			//throw $exception;
 
 			if ($exception instanceof QueryException) {
 				throw $exception;

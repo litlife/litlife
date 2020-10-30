@@ -56,7 +56,7 @@ use App\Policies\PagePolicy;
 use App\Policies\PostPolicy;
 use App\Policies\SectionPolicy;
 use App\Policies\SequencePolicy;
-use App\Policies\SupportRequestPolicy;
+use App\Policies\SupportQuestionPolicy;
 use App\Policies\TextBlockPolicy;
 use App\Policies\TopicPolicy;
 use App\Policies\UserEmailPolicy;
@@ -68,7 +68,7 @@ use App\Policies\UserSocialAccountPolicy;
 use App\Post;
 use App\Section;
 use App\Sequence;
-use App\SupportRequest;
+use App\SupportQuestion;
 use App\TextBlock;
 use App\Topic;
 use App\User;
@@ -124,7 +124,7 @@ class AuthServiceProvider extends ServiceProvider
 		UserPaymentTransaction::class => UserPaymentTransactionPolicy::class,
 		Page::class => PagePolicy::class,
 		AdBlock::class => AdBlockPolicy::class,
-		SupportRequest::class => SupportRequestPolicy::class
+		SupportQuestion::class => SupportQuestionPolicy::class
 	];
 
 	/**

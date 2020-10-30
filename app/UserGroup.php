@@ -136,7 +136,7 @@ use Illuminate\Support\Str;
  * @property bool $deleting_online_read_and_files Может ли пользователь использовать функцию: "удалить все файлы, главы книги и изображения (кроме обложки)"
  * @property bool $manage_ad_blocks Добавлять жанры
  * @property bool $edit_or_delete_your_comments_to_collections Редактировать или удалять свои комментарии к подборкам
- * @property bool $send_a_support_request Может ли пользователь написать в поддержку
+ * @property bool $send_a_support_question Может ли пользователь написать в поддержку
  * @property bool $reply_to_support_service Может ли пользователь написать в поддержку
  * @property-read mixed $rules
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
@@ -255,7 +255,7 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereReplyToSupportService($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRetryFailedBookParse($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSeeDeleted($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendASupportRequest($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendASupportQuestion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendMessage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSequenceDelete($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSequenceEdit($value)
@@ -430,7 +430,7 @@ class UserGroup extends Model
 			'deleting_online_read_and_files' => false,
 			'manage_ad_blocks' => false,
 			'edit_or_delete_your_comments_to_collections' => true,
-			'send_a_support_request' => true,
+			'send_a_support_question' => true,
 			'reply_to_support_service' => false
 		];
 	protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
