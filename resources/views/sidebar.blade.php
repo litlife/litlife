@@ -350,8 +350,11 @@
 				<span class="count badge badge-primary badge-pill ml-auto"></span>
 				<span class="badge badge-light badge-pill ml-auto"><i class="fas fa-caret-down"></i></span>
 			</a>
-			<div class="collapse mt-3 {{ active(['users.on_moderation', 'books.on_moderation', 'book_files.on_moderation', 'complaints.index', 'book_keywords.on_moderation', 'managers.on_check', 'posts.on_check', 'comments.on_check', 'settings.index', 'achievements.index', 'groups.index', 'books.trashed'], 'show') }}"
-				 id="admin_functions">
+			<div id="admin_functions" class="collapse mt-3 {{ active([
+			'users.on_moderation', 'books.on_moderation', 'book_files.on_moderation', 'complaints.index',
+			'book_keywords.on_moderation', 'managers.on_check', 'posts.on_check', 'comments.on_check', 'settings.index',
+			'achievements.index', 'groups.index', 'books.trashed', 'support_questions.in_process_of_solving',
+			'support_questions.unsolved'], 'show') }}">
 				<div class="card">
 					<div class="list-group list-group-flush">
 
@@ -360,12 +363,12 @@
 							@php($numberOfUnsolved = \App\SupportQuestion::getNumberOfNewQuestions())
 
 							<a href="{{ $userNumberOfUnsolved ? route('support_questions.in_process_of_solving') : route('support_questions.unsolved') }}"
-							   title="{{ __('Support') }}" data-boundary="window" data-toggle="tooltip"
+							   title="{{ __('Support questions') }}" data-boundary="window" data-toggle="tooltip"
 							   data-placement="right"
 							   class="list-group-item list-group-item-action d-flex {{ active('support_questions.unsolved') }}">
 								<span class="text-nowrap text-truncate">{{ __('Support questions') }}</span>
 
-								<span class="ml-auto">
+								<span class="ml-auto text-nowrap">
 									@if ($userNumberOfUnsolved)
 										<span class="badge badge-info badge-pill">{{ $userNumberOfUnsolved }}</span>
 									@endif
