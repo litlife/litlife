@@ -8,6 +8,8 @@ use App\User;
 use App\UserEmail;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
 class UserLoginTest extends TestCase
@@ -19,6 +21,8 @@ class UserLoginTest extends TestCase
 	 */
 	public function testLoginHttp()
 	{
+		Event::fake(Login::class);
+
 		$this->assertGuest();
 
 		$password = $this->faker->password;
@@ -38,6 +42,11 @@ class UserLoginTest extends TestCase
 			->assertRedirect();
 
 		$this->assertAuthenticatedAs($user);
+
+		Event::assertDispatched(Login::class, function ($event) use ($user) {
+			$this->assertFalse($event->remember);
+			return $event->user->is($user);
+		});
 	}
 
 	public function testLogoutHttp()
@@ -58,6 +67,8 @@ class UserLoginTest extends TestCase
 
 	public function testRememberLoginHttp()
 	{
+		Event::fake(Login::class);
+
 		$this->withMiddleware(RefreshUserLastActivity::class);
 		$this->withMiddleware(RemeberSessionGeoIpAndBrowser::class);
 
@@ -94,6 +105,11 @@ class UserLoginTest extends TestCase
 			auth()->user()->getRememberToken(),
 			auth()->user()->password,
 		]));
+
+		Event::assertDispatched(Login::class, function ($event) use ($user) {
+			$this->assertTrue($event->remember);
+			return $event->user->is($user);
+		});
 	}
 
 	public function testLoginWithIdHttp()

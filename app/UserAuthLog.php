@@ -56,5 +56,4 @@ class UserAuthLog extends Model
 	{
 		return $this->belongsTo('App\User', 'user_id', 'id');
 	}
-
 }

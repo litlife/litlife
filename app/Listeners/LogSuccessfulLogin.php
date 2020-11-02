@@ -30,10 +30,11 @@ class LogSuccessfulLogin
 		}
 
 		if (!empty($event->user)) {
-			$success = new UserAuthLog;
-			$success->user_id = $event->user->id;
-			$success->ip = request()->ip();
-			$success->save();
+			$log = new UserAuthLog;
+			$log->user_id = $event->user->id;
+			$log->ip = request()->ip();
+			$log->is_remember_me_enabled = $event->remember;
+			$log->save();
 		}
 
 		$event->user->update_activity();

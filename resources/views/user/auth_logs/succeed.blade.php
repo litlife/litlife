@@ -20,6 +20,7 @@
 							<th>{{ __('auth_logs.ip') }}</th>
 							<th>{{ __('auth_logs.created_at') }}</th>
 							<th>{{ __('auth_logs.device') }}</th>
+							<th>{{ __('auth_logs.is_remember_me_enabled') }}</th>
 						</tr>
 						@foreach ($auth_logs as $log)
 							<tr>
@@ -57,6 +58,16 @@
 										{{ $log->user_agent->value }}
 
 									@endisset
+								</td>
+
+								<td>
+									@if ($log->is_remember_me_enabled === true)
+										{{ __('Enabled') }}
+									@elseif ($log->is_remember_me_enabled === false)
+										{{ __('Disabled') }}
+									@else
+										{{ __('Unknown') }}
+									@endif
 								</td>
 
 							</tr>
