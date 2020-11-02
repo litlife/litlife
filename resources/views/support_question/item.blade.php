@@ -25,6 +25,32 @@
 			@include('support_question.status')
 		</div>
 
+		@if ($item->hasFeedback())
+			<div class="d-flex mt-3">
+
+				<a href="#" data-toggle="collapse" data-target="#collapse_{{ $item->id }}"
+				   data-toggle="tooltip" data-placement="top" title="{{ __('Click to expand the review') }}"
+				   class="text-decoration-none mr-2"
+				   aria-expanded="false" aria-controls="collapseExample">
+					@switch(\App\Enums\FaceReactionEnum::getKey($item->feedback->face_reaction))
+						@case('Smile')
+						<i class="far fa-smile h3 mb-0 text-primary"></i>
+						@break
+						@case('Meh')
+						<i class="far fa-meh h3 mb-0 text-primary"></i>
+						@break
+						@case('Sad')
+						<i class="far fa-frown h3 mb-0 text-primary"></i>
+						@break
+					@endswitch
+				</a>
+
+				<div class="collapse" id="collapse_{{ $item->id }}">
+					{{ $item->feedback->text }}
+				</div>
+			</div>
+		@endif
+
 	</div>
 
 	<div class="card-footer buttons">

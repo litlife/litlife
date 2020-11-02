@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\NumberOfUnsolvedSupportQuestionsHasChanged;
+use App\FeedbackSupportResponses;
+use App\Http\Requests\StoreFeedbackSupportQuestion;
 use App\Http\Requests\StoreSupportQuestion;
 use App\Jobs\SupportQuestion\UpdateNumberInProgressQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfAnsweredQuestions;
@@ -102,7 +104,7 @@ class SupportQuestionController extends Controller
 		$this->authorize('view_index', SupportQuestion::class);
 
 		$supportQuestions = SupportQuestion::latest()
-			->with('create_user.avatar', 'latest_message.create_user.avatar')
+			->with('create_user.avatar', 'latest_message.create_user.avatar', 'feedback')
 			->accepted()
 			->simplePaginate();
 
@@ -209,7 +211,7 @@ class SupportQuestionController extends Controller
 		else {
 			if ($supportQuestion->isAuthUserCreator())
 				return redirect()
-					->route('users.support_questions.index', ['user' => $supportQuestion->create_user])
+					->route('support_questions.show', $supportQuestion)
 					->with('success', __('Thank you! You marked the support question as resolved'));
 			else
 				return redirect()
@@ -275,5 +277,37 @@ class SupportQuestionController extends Controller
 			return redirect()
 				->route('support_questions.unsolved')
 				->with(['success' => __('You refused to resolve the question')]);
+	}
+
+	/**
+	 * Create feedback support question
+	 *
+	 * @param SupportQuestion $supportQuestion
+	 * @throws AuthorizationException
+	 */
+	public function feedbackCreate(SupportQuestion $supportQuestion)
+	{
+		$this->authorize('create_feedback', $supportQuestion);
+
+		return view('support_question.feedback.create', ['supportQuestion' => $supportQuestion]);
+	}
+
+	/**
+	 * Store feedback support question
+	 *
+	 * @param SupportQuestion $supportQuestion
+	 * @return \Illuminate\Http\Response
+	 * @throws AuthorizationException
+	 */
+	public function feedbackStore(StoreFeedbackSupportQuestion $request, SupportQuestion $supportQuestion)
+	{
+		$this->authorize('create_feedback', $supportQuestion);
+
+		$feedback = new FeedbackSupportResponses($request->all());
+		$supportQuestion->feedback()->save($feedback);
+
+		return redirect()
+			->route('support_questions.show', $supportQuestion)
+			->with('success', __('Thank you for your feedback!'));
 	}
 }

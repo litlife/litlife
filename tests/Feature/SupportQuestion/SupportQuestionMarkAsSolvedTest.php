@@ -84,7 +84,7 @@ class SupportQuestionMarkAsSolvedTest extends TestCase
 		$this->actingAs($user)
 			->get(route('support_questions.solve', $supportQuestion))
 			->assertSessionHasNoErrors()
-			->assertRedirect(route('users.support_questions.index', ['user' => $user]))
+			->assertRedirect(route('support_questions.show', $supportQuestion))
 			->assertSessionHas('success', __('Thank you! You marked the support question as resolved'));
 
 		$supportQuestion->refresh();

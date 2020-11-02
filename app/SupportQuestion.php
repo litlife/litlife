@@ -195,4 +195,20 @@ class SupportQuestion extends Model
 	{
 		$this->attributes['title'] = Str::limit($value, 97);
 	}
+
+	public function feedback()
+	{
+		return $this->hasOne('App\FeedbackSupportResponses');
+	}
+
+	public function hasFeedback(): bool
+	{
+		if ($this->isAccepted()) {
+			if ($this->feedback) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
