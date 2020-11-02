@@ -12,7 +12,7 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $request
-	 * @return bool
+	 * @return mixed
 	 */
 	public function view_index(User $auth_user)
 	{
@@ -24,7 +24,7 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $request
-	 * @return bool
+	 * @return mixed
 	 */
 	public function createMessage(User $auth_user, SupportQuestion $request)
 	{
@@ -37,12 +37,12 @@ class SupportQuestionPolicy extends Policy
 			if ($request->isReviewStarts()) {
 				if ($request->status_changed_user->is($auth_user)) {
 					if ($auth_user->getPermission('reply_to_support_service'))
-						return true;
+						return $this->allow();
 				}
 			}
 		}
 
-		return false;
+		return $this->deny();
 	}
 
 	/**
@@ -50,17 +50,17 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $request
-	 * @return bool
+	 * @return mixed
 	 */
 	public function show(User $auth_user, SupportQuestion $request)
 	{
 		if ($auth_user->getPermission('reply_to_support_service'))
-			return true;
+			return $this->allow();
 
 		if ($request->isUserCreator($auth_user))
-			return true;
+			return $this->allow();
 
-		return false;
+		return $this->deny();
 	}
 
 	/**
@@ -68,7 +68,7 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $request
-	 * @return bool
+	 * @return mixed
 	 */
 	public function create(User $auth_user)
 	{
@@ -80,7 +80,7 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $request
-	 * @return bool
+	 * @return mixed
 	 */
 	public function solve(User $auth_user, SupportQuestion $request)
 	{
@@ -89,7 +89,7 @@ class SupportQuestionPolicy extends Policy
 
 		if ($request->isUserCreator($auth_user)) {
 			if (!$request->isLatestMessageByCreatedUser())
-				return true;
+				return $this->allow();
 		}
 
 		if (!$request->isReviewStarts())
@@ -107,12 +107,12 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $supportQuestion
-	 * @return boolean
+	 * @return mixed
 	 */
 	public function startReview(User $auth_user, SupportQuestion $supportQuestion)
 	{
 		if (!$supportQuestion->isSentForReview())
-			return false;
+			return $this->deny();
 
 		return (boolean)$auth_user->getPermission('reply_to_support_service');
 	}
@@ -122,15 +122,15 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $supportQuestion
-	 * @return boolean
+	 * @return mixed
 	 */
 	public function stopReview(User $auth_user, SupportQuestion $supportQuestion)
 	{
 		if (!$supportQuestion->isReviewStarts())
-			return false;
+			return $this->deny();
 
 		if ($supportQuestion->status_changed_user->id != $auth_user->id)
-			return false;
+			return $this->deny();
 
 		return (boolean)$auth_user->getPermission('reply_to_support_service');
 	}
@@ -140,16 +140,34 @@ class SupportQuestionPolicy extends Policy
 	 *
 	 * @param User $auth_user
 	 * @param SupportQuestion $supportQuestion
-	 * @return boolean
+	 * @return mixed
 	 */
 	public function continueReviewing(User $auth_user, SupportQuestion $supportQuestion)
 	{
 		if (!$supportQuestion->isReviewStarts())
-			return false;
+			return $this->deny();
 
 		if ($supportQuestion->status_changed_user->id != $auth_user->id)
-			return false;
+			return $this->deny();
 
 		return (boolean)$auth_user->getPermission('reply_to_support_service');
+	}
+
+	/**
+	 * Может ли пользователь продолжить рассмотрение
+	 *
+	 * @param User $auth_user
+	 * @param SupportQuestion $supportQuestion
+	 * @return mixed
+	 */
+	public function create_feedback(User $auth_user, SupportQuestion $supportQuestion)
+	{
+		if (!$supportQuestion->isUserCreator($auth_user))
+			return $this->deny(__('The question was created by another user'));
+
+		if (!$supportQuestion->isAccepted())
+			return $this->deny(__('To write feedback the question must be reviewed'));
+
+		return $this->allow();
 	}
 }

@@ -27,6 +27,34 @@
 		</div>
 	@endif
 
+	@if ($supportQuestion->feedback)
+		<div class="card mb-2">
+			<div class="card-body flex-row d-flex">
+				<div class="mr-3">
+					@switch(\App\Enums\FaceReactionEnum::getKey($supportQuestion->feedback->face_reaction))
+						@case('Smile')
+						<i class="far fa-smile h1 mb-0 text-primary"></i>
+						@break
+						@case('Meh')
+						<i class="far fa-meh h1 mb-0 text-primary"></i>
+						@break
+						@case('Sad')
+						<i class="far fa-frown h1 mb-0 text-primary"></i>
+						@break
+					@endswitch
+				</div>
+
+				<div class="">
+					{{ $supportQuestion->feedback->text }}
+				</div>
+			</div>
+		</div>
+	@else
+		@can('create_feedback', $supportQuestion)
+			@include('support_question.feedback.form')
+		@endcan
+	@endif
+
 	@can('createMessage', $supportQuestion)
 		<div class="card mb-2">
 			<div class="card-body">
