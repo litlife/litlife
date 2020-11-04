@@ -8,7 +8,6 @@ use Tests\DuskTestCase;
 
 class LoginTest extends DuskTestCase
 {
-
 	public function testExample()
 	{
 		$password = uniqid();
@@ -30,7 +29,8 @@ class LoginTest extends DuskTestCase
 				->type('login', $email->email)
 				->type('login_password', $password)
 				->press(__('auth.enter'))
-				->assertSee($user->nick);
+				->assertSee($user->nick)
+				->assertAuthenticated();
 		});
 	}
 

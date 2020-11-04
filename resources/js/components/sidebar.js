@@ -53,6 +53,22 @@ export default function Sidebar() {
 
 			}
 		});
+
+		let $login_form = self.sidebar.find('#login_form');
+		let $submit_button = $login_form.find('[type="submit"]');
+
+		$submit_button.bind('click', function () {
+
+			let $loading = $submit_button.find('.loading');
+			let $enter_text = $submit_button.find('.enter_text');
+
+			$submit_button.attr('disabled', 'disabled');
+
+			$loading.show();
+			$enter_text.hide();
+
+			$login_form.submit();
+		});
 	};
 
 	this.show = function () {

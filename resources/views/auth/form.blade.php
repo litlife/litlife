@@ -1,6 +1,6 @@
 @include('auth.errors')
 
-<form class="mb-4" action="{{ route('login') }}" method="POST">
+<form id="login_form" class="mb-4" action="{{ route('login') }}" method="POST">
 
 	@csrf
 
@@ -22,8 +22,13 @@
 		<label class="form-check-label" for="login_remember">{{ __('auth.remember') }}</label>
 	</div>
 
-	<button type="submit" class="btn btn-secondary text-nowrap text-truncate btn-block">
-		{{ __('auth.enter') }}
+	<button type="submit"
+			class="btn btn-secondary text-nowrap text-truncate btn-block">
+		<span class="loading" style="display:none;">
+			<span class="spinner-grow spinner-grow-sm mr-2" role="status" aria-hidden="true"></span>
+		</span>
+
+		<span class="enter_text">{{ __('auth.enter') }}</span>
 	</button>
 
 </form>
