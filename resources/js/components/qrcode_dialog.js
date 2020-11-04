@@ -10,5 +10,7 @@ dialog.on('shown.bs.modal', function () {
 		data: {size: "200", str: url}
 	}).done(function (data) {
 		body.html(data);
+	}).fail(function (response) {
+		body.html('Error ' + response.status + ': ' + response.responseJSON.message);
 	});
 });
