@@ -20,6 +20,7 @@ use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Litlife\Url\Exceptions\InvalidArgument;
@@ -60,15 +61,34 @@ class OtherController extends Controller
 
 	public function qrcode(Request $request)
 	{
-		$url = $request->str;
+		$url = filter_var($request->str, FILTER_SANITIZE_URL);
 
 		if (empty($url))
-			abort(400);
+			abort(400, __('Empty URL'));
 
 		try {
 			$url = Url::fromString($url);
 		} catch (Exception $exception) {
-			abort(400);
+			abort(400, __('Wrong URL'));
+		}
+
+		$routes = Route::getRoutes();
+
+		$request = Request::create($url->getPath());
+
+		try {
+			$route = $routes->match($request);
+
+			if ($route->isFallback)
+				abort(400, __('Route not found'));
+
+			if ($route->getName() == Route::getCurrentRoute()->getName())
+				abort(400, __('The URL must not match the URL to get the qr code'));
+
+			if (!in_array('GET', $route->methods()))
+				abort(400, __('The route doesn\'t have a GET method'));
+		} catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
+			abort(400, __('Route not found'));
 		}
 
 		$urlShortener = UrlShort::init($url);

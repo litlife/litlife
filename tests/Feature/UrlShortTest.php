@@ -53,7 +53,6 @@ class UrlShortTest extends TestCase
 		$this->assertNotEquals($urlShortener->getShortUrl(), $urlShortener2->getShortUrl());
 	}
 
-
 	public function testEncode()
 	{
 		$urlShortener = new UrlShort;
