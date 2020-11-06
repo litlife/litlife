@@ -3,7 +3,10 @@
 namespace Tests\Feature\Author;
 
 use App\Author;
+use App\Notifications\AuthorPageNeedsToBeVerifiedNotification;
 use App\User;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class AuthorCreateTest extends TestCase
@@ -47,6 +50,8 @@ class AuthorCreateTest extends TestCase
 
 	public function testStoreHttp()
 	{
+		Notification::fake();
+
 		config(['activitylog.enabled' => true]);
 
 		$user = factory(User::class)->create();
@@ -71,5 +76,43 @@ class AuthorCreateTest extends TestCase
 		$this->assertEquals('created', $activity->description);
 		$this->assertEquals($user->id, $activity->causer_id);
 		$this->assertEquals('user', $activity->causer_type);
+
+		Notification::assertNotSentTo($user, AuthorPageNeedsToBeVerifiedNotification::class);
+	}
+
+	public function testSentNotificationIfUserAndAuthorNameMatch()
+	{
+		Notification::fake();
+
+		$lastName = Str::random(6);
+		$firstName = Str::random(6);
+		$nickName = Str::random(6);
+
+		$user = factory(User::class)
+			->create([
+				'last_name' => $lastName,
+				'first_name' => $firstName,
+				'nick' => $nickName
+			]);
+
+		$authorNew = factory(Author::class)
+			->make([
+				'last_name' => $lastName,
+				'first_name' => $firstName,
+				'nick' => $nickName
+			]);
+
+		$response = $this->actingAs($user)
+			->post(route('authors.store'),
+				[
+					'first_name' => $authorNew->first_name,
+					'last_name' => $authorNew->last_name,
+					'nick' => $authorNew->nick
+				]);
+		//dump(session('errors'));
+		$response->assertSessionHasNoErrors()
+			->assertRedirect();
+
+		Notification::assertSentTo($user, AuthorPageNeedsToBeVerifiedNotification::class);
 	}
 }

@@ -1594,4 +1594,30 @@ class User extends Authenticatable
 	{
 		Cache::tags([CacheTags::NumberInProcessSupportQuestions])->pull($this->id);
 	}
+
+	public function isNameMatchesAuthorName(Author $author): bool
+	{
+		$authorLastName = trim($author->last_name);
+		$authorFirstName = trim($author->first_name);
+		$authorNickName = trim($author->nickname);
+
+		$userLastName = trim($this->last_name);
+		$userFirstName = trim($this->first_name);
+		$userNickName = trim($this->nick);
+
+		if (!empty($authorLastName) and !empty($authorFirstName)) {
+			if (
+				preg_match('/^' . preg_quote($authorLastName) . '$/iu', $userLastName) and
+				preg_match('/^' . preg_quote($authorFirstName) . '$/iu', $userFirstName)
+			)
+				return true;
+		}
+
+		if (!empty($authorNickName)) {
+			if (preg_match('/^' . preg_quote($authorNickName) . '$/iu', $userNickName))
+				return true;
+		}
+
+		return false;
+	}
 }

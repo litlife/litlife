@@ -275,10 +275,17 @@
 										@endif
 									@else
 										@can ('verficationRequest', $author)
-											<a class="btn btn-light"
-											   href="{{ route('authors.verification.request', ['author' => $author]) }}">
-												{{ __('author.iam_the_author') }}
-											</a>
+											@if (optional(auth()->user())->isNameMatchesAuthorName($author))
+												<a class="btn btn-primary"
+												   href="{{ route('authors.verification.request', ['author' => $author]) }}">
+													{{ __('author.iam_the_author') }}
+												</a>
+											@else
+												<a class="btn btn-light"
+												   href="{{ route('authors.verification.request', ['author' => $author]) }}">
+													{{ __('author.iam_the_author') }}
+												</a>
+											@endif
 										@endcan
 									@endif
 

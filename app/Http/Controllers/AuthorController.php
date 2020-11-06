@@ -15,6 +15,7 @@ use App\Forum;
 use App\Http\Requests\StoreAuthor;
 use App\Library\CommentSearchResource;
 use App\Manager;
+use App\Notifications\AuthorPageNeedsToBeVerifiedNotification;
 use App\UserAuthor;
 use Artesaos\SEOTools\Facades\OpenGraph;
 use Artesaos\SEOTools\Facades\SEOMeta;
@@ -70,6 +71,10 @@ class AuthorController extends Controller
 		}
 
 		$author->save();
+
+		if ($author->create_user->isNameMatchesAuthorName($author)) {
+			$author->create_user->notify(new AuthorPageNeedsToBeVerifiedNotification($author));
+		}
 
 		activity()
 			->performedOn($author)
