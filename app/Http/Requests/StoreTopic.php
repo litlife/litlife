@@ -25,7 +25,7 @@ class StoreTopic extends FormRequest
 	{
 		return [
 			'name' => 'required|min:2|max:100',
-			'description' => 'required|min:2|max:200',
+			'description' => 'nullable|min:2|max:200',
 			'post_desc' => 'sometimes|boolean',
 			'forum_priority' => 'sometimes|integer',
 			'first_post_on_top' => 'sometimes|boolean',
