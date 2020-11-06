@@ -49,6 +49,16 @@ class TopicObserver
 			$this->refreshUserCreatedTopicsCount($topic->create_user);
 
 		$this->refreshForumCounters($topic->forum);
+
+		$topic->posts()
+			->delete();
+	}
+
+	public function restoring(Topic $topic)
+	{
+		$topic->posts()
+			->where('deleted_at', '>=', $topic->deleted_at)
+			->restore();
 	}
 
 	public function restored(Topic $topic)

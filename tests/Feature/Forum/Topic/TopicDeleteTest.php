@@ -53,7 +53,7 @@ class TopicDeleteTest extends TestCase
 		$user->refresh();
 
 		$this->assertTrue($topic2->trashed());
-		$this->assertFalse($post2->trashed());
+		$this->assertTrue($post2->trashed());
 
 		$this->assertEquals(1, $user->topics_count);
 
@@ -62,35 +62,6 @@ class TopicDeleteTest extends TestCase
 
 		$this->assertEquals($post->id, $forum->last_post_id);
 		$this->assertEquals($topic->id, $forum->last_topic_id);
-	}
-
-	public function testRestore()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
-
-		$post = factory(Post::class)->create();
-
-		$topic = $post->topic;
-
-		$topic->delete();
-
-		$this->assertTrue($topic->trashed());
-		$this->assertEquals(0, $topic->create_user->topics_count);
-		$this->assertEquals(0, $topic->forum->topic_count);
-
-		$response = $this->actingAs($user)
-			->delete(route('topics.destroy', $topic))
-			->assertOk();
-
-		$topic->refresh();
-		$post->refresh();
-
-		$this->assertFalse($topic->trashed());
-		$this->assertFalse($post->trashed());
-		$this->assertEquals(1, $topic->create_user->topics_count);
-		$this->assertEquals(1, $topic->forum->topic_count);
 	}
 
 	public function testUpdateForumCounters()
@@ -135,5 +106,24 @@ class TopicDeleteTest extends TestCase
 		$this->assertEquals(1, $forum->post_count);
 		$this->assertEquals($post->id, $forum->last_post_id);
 		$this->assertEquals($topic->id, $forum->last_topic_id);
+	}
+
+	public function testPostsDeletedAlongWithTopic()
+	{
+		$topic = factory(Topic::class)
+			->create();
+
+		$post = factory(Post::class)
+			->make();
+
+		$topic->posts()->save($post);
+
+		$topic->delete();
+
+		$post->refresh();
+		$topic->refresh();
+
+		$this->assertSoftDeleted($topic);
+		$this->assertSoftDeleted($post);
 	}
 }

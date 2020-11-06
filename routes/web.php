@@ -469,7 +469,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/topics/{topic}/posts', 'PostController@store')->name('posts.store');
 	Route::get('/forums/search', 'ForumController@search');
 
-	Route::resource('topics', 'TopicController', ['only' => ['edit', 'update', 'destroy']]);
+	Route::resource('topics', 'TopicController', ['only' => ['edit', 'update', 'destroy']])->middleware('db.transaction');
 	Route::get('/forums/{forum}/topics/create', 'TopicController@create')->name('topics.create');
 	Route::post('/forums/{forum}/topics', 'TopicController@store')->name('topics.store');
 	Route::get('/topics/{topic}/posts/create/{parent?}', 'PostController@create')->where('parent', '[0-9]+');

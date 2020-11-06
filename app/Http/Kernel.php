@@ -7,6 +7,7 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthenticateOnceWithBasicAuth;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\ConvertToUtf8Strings;
+use App\Http\Middleware\DBTransaction;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\ErrorIfForbiddenWordsExists;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -100,6 +101,7 @@ class Kernel extends HttpKernel
 		'throttle' => ThrottleRequests::class,
 		'verified' => EnsureEmailIsVerified::class,
 		'admin' => AdminMiddleware::class,
+		'db.transaction' => DBTransaction::class,
 	];
 
 	/**
