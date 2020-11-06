@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int|null $user_agent_id
+ * @property bool|null $is_remember_me_enabled
  * @property-read \App\User $user
  * @property-read \App\UserAgent|null $user_agent
  * @method static Builder|UserAuthLog newModelQuery()
@@ -29,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|UserAuthLog whereCreatedAt($value)
  * @method static Builder|UserAuthLog whereId($value)
  * @method static Builder|UserAuthLog whereIp($value)
+ * @method static Builder|UserAuthLog whereIsRememberMeEnabled($value)
  * @method static Builder|UserAuthLog whereTime($value)
  * @method static Builder|UserAuthLog whereUpdatedAt($value)
  * @method static Builder|UserAuthLog whereUserAgentId($value)

@@ -14,20 +14,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $id
  * @property int $support_question_id Создатель сообщения
  * @property int $create_user_id Создатель сообщения
- * @property string $text Текст сообщения
+ * @property string $bb_text Текст сообщения
+ * @property string $text support_question_message.text
+ * @property bool $external_images_downloaded
+ * @property int|null $characters_count
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\User $create_user
+ * @property-write mixed $b_b_text
+ * @property-write mixed $html_text
  * @property-read \App\SupportQuestion $supportQuestion
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage newQuery()
  * @method static \Illuminate\Database\Query\Builder|SupportQuestionMessage onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereBbText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCharactersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereExternalImagesDownloaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereSupportQuestionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereText($value)
