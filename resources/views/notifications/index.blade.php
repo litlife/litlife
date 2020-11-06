@@ -17,20 +17,26 @@
 			@foreach ($notifications as $notification)
 				<a href="{{ $notification->data['url'] ?? '' }}"
 				   class="list-group-item list-group-item-action @if(!empty($notification->read_at)) list-group-item-light @else font-weight-bold @endif">
-					<div class="d-flex w-100 justify-content-sm-between flex-column flex-sm-row">
-						<div>
-							@if (!empty($notification->data['title']))
-								<h6 class="mb-1">{{ $notification->data['title'] ?? '' }}</h6>
-							@endif
 
-							@if (!empty($notification->data['description']))
-								<p class="mb-1">{{ $notification->data['description'] ?? '' }}</p>
+					<div class="d-flex w-100 justify-content-between">
+						<h6 class="mb-1">
+							@if (!empty($notification->data['title']))
+								{{ $notification->data['title'] ?? '' }}
 							@endif
-						</div>
-						<small class="text-muted">
+						</h6>
+						<small class="text-right text-nowrap d-none d-sm-block">
 							<x-time :time="$notification->created_at"/>
 						</small>
 					</div>
+
+					@if (!empty($notification->data['description']))
+						<p class="mb-1">{{ $notification->data['description'] ?? '' }}</p>
+					@endif
+
+					<small class="text-nowrap d-block d-sm-none">
+						<x-time :time="$notification->created_at"/>
+					</small>
+
 				</a>
 			@endforeach
 		</div>
