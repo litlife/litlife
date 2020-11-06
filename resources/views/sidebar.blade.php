@@ -51,7 +51,7 @@
 		<a class="list-group-item list-group-item-action d-flex {{ active('news') }}" href="{{ route('news') }}"
 		   title="{{ __('navbar.titles.news') }}" data-boundary="window" data-toggle="tooltip" data-placement="right">
 			<span class="text-nowrap text-truncate">{{ __('navbar.news') }}</span>
-			<span class="badge badge-primary badge-pill ml-auto">{{ empty($count = auth()->user()->getNotViewedFriendsNewsCount()) ? '' : $count }}</span>
+			<span class="count-in-toggle badge badge-primary badge-pill ml-auto">{{ empty($count = auth()->user()->getNotViewedFriendsNewsCount()) ? '' : $count }}</span>
 		</a>
 
 		@can('use_shop', \App\User::class)
@@ -67,7 +67,7 @@
 		   href="{{ route('users.inbox', auth()->user()) }}"
 		   title="{{ __('navbar.titles.messages') }}" data-boundary="window" data-toggle="tooltip" data-placement="right">
 			<span class="text-nowrap text-truncate"><i class="far fa-envelope mr-1"></i> {{ __('navbar.messages') }}</span>
-			<span class="badge badge-primary badge-pill ml-auto">{{ empty($count = auth()->user()->getNewMessagesCount()) ? '' : $count }}</span>
+			<span class="count-in-toggle badge badge-primary badge-pill ml-auto">{{ empty($count = auth()->user()->getNewMessagesCount()) ? '' : $count }}</span>
 		</a>
 
 		<div class="list-group-item">
@@ -76,7 +76,7 @@
 				 aria-expanded="true"
 				 aria-controls="my_authors">
 				<span class="flex-grow-1 text-nowrap text-truncate">{{ __('author.my_authors') }}</span>
-				<span class="badge badge-primary badge-pill"></span>
+				<span class="count-in-toggle badge badge-primary badge-pill"></span>
 				<span class="badge badge-lighmt badge-pill"><i class="fas fa-caret-down"></i></span>
 			</div>
 			<div class="collapse mt-3 {{ active(['authors.create', 'users.authors', 'users.authors.*'], 'show') }}"
@@ -307,7 +307,7 @@
 					 class="far fa-bell"></i> {{ __('notification.notification') }}</span>
 
 			@if ($count = auth()->user()->getUnreadNotificationsCount())
-				<span class="badge badge-primary badge-pill ml-auto">{{ $count }}</span>
+				<span class="count-in-toggle badge badge-primary badge-pill ml-auto">{{ $count }}</span>
 			@endif
 		</a>
 
@@ -347,7 +347,7 @@
 			   href="#admin_functions" role="button" aria-expanded="true"
 			   aria-controls="admin_functions">
 				<span class="text-nowrap text-truncate">{{ __('navbar.admin_functions') }}</span>
-				<span class="count badge badge-primary badge-pill ml-auto"></span>
+				<span class="count-in-toggle count badge badge-primary badge-pill ml-auto"></span>
 				<span class="badge badge-light badge-pill ml-auto"><i class="fas fa-caret-down"></i></span>
 			</a>
 			<div id="admin_functions" class="collapse mt-3 {{ active([

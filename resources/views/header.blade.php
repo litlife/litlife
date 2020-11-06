@@ -7,9 +7,10 @@
 				<td>
 					@if (empty($menu_disable))
 						<div class="nav-item mr-3 mt-1">
-							<button id="sidebar-toggle" class="btn btn-primary" type="button" data-target="#sidebar"
+							<button id="sidebar-toggle" class="btn btn-primary text-nowrap" type="button" data-target="#sidebar"
 									data-placement="bottom" title="{{ __('navbar.user_menu') }}">
 								<i class="fas fa-bars"></i>
+								<span class="number-of-all-unread-notifications badge badge-light" style="display: none;"></span>
 							</button>
 						</div>
 					@endif

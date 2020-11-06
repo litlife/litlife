@@ -25,6 +25,10 @@ export default function Sidebar() {
 					counter.html(count);
 				}
 			});
+
+			self.$numberOfAllUnreadNotifications = self.$header.find('.number-of-all-unread-notifications');
+
+			self.$numberOfAllUnreadNotifications.text(self.getNumberOfAllUnreadNotifications());
 		}
 
 		self.button.unbind('click').bind('click', function () {
@@ -89,5 +93,21 @@ export default function Sidebar() {
 
 	this.isVisible = function () {
 		return self.sidebar.is(':visible');
+	};
+
+	this.getNumberOfAllUnreadNotifications = function () {
+		let $count = 0;
+
+		self.sidebar.find('.count-in-toggle')
+			.each(function () {
+				let $item = $(this);
+
+				let $int = parseInt($item.text());
+
+				if (!isNaN($int))
+					$count = $count + $int;
+			});
+
+		return $count;
 	}
 }

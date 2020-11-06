@@ -111,7 +111,8 @@ require('./components/qrcode_dialog');
 require('./components/sceditor_extensions');
 
 let $sidebar = new Sidebar();
-$sidebar.sidebar = $('#sidebar');
+$sidebar.sidebar = $('#sidebar').first();
+$sidebar.$header = $('header').first();
 $sidebar.main = $('#main');
 $sidebar.footer = $('#footer');
 $sidebar.button = $("[data-target='#sidebar']");
