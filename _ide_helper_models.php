@@ -1173,6 +1173,11 @@ namespace App {
 	 * @property int|null $editions_count
 	 * @property float|null $previous_price Предыдущая цена
 	 * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
+	 * @property string|null $title_author_search_helper Название книги начинается с заглавной буквы и пишется строчными буквами. Исключения аббревиатуры типа: STALKER<br/>
+	 *                         Название и номер серии в названии книги не указывается.<br/>
+	 *                         Если книга не вычитана в названии книги это не указывается, а вместо этого необходимо добавить в аннотацию
+	 *                         предупреждение: "Предупреждение: Не вычитано".<br/>
+	 *                         Редакторы, составители, иллюстраторы, художники указываются в полях ниже
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
 	 * @property-read \App\User|null $add_user
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
@@ -1292,7 +1297,8 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book rememberCount($minutes = 5, $refresh = false)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book sentOnReview()
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book similaritySearch($searchText)
-	 * @method static \Illuminate\Database\Eloquent\Builder|Book titleAuthorsFulltextSearch($searchText)
+	 * @method static \Illuminate\Database\Eloquent\Builder|Book titleAuthorFulltextSearch($searchText)
+	 * @method static \Illuminate\Database\Eloquent\Builder|Book titleFulltextSearch($searchText)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book unaccepted()
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book unchecked()
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book void()
@@ -1413,6 +1419,7 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereTiLb($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereTiOlb($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereTitle($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereTitleAuthorSearchHelper($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereTitleSearchHelper($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereUpdatedAt($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Book whereUserEditedAt($value)
@@ -2448,6 +2455,7 @@ namespace App {
 	 * @property int|null $users_count Количество участников
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
 	 * @property-read \App\Like|null $authUserLike
+	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\CollectedBook[] $collected
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\CollectionUser[] $collectionUser
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
@@ -2517,6 +2525,7 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereUpdatedAt($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereUrl($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereUrlTitle($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereUserCanAddBooks(\App\User $user)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereUsersCount($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereViewsCount($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|Collection whereWhoCanAdd($value)
@@ -2957,6 +2966,32 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|FailedJobs whereQueue($value)
 	 */
 	class FailedJobs extends \Eloquent
+	{
+	}
+}
+
+namespace App {
+	/**
+	 * App\FeedbackSupportResponses
+	 *
+	 * @property int $id
+	 * @property int $support_question_id ID вопроса в поддержку
+	 * @property string|null $text Текст отзыва
+	 * @property int|null $face_reaction Код реакции в виде смайлика
+	 * @property \Illuminate\Support\Carbon|null $created_at
+	 * @property \Illuminate\Support\Carbon|null $updated_at
+	 * @property-read \App\SupportQuestion $support_question
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses newModelQuery()
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses newQuery()
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses query()
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses whereCreatedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses whereFaceReaction($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses whereId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses whereSupportQuestionId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses whereText($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|FeedbackSupportResponses whereUpdatedAt($value)
+	 */
+	class FeedbackSupportResponses extends \Eloquent
 	{
 	}
 }
@@ -4328,6 +4363,123 @@ namespace App {
 
 namespace App {
 	/**
+	 * App\SupportQuestion
+	 *
+	 * @property int $id
+	 * @property int|null $category
+	 * @property string|null $title Заголовок
+	 * @property int $create_user_id Создатель запроса в поддержку
+	 * @property int|null $status
+	 * @property string|null $status_changed_at
+	 * @property int|null $status_changed_user_id
+	 * @property int|null $latest_message_id ID последнего сообщения
+	 * @property int $number_of_messages Количество сообщений
+	 * @property string|null $last_message_created_at Количество сообщений
+	 * @property \Illuminate\Support\Carbon|null $created_at
+	 * @property \Illuminate\Support\Carbon|null $updated_at
+	 * @property \Illuminate\Support\Carbon|null $deleted_at
+	 * @property-read \App\User $create_user
+	 * @property-read \App\FeedbackSupportResponses|null $feedback
+	 * @property-read mixed $is_accepted
+	 * @property-read mixed $is_private
+	 * @property-read mixed $is_rejected
+	 * @property-read mixed $is_review_starts
+	 * @property-read mixed $is_sent_for_review
+	 * @property-read \App\SupportQuestionMessage|null $latest_message
+	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestionMessage[] $messages
+	 * @property-read \App\User|null $status_changed_user
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion accepted()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedAndSentForReview()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedAndSentForReviewOrBelongsToAuthUser()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedAndSentForReviewOrBelongsToUser($user)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedOrBelongsToAuthUser()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedOrBelongsToUser($user)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion checked()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion checkedAndOnCheck()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion checkedOrBelongsToUser($user)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion newModelQuery()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion newQuery()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion onCheck()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion onlyChecked()
+	 * @method static \Illuminate\Database\Query\Builder|SupportQuestion onlyTrashed()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion orderStatusChangedAsc()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion orderStatusChangedDesc()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion private ()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion query()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion sentOnReview()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion unaccepted()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion unchecked()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCategory($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCreateUserId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCreatedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCreator(\App\User $user)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereDeletedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereLastMessageCreatedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereLastResponseByUser()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereLastResponseNotByUser()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereLatestMessageId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereNumberOfMessages($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatus($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusChangedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusChangedUserId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusIn($statuses)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusNot($status)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereTitle($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereUpdatedAt($value)
+	 * @method static \Illuminate\Database\Query\Builder|SupportQuestion withTrashed()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion withUnchecked()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion withoutCheckedScope()
+	 * @method static \Illuminate\Database\Query\Builder|SupportQuestion withoutTrashed()
+	 */
+	class SupportQuestion extends \Eloquent
+	{
+	}
+}
+
+namespace App {
+	/**
+	 * App\SupportQuestionMessage
+	 *
+	 * @property int $id
+	 * @property int $support_question_id Создатель сообщения
+	 * @property int $create_user_id Создатель сообщения
+	 * @property string $bb_text Текст сообщения
+	 * @property string $text support_question_message.text
+	 * @property bool $external_images_downloaded
+	 * @property int|null $characters_count
+	 * @property \Illuminate\Support\Carbon|null $created_at
+	 * @property \Illuminate\Support\Carbon|null $updated_at
+	 * @property \Illuminate\Support\Carbon|null $deleted_at
+	 * @property-read \App\User $create_user
+	 * @property-write mixed $b_b_text
+	 * @property-write mixed $html_text
+	 * @property-read \App\SupportQuestion $supportQuestion
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage newModelQuery()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage newQuery()
+	 * @method static \Illuminate\Database\Query\Builder|SupportQuestionMessage onlyTrashed()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage query()
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereBbText($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCharactersCount($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCreateUserId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCreatedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereCreator(\App\User $user)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereDeletedAt($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereExternalImagesDownloaded($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereSupportQuestionId($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereText($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestionMessage whereUpdatedAt($value)
+	 * @method static \Illuminate\Database\Query\Builder|SupportQuestionMessage withTrashed()
+	 * @method static \Illuminate\Database\Query\Builder|SupportQuestionMessage withoutTrashed()
+	 */
+	class SupportQuestionMessage extends \Eloquent
+	{
+	}
+}
+
+namespace App {
+	/**
 	 * App\TextBlock
 	 *
 	 * @property string $name
@@ -4574,6 +4726,8 @@ namespace App {
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSearchSetting[] $booksSearchSettings
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books_read_statuses
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestionMessage[] $createdSupportMessages
+	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestion[] $createdSupportQuestions
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorRepeat[] $created_author_repeats
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $created_authors
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookFile[] $created_book_files
@@ -4830,6 +4984,7 @@ namespace App {
 	 * @property \Illuminate\Support\Carbon|null $created_at
 	 * @property \Illuminate\Support\Carbon|null $updated_at
 	 * @property int|null $user_agent_id
+	 * @property bool|null $is_remember_me_enabled
 	 * @property-read \App\User $user
 	 * @property-read \App\UserAgent|null $user_agent
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog newModelQuery()
@@ -4841,6 +4996,7 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereCreatedAt($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereId($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereIp($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereIsRememberMeEnabled($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereTime($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereUpdatedAt($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserAuthLog whereUserAgentId($value)
@@ -5293,6 +5449,9 @@ namespace App {
 	 * @property bool $view_user_surveys Просматривать опросы пользователей
 	 * @property bool $deleting_online_read_and_files Может ли пользователь использовать функцию: "удалить все файлы, главы книги и изображения (кроме обложки)"
 	 * @property bool $manage_ad_blocks Добавлять жанры
+	 * @property bool $edit_or_delete_your_comments_to_collections Редактировать или удалять свои комментарии к подборкам
+	 * @property bool $send_a_support_question Может ли пользователь написать в поддержку
+	 * @property bool $reply_to_support_service Может ли пользователь отвечать в службе поддержки
 	 * @property-read mixed $rules
 	 * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup disableCache()
@@ -5372,6 +5531,7 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditFieldOfPublicDomain($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditForumOtherUserTopic($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditForumSelfTopic($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOrDeleteYourCommentsToCollections($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOtherProfile($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOtherUserBook($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereEditOtherUserCollections($value)
@@ -5406,8 +5566,10 @@ namespace App {
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereNotifyAssignment($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereOldPermissions($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRefreshCounters($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereReplyToSupportService($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRetryFailedBookParse($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSeeDeleted($value)
+	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendASupportQuestion($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSendMessage($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSequenceDelete($value)
 	 * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereSequenceEdit($value)
@@ -6259,8 +6421,8 @@ namespace App {
 	 * @property int $all
 	 * @property int $year
 	 * @property int $month
-	 * @property int $day
 	 * @property int $week
+	 * @property int $day
 	 * @property-read \App\Book $book
 	 * @method static \Illuminate\Database\Eloquent\Builder|ViewCount newModelQuery()
 	 * @method static \Illuminate\Database\Eloquent\Builder|ViewCount newQuery()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Component;
+namespace Tests\Feature\Composer;
 
 use App\User;
 use App\View\Composers\SidebarComposer;

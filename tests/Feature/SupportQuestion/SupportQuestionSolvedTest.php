@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\SupportRequst;
+namespace Tests\Feature\SupportQuestion;
 
 use App\User;
 use Tests\TestCase;

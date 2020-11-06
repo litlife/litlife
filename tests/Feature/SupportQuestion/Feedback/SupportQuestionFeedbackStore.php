@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\SupportQuestio\Feedback;
+namespace Tests\Feature\SupportQuestion\Feedback;
 
 use App\FeedbackSupportResponses;
 use App\SupportQuestion;

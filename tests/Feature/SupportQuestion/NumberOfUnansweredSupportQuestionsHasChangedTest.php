@@ -9,7 +9,7 @@ use App\User;
 use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
-class NumberOfUnsolvedSupportQuestionsHasChangedTest extends TestCase
+class NumberOfUnansweredSupportQuestionsHasChangedTest extends TestCase
 {
 	public function test()
 	{

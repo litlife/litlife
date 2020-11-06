@@ -6,7 +6,7 @@ use App\Message;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
-class MessageIsUpdatedByUser extends TestCase
+class MessageIsUpdatedByUserTest extends TestCase
 {
 	public function testTrue()
 	{

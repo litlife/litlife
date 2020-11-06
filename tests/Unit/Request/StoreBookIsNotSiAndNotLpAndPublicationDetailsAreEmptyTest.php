@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Request\StoreBookTest;
+namespace Tests\Unit\Request;
 
 use App\Http\Requests\StoreBook;
 use PHPUnit\Framework\TestCase;

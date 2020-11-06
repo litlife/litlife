@@ -6,7 +6,7 @@ use App\SupportQuestion;
 use App\User;
 use Tests\TestCase;
 
-class SupportQuestionUnsolvedTest extends TestCase
+class SupportQuestionUnansweredTest extends TestCase
 {
 	public function testIsOk()
 	{

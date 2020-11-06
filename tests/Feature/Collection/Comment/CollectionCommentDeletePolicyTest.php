@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Collection\Book;
+namespace Tests\Feature\Collection\Comment;
 
 use App\Collection;
 use App\Comment;

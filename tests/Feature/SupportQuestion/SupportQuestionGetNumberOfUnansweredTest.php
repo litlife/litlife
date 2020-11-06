@@ -5,7 +5,7 @@ namespace Tests\Feature\SupportQuestion;
 use App\User;
 use Tests\TestCase;
 
-class SupportQuestionGetNumberOfUnsolvedTest extends TestCase
+class SupportQuestionGetNumberOfUnansweredTest extends TestCase
 {
 	public function test()
 	{
