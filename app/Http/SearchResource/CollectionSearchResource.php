@@ -58,12 +58,6 @@ class CollectionSearchResource extends SearchResource
 
 		$this->query->with([
 			'create_user.avatar',
-			'usersAddedToFavorites' => function ($query) {
-				$query->where('user_id', auth()->id());
-			},
-			'likes' => function ($query) {
-				$query->where('create_user_id', auth()->id());
-			},
 			'latest_books.cover'
 		]);
 

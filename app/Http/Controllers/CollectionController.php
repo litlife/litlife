@@ -45,7 +45,7 @@ class CollectionController extends Controller
 			}]);
 		}
 
-		$vars['collections']->load('authUserLike');
+		$vars['collections']->load('authUserLike', 'authUserAddedToFavorites');
 
 		if (request()->ajax())
 			return view('collection.list', $vars);

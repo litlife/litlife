@@ -318,6 +318,12 @@ class Collection extends Model
 			'user_id');
 	}
 
+	public function authUserAddedToFavorites()
+	{
+		return $this->usersAddedToFavorites()
+			->where('user_favorite_collections.user_id', auth()->id());
+	}
+
 	public function scopeSeeEveryone($query)
 	{
 		return $query->accepted();

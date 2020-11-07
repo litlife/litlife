@@ -125,7 +125,7 @@
 				<i class="far fa-comments"></i> <span class="ml-1">{{ $item->comments_count }}</span>
 			</a>
 
-			@include('favorite_button', ['type' => 'collection', 'favorite' => $item->usersAddedToFavorites->first()])
+			@include('favorite_button', ['type' => 'collection', 'favorite' => $item->authUserAddedToFavorites->first()])
 
 			@include('share.share_button')
 		</div>
