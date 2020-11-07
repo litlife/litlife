@@ -242,10 +242,6 @@ class RemoveOldColumns extends Migration
 			$this->dropColumnIfExists($table, 'hide_user');
 		});
 
-		Schema::table('genres', function (Blueprint $table) {
-			$this->dropColumnIfExists($table, 'old_genre_group_id');
-		});
-
 		$this->dropTableIfExists('image_sizes');
 
 		Schema::table('images', function (Blueprint $table) {
