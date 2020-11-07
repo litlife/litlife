@@ -40,22 +40,23 @@ class OldRoutesTest extends TestCase
 			->assertRedirect(route('books'));
 	}
 
-	public function testBooksMainGenre()
-	{
-		$mainOldGenreGroupID = rand(1000, 10000);
+	/*
+		public function testBooksMainGenre()
+		{
+			$mainOldGenreGroupID = rand(1000, 10000);
 
-		$genre = factory(Genre::class)->create();
-		$genre->old_genre_group_id = $mainOldGenreGroupID;
-		$genre->save();
+			$genre = factory(Genre::class)->create();
+			$genre->old_genre_group_id = $mainOldGenreGroupID;
+			$genre->save();
 
-		$genre2 = factory(Genre::class)->create();
-		$genre2->old_genre_group_id = $mainOldGenreGroupID;
-		$genre2->save();
+			$genre2 = factory(Genre::class)->create();
+			$genre2->old_genre_group_id = $mainOldGenreGroupID;
+			$genre2->save();
 
-		$this->call('get', 'bs', ['g' => 'g' . $genre->old_genre_group_id])
-			->assertRedirect(route('books', ['genre' => [$genre->id, $genre2->id]]));
-	}
-
+			$this->call('get', 'bs', ['g' => 'g' . $genre->old_genre_group_id])
+				->assertRedirect(route('books', ['genre' => [$genre->id, $genre2->id]]));
+		}
+	*/
 	public function testBr()
 	{
 		$this->call('get', 'br', ['b' => 10, 'p' => 2])
