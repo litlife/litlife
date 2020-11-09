@@ -75,7 +75,7 @@
         "litlife/fb2-to-html": "dev-dev",
         "litlife/html-splitter": "dev-dev",
         "litlife/id-dirname": "dev-dev",
-        "litlife/laravel-dkim": "dev-php_74_update",
+        "litlife/laravel-dkim": "*",
         "litlife/sitemap": "dev-dev",
         "litlife/unitpay": "dev-dev",
         "litlife/url": "dev-dev",
