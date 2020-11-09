@@ -6,6 +6,7 @@ use App;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
 	 */
 	public function boot()
 	{
+		Paginator::useBootstrap();
 		/*
 		if($this->app->environment('production')) {
 			URL::forceScheme('https');
