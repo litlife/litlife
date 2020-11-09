@@ -28,36 +28,24 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string $first_name
  * @property string $middle_name
  * @property int $books_count
- * @property int $old_rating
  * @property string|null $lang
- * @property int $old_time
  * @property string $nickname
  * @property string|null $home_page
  * @property string|null $email
- * @property int $old_action
  * @property string|null $description
- * @property int $old_translate_books_count
  * @property int|null $create_user_id
- * @property int $old_hide
  * @property int|null $redirect_to_author_id
  * @property int $comments_count
  * @property string|null $wikipedia_url
- * @property int $old_gender
  * @property string|null $born_date
  * @property string|null $born_place
  * @property string|null $dead_date
  * @property string|null $dead_place
  * @property string|null $years_creation
  * @property int|null $edit_user_id
- * @property int|null $old_edit_time
- * @property int|null $old_hide_time
- * @property int|null $old_delete_user_id
- * @property string|null $old_hide_reason
- * @property int $old_user_show
  * @property string|null $orig_last_name
  * @property string|null $orig_first_name
  * @property string|null $orig_middle_name
- * @property float|null $old_vote_average
  * @property int $votes_count
  * @property int|null $forum_id
  * @property int $user_lib_count
@@ -79,16 +67,12 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property Carbon|null $view_updated_at
  * @property string|null $merged_at
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $old_accepted_at
- * @property string|null $old_sent_for_review_at
- * @property int|null $old_check_user_id
  * @property string $gender
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property string|null $name_helper Вспомогательный столбец для быстрого trgm поиска
  * @property int|null $biography_id
- * @property string|null $old_rejected_at
  * @property bool $rating_changed Если рейтинг у книг изменился, то значение будет true
  * @property int $admin_notes_count
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
@@ -154,7 +138,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author onCheck()
  * @method static Builder|Author onlyChecked()
  * @method static \Illuminate\Database\Query\Builder|Author onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
  * @method static Builder|Author orderByRating()
  * @method static Builder|Author orderByRatingDayDesc()
  * @method static Builder|Author orderByRatingDesc()
@@ -162,7 +146,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author orderByRatingQuarterDesc()
  * @method static Builder|Author orderByRatingWeekDesc()
  * @method static Builder|Author orderByRatingYearDesc()
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Author orderStatusChangedAsc()
  * @method static Builder|Author orderStatusChangedDesc()
  * @method static Builder|Author private ()
@@ -205,22 +189,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author whereMiddleName($value)
  * @method static Builder|Author whereNameHelper($value)
  * @method static Builder|Author whereNickname($value)
- * @method static Builder|Author whereOldAcceptedAt($value)
- * @method static Builder|Author whereOldAction($value)
- * @method static Builder|Author whereOldCheckUserId($value)
- * @method static Builder|Author whereOldDeleteUserId($value)
- * @method static Builder|Author whereOldEditTime($value)
- * @method static Builder|Author whereOldGender($value)
- * @method static Builder|Author whereOldHide($value)
- * @method static Builder|Author whereOldHideReason($value)
- * @method static Builder|Author whereOldHideTime($value)
- * @method static Builder|Author whereOldRating($value)
- * @method static Builder|Author whereOldRejectedAt($value)
- * @method static Builder|Author whereOldSentForReviewAt($value)
- * @method static Builder|Author whereOldTime($value)
- * @method static Builder|Author whereOldTranslateBooksCount($value)
- * @method static Builder|Author whereOldUserShow($value)
- * @method static Builder|Author whereOldVoteAverage($value)
  * @method static Builder|Author whereOrigFirstName($value)
  * @method static Builder|Author whereOrigLastName($value)
  * @method static Builder|Author whereOrigMiddleName($value)

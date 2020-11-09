@@ -15,10 +15,10 @@ use Litlife\Url\Url;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|UrlShort newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UrlShort newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UrlShort query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UrlShort whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UrlShort whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UrlShort whereKey($value)

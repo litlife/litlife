@@ -24,12 +24,9 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $old_accepted_at
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $old_sent_for_review_at
- * @property string|null $old_rejected_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $complainable
  * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
@@ -53,8 +50,8 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain onlyChecked()
  * @method static Builder|Complain onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Complain orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain private ()
@@ -62,7 +59,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreateUserId($value)
@@ -70,9 +67,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereOldSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatusChangedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatusChangedUserId($value)

@@ -31,7 +31,6 @@ use tidy;
  * @property string $type
  * @property int $book_id
  * @property string $title
- * @property string|null $old_content
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -41,7 +40,6 @@ use tidy;
  * @property int|null $character_count
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
  * @property array|null $parameters
- * @property mixed|null $old_html_tags_ids Массив всех id html тегов, которые содержатся в тексте
  * @property int $pages_count
  * @property int $status Статус главы. Пока будут варианты опубликована и в личном доступе или черновик
  * @property string|null $status_changed_at Дата изменения статуса
@@ -86,8 +84,8 @@ use tidy;
  * @method static \Illuminate\Database\Eloquent\Builder|Section onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Section onlyChecked()
  * @method static Builder|Section onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Section orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Section orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Section parametersIn($var, $array)
@@ -96,7 +94,7 @@ use tidy;
  * @method static \Illuminate\Database\Eloquent\Builder|Section sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Section unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Section unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCharacterCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreatedAt($value)
@@ -105,8 +103,6 @@ use tidy;
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereInnerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereLft($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Section whereOldContent($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Section whereOldHtmlTagsIds($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section wherePagesCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereParameters($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereParentId($value)

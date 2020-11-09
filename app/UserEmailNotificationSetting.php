@@ -28,10 +28,10 @@ use Illuminate\Support\Carbon;
  * @property bool $db_comment_vote_up
  * @method static Builder|UserEmailNotificationSetting newModelQuery()
  * @method static Builder|UserEmailNotificationSetting newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserEmailNotificationSetting query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|UserEmailNotificationSetting whereCommentReply($value)
  * @method static Builder|UserEmailNotificationSetting whereCreatedAt($value)
  * @method static Builder|UserEmailNotificationSetting whereDbBookFinishParse($value)

@@ -22,20 +22,13 @@ use Illuminate\Support\Facades\Cache;
  * @property int $book_id
  * @property int $keyword_id
  * @property int $create_user_id
- * @property int $old_time
  * @property int $rating
- * @property int $old_hide
- * @property int|null $old_hide_time
- * @property int|null $old_hide_user
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $old_accepted_at
- * @property string|null $old_sent_for_review_at
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $old_rejected_at
  * @property int|null $origin_book_id
  * @property-read \App\Book $book
  * @property-read \App\User $create_user
@@ -63,8 +56,8 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword onlyChecked()
  * @method static Builder|BookKeyword onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword private ()
@@ -75,7 +68,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreatedAt($value)
@@ -83,13 +76,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereKeywordId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldSentForReviewAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOldTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereOriginBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereStatus($value)

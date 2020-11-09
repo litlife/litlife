@@ -17,7 +17,6 @@ use Illuminate\Support\Carbon;
  * @property int $admin_noteable_id
  * @property string|null $text
  * @property int|null $create_user_id
- * @property int|null $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -27,10 +26,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newQuery()
  * @method static Builder|AdminNote onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreateUserId($value)
@@ -38,7 +37,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereOldTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereUserEditedAt($value)

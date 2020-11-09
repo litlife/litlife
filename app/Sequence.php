@@ -23,13 +23,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $id
  * @property string $name
  * @property int|null $create_user_id
- * @property int $old_hide
  * @property int|null $merged_to
  * @property int $book_count
- * @property int $old_update_time
- * @property int $old_hide_time
- * @property int $old_hide_user
- * @property string|null $old_hide_reason
  * @property int $user_lib_count
  * @property int $like_count
  * @property string|null $description
@@ -37,16 +32,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $old_accepted_at
- * @property string|null $old_sent_for_review_at
- * @property int|null $old_check_user_id
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property int|null $merge_user_id
  * @property Carbon|null $merged_at
- * @property int|null $old_delete_user_id ID пользователя который удалил серию
- * @property string|null $old_rejected_at
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
@@ -84,8 +74,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Query\Builder|Sequence onlyTrashed()
  * @method static Builder|Sequence orderByBooksCountAsc()
  * @method static Builder|Sequence orderByBooksCountDesc()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Sequence orderStatusChangedAsc()
  * @method static Builder|Sequence orderStatusChangedDesc()
  * @method static Builder|Sequence private ()
@@ -109,16 +99,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Sequence whereMergedAt($value)
  * @method static Builder|Sequence whereMergedTo($value)
  * @method static Builder|Sequence whereName($value)
- * @method static Builder|Sequence whereOldAcceptedAt($value)
- * @method static Builder|Sequence whereOldCheckUserId($value)
- * @method static Builder|Sequence whereOldDeleteUserId($value)
- * @method static Builder|Sequence whereOldHide($value)
- * @method static Builder|Sequence whereOldHideReason($value)
- * @method static Builder|Sequence whereOldHideTime($value)
- * @method static Builder|Sequence whereOldHideUser($value)
- * @method static Builder|Sequence whereOldRejectedAt($value)
- * @method static Builder|Sequence whereOldSentForReviewAt($value)
- * @method static Builder|Sequence whereOldUpdateTime($value)
  * @method static Builder|Sequence whereStatus($value)
  * @method static Builder|Sequence whereStatusChangedAt($value)
  * @method static Builder|Sequence whereStatusChangedUserId($value)

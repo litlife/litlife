@@ -15,10 +15,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\Book $book
  * @method static Builder|BookViewIp newModelQuery()
  * @method static Builder|BookViewIp newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookViewIp query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookViewIp whereBookId($value)
  * @method static Builder|BookViewIp whereCount($value)
  * @method static Builder|BookViewIp whereIp($value)

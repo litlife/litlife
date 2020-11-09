@@ -15,7 +15,6 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $name
  * @property string|null $description
- * @property int $old_create_time
  * @property int|null $create_user_id
  * @property int $topic_count
  * @property int $post_count
@@ -24,9 +23,6 @@ use Illuminate\Support\Carbon;
  * @property int|null $forum_group_id
  * @property string|null $obj_type
  * @property int|null $obj_id
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
  * @property int $min_message_count
  * @property bool $private
  * @property string|null $private_user_ids
@@ -51,8 +47,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Forum newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum newQuery()
  * @method static Builder|Forum onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Forum public ()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum query()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum void()
@@ -71,10 +67,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereObjId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereObjType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldCreateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOldHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereOrderTopicsBasedOnFixPostLikes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum wherePostCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum wherePrivate($value)

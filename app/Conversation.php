@@ -17,10 +17,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Participation[] $participations
  * @method static Builder|Conversation newModelQuery()
  * @method static Builder|Conversation newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Conversation query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|Conversation whereId($value)
  * @method static Builder|Conversation whereLatestMessageId($value)
  * @method static Builder|Conversation whereMessagesCount($value)

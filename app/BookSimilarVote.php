@@ -11,10 +11,8 @@ use Illuminate\Support\Carbon;
 /**
  * App\BookSimilarVote
  *
- * @property int|null $old_book_similar_id
  * @property int $create_user_id
  * @property int $vote
- * @property int $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $book_id
@@ -25,17 +23,15 @@ use Illuminate\Support\Carbon;
  * @property-read \App\Book $other_book
  * @method static Builder|BookSimilarVote newModelQuery()
  * @method static Builder|BookSimilarVote newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookSimilarVote query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookSimilarVote whereBookId($value)
  * @method static Builder|BookSimilarVote whereCreateUserId($value)
  * @method static Builder|BookSimilarVote whereCreatedAt($value)
  * @method static Builder|BookSimilarVote whereCreator(\App\User $user)
  * @method static Builder|BookSimilarVote whereId($value)
- * @method static Builder|BookSimilarVote whereOldBookSimilarId($value)
- * @method static Builder|BookSimilarVote whereOldTime($value)
  * @method static Builder|BookSimilarVote whereOtherBookId($value)
  * @method static Builder|BookSimilarVote whereUpdatedAt($value)
  * @method static Builder|BookSimilarVote whereVote($value)

@@ -16,7 +16,6 @@ use League\HTMLToMarkdown\HtmlConverter;
  * @property string $name
  * @property string $text
  * @property int $user_id
- * @property int|null $old_time
  * @property int $show_for_all
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -26,15 +25,14 @@ use League\HTMLToMarkdown\HtmlConverter;
  * @method static Builder|TextBlock name($name)
  * @method static Builder|TextBlock newModelQuery()
  * @method static Builder|TextBlock newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|TextBlock query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|TextBlock whereCreatedAt($value)
  * @method static Builder|TextBlock whereCreator(\App\User $user)
  * @method static Builder|TextBlock whereId($value)
  * @method static Builder|TextBlock whereName($value)
- * @method static Builder|TextBlock whereOldTime($value)
  * @method static Builder|TextBlock whereShowForAll($value)
  * @method static Builder|TextBlock whereText($value)
  * @method static Builder|TextBlock whereUpdatedAt($value)

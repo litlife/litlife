@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|ModeratorRequest checked()
  * @method static Builder|ModeratorRequest newModelQuery()
  * @method static Builder|ModeratorRequest newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|ModeratorRequest query()
  * @method static Builder|ModeratorRequest unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @mixin Eloquent
  */
 class ModeratorRequest extends Model

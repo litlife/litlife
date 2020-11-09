@@ -19,10 +19,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string|null $updated_at
  * @method static Builder|AuthorParsedData newModelQuery()
  * @method static Builder|AuthorParsedData newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorParsedData query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|AuthorParsedData whereCity($value)
  * @method static Builder|AuthorParsedData whereCreatedAt($value)
  * @method static Builder|AuthorParsedData whereEmail($value)

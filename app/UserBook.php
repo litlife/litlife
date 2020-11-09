@@ -13,7 +13,6 @@ use Illuminate\Support\Carbon;
  *
  * @property int $user_id
  * @property int $book_id
- * @property int $old_time
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
@@ -21,14 +20,13 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User|null $user
  * @method static Builder|UserBook newModelQuery()
  * @method static Builder|UserBook newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserBook query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|UserBook whereBookId($value)
  * @method static Builder|UserBook whereCreatedAt($value)
  * @method static Builder|UserBook whereId($value)
- * @method static Builder|UserBook whereOldTime($value)
  * @method static Builder|UserBook whereUpdatedAt($value)
  * @method static Builder|UserBook whereUserId($value)
  * @mixin Eloquent

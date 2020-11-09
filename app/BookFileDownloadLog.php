@@ -13,22 +13,20 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $book_file_id
  * @property int|null $user_id
- * @property int|null $old_time
  * @property string $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \App\BookFile $book_file
  * @method static Builder|BookFileDownloadLog newModelQuery()
  * @method static Builder|BookFileDownloadLog newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookFileDownloadLog query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookFileDownloadLog whereBookFileId($value)
  * @method static Builder|BookFileDownloadLog whereCreatedAt($value)
  * @method static Builder|BookFileDownloadLog whereId($value)
  * @method static Builder|BookFileDownloadLog whereIp($value)
- * @method static Builder|BookFileDownloadLog whereOldTime($value)
  * @method static Builder|BookFileDownloadLog whereUpdatedAt($value)
  * @method static Builder|BookFileDownloadLog whereUserId($value)
  * @mixin Eloquent

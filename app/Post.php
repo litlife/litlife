@@ -28,38 +28,25 @@ use Illuminate\Support\Facades\Cache;
  * @property int $topic_id
  * @property string $bb_text
  * @property string $html_text
- * @property int $old_create_time
  * @property int $create_user_id
- * @property int $old_edit_time
  * @property int|null $edit_user_id
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
  * @property string|null $tree
  * @property int $children_count
- * @property string|null $old_complain_user_ids
- * @property int $old_checked
  * @property int $like_count
  * @property string|null $ip
- * @property int $old__lft
- * @property int $old__rgt
  * @property int|null $parent_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $old_accepted_at
  * @property int|null $forum_id
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $old_sent_for_review_at
  * @property bool $private
  * @property int $level
  * @property bool $external_images_downloaded
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property bool $old_image_size_defined
  * @property int|null $user_agent_id
- * @property string|null $old_rejected_at
  * @property int|null $characters_count
  * @property-read \App\Like|null $authUserLike
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
@@ -101,8 +88,8 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Post onlyChecked()
  * @method static Builder|Post onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Post orDescendants($ids)
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Post orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Post orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Post private ()
@@ -111,7 +98,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Post sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Post unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Post unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCharactersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereChildrenCount($value)
@@ -127,19 +114,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereLikeCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldChecked($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldComplainUserIds($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldCreateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldEditTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldImageSizeDefined($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldLft($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldRgt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereOldSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post wherePrivate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereStatus($value)

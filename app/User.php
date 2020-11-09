@@ -37,20 +37,11 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int $ec
  * @property string $email
  * @property string|null $nick
- * @property int $old_last_activity
  * @property string|null $last_name
  * @property string|null $first_name
  * @property string|null $middle_name
- * @property string|null $old_photo
  * @property string $password
  * @property int $gender
- * @property int $old_reg_date
- * @property int $old_new_message_count
- * @property string|null $old_reg_ip_old
- * @property string|null $old_permission
- * @property string|null $old_read_style
- * @property int $old_mail_notif
- * @property int $old_version
  * @property int $comment_count
  * @property int $user_lib_author_count
  * @property int $user_lib_book_count
@@ -65,17 +56,10 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property string|null $city
  * @property int $name_show_type
  * @property int $book_read_not_complete_count
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
- * @property int $old_book_file_count
- * @property int $old_profile_comment_count
  * @property int $subscriptions_count
  * @property int $subscribers_count
  * @property int $friends_count
  * @property int $blacklists_count
- * @property int $old_hide_email
- * @property int $old_invite_send
  * @property int $book_read_not_read_count
  * @property string|null $text_status
  * @property int|null $avatar_id
@@ -239,22 +223,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNameShowType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNick($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNickEquals($nick)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldBookFileCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHideEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldInviteSend($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldLastActivity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldMailNotif($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldNewMessageCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldPermission($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldPhoto($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldProfileCommentCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldReadStyle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldRegDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldRegIpOld($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereOldVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePhotosCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereReferredByUserId($value)

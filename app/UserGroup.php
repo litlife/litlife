@@ -15,7 +15,6 @@ use Illuminate\Support\Str;
  * App\UserGroup
  *
  * @property string $name
- * @property string|null $old_permissions
  * @property int $id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -144,11 +143,11 @@ use Illuminate\Support\Str;
  * @method static CachedBuilder|UserGroup newModelQuery()
  * @method static CachedBuilder|UserGroup newQuery()
  * @method static Builder|UserGroup onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static CachedBuilder|UserGroup query()
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup show()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereAccessSendPrivateMessagesAvoidPrivacyAndBlacklists($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereAccessToClosedBooks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereAchievement($value)
@@ -250,7 +249,6 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereNotShowAd($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereNotifyAssignment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereOldPermissions($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRefreshCounters($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereReplyToSupportService($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereRetryFailedBookParse($value)

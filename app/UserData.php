@@ -19,11 +19,7 @@ use Illuminate\Database\Query\Builder;
  * @property string|null $i_hate
  * @property string|null $about_self
  * @property string|null $favorite_quote
- * @property int|null $old_book_added_comment_count
  * @property int|null $blog_record_comment_count
- * @property string|null $old_last_ip
- * @property int $old_friends_news_last_time_watch
- * @property int|null $old_time_edit_profile
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -43,10 +39,10 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
  * @method static Builder|UserData onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereAboutSelf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBlogRecordCommentCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBooksPurchasedCount($value)
@@ -67,10 +63,6 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereInvitationToTakeSurveyHasBeenSent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLastNewsViewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereLastTimePasswordIsReset($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldBookAddedCommentCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldFriendsNewsLastTimeWatch($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldLastIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserData whereOldTimeEditProfile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData wherePasswordResetCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereReferUsersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereUpdatedAt($value)

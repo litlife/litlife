@@ -21,25 +21,17 @@ use Illuminate\Support\Facades\Cache;
  * @property int $user_id
  * @property string $character
  * @property int $manageable_id
- * @property int $old_add_time
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
  * @property string|null $comment
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $old_accepted_at
  * @property int|null $check_user_id
  * @property string $manageable_type
- * @property string|null $old_rejected_at
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $old_sent_for_review_at
  * @property bool $can_sale Может продавать книги или нет
  * @property int|null $profit_percent Процент от прибыли, который получает автор
- * @property bool $old_disable_editing_for_co_author Запрет редактирования для соавторов
  * @property-read \App\User|null $check_user
  * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
@@ -67,8 +59,8 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager onlyChecked()
  * @method static Builder|Manager onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Manager orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager private ()
@@ -77,7 +69,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager sentOnReviewAndManageableNotPrivateAndNotOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCanSale($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCharacter($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCheckUserId($value)
@@ -89,14 +81,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereManageableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereManageableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldDisableEditingForCoAuthor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereOldSentForReviewAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereProfitPercent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereStatusChangedAt($value)

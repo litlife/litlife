@@ -20,10 +20,10 @@ use App\Traits\UserCreate;
  * @property-read \App\User $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereCollectionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereComment($value)

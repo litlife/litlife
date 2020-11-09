@@ -23,10 +23,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\UserPaymentTransaction|null $transaction
  * @method static Builder|UserMoneyTransfer newModelQuery()
  * @method static Builder|UserMoneyTransfer newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserMoneyTransfer query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|UserMoneyTransfer whereCreatedAt($value)
  * @method static Builder|UserMoneyTransfer whereId($value)
  * @method static Builder|UserMoneyTransfer whereRecepientUserId($value)

@@ -21,10 +21,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User $user
  * @method static Builder|UserSocialAccount newModelQuery()
  * @method static Builder|UserSocialAccount newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserSocialAccount query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|UserSocialAccount whereAccessToken($value)
  * @method static Builder|UserSocialAccount whereCreatedAt($value)
  * @method static Builder|UserSocialAccount whereId($value)

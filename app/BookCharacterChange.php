@@ -20,10 +20,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\Section $section
  * @method static Builder|BookCharacterChange newModelQuery()
  * @method static Builder|BookCharacterChange newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookCharacterChange query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookCharacterChange whereBookId($value)
  * @method static Builder|BookCharacterChange whereCreatedAt($value)
  * @method static Builder|BookCharacterChange whereId($value)

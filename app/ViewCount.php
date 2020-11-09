@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\Book $book
  * @method static Builder|ViewCount newModelQuery()
  * @method static Builder|ViewCount newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|ViewCount query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|ViewCount whereAll($value)
  * @method static Builder|ViewCount whereBookId($value)
  * @method static Builder|ViewCount whereDay($value)

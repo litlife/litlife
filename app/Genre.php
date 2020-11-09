@@ -15,7 +15,6 @@ use Illuminate\Support\Str;
  * App\Genre
  *
  * @property int $id
- * @property int|null $old_genre_group_id Старый ID главного жанра
  * @property string $name
  * @property string|null $fb_code
  * @property int $book_count
@@ -33,13 +32,13 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Genre newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Genre notMain()
  * @method static Builder|Genre onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Genre parseIds($ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre query()
  * @method static \Illuminate\Database\Eloquent\Builder|Genre rememberCount($minutes = 5, $refresh = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre search($searchText)
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereBookCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereCreatedAt($value)
@@ -49,7 +48,6 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereIdWithSlug($id)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Genre whereOldGenreGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereUpdatedAt($value)
  * @method static Builder|Genre withTrashed()

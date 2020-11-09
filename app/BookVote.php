@@ -15,9 +15,6 @@ use Illuminate\Support\Carbon;
  *
  * @property int $book_id
  * @property int $create_user_id
- * @property int $old_rate
- * @property int $old_time
- * @property int $old_hide
  * @property int $vote
  * @property string|null $ip
  * @property Carbon|null $created_at
@@ -33,8 +30,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookVote newModelQuery()
  * @method static Builder|BookVote newQuery()
  * @method static \Illuminate\Database\Query\Builder|BookVote onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookVote query()
  * @method static Builder|BookVote void()
  * @method static Builder|BookVote whereBookId($value)
@@ -44,9 +41,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookVote whereDeletedAt($value)
  * @method static Builder|BookVote whereId($value)
  * @method static Builder|BookVote whereIp($value)
- * @method static Builder|BookVote whereOldHide($value)
- * @method static Builder|BookVote whereOldRate($value)
- * @method static Builder|BookVote whereOldTime($value)
  * @method static Builder|BookVote whereOriginBookId($value)
  * @method static Builder|BookVote whereUpdatedAt($value)
  * @method static Builder|BookVote whereUserUpdatedAt($value)

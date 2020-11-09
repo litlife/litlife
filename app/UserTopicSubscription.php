@@ -16,10 +16,10 @@ use App\Model as Model;
  * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopicSubscription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopicSubscription newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopicSubscription query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopicSubscription whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopicSubscription whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopicSubscription whereTopicId($value)

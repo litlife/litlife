@@ -28,10 +28,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $all_rating
  * @method static Builder|BookAverageRatingForPeriod newModelQuery()
  * @method static Builder|BookAverageRatingForPeriod newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookAverageRatingForPeriod query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookAverageRatingForPeriod whereAllRating($value)
  * @method static Builder|BookAverageRatingForPeriod whereBookId($value)
  * @method static Builder|BookAverageRatingForPeriod whereDayRating($value)

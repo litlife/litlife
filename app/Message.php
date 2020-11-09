@@ -17,20 +17,15 @@ use Illuminate\Support\Facades\DB;
  *
  * @property int $id
  * @property bool $is_read
- * @property bool|null $old_recepient_del
- * @property bool|null $old_sender_del
  * @property int|null $recepient_id
  * @property int $create_user_id
  * @property string $text
- * @property int $old_create_time
- * @property bool $old_is_spam
  * @property string|null $bb_text
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property bool $external_images_downloaded
  * @property int $new Если 1, то сообщение новое (не прочитано), если 0, то прочитано
- * @property bool $old_image_size_defined
  * @property int|null $conversation_id
  * @property string|null $deleted_at_for_created_user
  * @property Carbon|null $user_updated_at
@@ -45,8 +40,8 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Message notDeletedForUser($user)
  * @method static Builder|Message oldestWithId($column = 'created_at')
  * @method static \Illuminate\Database\Query\Builder|Message onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Message query()
  * @method static Builder|Message void()
  * @method static Builder|Message whereBbText($value)
@@ -60,11 +55,6 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Message whereId($value)
  * @method static Builder|Message whereIsRead($value)
  * @method static Builder|Message whereNew($value)
- * @method static Builder|Message whereOldCreateTime($value)
- * @method static Builder|Message whereOldImageSizeDefined($value)
- * @method static Builder|Message whereOldIsSpam($value)
- * @method static Builder|Message whereOldRecepientDel($value)
- * @method static Builder|Message whereOldSenderDel($value)
  * @method static Builder|Message whereRecepientId($value)
  * @method static Builder|Message whereText($value)
  * @method static Builder|Message whereUpdatedAt($value)

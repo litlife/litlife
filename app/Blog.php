@@ -27,19 +27,11 @@ use Stevebauman\Purify\Facades\Purify;
  * @property int $id
  * @property int $blog_user_id
  * @property int $create_user_id
- * @property int $old_add_time
  * @property string|null $bb_text
  * @property string $text
- * @property int $old_edit_time
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
  * @property string|null $tree
  * @property int $children_count
  * @property int $like_count
- * @property int $old_action
- * @property int $old__lft
- * @property int $old__rgt
  * @property int|null $parent_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -47,7 +39,6 @@ use Stevebauman\Purify\Facades\Purify;
  * @property string|null $user_edited_at Время когда пользователь отредактировал
  * @property int $level
  * @property bool $external_images_downloaded
- * @property bool $old_image_size_defined
  * @property bool $display_on_home_page
  * @property int|null $user_agent_id
  * @property int|null $status Статус поста
@@ -88,8 +79,8 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|Blog onlyChecked()
  * @method static Builder|Blog onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog orDescendants($ids)
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Blog orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog owned()
@@ -99,7 +90,7 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|Blog sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereBlogUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereCharactersCount($value)
@@ -113,15 +104,6 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereLevel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereLikeCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldAction($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldEditTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldImageSizeDefined($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldLft($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Blog whereOldRgt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereStatusChangedAt($value)

@@ -22,10 +22,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User $user
  * @method static Builder|AchievementUser newModelQuery()
  * @method static Builder|AchievementUser newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AchievementUser query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|AchievementUser whereAchievementId($value)
  * @method static Builder|AchievementUser whereCreateUserId($value)
  * @method static Builder|AchievementUser whereCreatedAt($value)

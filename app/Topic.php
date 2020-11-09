@@ -20,17 +20,12 @@ use Illuminate\Support\Carbon;
  * @property int $forum_id
  * @property string $name
  * @property string|null $description
- * @property int $old_create_time
  * @property int $create_user_id
  * @property int $post_count
  * @property int $view_count
  * @property int|null $last_post_id
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
  * @property bool $post_desc
  * @property int $main_priority
- * @property bool $old_first_post_on_top
  * @property int|null $top_post_id
  * @property int $forum_priority
  * @property bool $hide_from_main_page
@@ -59,11 +54,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newQuery()
  * @method static Builder|Topic onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic opened()
- * @method static Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostAscNullsFirst()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostDescNullsLast()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostNullsLast()
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderForIdeaForum()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic public ()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic query()
@@ -86,11 +81,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereLastPostId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereMainPriority($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldCreateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldFirstPostOnTop($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereOldHideUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic wherePostCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic wherePostDesc($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereTopPostId($value)

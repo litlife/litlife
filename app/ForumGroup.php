@@ -16,7 +16,6 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property string $name
- * @property int $old_create_time
  * @property int $create_user_id
  * @property string|null $forum_sort
  * @property Carbon|null $created_at
@@ -30,11 +29,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup newQuery()
  * @method static Builder|ForumGroup onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup orderBySettings()
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreator(\App\User $user)
@@ -43,7 +42,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereImageId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereOldCreateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereUpdatedAt($value)
  * @method static Builder|ForumGroup withTrashed()
  * @method static Builder|ForumGroup withoutTrashed()

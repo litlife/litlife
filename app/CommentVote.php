@@ -14,7 +14,6 @@ use Illuminate\Support\Carbon;
  * @property int $comment_id
  * @property int $create_user_id
  * @property int $vote
- * @property int $old_time
  * @property string|null $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -23,17 +22,16 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User $create_user
  * @method static Builder|CommentVote newModelQuery()
  * @method static Builder|CommentVote newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|CommentVote query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|CommentVote whereCommentId($value)
  * @method static Builder|CommentVote whereCreateUserId($value)
  * @method static Builder|CommentVote whereCreatedAt($value)
  * @method static Builder|CommentVote whereCreator(\App\User $user)
  * @method static Builder|CommentVote whereId($value)
  * @method static Builder|CommentVote whereIp($value)
- * @method static Builder|CommentVote whereOldTime($value)
  * @method static Builder|CommentVote whereUpdatedAt($value)
  * @method static Builder|CommentVote whereVote($value)
  * @mixin Eloquent

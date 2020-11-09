@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @property int $book_id
  * @property int $user_id
- * @property int $old_time
  * @property int $page
  * @property string $updated_at
  * @property int|null $inner_section_id
@@ -20,14 +19,13 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\User $user
  * @method static Builder|BookReadRememberPage newModelQuery()
  * @method static Builder|BookReadRememberPage newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookReadRememberPage query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookReadRememberPage whereBookId($value)
  * @method static Builder|BookReadRememberPage whereCharactersCount($value)
  * @method static Builder|BookReadRememberPage whereInnerSectionId($value)
- * @method static Builder|BookReadRememberPage whereOldTime($value)
  * @method static Builder|BookReadRememberPage wherePage($value)
  * @method static Builder|BookReadRememberPage whereUpdatedAt($value)
  * @method static Builder|BookReadRememberPage whereUserId($value)

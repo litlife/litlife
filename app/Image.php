@@ -19,7 +19,6 @@ use Litlife\Url\Url;
  *
  * @property int $id
  * @property string $type
- * @property int $old_add_time
  * @property int $create_user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -46,13 +45,13 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
  * @method static Builder|Image onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Image pHash($hash)
  * @method static \Illuminate\Database\Eloquent\Builder|Image query()
  * @method static \Illuminate\Database\Eloquent\Builder|Image setSize($height)
  * @method static \Illuminate\Database\Eloquent\Builder|Image sha256Hash($hash)
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreator(\App\User $user)
@@ -61,7 +60,6 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereMd5($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereOldAddTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image wherePhash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereSha256Hash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereSize($value)

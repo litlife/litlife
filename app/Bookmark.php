@@ -15,9 +15,7 @@ use Litlife\Url\Url;
  *
  * @property int $id
  * @property int $create_user_id
- * @property string|null $old_url_old
  * @property string $title
- * @property int $old_time
  * @property int|null $folder_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -30,10 +28,10 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark newQuery()
  * @method static Builder|Bookmark onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreator(\App\User $user)
@@ -41,8 +39,6 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereFolderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereNew($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereOldTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereOldUrlOld($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereUrl($value)

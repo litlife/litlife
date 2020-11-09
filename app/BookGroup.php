@@ -24,10 +24,10 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $not_main_books
  * @method static Builder|BookGroup newModelQuery()
  * @method static Builder|BookGroup newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookGroup query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookGroup whereBooksCount($value)
  * @method static Builder|BookGroup whereCreateUserId($value)
  * @method static Builder|BookGroup whereCreatedAt($value)

@@ -18,10 +18,10 @@ use App\Model as Model;
  * @property-read \App\User $referred_user
  * @method static \Illuminate\Database\Eloquent\Builder|ReferredUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ReferredUser newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|ReferredUser query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|ReferredUser whereComissionBuyBook($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ReferredUser whereComissionSellBook($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ReferredUser whereCreatedAt($value)

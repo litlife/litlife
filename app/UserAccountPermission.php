@@ -20,10 +20,10 @@ use Illuminate\Support\Carbon;
  * @property int $view_relations
  * @method static Builder|UserAccountPermission newModelQuery()
  * @method static Builder|UserAccountPermission newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserAccountPermission query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|UserAccountPermission whereCommentOnTheWall($value)
  * @method static Builder|UserAccountPermission whereCreatedAt($value)
  * @method static Builder|UserAccountPermission whereUpdatedAt($value)

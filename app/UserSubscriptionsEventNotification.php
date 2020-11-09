@@ -20,10 +20,10 @@ use BenSampo\Enum\Traits\CastsEnums;
  * @property-read \App\User $notifiable_user
  * @method static \Illuminate\Database\Eloquent\Builder|UserSubscriptionsEventNotification newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserSubscriptionsEventNotification newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserSubscriptionsEventNotification query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserSubscriptionsEventNotification whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserSubscriptionsEventNotification whereEventType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserSubscriptionsEventNotification whereEventableId($value)

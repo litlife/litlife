@@ -12,8 +12,6 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @property int $book_id
  * @property int $user_id
- * @property int $old_code
- * @property int $old_time
  * @property \Illuminate\Support\Carbon|null $user_updated_at
  * @property int $id
  * @property int $status
@@ -25,15 +23,13 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|BookStatus newModelQuery()
  * @method static Builder|BookStatus newQuery()
  * @method static Builder|BookStatus onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookStatus query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|BookStatus whereBookId($value)
  * @method static Builder|BookStatus whereCode($value)
  * @method static Builder|BookStatus whereId($value)
- * @method static Builder|BookStatus whereOldCode($value)
- * @method static Builder|BookStatus whereOldTime($value)
  * @method static Builder|BookStatus whereOriginBookId($value)
  * @method static Builder|BookStatus whereStatus($value)
  * @method static Builder|BookStatus whereUserId($value)

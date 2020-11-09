@@ -16,10 +16,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\User $user
  * @method static Builder|MessageDelete newModelQuery()
  * @method static Builder|MessageDelete newQuery()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|MessageDelete query()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static Builder|MessageDelete whereDeletedAt($value)
  * @method static Builder|MessageDelete whereMessageId($value)
  * @method static Builder|MessageDelete whereUserId($value)

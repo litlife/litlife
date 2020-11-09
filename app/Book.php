@@ -43,15 +43,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * App\Book
  *
  * @property int $id
- * @property string|null $old_genre
- * @property string|null $old_author
- * @property string|null $old_book_name
- * @property string|null $old_nis
- * @property int $old_rating
- * @property int $old_time_add
  * @property int|null $page_count
- * @property int $old_dca
- * @property int $old_rca
  * @property string|null $ti_lb
  * @property string|null $ti_olb
  * @property string|null $pi_bn
@@ -59,35 +51,15 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property string|null $pi_city
  * @property int|null $pi_year
  * @property string|null $pi_isbn
- * @property string|null $old_series
- * @property string|null $old_translator
- * @property int $old_section_count
- * @property int $old_action
- * @property int $old_sum_of_votes
  * @property int $create_user_id
- * @property int $old_time_edit
  * @property int $version
  * @property int $comment_count
- * @property string|null $old_moderator_info
- * @property int $old_hide
- * @property int $old_redirect_to_book
  * @property int $user_read_count
  * @property int $user_vote_count
- * @property string|null $old_vote_info
  * @property int $user_read_later_count
  * @property int $user_read_now_count
  * @property int|null $edit_user_id
- * @property int $old_edit_time
- * @property int $old_hide_time
- * @property int $old_hide_user
- * @property string|null $old_hide_reason
- * @property int $old_type
- * @property float|null $old_vote_average
- * @property int $old_user_show
  * @property int $user_read_not_complete_count
- * @property string|null $old_formats
- * @property int $old_secret_hide
- * @property int $old_last_versions_count
  * @property int $google_ad_hide
  * @property int $ready_status
  * @property float|null $vote_average
@@ -95,25 +67,18 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int $male_vote_count
  * @property int $female_vote_count
  * @property int $swear
- * @property int $old_secret_hide_user_id
  * @property float|null $male_vote_percent
  * @property bool $is_si
  * @property int $in_rating
  * @property int $comments_closed
- * @property int $old_hide_from_top
  * @property int $cover_exists
- * @property int $old_litres_id
- * @property int $old_litres_id_by_isbn
  * @property int|null $year_writing
  * @property string|null $rightholder
  * @property int|null $year_public
  * @property bool $is_public
  * @property int|null $age
- * @property int $old_coollib_id
  * @property string|null $secret_hide_reason
  * @property int $user_read_not_read_count
- * @property string|null $old_lang
- * @property int|null $old_year
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -124,8 +89,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property string|null $rate_info
  * @property bool $refresh_rating
  * @property array|null $formats
- * @property string|null $old_accepted_at
- * @property int|null $old_check_user_id
  * @property \Illuminate\Support\Carbon|null $connected_at
  * @property int|null $connect_user_id
  * @property int|null $delete_user_id
@@ -133,7 +96,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property bool $main_in_group
  * @property string $title
  * @property int|null $genres_helper
- * @property string|null $old_sent_for_review_at
  * @property bool $read_access
  * @property bool $download_access
  * @property \Illuminate\Support\Carbon|null $user_edited_at Время когда пользователь отредактировал
@@ -149,7 +111,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property bool $annotation_exists
  * @property bool $images_exists
  * @property int $awards_count
- * @property string|null $old_rejected_at
  * @property int $admin_notes_count
  * @property float|null $price Цена книги, когда она продается. Если цены нет, то она бесплатна
  * @property int|null $free_sections_count Количество бесплатных глав с начала книги. Если 0 - то все главы платные
@@ -268,7 +229,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Book onlyDownloadAccess()
  * @method static \Illuminate\Database\Eloquent\Builder|Book onlyReadAccess()
  * @method static \Illuminate\Database\Query\Builder|Book onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderByRatingAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderByRatingDayDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderByRatingDesc()
@@ -276,7 +237,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderByRatingQuarterDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderByRatingWeekDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderByRatingYearDesc()
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Book orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Book paid()
@@ -341,45 +302,6 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereNeedCreateNewBookFilesCooldownIsOver()
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereNeedCreateNewFiles($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereNotesCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldAction($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldAuthor($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldBookName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldCheckUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldCoollibId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldDca($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldEditTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldFormats($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldGenre($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldHideFromTop($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldHideReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldLang($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldLastVersionsCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldLitresId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldLitresIdByIsbn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldModeratorInfo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldNis($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldRating($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldRca($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldRedirectToBook($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldSecretHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldSecretHideUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldSectionCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldSentForReviewAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldSeries($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldSumOfVotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldTimeAdd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldTimeEdit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldTranslator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldUserShow($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldVoteAverage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldVoteInfo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Book whereOldYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book whereOnlineReadNewFormat($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book wherePageCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Book wherePagesCountRange($min = null, $max = null)

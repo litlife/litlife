@@ -23,38 +23,21 @@ use Illuminate\Support\Facades\Cache;
  *
  * @property int $id
  * @property int $commentable_id
- * @property int $old_commentable_type
  * @property int $create_user_id
- * @property int $old_time
  * @property string $text
- * @property string|null $old_ip_old
  * @property int $vote_up
  * @property int $vote_down
- * @property int $old_is_spam
- * @property mixed|null $old_user_vote_for_spam
  * @property string|null $bb_text
  * @property int|null $edit_user_id
- * @property int $old_edit_time
- * @property int $old_reputation_count
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
- * @property string|null $old_complain_user_ids
- * @property int $old_checked
  * @property int $vote
- * @property int $old_action
  * @property string|null $tree
  * @property int $children_count
  * @property int $hide_from_top
- * @property int $old__lft
- * @property int $old__rgt
  * @property int|null $parent_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property string|null $user_edited_at Время когда пользователь отредактировал
- * @property string|null $old_accepted_at
- * @property string|null $old_sent_for_review_at
  * @property string $commentable_type
  * @property int $level
  * @property bool $external_images_downloaded
@@ -64,7 +47,6 @@ use Illuminate\Support\Facades\Cache;
  * @property bool $image_size_defined
  * @property string $ip
  * @property int|null $user_agent_id
- * @property string|null $old_rejected_at
  * @property int|null $characters_count
  * @property int|null $origin_commentable_id
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $commentable
@@ -107,9 +89,9 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment onlyChecked()
  * @method static \Illuminate\Database\Query\Builder|Comment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orDescendants($ids)
- * @method static Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderByOriginFirstAndLatest($commentable)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment private ()
@@ -138,24 +120,6 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereImageSizeDefined($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereLevel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldAction($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldChecked($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldCommentableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldComplainUserIds($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldEditTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldIpOld($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldIsSpam($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldLft($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldReputationCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldRgt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldSentForReviewAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOldUserVoteForSpam($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereOriginCommentableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereParentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereStatus($value)

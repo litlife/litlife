@@ -30,29 +30,16 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $size
  * @property string $format
  * @property int $file_size
- * @property int|null $old_add_time
  * @property int|null $create_user_id
  * @property string $md5
  * @property bool $original
  * @property int $id
- * @property int $old_hide
- * @property int $old_hide_time
- * @property int $old_hide_user
- * @property int $old_version
  * @property int $download_count
- * @property int $old_download_count_update_time
  * @property string|null $comment
  * @property int|null $number
- * @property int|null $old_edit_time
- * @property int|null $old_edit_user
- * @property int|null $old_name_change
- * @property int|null $old_action
- * @property mixed|null $old_error
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property string|null $old_accepted_at
- * @property string|null $old_sent_for_review_at
  * @property string $storage
  * @property string|null $dirname
  * @property bool $source
@@ -60,7 +47,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property string|null $old_rejected_at
  * @property bool|null $auto_created Создан ли файл сайтом, после редактирования онлайн текста
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
  * @property-read \App\User|null $add_user
@@ -96,8 +82,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile onlyChecked()
  * @method static Builder|BookFile onlyTrashed()
- * @method static Builder|Model orderByField($column, $ids)
- * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile private ()
@@ -105,7 +91,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile unchecked()
- * @method static Builder|Model void()
+ * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereAutoCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereCheckUserId($value)
@@ -122,20 +108,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereMd5($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldAcceptedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldAction($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldAddTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldDownloadCountUpdateTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldEditTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldEditUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldError($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldHide($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldHideTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldHideUser($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldNameChange($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldRejectedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldSentForReviewAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOldVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereOriginal($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereSize($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereSource($value)
