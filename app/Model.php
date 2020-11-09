@@ -4,7 +4,6 @@ namespace App;
 
 
 use App\Traits\PaginatableTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use InvalidArgumentException;
 
@@ -84,10 +83,10 @@ abstract class Model extends Eloquent
 	/**
 	 * Set the keys for a save update query.
 	 *
-	 * @param Builder $query
-	 * @return Builder
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	protected function setKeysForSaveQuery(Builder $query)
+	protected function setKeysForSaveQuery($query)
 	{
 		$keys = $this->getKeyName();
 		if (!is_array($keys)) {

@@ -137,7 +137,7 @@ use Illuminate\Support\Str;
  * @property bool $manage_ad_blocks Добавлять жанры
  * @property bool $edit_or_delete_your_comments_to_collections Редактировать или удалять свои комментарии к подборкам
  * @property bool $send_a_support_question Может ли пользователь написать в поддержку
- * @property bool $reply_to_support_service Может ли пользователь написать в поддержку
+ * @property bool $reply_to_support_service Может ли пользователь отвечать в службе поддержки
  * @property-read mixed $rules
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup disableCache()

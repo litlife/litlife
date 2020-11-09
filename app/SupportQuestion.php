@@ -16,17 +16,20 @@ use Illuminate\Support\Str;
  * App\SupportQuestion
  *
  * @property int $id
+ * @property int|null $category
  * @property string|null $title Заголовок
- * @property int $create_user_id Создатель сообщения
+ * @property int $create_user_id Создатель запроса в поддержку
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property int|null $latest_message_id ID последнего сообщения
  * @property int $number_of_messages Количество сообщений
+ * @property string|null $last_message_created_at Количество сообщений
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property-read \App\User $create_user
+ * @property-read \App\FeedbackSupportResponses|null $feedback
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
@@ -35,44 +38,48 @@ use Illuminate\Support\Str;
  * @property-read \App\SupportQuestionMessage|null $latest_message
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestionMessage[] $messages
  * @property-read \App\User|null $status_changed_user
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion accepted()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedAndSentForReview()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedAndSentForReviewOrBelongsToAuthUser()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedAndSentForReviewOrBelongsToUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedOrBelongsToAuthUser()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion acceptedOrBelongsToUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion checked()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion checkedAndOnCheck()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion checkedOrBelongsToUser($user)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion onCheck()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion onlyChecked()
+ * @method static Builder|SupportQuestion accepted()
+ * @method static Builder|SupportQuestion acceptedAndSentForReview()
+ * @method static Builder|SupportQuestion acceptedAndSentForReviewOrBelongsToAuthUser()
+ * @method static Builder|SupportQuestion acceptedAndSentForReviewOrBelongsToUser($user)
+ * @method static Builder|SupportQuestion acceptedOrBelongsToAuthUser()
+ * @method static Builder|SupportQuestion acceptedOrBelongsToUser($user)
+ * @method static Builder|SupportQuestion checked()
+ * @method static Builder|SupportQuestion checkedAndOnCheck()
+ * @method static Builder|SupportQuestion checkedOrBelongsToUser($user)
+ * @method static Builder|SupportQuestion newModelQuery()
+ * @method static Builder|SupportQuestion newQuery()
+ * @method static Builder|SupportQuestion onCheck()
+ * @method static Builder|SupportQuestion onlyChecked()
  * @method static \Illuminate\Database\Query\Builder|SupportQuestion onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion orderStatusChangedAsc()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion private ()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion query()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion sentOnReview()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion unaccepted()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCreateUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereCreator(\App\User $user)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereLatestMessageId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereNumberOfMessages($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusChangedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusChangedUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusIn($statuses)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereStatusNot($status)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion whereUpdatedAt($value)
+ * @method static Builder|SupportQuestion orderStatusChangedAsc()
+ * @method static Builder|SupportQuestion orderStatusChangedDesc()
+ * @method static Builder|SupportQuestion private ()
+ * @method static Builder|SupportQuestion query()
+ * @method static Builder|SupportQuestion sentOnReview()
+ * @method static Builder|SupportQuestion unaccepted()
+ * @method static Builder|SupportQuestion unchecked()
+ * @method static Builder|SupportQuestion whereCategory($value)
+ * @method static Builder|SupportQuestion whereCreateUserId($value)
+ * @method static Builder|SupportQuestion whereCreatedAt($value)
+ * @method static Builder|SupportQuestion whereCreator(\App\User $user)
+ * @method static Builder|SupportQuestion whereDeletedAt($value)
+ * @method static Builder|SupportQuestion whereId($value)
+ * @method static Builder|SupportQuestion whereLastMessageCreatedAt($value)
+ * @method static Builder|SupportQuestion whereLastResponseByUser()
+ * @method static Builder|SupportQuestion whereLastResponseNotByUser()
+ * @method static Builder|SupportQuestion whereLatestMessageId($value)
+ * @method static Builder|SupportQuestion whereNumberOfMessages($value)
+ * @method static Builder|SupportQuestion whereStatus($value)
+ * @method static Builder|SupportQuestion whereStatusChangedAt($value)
+ * @method static Builder|SupportQuestion whereStatusChangedUserId($value)
+ * @method static Builder|SupportQuestion whereStatusIn($statuses)
+ * @method static Builder|SupportQuestion whereStatusNot($status)
+ * @method static Builder|SupportQuestion whereTitle($value)
+ * @method static Builder|SupportQuestion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|SupportQuestion withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion withUnchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|SupportQuestion withoutCheckedScope()
+ * @method static Builder|SupportQuestion withUnchecked()
+ * @method static Builder|SupportQuestion withoutCheckedScope()
  * @method static \Illuminate\Database\Query\Builder|SupportQuestion withoutTrashed()
  * @mixin \Eloquent
  */
