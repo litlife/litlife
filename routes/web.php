@@ -81,7 +81,7 @@ Route::get('/authors/how_to_start_selling_books', 'AuthorSaleRequestController@h
 
 Route::group(['middleware' => ['guest']], function () {
 	Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login.form');
-	Route::post('/login', 'Auth\LoginController@login')->name('login');
+	Route::post('/login', 'Auth\LoginController@login')->name('login')->middleware('throttle:30,1');
 	// middleware guest start
 	Route::get('invitations', 'InvitationController@create')->name('invitation');
 	Route::post('invitations', 'InvitationController@store')->name('invitation.store');

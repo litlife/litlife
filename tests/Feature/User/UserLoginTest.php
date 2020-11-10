@@ -617,4 +617,28 @@ class UserLoginTest extends TestCase
 			])
 			->assertRedirect();
 	}
+
+	public function testDontLoginIfAlreadyAuth()
+	{
+		Event::fake(Login::class);
+
+		$password = $this->faker->password;
+
+		$user = factory(User::class)
+			->states('with_confirmed_email')
+			->create();
+
+		$email = $user->emails->first()->email;
+
+		$response = $this->actingAs($user)
+			->post(route('login'), [
+				'login' => $email,
+				'login_password' => $password
+			])->assertSessionHasNoErrors()
+			->assertRedirect();
+
+		$this->assertAuthenticatedAs($user);
+
+		Event::assertNotDispatched(Login::class);
+	}
 }
