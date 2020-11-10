@@ -12,7 +12,7 @@
     "ext-dom": "*",
     "ext-imagick": "*",
     "nelexa/zip": "^3.1",
-    "litlife/url": "dev-dev"
+    "litlife/url": "*"
   },
   "autoload": {
     "psr-4": {

@@ -8,7 +8,7 @@
     }
   ],
   "require": {
-    "litlife/url": "dev-dev",
+    "litlife/url": "*",
     "symfony/process": "^5.1"
   },
   "autoload": {
