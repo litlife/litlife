@@ -11,9 +11,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 {
 	public function testNotViewedMessageUserParticipation()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_not_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -28,8 +26,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 
 	public function testCountNew()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$message_viewed = factory(Message::class)
 			->states('viewed')
@@ -41,8 +38,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 		$this->assertEquals($message_viewed->id, $message_viewed->getFirstRecepientParticipation()->latest_message_id);
 		$this->assertEquals(0, $message_viewed->getFirstRecepientParticipation()->new_messages_count);
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'create_user_id' => $message_viewed->create_user_id,
 				'recepient_id' => $recepient->id
 			]);
@@ -54,8 +50,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 		$this->assertEquals($message->id, $message->getFirstRecepientParticipation()->latest_message_id);
 		$this->assertEquals(1, $message->getFirstRecepientParticipation()->new_messages_count);
 
-		$message2 = factory(Message::class)
-			->create([
+		$message2 = Message::factory()->create([
 				'create_user_id' => $message_viewed->create_user_id,
 				'recepient_id' => $recepient->id
 			]);
@@ -68,8 +63,7 @@ class MessageUserGetNewMessagesCountTest extends TestCase
 		$this->assertEquals(2, $message->getFirstRecepientParticipation()->new_messages_count);
 
 
-		$message3 = factory(Message::class)
-			->create([
+		$message3 = Message::factory()->create([
 				'create_user_id' => $message_viewed->create_user_id,
 				'recepient_id' => $recepient->id
 			]);

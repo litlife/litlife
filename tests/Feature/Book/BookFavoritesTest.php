@@ -11,11 +11,9 @@ class BookFavoritesTest extends TestCase
 {
 	public function testToggle()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.favorites.toggle', ['book' => $book]))
@@ -46,8 +44,7 @@ class BookFavoritesTest extends TestCase
 
 	public function testToggleIfAuthorDeleted()
 	{
-		$user_book = factory(UserBook::class)
-			->create();
+		$user_book = UserBook::factory()->create();
 
 		$book = $user_book->book;
 		$user = $user_book->user;

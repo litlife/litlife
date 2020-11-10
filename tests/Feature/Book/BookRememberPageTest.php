@@ -20,15 +20,11 @@ class BookRememberPageTest extends TestCase
 	 */
 	public function testRemeberHttp()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$book = Book::factory()->with_create_user()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->create(['book_id' => $book->id]);
 
 		$book->refresh();
 
@@ -64,9 +60,7 @@ class BookRememberPageTest extends TestCase
 
 	public function testStopReadingHttp()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'with_section')
-			->create();
+		$book = Book::factory()->with_create_user()->with_section()->create();
 
 		$section = $book->sections()->first();
 
@@ -87,23 +81,19 @@ class BookRememberPageTest extends TestCase
 
 	public function testBooksCountWithNewText()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create()
+		$book = Book::factory()->with_section()->create(
+			)
 			->fresh();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'characters_count' => ($book->characters_count - 10)
 			]);
 
-		$user_book = factory(UserBook::class)
-			->create([
+		$user_book = UserBook::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 			]);
@@ -124,23 +114,19 @@ class BookRememberPageTest extends TestCase
 
 	public function testFlushCacheFavoriteBooksWithUpdatesCountAfterBookPageViewed()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create()
+		$book = Book::factory()->with_section()->create(
+			)
 			->fresh();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'characters_count' => ($book->characters_count - 10)
 			]);
 
-		$user_book = factory(UserBook::class)
-			->create([
+		$user_book = UserBook::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 			]);
@@ -154,29 +140,24 @@ class BookRememberPageTest extends TestCase
 
 	public function testBooksCountWithNewTextAndOtherUser()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create()
+		$book = Book::factory()->with_section()->create(
+			)
 			->fresh();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'characters_count' => ($book->characters_count - 10)
 			]);
 
-		$book_read_remember_page2 = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page2 = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'characters_count' => ($book->characters_count - 10)
 			]);
 
-		$user_book = factory(UserBook::class)
-			->create([
+		$user_book = UserBook::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 			]);
@@ -193,23 +174,19 @@ class BookRememberPageTest extends TestCase
 
 	public function testBookUpdatesCounterIfCharacterCountChange()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create()
+		$book = Book::factory()->with_section()->create(
+			)
 			->fresh();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'characters_count' => $book->characters_count
 			]);
 
-		$user_book = factory(UserBook::class)
-			->create([
+		$user_book = UserBook::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 			]);
@@ -226,8 +203,7 @@ class BookRememberPageTest extends TestCase
 
 	public function testAligmentChractersCountCommand()
 	{
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'characters_count' => 0
 			]);
 
@@ -236,8 +212,7 @@ class BookRememberPageTest extends TestCase
 		$book->save();
 		$book->refresh();
 
-		$book_read_remember_page2 = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page2 = BookReadRememberPage::factory()->create([
 				'characters_count' => 0
 			]);
 
@@ -246,8 +221,7 @@ class BookRememberPageTest extends TestCase
 		$book2->save();
 		$book2->refresh();
 
-		$book_read_remember_page3 = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page3 = BookReadRememberPage::factory()->create([
 				'book_id' => $book2->id,
 				'characters_count' => 0
 			]);
@@ -269,15 +243,12 @@ class BookRememberPageTest extends TestCase
 
 	public function testBookListHttpOk()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections', 'with_create_user')
-			->create();
+		$book = Book::factory()->with_three_sections()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$section = $book->sections()->first();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'inner_section_id' => $section->inner_id,
@@ -291,20 +262,13 @@ class BookRememberPageTest extends TestCase
 
 	public function testRememberThePageFromTheBeginningOfTheBook()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$book = Book::factory()->with_create_user()->create();
 
-		$chapter1 = factory(Section::class)
-			->states('with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter1 = Section::factory()->with_two_pages()->create();
 
-		$chapter2 = factory(Section::class)
-			->states('with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter2 = Section::factory()->with_two_pages()->create();
 
 		BookUpdatePageNumbersJob::dispatch($book);
 

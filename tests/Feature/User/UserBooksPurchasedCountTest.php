@@ -9,9 +9,7 @@ class UserBooksPurchasedCountTest extends TestCase
 {
 	public function testPurchasedBooksCount()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$purchase->buyer->purchasedBookCountRefresh();
 		$purchase->refresh();

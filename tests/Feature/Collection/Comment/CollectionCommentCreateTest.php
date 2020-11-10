@@ -12,13 +12,11 @@ class CollectionCommentCreateTest extends TestCase
 {
 	public function testAddComment()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$collection = factory(Collection::class)
-			->create(['who_can_comment' => 'everyone']);
+		$collection = Collection::factory()->create(['who_can_comment' => 'everyone']);
 
 		$text = $this->faker->realText(200);
 
@@ -44,18 +42,14 @@ class CollectionCommentCreateTest extends TestCase
 
 	public function testReplyCreateIsOk()
 	{
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create();
+		$comment = Comment::factory()->collection()->create();
 
 		$collection = $comment->commentable;
 		$collection->who_can_comment = 'everyone';
 		$collection->save();
 		$collection->refresh();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->assertTrue($user->can('commentOn', $collection));
 		$this->assertTrue($user->can('reply', $comment));
@@ -71,18 +65,14 @@ class CollectionCommentCreateTest extends TestCase
 
 	public function testReplyStoreIsOk()
 	{
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create();
+		$comment = Comment::factory()->collection()->create();
 
 		$collection = $comment->commentable;
 		$collection->who_can_comment = 'everyone';
 		$collection->save();
 		$collection->refresh();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$text = Str::random(10);
 

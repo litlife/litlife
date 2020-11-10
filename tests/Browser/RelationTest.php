@@ -17,8 +17,8 @@ class RelationTest extends DuskTestCase
 	{
 		$this->browse(function ($first_browser, $second_browser) {
 
-			$first_user = factory(User::class)->create();
-			$second_user = factory(User::class)->create();
+			$first_user = User::factory()->create();
+			$second_user = User::factory()->create();
 
 			$first_browser->resize(1000, 1000)
 				->loginAs($first_user);
@@ -59,8 +59,8 @@ class RelationTest extends DuskTestCase
 	{
 		$this->browse(function ($first_browser) {
 
-			$first_user = factory(User::class)->create();
-			$second_user = factory(User::class)->create();
+			$first_user = User::factory()->create();
+			$second_user = User::factory()->create();
 
 			$first_browser->resize(1000, 1000)
 				->loginAs($first_user);

@@ -17,9 +17,7 @@ class UserUpdateIncomingPaymentStatusJobTest extends TestCase
 	 */
 	public function testIfErrorTransaction()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$buyer = $transaction->user;
 

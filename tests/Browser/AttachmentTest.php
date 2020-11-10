@@ -18,9 +18,7 @@ class AttachmentTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('private', 'with_create_user')
-				->create();
+			$book = Book::factory()->private()->with_create_user()->create();
 
 			$browser->resize(1000, 1000)
 				->loginAs($book->create_user)
@@ -43,9 +41,7 @@ class AttachmentTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('private', 'with_create_user')
-				->create();
+			$book = Book::factory()->private()->with_create_user()->create();
 
 			$attachment = new Attachment;
 			$attachment->openImage(__DIR__ . '/images/test.jpeg');
@@ -96,9 +92,7 @@ class AttachmentTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('private', 'with_create_user')
-				->create();
+			$book = Book::factory()->private()->with_create_user()->create();
 
 			$attachment = new Attachment;
 			$attachment->openImage(__DIR__ . '/images/test.jpeg');

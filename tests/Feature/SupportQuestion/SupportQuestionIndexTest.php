@@ -10,7 +10,7 @@ class SupportQuestionIndexTest extends TestCase
 {
 	public function testRedirectIfNoSupportQuestionCreated()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.support_questions.index', ['user' => $user]))
@@ -19,9 +19,7 @@ class SupportQuestionIndexTest extends TestCase
 
 	public function testIsOk()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('with_message')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->with_message()->create();
 
 		$user = $supportQuestion->create_user;
 

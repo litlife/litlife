@@ -17,9 +17,7 @@ class BookGroupDetachTest extends TestCase
 {
 	public function testDetachBook()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -44,15 +42,13 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachBookWithStatus()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->main_book_id = $mainBook->id;
 		$book->save();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $book->id,
 				'status' => 'readed'
@@ -69,15 +65,13 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachBookWithVote()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->main_book_id = $mainBook->id;
 		$book->save();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $book->id
 			]);
@@ -93,24 +87,20 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachBookWithTwoStatus()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'user_id' => $user->id,
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $minorBook->id,
 				'status' => 'readed'
 			]);
 
-		$status2 = factory(BookStatus::class)
-			->create([
+		$status2 = BookStatus::factory()->create([
 				'user_id' => $user->id,
 				'book_id' => $minorBook->id,
 				'origin_book_id' => $mainBook->id,
@@ -133,23 +123,19 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachBookWithTwoVotes()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'create_user_id' => $user->id,
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $minorBook->id,
 			]);
 
-		$vote2 = factory(BookVote::class)
-			->create([
+		$vote2 = BookVote::factory()->create([
 				'create_user_id' => $user->id,
 				'book_id' => $minorBook->id,
 				'origin_book_id' => $mainBook->id,
@@ -169,25 +155,21 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachBookWithTwoKeywords()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 
-		$bookKeyword = factory(BookKeyword::class)
-			->create([
+		$bookKeyword = BookKeyword::factory()->create([
 				'keyword_id' => $keyword->id,
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $minorBook->id,
 			]);
 
-		$bookKeyword2 = factory(BookKeyword::class)
-			->create([
+		$bookKeyword2 = BookKeyword::factory()->create([
 				'keyword_id' => $keyword->id,
 				'book_id' => $minorBook->id,
 				'origin_book_id' => $mainBook->id,
@@ -207,13 +189,11 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachHttp()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->connect_books = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_two_minor_books')
-			->create();
+		$mainBook = Book::factory()->with_two_minor_books()->create();
 
 		$minorBooks = $mainBook->groupedBooks()->get();
 		$minorBook = $minorBooks[0];
@@ -246,22 +226,18 @@ class BookGroupDetachTest extends TestCase
 
 	public function testVoteCountersUpdated()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $mainBook->id,
 				'vote' => 7
 			]);
 
-		$vote2 = factory(BookVote::class)
-			->create([
+		$vote2 = BookVote::factory()->create([
 				'book_id' => $minorBook->id,
 				'vote' => 5
 			]);
@@ -290,22 +266,18 @@ class BookGroupDetachTest extends TestCase
 
 	public function testReadStatusCountersUpdated()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'book_id' => $mainBook->id,
 				'status' => 'read_now'
 			]);
 
-		$status2 = factory(BookStatus::class)
-			->create([
+		$status2 = BookStatus::factory()->create([
 				'book_id' => $minorBook->id,
 				'status' => 'read_later'
 			]);
@@ -337,20 +309,16 @@ class BookGroupDetachTest extends TestCase
 
 	public function testUpdateCountersImmediatelyTrue()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'book_id' => $mainBook->id,
 				'status' => 'read_now'
 			]);
 
-		$status2 = factory(BookStatus::class)
-			->create([
+		$status2 = BookStatus::factory()->create([
 				'book_id' => $minorBook->id,
 				'status' => 'read_later'
 			]);
@@ -366,20 +334,16 @@ class BookGroupDetachTest extends TestCase
 
 	public function testUpdateCountersImmediatelyFalse()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'book_id' => $mainBook->id,
 				'status' => 'read_now'
 			]);
 
-		$status2 = factory(BookStatus::class)
-			->create([
+		$status2 = BookStatus::factory()->create([
 				'book_id' => $minorBook->id,
 				'status' => 'read_later'
 			]);
@@ -395,19 +359,13 @@ class BookGroupDetachTest extends TestCase
 
 	public function testBookWithTwoComments()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $mainBook->id]);
+		$comment = Comment::factory()->book()->create();
 
-		$comment2 = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $minorBook->id]);
+		$comment2 = Comment::factory()->book()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 		BookUngroupJob::dispatch($minorBook);
@@ -429,11 +387,9 @@ class BookGroupDetachTest extends TestCase
 
 	public function testEditionsCount()
 	{
-		$mainBook = factory(Book::class)
-			->create()->fresh();
+		$mainBook = Book::factory()->create()->fresh();
 
-		$minorBook = factory(Book::class)
-			->create()->fresh();
+		$minorBook = Book::factory()->create()->fresh();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -454,9 +410,9 @@ class BookGroupDetachTest extends TestCase
 
 	public function testTwoMinorBooks()
 	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
-		$minorBook2 = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
+		$minorBook2 = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 		BookGroupJob::dispatch($mainBook, $minorBook2);
@@ -487,8 +443,8 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachOnRestoreMinorBookIfMainBookIsDeleted()
 	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -511,8 +467,8 @@ class BookGroupDetachTest extends TestCase
 
 	public function testDetachOnRestoreMinorBookIfMainBookIsForceDeleted()
 	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 

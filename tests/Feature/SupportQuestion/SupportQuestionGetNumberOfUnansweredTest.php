@@ -9,8 +9,7 @@ class SupportQuestionGetNumberOfUnansweredTest extends TestCase
 {
 	public function test()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertIsInt($user->getNumberInProgressQuestions());
 	}

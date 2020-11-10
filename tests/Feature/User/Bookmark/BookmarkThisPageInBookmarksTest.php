@@ -11,8 +11,7 @@ class BookmarkThisPageInBookmarksTest extends TestCase
 	{
 		$url = '/test/test?test=test';
 
-		$bookmark = factory(Bookmark::class)
-			->create(['url' => $url]);
+		$bookmark = Bookmark::factory()->create(['url' => $url]);
 
 		$this->get($url)
 			->assertNotFound();
@@ -26,8 +25,7 @@ class BookmarkThisPageInBookmarksTest extends TestCase
 	{
 		$url = '/test/test';
 
-		$bookmark = factory(Bookmark::class)
-			->create(['url' => $url]);
+		$bookmark = Bookmark::factory()->create(['url' => $url]);
 
 		$this->get($url . '/test')
 			->assertNotFound();

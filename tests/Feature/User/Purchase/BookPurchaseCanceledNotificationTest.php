@@ -16,9 +16,7 @@ class BookPurchaseCanceledNotificationTest extends TestCase
 	 */
 	public function testToArray()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$user = $purchase->buyer;
 		$book = $purchase->purchasable;
@@ -39,9 +37,7 @@ class BookPurchaseCanceledNotificationTest extends TestCase
 
 	public function testVia()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$user = $purchase->seller;
 		$book = $purchase->purchasable;

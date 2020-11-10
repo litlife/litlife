@@ -12,11 +12,11 @@ class LoginTest extends DuskTestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)->create([
+		$user = User::factory()->create([
 			'password' => $password,
 		]);
 
-		$email = factory(UserEmail::class)->create([
+		$email = UserEmail::factory()->create([
 			'user_id' => $user->id,
 			'confirm' => true,
 			'rescue' => true,
@@ -53,11 +53,11 @@ class LoginTest extends DuskTestCase
 		{
 			$password = uniqid();
 
-			$user = factory(User::class)->create([
+			$user = User::factory()->create([
 				'password' => $password,
 			]);
 
-			$email = factory(UserEmail::class)->create([
+			$email = UserEmail::factory()->create([
 				'user_id' => $user->id,
 				'confirm' => true,
 				'rescue' => true,

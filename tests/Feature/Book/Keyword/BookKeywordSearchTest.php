@@ -11,7 +11,7 @@ class BookKeywordSearchTest extends TestCase
 {
 	public function testSearchHttp()
 	{
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 
 		$response = $this->json('get', route('books.keywords.search'),
 			['q' => $book_keyword->keyword->text])
@@ -24,7 +24,7 @@ class BookKeywordSearchTest extends TestCase
 	{
 		$text = Str::random(8);
 
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->text = $text;
 		$book_keyword->push();
 		$book_keyword->refresh();
@@ -40,7 +40,7 @@ class BookKeywordSearchTest extends TestCase
 	{
 		$text = Str::random(8);
 
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->text = $text;
 		$book_keyword->push();
 
@@ -55,7 +55,7 @@ class BookKeywordSearchTest extends TestCase
 
 	public function testSearchDeletedBookKeywordHttp()
 	{
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 
 		$keyword->delete();
 

@@ -12,15 +12,13 @@ class UpdateParticipationCountersTest extends TestCase
 {
 	public function testCountersAfterSpamer()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$spamer = factory(User::class)->create();
+		$spamer = User::factory()->create();
 
 		$text = uniqid() . uniqid();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'create_user_id' => $spamer->id,
 				'recepient_id' => $auth_user->id,
 				'bb_text' => $text
@@ -74,13 +72,11 @@ class UpdateParticipationCountersTest extends TestCase
 
 	public function testNotViewed()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'create_user_id' => $user->id,
 				'recepient_id' => $auth_user->id,
 			]);
@@ -97,10 +93,9 @@ class UpdateParticipationCountersTest extends TestCase
 
 	public function testViewed()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')
@@ -130,11 +125,9 @@ class UpdateParticipationCountersTest extends TestCase
 	{
 		// https://litlife.club/posts/726240/go_to
 
-		$sender = factory(User::class)
-			->create();
+		$sender = User::factory()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')

@@ -10,13 +10,9 @@ class AuthorEditorRequestPolicyTest extends TestCase
 {
 	public function testFalse()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+		$author = Author::factory()->accepted()->create();
 
 		$this->assertFalse($user->can('editorRequest', $author));
 	}
@@ -24,35 +20,25 @@ class AuthorEditorRequestPolicyTest extends TestCase
 	/*
 		public function testFalseIfAuthorPrivate()
 		{
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
-			$author = factory(Author::class)
-				->states('private')
-				->create();
+			$author = Author::factory()->private()->create();
 
 			$this->assertTrue($user->can('editorRequest', $author));
 		}
 
 		public function testTrueIfAuthorHasEditorManager()
 		{
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
-			$author = factory(Author::class)
-				->states('with_editor_manager')
-				->create();
+			$author = Author::factory()->with_editor_manager()->create();
 
 			$this->assertTrue($user->can('editorRequest', $author));
 		}
 	*/
 	public function testFalseIfEditorManagerOnReview()
 	{
-		$author = factory(Author::class)
-			->states('with_editor_manager')
-			->create();
+		$author = Author::factory()->with_editor_manager()->create();
 
 		$manager = $author->managers()->first();
 		$manager->statusSentForReview();
@@ -68,26 +54,20 @@ class AuthorEditorRequestPolicyTest extends TestCase
 	/*
 		public function testTrueIfOtherUserEditorManagerOnReview()
 		{
-			$author = factory(Author::class)
-				->states('with_editor_manager')
-				->create();
+			$author = Author::factory()->with_editor_manager()->create();
 
 			$manager = $author->managers()->first();
 			$manager->statusSentForReview();
 			$manager->save();
 
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
 			$this->assertTrue($user->can('editorRequest', $author));
 		}
 	*/
 	public function testFalseIfUserRequestVerification()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_on_review')
-			->create();
+		$author = Author::factory()->with_author_manager_on_review()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -99,9 +79,7 @@ class AuthorEditorRequestPolicyTest extends TestCase
 
 	public function testFalseIfAuthorManagerPrivate()
 	{
-		$author = factory(Author::class)
-			->states('private', 'with_author_manager')
-			->create();
+		$author = Author::factory()->private()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$manager->statusPrivate();
@@ -116,9 +94,7 @@ class AuthorEditorRequestPolicyTest extends TestCase
 
 	public function testFalseIfUserAuthor()
 	{
-		$author = factory(Author::class)
-			->states('accepted', 'with_author_manager')
-			->create();
+		$author = Author::factory()->accepted()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$manager->statusAccepted();
@@ -133,15 +109,13 @@ class AuthorEditorRequestPolicyTest extends TestCase
 	/*
 		public function testTrueIfUserNotAuthor()
 		{
-			$author = factory(Author::class)
-				->states('accepted', 'with_author_manager')
-				->create();
+			$author = Author::factory()->accepted()->with_author_manager()->create();
 
 			$manager = $author->managers()->first();
 			$manager->statusAccepted();
 			$manager->save();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->author_editor_request = true;
 			$user->push();
 

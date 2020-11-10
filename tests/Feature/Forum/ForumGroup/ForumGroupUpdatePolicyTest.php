@@ -10,24 +10,22 @@ class ForumGroupUpdatePolicyTest extends TestCase
 {
 	public function tesCantIfUserHasPermission()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_group_handle = true;
 		$admin->push();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$this->assertTrue($admin->can('update', $forumGroup));
 	}
 
 	public function testCantIfUserDoesntHavePermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_group_handle = false;
 		$user->push();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$this->assertFalse($user->can('update', $forumGroup));
 	}

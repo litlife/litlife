@@ -11,7 +11,7 @@ class BookParseAllWaitedTest extends TestCase
 {
 	public function testCommand()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;

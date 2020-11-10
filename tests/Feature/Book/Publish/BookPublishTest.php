@@ -43,7 +43,7 @@ class BookPublishTest extends TestCase
 		$this->assertEquals(0, Book::getCachedOnModerationCount());
 		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->push();
 
@@ -57,25 +57,17 @@ class BookPublishTest extends TestCase
 		$user->group->check_books = false;
 		$user->push();
 
-		$author = factory(Author::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$author = Author::factory()->private()->create();
 
-		$illustrator = factory(Author::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$illustrator = Author::factory()->private()->create();
 
-		$translator = factory(Author::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$translator = Author::factory()->private()->create();
 
 		$book->writers()->sync([$author->id]);
 		$book->translators()->sync([$translator->id]);
 		$book->illustrators()->sync([$illustrator->id]);
 
-		$sequence = factory(Sequence::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$sequence = Sequence::factory()->private()->create();
 
 		$book->sequences()->sync([$sequence->id]);
 
@@ -85,13 +77,9 @@ class BookPublishTest extends TestCase
 
 		$this->assertEquals(1, $sequence->book_count);
 
-		$book_file = factory(BookFile::class)
-			->states('txt', 'private')
-			->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_file = BookFile::factory()->txt()->private()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 
-		$book_keyword = factory(BookKeyword::class)
-			->states('private')
-			->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_keyword = BookKeyword::factory()->private()->create();
 
 		Bus::fake();
 
@@ -146,30 +134,28 @@ class BookPublishTest extends TestCase
 		$this->assertEquals(0, Book::getCachedOnModerationCount());
 		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->group->add_book_without_check = false;
 		$admin->group->edit_other_user_book = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('sent_for_review', 'with_section', 'with_file', 'lp_false', 'with_genre')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->sent_for_review()->with_section()->with_file()->lp_false()->with_genre()->create(['create_user_id' => $user->id]);
 
 		$book->authors()->detach();
 		$book->sequences()->detach();
 
-		$author = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$author = Author::factory()->create(['create_user_id' => $user->id]);
 		$author->statusSentForReview();
 		$author->save();
 
-		$illustrator = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$illustrator = Author::factory()->create(['create_user_id' => $user->id]);
 		$illustrator->statusSentForReview();
 		$illustrator->save();
 
-		$translator = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$translator = Author::factory()->create(['create_user_id' => $user->id]);
 		$translator->statusSentForReview();
 		$translator->save();
 
@@ -177,7 +163,7 @@ class BookPublishTest extends TestCase
 		$book->translators()->sync([$translator->id]);
 		$book->illustrators()->sync([$illustrator->id]);
 
-		$sequence = factory(Sequence::class)->create(['create_user_id' => $user->id]);
+		$sequence = Sequence::factory()->create(['create_user_id' => $user->id]);
 		$sequence->statusPrivate();
 		$sequence->save();
 
@@ -188,11 +174,11 @@ class BookPublishTest extends TestCase
 
 		$this->assertEquals(1, $sequence->book_count);
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_file = BookFile::factory()->txt()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 		$book_file->statusSentForReview();
 		$book_file->save();
 
-		$book_keyword = factory(BookKeyword::class)->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 		$book_keyword->statusSentForReview();
 		$book_keyword->save();
 
@@ -292,30 +278,28 @@ class BookPublishTest extends TestCase
 	{
 		$this->resetCounters();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->group->add_book_without_check = true;
 		$admin->group->edit_other_user_book = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('private', 'with_section', 'with_file', 'lp_false', 'with_genre')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->private()->with_section()->with_file()->lp_false()->with_genre()->create(['create_user_id' => $user->id]);
 
 		$book->authors()->detach();
 		$book->sequences()->detach();
 
-		$author = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$author = Author::factory()->create(['create_user_id' => $user->id]);
 		$author->statusPrivate();
 		$author->save();
 
-		$illustrator = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$illustrator = Author::factory()->create(['create_user_id' => $user->id]);
 		$illustrator->statusPrivate();
 		$illustrator->save();
 
-		$translator = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$translator = Author::factory()->create(['create_user_id' => $user->id]);
 		$translator->statusPrivate();
 		$translator->save();
 
@@ -323,7 +307,7 @@ class BookPublishTest extends TestCase
 		$book->translators()->sync([$translator->id]);
 		$book->illustrators()->sync([$illustrator->id]);
 
-		$sequence = factory(Sequence::class)->create(['create_user_id' => $user->id]);
+		$sequence = Sequence::factory()->create(['create_user_id' => $user->id]);
 		$sequence->statusPrivate();
 		$sequence->save();
 
@@ -334,11 +318,11 @@ class BookPublishTest extends TestCase
 
 		$this->assertEquals(1, $sequence->book_count);
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_file = BookFile::factory()->txt()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 		$book_file->statusPrivate();
 		$book_file->save();
 
-		$book_keyword = factory(BookKeyword::class)->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 		$book_keyword->statusPrivate();
 		$book_keyword->save();
 
@@ -402,8 +386,7 @@ class BookPublishTest extends TestCase
 		$user->group->edit_other_user_book = false;
 		$user->push();
 
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create(['user_id' => $user->id]);
+		$user_on_moderation = UserOnModeration::factory()->create(['user_id' => $user->id]);
 
 		$user->refresh();
 
@@ -429,9 +412,7 @@ class BookPublishTest extends TestCase
 
 	public function testBookAcceptedIfPublishedByAuthorHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_private_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_private_book()->create();
 
 		$user = $author->managers->first()->user;
 		$user->group->add_book = true;
@@ -458,9 +439,7 @@ class BookPublishTest extends TestCase
 
 	public function testBookSentForReviewIfPublishedByEditorHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_editor_manager', 'with_private_book')
-			->create();
+		$author = Author::factory()->with_editor_manager()->with_private_book()->create();
 
 		$user = $author->managers->first()->user;
 		$user->group->add_book = true;
@@ -486,9 +465,7 @@ class BookPublishTest extends TestCase
 
 	public function testBookSentForReviewIfPublishedByNotAcceptedAuthorHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_private_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_private_book()->create();
 
 		$manager = $author->managers->first();
 		$manager->statusSentForReview();
@@ -519,9 +496,7 @@ class BookPublishTest extends TestCase
 
 	public function testBookSentForReviewIfPublishedByAuthorButOtherAuthorExistsHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_private_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_private_book()->create();
 
 		$user = $author->managers->first()->user;
 		$user->group->add_book = true;
@@ -532,7 +507,7 @@ class BookPublishTest extends TestCase
 		$book->is_lp = false;
 		$book->save();
 
-		$writer = factory(Author::class)->create();
+		$writer = Author::factory()->create();
 		$book->writers()->sync([$writer->id]);
 		$book->refresh();
 
@@ -554,8 +529,7 @@ class BookPublishTest extends TestCase
 			->states('with_writer', 'accepted', 'with_section', 'with_file', 'lp_false', 'with_create_user', 'with_genre')
 			->create();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->push();
 
@@ -575,9 +549,7 @@ class BookPublishTest extends TestCase
 
 	public function testAuthorManagerSentForReviewOnBookPublish()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$book = factory(Book::class)
 			->states('private', 'with_section', 'with_file', 'lp_false', 'with_create_user', 'with_genre')
@@ -588,9 +560,7 @@ class BookPublishTest extends TestCase
 		$user->group->check_books = false;
 		$user->push();
 
-		$manager = factory(Manager::class)
-			->states('private', 'character_author')
-			->create();
+		$manager = Manager::factory()->private()->character_author()->create();
 
 		$author = $manager->manageable;
 		$book->authors()->sync([$author->id]);
@@ -616,7 +586,7 @@ class BookPublishTest extends TestCase
 			->states('with_writer', 'sent_for_review', 'with_section', 'with_file', 'lp_true', 'with_genre')
 			->create();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->push();
 
@@ -691,9 +661,7 @@ class BookPublishTest extends TestCase
 
 	public function testCloseReadDownloadAcessIfNoFilesAndNoSectionsAfterPublish()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'lp_true', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->lp_true()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 		$user->group->check_books = false;
@@ -720,13 +688,9 @@ class BookPublishTest extends TestCase
 
 	public function testSeeErrorsOnPublish()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$book->authors()->detach();
 
@@ -747,9 +711,7 @@ class BookPublishTest extends TestCase
 
 	public function testDontAddForReviewFileIfAutoCreated()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_file', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_file()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 		$user->group->add_book = true;

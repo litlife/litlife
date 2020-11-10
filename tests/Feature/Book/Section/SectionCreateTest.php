@@ -14,13 +14,12 @@ class SectionCreateTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.sections.create', ['book' => $book]))
@@ -34,13 +33,12 @@ class SectionCreateTest extends TestCase
 		$title = $this->faker->realText(100);
 		$content = '<p>' . $this->faker->realText(100) . '</p>';
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->post(route('books.sections.store', ['book' => $book]),
@@ -69,13 +67,12 @@ class SectionCreateTest extends TestCase
 		$title = $this->faker->realText(100);
 		$content = '<p>' . $this->faker->realText(100) . '</p>';
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
@@ -109,9 +106,7 @@ class SectionCreateTest extends TestCase
 
 	public function testCreateIfAuthorCanSaleHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -147,12 +142,9 @@ class SectionCreateTest extends TestCase
 	{
 		config(['litlife.max_section_characters_count' => 3]);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$title = $this->faker->realText(50);
 		$content = '<p>новый контент</p>';

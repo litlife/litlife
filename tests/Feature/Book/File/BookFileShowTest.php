@@ -15,12 +15,12 @@ class BookFileShowTest extends TestCase
 	{
 		config(['litlife.disk_for_files' => 'public']);
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusSentForReview();
 		$book->save();
 		$book->refresh();
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
+		$book_file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 		$book_file->statusSentForReview();
 		$book_file->save();
 		UpdateBookFilesCount::dispatch($book);
@@ -29,11 +29,11 @@ class BookFileShowTest extends TestCase
 		$this->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
 			->assertRedirect($book_file->url);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_file_add_check = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
@@ -48,7 +48,7 @@ class BookFileShowTest extends TestCase
 	{
 		config(['litlife.disk_for_files' => 'public']);
 
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 		$book->statusPrivate();
 		$book->save();
 		$book->refresh();
@@ -63,11 +63,11 @@ class BookFileShowTest extends TestCase
 		$this->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
 			->assertStatus(404);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_file_add_check = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
@@ -84,11 +84,9 @@ class BookFileShowTest extends TestCase
 
 	public function testXAccelRedirect()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['storage' => 'private']);
+		$file = BookFile::factory()->txt()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$url = Storage::disk($file['storage'])
 			->url($file->dirname . '/' . rawurlencode($file->name));
@@ -105,9 +103,7 @@ class BookFileShowTest extends TestCase
 	{
 		config(['litlife.disk_for_files' => 'public']);
 
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create(['title' => 'Сделаешь']);
+		$book = Book::factory()->accepted()->with_create_user()->create(['title' => 'Сделаешь']);
 
 		$book_file = factory(BookFile::class)
 			->states('txt')

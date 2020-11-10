@@ -11,9 +11,7 @@ class BookFormatsHelperTest extends TestCase
 {
 	public function test1()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$file = factory(BookFile::class)
 			->states('odt', 'accepted')
@@ -33,9 +31,7 @@ class BookFormatsHelperTest extends TestCase
 
 	public function test2()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$file = factory(BookFile::class)
 			->states('odt', 'private')

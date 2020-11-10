@@ -16,9 +16,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
@@ -51,9 +49,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.gif');
@@ -80,9 +76,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
@@ -124,9 +118,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
@@ -159,9 +151,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
@@ -201,9 +191,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.jpeg');
@@ -245,9 +233,7 @@ class AttachmentRenameExtensionsTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../images/test.jpeg');

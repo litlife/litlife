@@ -19,15 +19,11 @@ class AuthorAllBooksLinksTest extends TestCase
 
 	public function testAllBooksLinks()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_writer')
-			->create();
+		$book = Book::factory()->with_writer()->create();
 
-		$file = factory(BookFile::class)
-			->states('txt', 'storage_old')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->storage_old()->create(['book_id' => $book->id]);
 
 		$url = route('books.files.show', ['book' => $file->book, 'fileName' => $file->name]);
 
@@ -46,13 +42,11 @@ class AuthorAllBooksLinksTest extends TestCase
 
 	public function testAllBooksLinksDontAddIfBookClosedForDownload()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)->states('with_writer')->create();
+		$book = Book::factory()->with_writer()->create();
 
-		$file = factory(BookFile::class)
-			->states('txt', 'storage_old')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->storage_old()->create(['book_id' => $book->id]);
 
 		$url = route('books.files.show', ['book' => $file->book, 'fileName' => $file->name]);
 

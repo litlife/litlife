@@ -11,15 +11,13 @@ class AuthorManagerCreateTest extends TestCase
 {
 	public function testAttachUserToAuthor()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->moderator_add_remove = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($admin)
 			->post(route('authors.managers.store', ['author' => $author->id]), [
@@ -37,18 +35,15 @@ class AuthorManagerCreateTest extends TestCase
 
 	public function testAttachUserToAuthorIfOtherUserAlreadyAttachedAsAuthor()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->moderator_add_remove = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$manager = factory(Manager::class)
-			->create([
+		$manager = Manager::factory()->create([
 				'create_user_id' => $admin->id,
 				'character' => 'author',
 				'manageable_id' => $author->id,
@@ -72,13 +67,11 @@ class AuthorManagerCreateTest extends TestCase
 
 	public function testAttachAuthorUserGroupOnAttach()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($admin)
 			->post(route('authors.managers.store', ['author' => $author->id]), [

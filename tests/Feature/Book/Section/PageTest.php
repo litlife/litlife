@@ -16,7 +16,7 @@ class PageTest extends TestCase
 	 */
 	public function testSetDom()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 
 		$xhtml = '<p>текст текст</p>';
 
@@ -33,7 +33,7 @@ class PageTest extends TestCase
 
 	public function testIdsOnCreate()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$page = $section->pages()->first();
 
 		$xhtml = '<p>текст текст <a id="some_id" href="">link</a></p>';
@@ -46,7 +46,7 @@ class PageTest extends TestCase
 
 	public function testIdsOnUpdate()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$page = $section->pages()->first();
 
 		$xhtml = '<p>текст текст <a id="old_id" href="">link</a></p>';
@@ -64,7 +64,7 @@ class PageTest extends TestCase
 
 	public function testNoErrorIfGuestSeePage()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$page = $section->pages()->first();
 		$book = $page->book;
 		$book->statusAccepted();
@@ -82,9 +82,9 @@ class PageTest extends TestCase
 	{
 		config(['litlife.minimum_number_of_characters_per_page_to_display_ads' => 1000]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$page = $section->pages()->first();
 
 		$page->character_count = 1100;

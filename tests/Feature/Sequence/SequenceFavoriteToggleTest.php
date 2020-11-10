@@ -11,11 +11,9 @@ class SequenceFavoriteToggleTest extends TestCase
 {
 	public function testToggle()
 	{
-		$sequence = factory(Sequence::class)
-			->create();
+		$sequence = Sequence::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('sequences.favorites.toggle', ['sequence' => $sequence]))
@@ -47,8 +45,7 @@ class SequenceFavoriteToggleTest extends TestCase
 
 	public function testToggleIfAuthorDeleted()
 	{
-		$user_sequence = factory(UserSequence::class)
-			->create();
+		$user_sequence = UserSequence::factory()->create();
 
 		$sequence = $user_sequence->sequence;
 		$user = $user_sequence->user;

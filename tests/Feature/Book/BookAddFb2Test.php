@@ -27,10 +27,9 @@ class BookAddFb2Test extends TestCase
 		foreach (Author::any()->similaritySearch('FirstName2 MiddleName2 LastName2')->get() as $author)
 			$author->delete();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => $user->id,
 			'is_si' => false,
 			'is_lp' => false,
@@ -150,7 +149,7 @@ EOF;
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -176,7 +175,7 @@ EOF;
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -207,7 +206,7 @@ EOF;
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -253,7 +252,7 @@ EOF;
 
 	public function testCyrylicBinaryNames()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -274,7 +273,7 @@ EOF;
 
 	public function testWindows1251()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -291,7 +290,7 @@ EOF;
 
 	public function testXlinkXmlns()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -317,7 +316,7 @@ EOF;
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -339,8 +338,7 @@ EOF;
 
 	public function testWithoutTitleInfo()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -364,8 +362,7 @@ EOF;
 
 	public function testWithoutAnnotation()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -379,8 +376,7 @@ EOF;
 
 	public function testWithEmptyPublishInfo()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -396,8 +392,7 @@ EOF;
 
 	public function testWithoutContentType()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -414,8 +409,7 @@ EOF;
 
 	public function testUpperCaseExtensionBinaryNames()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -446,8 +440,7 @@ EOF;
 
 	public function testWrongExtensionBinaryName()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -478,8 +471,7 @@ EOF;
 
 	public function testRemoteUrl()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -506,8 +498,7 @@ EOF;
 
 	public function testWrongBinary()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -526,8 +517,7 @@ EOF;
 
 	public function testEmptyTags()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -549,8 +539,7 @@ EOF;
 
 	public function test()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -591,15 +580,14 @@ EOF;
 		Sequence::where('name', 'ilike', 'Title')
 			->delete();
 
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
 			'age' => 0
 		]);
 
-		$sequence = factory(Sequence::class)
-			->create(['name' => 'New title']);
+		$sequence = Sequence::factory()->create(['name' => 'New title']);
 
 		$addFb2File = new AddFb2File();
 		$addFb2File->setBook($book);
@@ -613,7 +601,7 @@ EOF;
 
 	public function testTwoParagrphsInTitlte()
 	{
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -644,7 +632,7 @@ EOF;
 
 	public function testTitleWithoutPagraraph()
 	{
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,

@@ -10,8 +10,7 @@ class BookGetDiffBeetweenLastPriceChangeInDaysTest extends TestCase
 {
 	public function testDiffBeetweenLastPriceChangeInDays()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->assertEquals(0, $book->getDiffBeetweenLastPriceChangeInDays());
 

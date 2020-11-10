@@ -15,8 +15,7 @@ class UserInvitationTest extends TestCase
 
 	public function testRightTokenHttp()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$this->get(route('users.registration', ['token' => $invitation->token]))
 			->assertOk();

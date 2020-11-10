@@ -18,20 +18,17 @@ class KeywordsTest extends DuskTestCase
 	{
 		$this->browse(function (Browser $browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->book_keyword_add = true;
 			$user->group->save();
 
 			$title = Str::random(6);
 
-			$book = factory(Book::class)
-				->states('accepted')
-				->create(['title' => $title]);
+			$book = Book::factory()->accepted()->create();
 
 			$browser->resize(1200, 2080);
 
-			$keyword = factory(Keyword::class)
-				->create();
+			$keyword = Keyword::factory()->create();
 
 			// create book keyword
 			$browser->loginAs($user)
@@ -55,13 +52,11 @@ class KeywordsTest extends DuskTestCase
 
 			$browser->resize(1200, 2080);
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->book_keyword_moderate = true;
 			$admin->group->save();
 
-			$book_keyword = factory(BookKeyword::class)
-				->states('on_review')
-				->create();
+			$book_keyword = BookKeyword::factory()->on_review()->create();
 
 			// book keyword approve
 			$browser->loginAs($admin)

@@ -11,7 +11,7 @@ class DeleteManagersFromDeletedAuthorsTest extends TestCase
 {
 	public function testNotDeleteIfAuthorNotDeleted()
 	{
-		$manager = factory(Manager::class)->create();
+		$manager = Manager::factory()->create();
 
 		Artisan::call('managers:delete_if_author_deleted', [
 			'latest_manager_id' => $manager->id
@@ -24,7 +24,7 @@ class DeleteManagersFromDeletedAuthorsTest extends TestCase
 
 	public function testNotDeleteIfDaysNotPassedSinceDeleted()
 	{
-		$manager = factory(Manager::class)->create();
+		$manager = Manager::factory()->create();
 		$manager->manageable->delete();
 		$manager->refresh();
 		$manager->load(['manageable' => function ($query) {
@@ -43,7 +43,7 @@ class DeleteManagersFromDeletedAuthorsTest extends TestCase
 
 	public function testDeleteIfDaysNotPassedSinceDeleted()
 	{
-		$manager = factory(Manager::class)->create();
+		$manager = Manager::factory()->create();
 		$manager->manageable->delete();
 
 		Carbon::setTestNow(now()->addDays(32));

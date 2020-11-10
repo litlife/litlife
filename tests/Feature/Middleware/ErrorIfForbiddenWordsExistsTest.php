@@ -22,8 +22,7 @@ class ErrorIfForbiddenWordsExistsTest extends TestCase
 
 		$this->addForbiddenWord($word);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.blogs.store', ['user' => $user]), [
@@ -52,9 +51,7 @@ class ErrorIfForbiddenWordsExistsTest extends TestCase
 	{
 		$word = uniqid();
 
-		$user = factory(User::class)
-			->states('with_user_permissions')
-			->create();
+		$user = User::factory()->with_user_permissions()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.blogs.store', ['user' => $user]), [
@@ -71,8 +68,7 @@ class ErrorIfForbiddenWordsExistsTest extends TestCase
 		$this->addForbiddenWord($word);
 		$this->addForbiddenWord($word2);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.blogs.store', ['user' => $user]), [
@@ -93,8 +89,7 @@ class ErrorIfForbiddenWordsExistsTest extends TestCase
 
 		$this->addForbiddenWord($word);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('home', ['value' => $word]))
@@ -107,8 +102,7 @@ class ErrorIfForbiddenWordsExistsTest extends TestCase
 
 		$this->addForbiddenWord($word);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.blogs.store', ['user' => $user]), [

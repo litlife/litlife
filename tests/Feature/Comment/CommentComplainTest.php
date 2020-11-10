@@ -10,13 +10,12 @@ class CommentComplainTest extends TestCase
 {
 	public function testCanComplain()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->complain = true;
 		$user->push();
 		$user->refresh();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->assertTrue($user->can('complain', $comment));
 	}

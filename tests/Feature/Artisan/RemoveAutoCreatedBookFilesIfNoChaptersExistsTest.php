@@ -11,7 +11,7 @@ class RemoveAutoCreatedBookFilesIfNoChaptersExistsTest extends TestCase
 {
 	public function testDeleteEpubFilesIfCharacterCountEmpty()
 	{
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->format = 'epub';
 		$file->save();
 
@@ -30,13 +30,13 @@ class RemoveAutoCreatedBookFilesIfNoChaptersExistsTest extends TestCase
 
 	public function testDontDeleteOtherFiles()
 	{
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->format = 'epub';
 		$file->save();
 
 		$book = $file->book;
 
-		$other_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
+		$other_file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 		$other_file->format = 'pdf';
 		$other_file->save();
 
@@ -54,13 +54,13 @@ class RemoveAutoCreatedBookFilesIfNoChaptersExistsTest extends TestCase
 
 	public function testDontDeleteIfChapterExists()
 	{
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->format = 'epub';
 		$file->save();
 
 		$book = $file->book;
 
-		$section = factory(Section::class)->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 		$section->content = '';
 		$section->save();
 
@@ -80,13 +80,13 @@ class RemoveAutoCreatedBookFilesIfNoChaptersExistsTest extends TestCase
 
 	public function testDontDeleteIfCharactersNotEmpty()
 	{
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->format = 'epub';
 		$file->save();
 
 		$book = $file->book;
 
-		$section = factory(Section::class)->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 		$section->content = 'test';
 		$section->save();
 

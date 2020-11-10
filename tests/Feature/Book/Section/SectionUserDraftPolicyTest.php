@@ -9,9 +9,7 @@ class SectionUserDraftPolicyTest extends TestCase
 {
 	public function testUseDraftIfNotSectionTypePolicy()
 	{
-		$book = factory(Book::class)
-			->states('with_author_manager', 'with_section')
-			->create();
+		$book = Book::factory()->with_author_manager()->with_section()->create();
 
 		$section = $book->sections()->first();
 		$section->type = 'note';
@@ -25,9 +23,7 @@ class SectionUserDraftPolicyTest extends TestCase
 
 	public function testUseDraftIfManagerNotAuthorPolicy()
 	{
-		$book = factory(Book::class)
-			->states('with_author_manager', 'with_section')
-			->create();
+		$book = Book::factory()->with_author_manager()->with_section()->create();
 
 		$section = $book->sections()->first();
 
@@ -43,9 +39,7 @@ class SectionUserDraftPolicyTest extends TestCase
 
 	public function testUseDraftIfManagerAuthorPolicy()
 	{
-		$book = factory(Book::class)
-			->states('with_author_manager', 'with_section')
-			->create();
+		$book = Book::factory()->with_author_manager()->with_section()->create();
 
 		$section = $book->sections()->first();
 		$author = $book->authors->first();

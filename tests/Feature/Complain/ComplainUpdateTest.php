@@ -10,11 +10,9 @@ class ComplainUpdateTest extends TestCase
 {
 	public function testEdit()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;
@@ -29,11 +27,9 @@ class ComplainUpdateTest extends TestCase
 
 	public function testUpdateIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;

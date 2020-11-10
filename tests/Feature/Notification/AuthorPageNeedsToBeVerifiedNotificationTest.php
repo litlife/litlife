@@ -11,11 +11,9 @@ class AuthorPageNeedsToBeVerifiedNotificationTest extends TestCase
 {
 	public function testVia()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$notification = new AuthorPageNeedsToBeVerifiedNotification($author);
 
@@ -24,11 +22,9 @@ class AuthorPageNeedsToBeVerifiedNotificationTest extends TestCase
 
 	public function testDatabaseNotification()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$notification = new AuthorPageNeedsToBeVerifiedNotification($author);
 

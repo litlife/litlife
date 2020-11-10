@@ -10,8 +10,7 @@ class TopicCachedLatestTopicsTest extends TestCase
 {
 	public function testCachedLatestTopicsPublicScopeAttached()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 		$forum = $topic->forum;

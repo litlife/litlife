@@ -50,9 +50,7 @@ class UserInvitationStoreTest extends TestCase
 
 	public function testDenyInvitationIfConfirmedEmailExistsAndCreatedAfterMoveToNewEngine()
 	{
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
 		$response = $this->post(route('invitation.store'),
 			[
@@ -66,9 +64,7 @@ class UserInvitationStoreTest extends TestCase
 
 	public function testDenyInvitationIfUnconfirmedEmailExistsAndCreatedBeforeMoveToNewEngine()
 	{
-		$email = factory(UserEmail::class)
-			->states('not_confirmed', 'created_before_move_to_new_engine')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->created_before_move_to_new_engine()->create();
 
 		$response = $this->post(route('invitation.store'),
 			[
@@ -82,8 +78,7 @@ class UserInvitationStoreTest extends TestCase
 
 	public function testSameEmailExists()
 	{
-		$email = factory(UserEmail::class)
-			->create(['confirm' => true]);
+		$email = UserEmail::factory()->create(['confirm' => true]);
 
 		$response = $this->post(route('invitation.store'),
 			[

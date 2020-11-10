@@ -15,11 +15,9 @@ class AttachUserGroupWithUserStatusTest extends TestCase
 		$text = Str::random(10);
 		$text2 = Str::random(10);
 
-		$group = factory(UserGroup::class)
-			->create(['name' => $text]);
+		$group = UserGroup::factory()->create(['name' => $text]);
 
-		$user = factory(User::class)
-			->create(['text_status' => $text2 . ',' . $text]);
+		$user = User::factory()->create(['text_status' => $text2 . ',' . $text]);
 
 		Artisan::call('user:attach_group_with_status', ['name' => $text]);
 

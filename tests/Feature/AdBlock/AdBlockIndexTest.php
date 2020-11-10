@@ -10,7 +10,7 @@ class AdBlockIndexTest extends TestCase
 {
 	public function testNothingFound()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
@@ -21,12 +21,11 @@ class AdBlockIndexTest extends TestCase
 
 	public function testFound()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
-		$block = factory(AdBlock::class)
-			->create();
+		$block = AdBlock::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('ad_blocks.index'))

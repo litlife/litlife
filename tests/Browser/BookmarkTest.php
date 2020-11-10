@@ -20,9 +20,9 @@ class BookmarkTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			//$admin_user = factory(User::class)->create();
+			//$admin_user = User::factory()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -48,12 +48,11 @@ class BookmarkTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			event(new Registered($user));
 
-			$bookmark_folder = factory(BookmarkFolder::class)
-				->create(['create_user_id' => $user->id]);
+			$bookmark_folder = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
 			$title = $this->faker->realText(100);
 
@@ -90,9 +89,9 @@ class BookmarkTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			//$admin_user = factory(User::class)->create();
+			//$admin_user = User::factory()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$title = $this->faker->realText(100);
 
@@ -114,17 +113,17 @@ class BookmarkTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$bookmark_folder = factory(BookmarkFolder::class)->create([
+			$bookmark_folder = BookmarkFolder::factory()->create([
 				'create_user_id' => $user->id
 			]);
 
-			$bookmark_folder2 = factory(BookmarkFolder::class)->create([
+			$bookmark_folder2 = BookmarkFolder::factory()->create([
 				'create_user_id' => $user->id
 			]);
 
-			$bookmark = factory(Bookmark::class)->create([
+			$bookmark = Bookmark::factory()->create([
 				'create_user_id' => $user->id
 			]);
 
@@ -187,17 +186,17 @@ class BookmarkTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			event(new Registered($user));
 
 			$auto_created_bookmark_folder = $user->bookmark_folders()->first();
 
-			$bookmark_folder = factory(BookmarkFolder::class)->create([
+			$bookmark_folder = BookmarkFolder::factory()->create([
 				'create_user_id' => $user->id
 			]);
 
-			$bookmark_folder2 = factory(BookmarkFolder::class)->create([
+			$bookmark_folder2 = BookmarkFolder::factory()->create([
 				'create_user_id' => $user->id
 			]);
 

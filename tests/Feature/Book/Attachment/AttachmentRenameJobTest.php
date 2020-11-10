@@ -20,9 +20,7 @@ class AttachmentRenameJobTest extends TestCase
 
 	public function testRename()
 	{
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../../images/test.jpeg');

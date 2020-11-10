@@ -14,16 +14,11 @@ class TopicDeleteTest extends TestCase
 {
 	public function testDelete()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
-		$topic = factory(Topic::class)
-			->states('with_post')
-			->create();
+		$topic = Topic::factory()->with_post()->create();
 		$topic->forum()->associate($forum);
 		$topic->create_user()->associate($user);
 		$topic->save();
@@ -33,9 +28,7 @@ class TopicDeleteTest extends TestCase
 
 		$post = $topic->posts()->first();
 
-		$topic2 = factory(Topic::class)
-			->states('with_post')
-			->create();
+		$topic2 = Topic::factory()->with_post()->create();
 		$topic2->forum()->associate($forum);
 		$topic2->create_user()->associate($user);
 		$topic2->save();
@@ -66,26 +59,19 @@ class TopicDeleteTest extends TestCase
 
 	public function testUpdateForumCounters()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$forum = factory(Forum::class)
-			->create()->fresh();
+		$forum = Forum::factory()->create()->fresh();
 
-		$topic = factory(Topic::class)
-			->create(['forum_id' => $forum->id]);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
 
-		$post = factory(Post::class)
-			->create(['topic_id' => $topic->id]);
+		$post = Post::factory()->create(['topic_id' => $topic->id]);
 
 		Carbon::setTestNow(now()->addMinute());
 
-		$topic2 = factory(Topic::class)
-			->create(['forum_id' => $forum->id]);
+		$topic2 = Topic::factory()->create(['forum_id' => $forum->id]);
 
-		$post2 = factory(Post::class)
-			->create(['topic_id' => $topic2->id]);
+		$post2 = Post::factory()->create(['topic_id' => $topic2->id]);
 
 		UpdateForumCounters::dispatch($forum);
 
@@ -110,8 +96,7 @@ class TopicDeleteTest extends TestCase
 
 	public function testPostsDeletedAlongWithTopic()
 	{
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$post = factory(Post::class)
 			->make();

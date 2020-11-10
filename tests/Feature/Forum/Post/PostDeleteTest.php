@@ -11,19 +11,17 @@ class PostDeleteTest extends TestCase
 {
 	public function testDeleteHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_delete_self_post = true;
 		$user->group->forum_delete_other_user_post = true;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create()
+		$post = Post::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
-		$post2 = factory(Post::class)
-			->create(['topic_id' => $post->topic_id])
+		$post2 = Post::factory()->create(['topic_id' => $post->topic_id])
 			->fresh();
 
 		$create_user = $post2->create_user;
@@ -58,17 +56,15 @@ class PostDeleteTest extends TestCase
 
 	public function testDeleteReply()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_delete_self_post = true;
 		$user->group->forum_delete_other_user_post = true;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create()
+		$post = Post::factory()->create()
 			->fresh();
 
-		$reply = factory(Post::class)
-			->create([
+		$reply = Post::factory()->create([
 				'parent' => $post->id,
 				'topic_id' => $post->topic_id
 			])
@@ -93,8 +89,7 @@ class PostDeleteTest extends TestCase
 
 	public function testDeleteIfCreateUserDeleted()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->assertEquals(1, $post->create_user->forum_message_count);
 
@@ -117,8 +112,7 @@ class PostDeleteTest extends TestCase
 
 	public function testDeleteIfTopicDeleted()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 		$topic->delete();
@@ -134,8 +128,7 @@ class PostDeleteTest extends TestCase
 
 	public function testDeleteIfForumDeleted()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$forum = $post->forum;
 		$forum->delete();
@@ -151,7 +144,7 @@ class PostDeleteTest extends TestCase
 
 	public function testDecline()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_delete_self_post = true;
 		$user->group->forum_delete_other_user_post = true;
 		$user->push();
@@ -162,7 +155,7 @@ class PostDeleteTest extends TestCase
 
 		$this->assertEquals(0, Post::getCachedOnModerationCount());
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->statusSentForReview();
 		$post->save();
 

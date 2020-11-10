@@ -10,17 +10,13 @@ class UserEmailDeleteTest extends TestCase
 {
 	public function testDelete()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
 		$this->assertTrue($email->isRescue());
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed', 'noticed', 'rescued')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->confirmed()->noticed()->rescued()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(2, $user->emails()->count());
 
@@ -33,9 +29,7 @@ class UserEmailDeleteTest extends TestCase
 
 	public function testErrorAtLeastOneEmailMustBeConfirmed()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$this->assertEquals(1, $user->emails()->count());
 
@@ -47,17 +41,13 @@ class UserEmailDeleteTest extends TestCase
 
 	public function testErrorAtLeastOneEmailMustBeForResue()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
 		$this->assertTrue($email->isRescue());
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed', 'noticed', 'not_rescued')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->confirmed()->noticed()->not_rescued()->create(['user_id' => $user->id]);
 
 		$this->actingAs($user)
 			->followingRedirects()
@@ -67,9 +57,7 @@ class UserEmailDeleteTest extends TestCase
 
 	public function testErrorAtLeastOneEmailMustBeForNotice()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -77,9 +65,7 @@ class UserEmailDeleteTest extends TestCase
 		$this->assertTrue($email->isConfirmed());
 		$this->assertTrue($email->isNotice());
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed', 'rescued', 'not_noticed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->confirmed()->rescued()->not_noticed()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(2, $user->emails()->count());
 
@@ -93,9 +79,7 @@ class UserEmailDeleteTest extends TestCase
 
 	public function testNotConfirmedIfConfirmedExists()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -103,9 +87,7 @@ class UserEmailDeleteTest extends TestCase
 		$this->assertTrue($email->isConfirmed());
 		$this->assertTrue($email->isNotice());
 
-		$email2 = factory(UserEmail::class)
-			->states('not_confirmed', 'not_rescued', 'not_noticed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->not_confirmed()->not_rescued()->not_noticed()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(2, $user->emails()->count());
 

@@ -17,13 +17,9 @@ class ComplainTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$admin = factory(User::class)
-				->states('admin')
-				->create();
+			$admin = User::factory()->admin()->create();
 
-			$complain = factory(Complain::class)
-				->states('sent_for_review')
-				->create();
+			$complain = Complain::factory()->sent_for_review()->create();
 
 			$browser->resize(1000, 1000)
 				->loginAs($admin)
@@ -48,13 +44,9 @@ class ComplainTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$admin = factory(User::class)
-				->states('admin')
-				->create();
+			$admin = User::factory()->admin()->create();
 
-			$complain = factory(Complain::class)
-				->states('review_starts')
-				->create();
+			$complain = Complain::factory()->review_starts()->create();
 			$complain->status_changed_user_id = $admin->id;
 			$complain->save();
 
@@ -88,13 +80,9 @@ class ComplainTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$admin = factory(User::class)
-				->states('admin')
-				->create();
+			$admin = User::factory()->admin()->create();
 
-			$complain = factory(Complain::class)
-				->states('review_starts')
-				->create();
+			$complain = Complain::factory()->review_starts()->create();
 			$complain->status_changed_user_id = $admin->id;
 			$complain->save();
 

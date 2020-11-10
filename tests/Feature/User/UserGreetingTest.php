@@ -18,8 +18,7 @@ class UserGreetingTest extends TestCase
 
 	public function testEvening()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(Carbon::create(2020, 5, 21,
 			18, 23, 00, 'Europe/Moscow'));
@@ -42,8 +41,7 @@ class UserGreetingTest extends TestCase
 
 	public function testNight()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(Carbon::create(2020, 5, 21,
 			23, 10, 00, 'Europe/Moscow'));
@@ -75,8 +73,7 @@ class UserGreetingTest extends TestCase
 
 	public function testMorning()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(Carbon::create(2020, 5, 21,
 			6, 10, 00, 'Europe/Moscow'));
@@ -100,8 +97,7 @@ class UserGreetingTest extends TestCase
 
 	public function testDay()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(Carbon::create(2020, 5, 21,
 			11, 10, 00, 'Europe/Moscow'));

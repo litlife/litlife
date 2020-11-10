@@ -20,9 +20,7 @@ class BookSaleTest extends TestCase
 {
 	public function testCanReadOrDownloadIfAuthorPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -35,12 +33,9 @@ class BookSaleTest extends TestCase
 
 	public function testCantReadDownloadIfBookForSaleNotPurchased()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_section', 'with_read_and_download_access')
-			->create(['price' => 100]);
+		$book = Book::factory()->with_writer()->with_section()->with_read_and_download_access()->create(['price' => 100]);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('read', $book));
 		$this->assertTrue($user->can('view_download_files', $book));
@@ -50,15 +45,11 @@ class BookSaleTest extends TestCase
 
 	public function testCanReadOrDownloadIfBookForSalePurchased()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create(['price' => 100]);
+		$book = Book::factory()->with_section()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
+		$purchase = UserPurchase::factory()->create([
 				'buyer_user_id' => $user->id,
 				'purchasable_id' => $book->id,
 				'purchasable_type' => 'book'
@@ -81,9 +72,7 @@ class BookSaleTest extends TestCase
 
 		$now = now();
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -175,9 +164,7 @@ class BookSaleTest extends TestCase
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 500]);
 		config(['litlife.book_price_update_cooldown' => 0]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -227,9 +214,7 @@ class BookSaleTest extends TestCase
 
 	public function testForSaleMustHaveCover()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -258,9 +243,7 @@ class BookSaleTest extends TestCase
 
 		$this->assertEquals(0, $book->fresh()->price);
 
-		$cover = factory(Attachment::class)
-			->states('cover')
-			->create(['book_id' => $book->id]);
+		$cover = Attachment::factory()->cover()->create();
 
 		$book->refresh();
 
@@ -280,9 +263,7 @@ class BookSaleTest extends TestCase
 	{
 		config(['litlife.min_annotation_characters_count_for_sale' => 10]);
 
-		$author = factory(Author::class)
-			->states('with_book_cover_annotation', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_cover_annotation()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -340,15 +321,9 @@ class BookSaleTest extends TestCase
 
 	public function testCantSaleNotCompleteBookIfOtherNotCompleteBookNotExists()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
-		$book = factory(Book::class)
-			->states('with_cover',
-				'with_annotation',
-				'not_complete_but_still_writing', 'with_section')
-			->create();
+		$book = Book::factory()->with_cover()->with_annotation()->not_complete_but_still_writing()->with_section()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -378,16 +353,12 @@ class BookSaleTest extends TestCase
 
 	public function testCanSaleNotCompleteBookIfOtherCompleteBookExists()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
 
-		$book2 = factory(Book::class)
-			->states('complete')
-			->create();
+		$book2 = Book::factory()->complete()->create();
 
 		$book2->price = 100;
 		$book2->is_si = true;
@@ -395,11 +366,7 @@ class BookSaleTest extends TestCase
 		$book2->create_user()->associate($user);
 		$book2->save();
 
-		$book = factory(Book::class)
-			->states('with_cover',
-				'with_annotation',
-				'not_complete_but_still_writing', 'with_section')
-			->create();
+		$book = Book::factory()->with_cover()->with_annotation()->not_complete_but_still_writing()->with_section()->create();
 		$book->characters_count = config('litlife.minimum_characters_count_before_book_can_be_sold') + 1000;
 		$book->is_si = true;
 		$book->is_lp = false;
@@ -430,9 +397,7 @@ class BookSaleTest extends TestCase
 
 	public function testRemoveFromSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -456,9 +421,7 @@ class BookSaleTest extends TestCase
 	{
 		Notification::fake();
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale_purchased')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale_purchased()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -512,14 +475,12 @@ class BookSaleTest extends TestCase
 
 	public function testSaleBookCreatedByOtherUserWarning()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
 		$user = $manager->user;
-		$book->create_user(factory(User::class)->create());
+		$book->create_user(User::factory()->create());
 		$book->save();
 
 		$this->assertFalse($user->can('sell', $book));
@@ -533,9 +494,7 @@ class BookSaleTest extends TestCase
 
 	public function testCantSellBookIfOtherWriterExists()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -545,8 +504,7 @@ class BookSaleTest extends TestCase
 
 		$user = $manager->user;
 
-		$author2 = factory(Author::class)
-			->create();
+		$author2 = Author::factory()->create();
 
 		$book->writers()->attach([$author2->id]);
 
@@ -571,9 +529,7 @@ class BookSaleTest extends TestCase
 
 	public function testToSellBookYouNeedRequestHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -607,9 +563,7 @@ class BookSaleTest extends TestCase
 
 	public function testYouCantSaleBookFragment()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -638,9 +592,7 @@ class BookSaleTest extends TestCase
 
 	public function testYouCantSaleBookIfItNotWillBeComplete()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -663,9 +615,7 @@ class BookSaleTest extends TestCase
 
 	public function testCantBuyOrSellIfNotWillBeFinishedAndIfPublishOnlyFragment()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -674,7 +624,7 @@ class BookSaleTest extends TestCase
 		$book->ready_status = 'complete_but_publish_only_part';
 		$book->save();
 
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 
 		$this->assertFalse($user->can('sell', $book));
 		$this->assertFalse($buyer->can('buy', $book));
@@ -683,9 +633,7 @@ class BookSaleTest extends TestCase
 
 	public function testCantChangeAuthorIfBookOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -693,7 +641,7 @@ class BookSaleTest extends TestCase
 		$book->create_user()->associate($user);
 		$book->save();
 
-		$new_author = factory(Author::class)->create();
+		$new_author = Author::factory()->create();
 
 		$array = [
 			'is_si' => true,
@@ -720,9 +668,7 @@ class BookSaleTest extends TestCase
 
 	public function testCanChangeAuthorIfBookNotOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -730,7 +676,7 @@ class BookSaleTest extends TestCase
 		$book->create_user()->associate($user);
 		$book->save();
 
-		$new_author = factory(Author::class)->create();
+		$new_author = Author::factory()->create();
 
 		$array = [
 			'title' => $book->title,
@@ -757,16 +703,14 @@ class BookSaleTest extends TestCase
 
 	public function testCantSellNotSiBooks()
 	{
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 0]);
 		config(['litlife.book_price_update_cooldown' => 7]);
 
 		$now = now();
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -802,16 +746,14 @@ class BookSaleTest extends TestCase
 
 	public function testCantSellLpBooks()
 	{
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 0]);
 		config(['litlife.book_price_update_cooldown' => 7]);
 
 		$now = now();
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -856,9 +798,7 @@ class BookSaleTest extends TestCase
 
 	public function testCantChangeSIorLPIfBookOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -898,9 +838,7 @@ class BookSaleTest extends TestCase
 	{
 		$title = Str::random(8);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 		$book = $author->books->first();
 		$book->price = 100;
 		$book->is_si = true;
@@ -921,9 +859,7 @@ class BookSaleTest extends TestCase
 
 	public function testBookWillNotBeSoldIfTheNumberOfFreeChaptersIsGreaterThanOrEqualToTheNumberOfChapters()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -978,9 +914,7 @@ class BookSaleTest extends TestCase
 
 	public function testCantSetMoreOrEqualsFreeChaptersCountThanChaptersCount()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1006,9 +940,7 @@ class BookSaleTest extends TestCase
 	{
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 8000]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1032,16 +964,14 @@ class BookSaleTest extends TestCase
 
 	public function testCantBuyBookIfFreeChaptersCountMoreOrEqualsChaptersCount()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
 		$book->create_user()->associate($user);
 		$book->push();
 
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 
 		$this->assertTrue($buyer->can('buy', $book));
 		$this->assertTrue($buyer->can('buy_button', $book));
@@ -1065,16 +995,14 @@ class BookSaleTest extends TestCase
 
 	public function testSeeSectionIfUserHasAccessToClosedBooks()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
 		$book->create_user()->associate($user);
 		$book->push();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->access_to_closed_books = true;
 		$admin->push();
 
@@ -1091,7 +1019,7 @@ class BookSaleTest extends TestCase
 
 	public function testIsPostedFreeFragment()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->assertFalse($book->isPostedFreeFragment());
 
@@ -1108,9 +1036,7 @@ class BookSaleTest extends TestCase
 
 	public function testAuthorCantSetPriceIfBookAddedByAnotherUser()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1137,9 +1063,7 @@ class BookSaleTest extends TestCase
 
 	public function testCantSetFreeSectionsCountIfPriceNotSet()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1148,9 +1072,7 @@ class BookSaleTest extends TestCase
 		$book->create_user()->associate($user);
 		$book->push();
 
-		$section = factory(Section::class)
-			->states('chapter')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->chapter()->create();
 
 		$this->assertEquals(0, $book->price);
 
@@ -1169,9 +1091,7 @@ class BookSaleTest extends TestCase
 
 	public function testChangePriceLog()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1221,9 +1141,7 @@ class BookSaleTest extends TestCase
 
 	public function testChangePriceToNull()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1250,7 +1168,7 @@ class BookSaleTest extends TestCase
 
 	public function testPreviousPrice()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->previous_price = 9.543;
 		$book->save();
 		$book->refresh();
@@ -1266,7 +1184,7 @@ class BookSaleTest extends TestCase
 
 	public function testIsPriceHasBecomeLess()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->assertFalse($book->isPriceHasBecomeLess());
 
@@ -1294,7 +1212,7 @@ class BookSaleTest extends TestCase
 
 	public function testGetDiscount()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$book->price = 60;
 		$book->previous_price = 100;
@@ -1334,8 +1252,7 @@ class BookSaleTest extends TestCase
 
 	public function testPriceChangeLog()
 	{
-		$log = factory(PriceChangeLog::class)
-			->create();
+		$log = PriceChangeLog::factory()->create();
 
 		$log->price = 63.58;
 		$log->save();
@@ -1352,14 +1269,12 @@ class BookSaleTest extends TestCase
 
 	public function testSeeWarningPleaseSetSiStatusIfBookPrivate()
 	{
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 0]);
 		config(['litlife.book_price_update_cooldown' => 7]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1391,14 +1306,12 @@ class BookSaleTest extends TestCase
 
 	public function testCanSetPriceIfBookPrivate()
 	{
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 0]);
 		config(['litlife.book_price_update_cooldown' => 7]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1432,13 +1345,9 @@ class BookSaleTest extends TestCase
 
 	public function testPublishPrivateBookOnSale()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$book = $author->books->first();
 
@@ -1460,9 +1369,7 @@ class BookSaleTest extends TestCase
 	{
 		config(['litlife.min_annotation_characters_count_for_sale' => 0]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1509,9 +1416,7 @@ class BookSaleTest extends TestCase
 	{
 		config(['litlife.min_annotation_characters_count_for_sale' => 0]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1556,9 +1461,7 @@ class BookSaleTest extends TestCase
 	{
 		config(['litlife.min_annotation_characters_count_for_sale' => 0]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1576,9 +1479,7 @@ class BookSaleTest extends TestCase
 	{
 		config(['litlife.min_annotation_characters_count_for_sale' => 0]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1610,9 +1511,7 @@ class BookSaleTest extends TestCase
 		config(['litlife.minimum_characters_count_before_book_can_be_sold' => 0]);
 		config(['litlife.book_price_update_cooldown' => 7]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -1623,7 +1522,7 @@ class BookSaleTest extends TestCase
 		$book->statusAccepted();
 		$book->push();
 
-		$otherAuthor = factory(Author::class)->create();
+		$otherAuthor = Author::factory()->create();
 
 		$book->writers()->sync([$otherAuthor->id]);
 		$book->translators()->sync([$author->id]);

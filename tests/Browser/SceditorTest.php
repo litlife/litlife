@@ -23,7 +23,7 @@ class SceditorTest extends DuskTestCase
 		 * доделать drag and drop для изображений
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->blog = true;
 			$user->push();
 
@@ -142,7 +142,7 @@ class SceditorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$browser->loginAs($user)
 				->visit(route('preview.sceditor'))

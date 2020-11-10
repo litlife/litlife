@@ -18,10 +18,9 @@ class BookStatusTest extends TestCase
 	 */
 	public function testSetStatusHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
@@ -48,7 +47,7 @@ class BookStatusTest extends TestCase
 	{
 		$old_time = now()->subMinutes(10);
 
-		$book_read_status = factory(BookStatus::class)->create();
+		$book_read_status = BookStatus::factory()->create();
 		$book_read_status->status = 'read_now';
 		$book_read_status->user_updated_at = $old_time;
 		$book_read_status->save();
@@ -73,15 +72,13 @@ class BookStatusTest extends TestCase
 
 	public function testDeleteRememberPageIfStatusReaded()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$read_remember = factory(BookReadRememberPage::class)
-			->create(['book_id' => $book->id, 'user_id' => $user->id]);
+		$read_remember = BookReadRememberPage::factory()->create(['book_id' => $book->id, 'user_id' => $user->id]);
 
 		$response = $this->actingAs($user)
 			->get(route('books.read_status.store', [
@@ -114,8 +111,7 @@ class BookStatusTest extends TestCase
 
 	public function testIsDisabledFilterWorks()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.books.readed', ['user' => $user, 'read_status' => 'readed']))

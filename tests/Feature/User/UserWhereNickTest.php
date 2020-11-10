@@ -10,8 +10,7 @@ class UserWhereNickTest extends TestCase
 {
 	public function testFoundHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->get(route('users.where.nick', ['nick' => $user->nick]))
 			->assertOk()
@@ -22,8 +21,7 @@ class UserWhereNickTest extends TestCase
 	{
 		$nick = Str::random(8);
 
-		$user = factory(User::class)
-			->create(['nick' => $nick]);
+		$user = User::factory()->create(['nick' => $nick]);
 
 		$this->get(route('users.where.nick', ['nick' => mb_strtoupper($nick)]))
 			->assertOk()
@@ -38,8 +36,7 @@ class UserWhereNickTest extends TestCase
 	{
 		$nick = Str::random(8);
 
-		$user = factory(User::class)
-			->create(['nick' => $nick]);
+		$user = User::factory()->create(['nick' => $nick]);
 
 		$this->get(route('users.where.nick', ['nick' => mb_substr($nick, -1)]))
 			->assertOk()
@@ -50,8 +47,7 @@ class UserWhereNickTest extends TestCase
 	{
 		$nick = Str::random(8) . '\\';
 
-		$user = factory(User::class)
-			->create(['nick' => $nick]);
+		$user = User::factory()->create(['nick' => $nick]);
 
 		$this->get(route('users.where.nick', ['nick' => $nick . '\\']))
 			->assertOk()

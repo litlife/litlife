@@ -10,24 +10,18 @@ class BookCollectionAddToCollectionPolicyTest extends TestCase
 {
 	public function testCanIfBookAccepted()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->can('addToCollection', $book));
 	}
 
 	public function testCantIfBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('addToCollection', $book));
 	}

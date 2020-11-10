@@ -10,13 +10,11 @@ class BookRefreshPrivateChaptersCountTest extends TestCase
 {
 	public function testRefreshPrivateChaptersCount()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)->states('private')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->private()->create();
 
-		$section2 = factory(Section::class)->states('private')
-			->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->private()->create();
 
 		$book->refreshPrivateChaptersCount();
 		$book->save();

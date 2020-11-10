@@ -19,9 +19,7 @@ class IdeaTest extends TestCase
 
 	public function testStoreIsOK()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$name = $this->faker->realText(100);
 		$bb_text = $this->faker->realText(500);
@@ -60,7 +58,7 @@ class IdeaTest extends TestCase
 
 	public function testCanCreateIfCanCreatePost()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_post = true;
 		$user->push();
 
@@ -69,7 +67,7 @@ class IdeaTest extends TestCase
 
 	public function testCantCreateIfCantCreatePost()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_post = false;
 		$user->push();
 
@@ -78,8 +76,7 @@ class IdeaTest extends TestCase
 
 	public function testIdeaWindowClose()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('ideas.card.hide'))
@@ -90,8 +87,7 @@ class IdeaTest extends TestCase
 
 	public function testSearch()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$name = $this->faker->realText(50);
 
@@ -102,9 +98,7 @@ class IdeaTest extends TestCase
 
 	public function testEnableNotifications()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$name = $this->faker->realText(100);
 		$bb_text = $this->faker->realText(500);
@@ -132,9 +126,7 @@ class IdeaTest extends TestCase
 
 	public function testDisableNotifications()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$name = $this->faker->realText(100);
 		$bb_text = $this->faker->realText(500);
@@ -158,9 +150,7 @@ class IdeaTest extends TestCase
 
 	public function testIdeaForumPostsState()
 	{
-		$post = factory(Post::class)
-			->states('idea_forum_posts')
-			->create();
+		$post = Post::factory()->idea_forum_posts()->create();
 
 		$topic = $post->topic;
 		$forum = $topic->forum;
@@ -174,9 +164,7 @@ class IdeaTest extends TestCase
 
 	public function testCantCreateIdeaWithTheSameNameWithin5Minutes()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$name = $this->faker->realText(50) . ' ' . Str::random(10);
 

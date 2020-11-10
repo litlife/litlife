@@ -30,7 +30,7 @@ class UserBookPurchaseCancelTest extends TestCase
 			->create();
 		$buyer->setReferredByUserId($buyer_referer->id);
 
-		$author = factory(Author::class)->states('with_author_manager_can_sell')->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers()->first();
 
@@ -41,9 +41,7 @@ class UserBookPurchaseCancelTest extends TestCase
 		$manager->user_id = $seller->id;
 		$manager->save();
 
-		$book = factory(Book::class)
-			->states('on_sale')
-			->create();
+		$book = Book::factory()->on_sale()->create();
 		$book->price = 65;
 		$book->save();
 

@@ -13,9 +13,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 {
 	public function testSplitIntoChapters()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -33,8 +31,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -73,9 +70,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testSplitIntoChaptersTwoSections()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -93,8 +88,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 			'<p><strong>Глава 4</strong></p>' .
 			'<p>текст <strong>четвертой</strong> главы</p>';
 
-		$section2 = factory(Section::class)
-			->create([
+		$section2 = Section::factory()->create([
 				'title' => 'Глава 3',
 				'book_id' => $book->id
 			]);
@@ -102,8 +96,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$section2->save();
 		$section2->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -140,9 +133,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testSplitIntoChaptersIfEmptyText()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -152,8 +143,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -169,9 +159,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testSplitIntoChaptersIfNoChapterTexts()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -181,8 +169,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -270,9 +257,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testDontCreateNewPagesIfNoChangesAfterSplitIntoChapters()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -282,8 +267,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 		$page_id = $section->pages()->first()->id;
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -296,9 +280,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testSplitIntoChapters2()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -316,8 +298,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -353,9 +334,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testSplitIntoChaptersEpiloguePrologue()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -370,8 +349,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -395,8 +373,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 
 	public function testSplitIntoPartsEvenIfThereIsNoTextBetweenTheChapters()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$section = factory(Section::class)
 			->states('chapter')
@@ -409,8 +386,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 		$this->assertEquals('ЧАСТЬ ПЕРВАЯ. ЗАМКИ В ТУМАНЕ', $section->title);
 		$this->assertEquals('<p>ГЛАВА ПЕРВАЯ</p><p>текст текст</p>', $section->getContent());
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -432,8 +408,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 	/*
 		public function test()
 		{
-			$book = factory(Book::class)
-				->create();
+			$book = Book::factory()->create();
 
 			$content = '<p><b>Название 1</b></p><p>Текст 1</p><p><b>Название 2</b></p><p>Текст 2</p>';
 
@@ -445,8 +420,7 @@ class BookTextProcessingSplitIntoChaptersTest extends TestCase
 					'content' => $content
 				]);
 
-			$processing = factory(BookTextProcessing::class)
-				->create(['book_id' => $book->id, 'split_into_chapters' => true]);
+			$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'split_into_chapters' => true]);
 
 			Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 

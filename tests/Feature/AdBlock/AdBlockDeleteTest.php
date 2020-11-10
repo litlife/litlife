@@ -10,12 +10,11 @@ class AdBlockDeleteTest extends TestCase
 {
 	public function testDestroy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
-		$block = factory(AdBlock::class)
-			->create();
+		$block = AdBlock::factory()->create();
 
 		$this->actingAs($user)
 			->delete(route('ad_blocks.destroy', ['ad_block' => $block->id]))
@@ -32,12 +31,11 @@ class AdBlockDeleteTest extends TestCase
 
 	public function testDelete()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
-		$block = factory(AdBlock::class)
-			->create();
+		$block = AdBlock::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('ad_blocks.delete', ['ad_block' => $block->id]))

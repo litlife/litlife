@@ -14,8 +14,7 @@ class ForumShowTest extends TestCase
 {
 	public function testPrivate()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$user = $post->create_user;
 
@@ -35,8 +34,7 @@ class ForumShowTest extends TestCase
 			->assertOk()
 			->assertSeeText($forum->name);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$response = $this->actingAs($other_user)
 			->get(route('forums.show', ['forum' => $forum->id]))
@@ -48,27 +46,25 @@ class ForumShowTest extends TestCase
 
 	public function testOrderTopicsBasedOnFixPostLikes()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_edit_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create([
+		$forum = Forum::factory()->create([
 				'is_idea_forum' => true
 			]);
 
 		$this->assertTrue($forum->isIdeaForum());
 
-		$topic = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post = factory(Post::class)->create(['topic_id' => $topic->id]);
-		$topic2 = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post2 = factory(Post::class)->create(['topic_id' => $topic2->id]);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post = Post::factory()->create(['topic_id' => $topic->id]);
+		$topic2 = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post2 = Post::factory()->create(['topic_id' => $topic2->id]);
 
 		$post->fix();
 		$post2->fix();
 
-		factory(Like::class)
-			->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
 
 		$this->assertEquals(1, $post->fresh()->like_count);
 
@@ -77,8 +73,8 @@ class ForumShowTest extends TestCase
 			->assertOk()
 			->assertSeeTextInOrder([$topic->name, $topic2->name]);
 
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
 
 		$this->assertEquals(2, $post2->fresh()->like_count);
 
@@ -87,8 +83,8 @@ class ForumShowTest extends TestCase
 			->assertOk()
 			->assertSeeTextInOrder([$topic2->name, $topic->name]);
 
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
 
 		$this->assertEquals(3, $post->fresh()->like_count);
 
@@ -101,27 +97,26 @@ class ForumShowTest extends TestCase
 
 	public function testOrderForIdeaForumMostLikes()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_edit_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create(['is_idea_forum' => true]);
+		$forum = Forum::factory()->create(['is_idea_forum' => true]);
 
 		$this->assertTrue($forum->isIdeaForum());
 
-		$topic = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post = factory(Post::class)->create(['topic_id' => $topic->id]);
-		$topic2 = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post2 = factory(Post::class)->create(['topic_id' => $topic2->id]);
-		$topic3 = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post3 = factory(Post::class)->create(['topic_id' => $topic3->id]);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post = Post::factory()->create(['topic_id' => $topic->id]);
+		$topic2 = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post2 = Post::factory()->create(['topic_id' => $topic2->id]);
+		$topic3 = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post3 = Post::factory()->create(['topic_id' => $topic3->id]);
 
 		$post->fix();
 		$post2->fix();
 		$post3->fix();
 
-		factory(Like::class)
-			->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
 
 		$this->assertEquals(1, $post->fresh()->like_count);
 
@@ -130,8 +125,8 @@ class ForumShowTest extends TestCase
 			->assertOk()
 			->assertSeeTextInOrder([$topic->name, $topic3->name, $topic2->name]);
 
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
 
 		$this->assertEquals(2, $post2->fresh()->like_count);
 
@@ -140,8 +135,8 @@ class ForumShowTest extends TestCase
 			->assertOk()
 			->assertSeeTextInOrder([$topic2->name, $topic->name, $topic3->name]);
 
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
-		factory(Like::class)->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+		Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
 
 		$this->assertEquals(3, $post->fresh()->like_count);
 
@@ -153,22 +148,22 @@ class ForumShowTest extends TestCase
 
 	public function testOrderForIdeaForumIdeaOnReviewIdeaInProgressFirst()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_edit_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create(['is_idea_forum' => true]);
+		$forum = Forum::factory()->create(['is_idea_forum' => true]);
 
 		$this->assertTrue($forum->isIdeaForum());
 
-		$topic = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post = factory(Post::class)->create(['topic_id' => $topic->id, 'like_count' => '10']);
-		$topic2 = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post2 = factory(Post::class)->create(['topic_id' => $topic2->id, 'like_count' => '20']);
-		$topic3 = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post3 = factory(Post::class)->create(['topic_id' => $topic3->id, 'like_count' => '30']);
-		$topic4 = factory(Topic::class)->create(['forum_id' => $forum->id]);
-		$post4 = factory(Post::class)->create(['topic_id' => $topic4->id, 'like_count' => '40']);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post = Post::factory()->create(['topic_id' => $topic->id, 'like_count' => '10']);
+		$topic2 = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post2 = Post::factory()->create(['topic_id' => $topic2->id, 'like_count' => '20']);
+		$topic3 = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post3 = Post::factory()->create(['topic_id' => $topic3->id, 'like_count' => '30']);
+		$topic4 = Topic::factory()->create(['forum_id' => $forum->id]);
+		$post4 = Post::factory()->create(['topic_id' => $topic4->id, 'like_count' => '40']);
 
 		$post->fix();
 		$post2->fix();
@@ -244,9 +239,7 @@ class ForumShowTest extends TestCase
 
 	public function testViewForumsIfPostDeleted()
 	{
-		$post = factory(Post::class)
-			->states('with_forum_group')
-			->create();
+		$post = Post::factory()->with_forum_group()->create();
 
 		$topic = $post->topic;
 		$forum = $topic->forum;

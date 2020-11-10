@@ -17,7 +17,7 @@ class AchievementTest extends TestCase
 	 */
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->achievement = true;
 		$user->push();
 
@@ -52,14 +52,14 @@ class AchievementTest extends TestCase
 
 	public function testAttachToUserHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->achievement = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->push();
 
-		$achievement = factory(Achievement::class)->create();
+		$achievement = Achievement::factory()->create();
 
 		$response = $this->actingAs($admin)
 			->json('POST',
@@ -79,9 +79,9 @@ class AchievementTest extends TestCase
 
 	public function testAttachToUserPolicy()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($admin->can('attach_achievement', $user));
 
@@ -93,75 +93,70 @@ class AchievementTest extends TestCase
 
 	public function testDetachFromUserPolicy()
 	{
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->achievement = true;
 		$admin->push();
 
 		$this->assertTrue($admin->can('detach', Achievement::class));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('detach', Achievement::class));
 	}
 
 	public function testCreatePolicy()
 	{
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->achievement = true;
 		$admin->push();
 
 		$this->assertTrue($admin->can('create', Achievement::class));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('create', Achievement::class));
 	}
 
 	public function testUpdatePolicy()
 	{
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->achievement = true;
 		$admin->push();
 
 		$this->assertTrue($admin->can('update', Achievement::class));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('update', Achievement::class));
 	}
 
 	public function testDeletePolicy()
 	{
-		$achievement = factory(Achievement::class)->create();
+		$achievement = Achievement::factory()->create();
 
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->achievement = true;
 		$admin->push();
 
 		$this->assertTrue($admin->can('delete', $achievement));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('delete', $achievement));
 	}
 
 	public function testRestorePolicy()
 	{
-		$achievement = factory(Achievement::class)->create();
+		$achievement = Achievement::factory()->create();
 		$achievement->delete();
 
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->achievement = true;
 		$admin->push();
 
 		$this->assertTrue($admin->can('restore', $achievement));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('restore', $achievement));
 	}

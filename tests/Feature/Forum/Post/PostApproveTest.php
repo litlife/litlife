@@ -10,7 +10,7 @@ class PostApproveTest extends TestCase
 {
 	public function testApprove()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_post_comments = true;
 		$user->push();
 
@@ -20,7 +20,7 @@ class PostApproveTest extends TestCase
 
 		$this->assertEquals(0, Post::getCachedOnModerationCount());
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->statusSentForReview();
 		$post->save();
 

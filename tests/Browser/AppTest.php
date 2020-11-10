@@ -26,7 +26,7 @@ class AppTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$browser->loginAs($user)
 				->visit('/groups/create')
@@ -50,17 +50,17 @@ class AppTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$author = factory(Author::class)->create();
+			$author = Author::factory()->create();
 
 			$browser->visit(route('authors.show', $author))
 				->assertSee(__('app.name'));
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 
 			$browser->visit(route('books.show', $book))
 				->assertSee(__('app.name'));
 
-			$post = factory(Post::class)->create();
+			$post = Post::factory()->create();
 
 			$topic = $post->topic;
 

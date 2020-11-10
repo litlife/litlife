@@ -10,13 +10,12 @@ class PostComplainTest extends TestCase
 {
 	public function testCanComplain()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->complain = true;
 		$user->push();
 		$user->refresh();
 
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->assertTrue($user->can('complain', $post));
 	}

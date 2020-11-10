@@ -14,7 +14,7 @@ class BookForbidToChangeTest extends TestCase
 {
 	public function testAttribute()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -28,11 +28,11 @@ class BookForbidToChangeTest extends TestCase
 
 	public function testIsCanChange()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->forbid_to_change = false;
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->enable_disable_changes_in_book = false;
 		$user->save();
 
@@ -62,27 +62,19 @@ class BookForbidToChangeTest extends TestCase
 
 	public function testPolicy()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 		$user->group->enable_disable_changes_in_book = false;
 		$user->save();
 
-		$book = factory(Book::class)
-			->states('with_cover')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->with_cover()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
 		$book->refresh();
 
@@ -122,8 +114,7 @@ class BookForbidToChangeTest extends TestCase
 		$this->assertFalse($user->can('setAsCover', $attachment));
 		$this->assertFalse($user->can('remove_cover', $book));
 
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($user->can('addKeywords', $book));
 		$this->assertTrue($user->can('delete', $book_keyword));
@@ -139,11 +130,11 @@ class BookForbidToChangeTest extends TestCase
 
 	public function testEnableForbidChangesInBookPolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->enable_disable_changes_in_book = false;
 		$user->save();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->forbid_to_change = false;
 		$book->save();
 
@@ -165,11 +156,9 @@ class BookForbidToChangeTest extends TestCase
 
 	public function testEnableForbidChangesInBookHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.forbid_changes.enable', $book))
@@ -182,11 +171,9 @@ class BookForbidToChangeTest extends TestCase
 
 	public function testDisableForbidChangesInBookHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 

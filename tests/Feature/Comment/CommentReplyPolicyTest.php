@@ -12,8 +12,7 @@ class CommentReplyPolicyTest extends TestCase
 {
 	public function testFalseIfIfCreatorAddedToBlacklist()
 	{
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'status' => UserRelationType::Blacklist
 			]);
 
@@ -23,22 +22,16 @@ class CommentReplyPolicyTest extends TestCase
 
 		$this->assertTrue($commentCreator->hasAddedToBlacklist($dislikerUser));
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['create_user_id' => $commentCreator->id]);
+		$comment = Comment::factory()->book()->create();
 
 		$this->assertFalse($dislikerUser->can('reply', $comment));
 	}
 
 	public function testFalseIfCommentOnReview()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->states('sent_for_review')
-			->create();
+		$comment = Comment::factory()->sent_for_review()->create();
 
 		$this->assertFalse($user->can('reply', $comment));
 	}

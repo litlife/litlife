@@ -12,12 +12,9 @@ class CollectionBookEditTest extends TestCase
 
 	public function testCollectedBookUpdate()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$collected_book = factory(CollectedBook::class)
-			->create();
+		$collected_book = CollectedBook::factory()->create();
 
 		$collection = $collected_book->collection;
 		$collection->status = StatusEnum::Accepted;
@@ -52,12 +49,9 @@ class CollectionBookEditTest extends TestCase
 
 	public function testCollectedBookEdit()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$collected_book = factory(CollectedBook::class)
-			->create();
+		$collected_book = CollectedBook::factory()->create();
 
 		$collection = $collected_book->collection;
 		$collection->status = StatusEnum::Accepted;

@@ -10,11 +10,9 @@ class AuthorManagerEditorTest extends TestCase
 {
 	public function testAuthorizationExceptionWithMessage()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('authors.editor.request', $author))

@@ -17,10 +17,9 @@ class BookTextProcessingCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$processing = factory(BookTextProcessing::class)->create(['book_id' => $book->id]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id]);
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -53,9 +52,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testRemoveExtraSpaces()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -63,8 +60,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->content = '<p>  &nbsp; &nbsp; &nbsp; - текст <strong>текст</strong></p><p>⠀⠀⠀⠀текст</p>';
 		$section->save();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_extra_spaces' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_extra_spaces' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -78,9 +74,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testRemoveBold()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -89,8 +83,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_bold' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_bold' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -104,9 +97,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testRemoveBoldAndRemoveExtraSpaces()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -115,8 +106,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_extra_spaces' => true, 'remove_bold' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_extra_spaces' => true, 'remove_bold' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -130,9 +120,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testDontCreateNewPagesIfNoChangesAfterRemoveBold()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -142,8 +130,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 		$page_id = $section->pages()->first()->id;
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_bold' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_bold' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -156,9 +143,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testDontCreateNewPagesIfNoChangesAfterRemoveExtraSpaces()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -168,8 +153,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 		$page_id = $section->pages()->first()->id;
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_extra_spaces' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_extra_spaces' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -182,9 +166,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testSplitIntoChaptersRemoveExtraSpacesRemoveBold()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -198,8 +180,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create([
+		$processing = BookTextProcessing::factory()->create([
 				'book_id' => $book->id,
 				'split_into_chapters' => true,
 				'remove_extra_spaces' => true,
@@ -254,9 +235,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testConvertNewLinesTo()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -265,8 +244,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'convert_new_lines_to_paragraphs' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'convert_new_lines_to_paragraphs' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -280,9 +258,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testAddASpaceAfterTheFirstHyphenInTheParagraphOption()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -291,8 +267,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'add_a_space_after_the_first_hyphen_in_the_paragraph' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'add_a_space_after_the_first_hyphen_in_the_paragraph' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -344,9 +319,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testRemoveItalicOption()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -355,8 +328,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_italics' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_italics' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -370,9 +342,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testRemoveSpacesBeforePunctuationMarksOption()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -381,8 +351,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_spaces_before_punctuations_marks' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_spaces_before_punctuations_marks' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -396,9 +365,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testAddSpacesAfterPunctuationsMarksOption()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -407,8 +374,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'add_spaces_after_punctuations_marks' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'add_spaces_after_punctuations_marks' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -422,9 +388,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testMergeParagraphsIfThereIsNoDotAtTheEndOption()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -433,8 +397,7 @@ class BookTextProcessingCommandTest extends TestCase
 		$section->save();
 		$section->refresh();
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'merge_paragraphs_if_there_is_no_dot_at_the_end' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'merge_paragraphs_if_there_is_no_dot_at_the_end' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -639,9 +602,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testTidyChapterTitleCommand()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -669,8 +630,7 @@ class BookTextProcessingCommandTest extends TestCase
 			'title' => 'Глава ПЯТАЯ'
 		]);
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'tidy_chapter_names' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'tidy_chapter_names' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 
@@ -702,7 +662,7 @@ class BookTextProcessingCommandTest extends TestCase
 	{
 		$command = new BookTextWaitedProcessingCommand();
 
-		$section = factory(Section::class)->states('chapter')->create();
+		$section = Section::factory()->chapter()->create();
 
 		$section->content = '<p>текст</p><p> </p><div class="u-empty-line"></div><p>текст</p>';
 
@@ -727,9 +687,7 @@ class BookTextProcessingCommandTest extends TestCase
 
 	public function testRemoveEmptyParagraphsOption()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
@@ -738,8 +696,7 @@ class BookTextProcessingCommandTest extends TestCase
 			'content' => '<p>текст</p><p> </p><div class="u-empty-line"></div><p>текст</p>'
 		]);
 
-		$processing = factory(BookTextProcessing::class)
-			->create(['book_id' => $book->id, 'remove_empty_paragraphs' => true]);
+		$processing = BookTextProcessing::factory()->create(['book_id' => $book->id, 'remove_empty_paragraphs' => true]);
 
 		Artisan::call('book:text_waited_processing', ['latest_id' => $processing->id]);
 

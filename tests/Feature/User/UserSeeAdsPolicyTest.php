@@ -9,8 +9,7 @@ class UserSeeAdsPolicyTest extends TestCase
 {
 	public function testSeeAds()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->not_show_ad = false;
 		$user->push();
 
@@ -26,7 +25,7 @@ class UserSeeAdsPolicyTest extends TestCase
 
 	public function testDontShowAdsIfCreatedBooksMoreThan()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->not_show_ad = false;
 		$user->data->created_books_count = 9;
 		$user->push();
@@ -49,7 +48,7 @@ class UserSeeAdsPolicyTest extends TestCase
 
 	public function testDontShowAdsIfPurchaseABook()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->not_show_ad = false;
 		$user->data->books_purchased_count = 0;
 		$user->push();

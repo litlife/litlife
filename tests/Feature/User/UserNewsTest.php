@@ -17,14 +17,11 @@ class UserNewsTest extends TestCase
 	 */
 	public function testIfSubscriptionCreateWallMessageOnOwnWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
@@ -33,8 +30,7 @@ class UserNewsTest extends TestCase
 		$auth_user->isSubscriberOf($user);
 		$user->isSubscriptionOf($auth_user);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
@@ -51,22 +47,18 @@ class UserNewsTest extends TestCase
 
 	public function testIfFriendCreateWallMessageOnOwnWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Friend
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
@@ -83,21 +75,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfSomeoneWriteOnSubscriptionWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
 		$this->assertEquals(1, $auth_user->getNotViewedFriendsNewsCount());
 		$this->assertEquals(0, $user->getNotViewedFriendsNewsCount());
@@ -111,21 +99,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfSomeoneWriteOnFriendWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Friend
 			]);
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
 		$this->assertEquals(1, $auth_user->getNotViewedFriendsNewsCount());
 		$this->assertEquals(0, $user->getNotViewedFriendsNewsCount());
@@ -139,27 +123,22 @@ class UserNewsTest extends TestCase
 
 	public function testIfSomeoneReplyOnSubscriptionWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
 
-		$reply = factory(Blog::class)
-			->create([
+		$reply = Blog::factory()->create([
 				'parent' => $blog->id,
 				'blog_user_id' => $user->id
 			]);
@@ -176,27 +155,22 @@ class UserNewsTest extends TestCase
 
 	public function testIfSomeoneReplyOnFriendWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Friend
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
 
-		$reply = factory(Blog::class)
-			->create([
+		$reply = Blog::factory()->create([
 				'parent' => $blog->id,
 				'blog_user_id' => $user->id
 			]);
@@ -213,21 +187,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfSubscriptionWriteOnSomeoneWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['create_user_id' => $user->id]);
 
 		$this->assertEquals(0, $auth_user->getNotViewedFriendsNewsCount());
 		$this->assertEquals(0, $user->getNotViewedFriendsNewsCount());
@@ -241,21 +211,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfFriendWriteOnSomeoneWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Friend
 			]);
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['create_user_id' => $user->id]);
 
 		$this->assertEquals(0, $auth_user->getNotViewedFriendsNewsCount());
 		$this->assertEquals(0, $user->getNotViewedFriendsNewsCount());
@@ -270,21 +236,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfAuthUserWriteOnSubscriptionWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $auth_user->id
 			]);
@@ -301,21 +263,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfAuthUserReplyOnSubscriptionWallHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
@@ -326,8 +284,7 @@ class UserNewsTest extends TestCase
 			->get(route('news'))
 			->assertSeeText($blog->text);
 
-		$reply = factory(Blog::class)
-			->create([
+		$reply = Blog::factory()->create([
 				'parent' => $blog,
 				'blog_user_id' => $user->id,
 				'create_user_id' => $auth_user->id
@@ -345,21 +302,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfSubscriptionCreateNewMessageThenDeleteHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
@@ -375,21 +328,17 @@ class UserNewsTest extends TestCase
 
 	public function testIfSomeoneWriteOnSubscriptionWallThenDeleteHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
 		$this->assertEquals(1, $auth_user->fresh()->getNotViewedFriendsNewsCount());
 		$this->assertEquals(0, $user->fresh()->getNotViewedFriendsNewsCount());
@@ -403,27 +352,22 @@ class UserNewsTest extends TestCase
 
 	public function testIfSomeoneReplyOnSubscriptionWallThenDeleteThanRestoreHttp()
 	{
-		$auth_user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$auth_user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMinute()]);
+		$user = User::factory()->create(['created_at' => now()->subMinute()]);
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id
 			]);
 
-		$reply = factory(Blog::class)
-			->create([
+		$reply = Blog::factory()->create([
 				'parent' => $blog->id,
 				'blog_user_id' => $user->id
 			]);

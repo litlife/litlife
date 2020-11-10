@@ -9,7 +9,7 @@ class PostRedirectToTest extends TestCase
 {
 	public function testGoToIfOnReview()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->statusSentForReview();
 		$post->save();
 

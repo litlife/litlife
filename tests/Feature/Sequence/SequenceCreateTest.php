@@ -10,8 +10,7 @@ class SequenceCreateTest extends TestCase
 {
 	public function testCreate()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('sequences.create'))
@@ -20,8 +19,7 @@ class SequenceCreateTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$name = $this->faker->realText(100);
 		$description = $this->faker->realText(100);

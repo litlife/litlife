@@ -18,7 +18,7 @@ class UserRelationTest extends TestCase
 	 */
 	public function testIndexHttp()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$this->actingAs($user)
 			->get(route('users'))
@@ -27,11 +27,9 @@ class UserRelationTest extends TestCase
 
 	public function testBlock()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($auth_user)
 			->get(route('users.block', compact('user')))
@@ -50,14 +48,11 @@ class UserRelationTest extends TestCase
 
 	public function testUnblock()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Blacklist
@@ -89,21 +84,17 @@ class UserRelationTest extends TestCase
 
 	public function testRestoreFriendshipIfSavingHttp()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
-		$user_relation2 = factory(UserRelation::class)
-			->create([
+		$user_relation2 = UserRelation::factory()->create([
 				'user_id' => $user->id,
 				'user_id2' => $auth_user->id,
 				'status' => UserRelationType::Subscriber
@@ -151,11 +142,9 @@ class UserRelationTest extends TestCase
 	{
 		Notification::fake();
 
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($auth_user)
 			->get(route('users.subscribe', $user));
@@ -203,14 +192,11 @@ class UserRelationTest extends TestCase
 
 	public function testUnsubscribeHttp()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Subscriber
@@ -245,14 +231,11 @@ class UserRelationTest extends TestCase
 
 	public function testUnsubscribeIfFriends()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $auth_user->id,
 				'user_id2' => $user->id,
 				'status' => UserRelationType::Friend
@@ -282,14 +265,11 @@ class UserRelationTest extends TestCase
 
 	public function testSubscribeIfUserSubscriberHttp()
 	{
-		$auth_user = factory(User::class)
-			->create();
+		$auth_user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user_relation = factory(UserRelation::class)
-			->create([
+		$user_relation = UserRelation::factory()->create([
 				'user_id' => $user->id,
 				'user_id2' => $auth_user->id,
 				'status' => UserRelationType::Subscriber

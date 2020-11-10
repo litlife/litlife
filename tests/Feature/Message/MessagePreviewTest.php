@@ -10,45 +10,41 @@ class MessagePreviewTest extends TestCase
 {
 	public function testPreview()
 	{
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => '[quote]quote[/quote]text[quote]quote[/quote]text',
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
 		$this->assertEquals('text text', $message->getPreviewText());
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => 'text text',
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
 		$this->assertEquals('text text', $message->getPreviewText());
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => 'text [img]http://test/image.jpeg[/img]',
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
 		$this->assertEquals('text ' . '(' . __('message.image') . ')', $message->getPreviewText());
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => '[quote][color=#343a40][font=Arial]quote[/font][/color]' .
 						'[url=https://litlife.club/][color=#212529][font=Arial]https://litlife.club/[/font][/color][/url]' .
 						'[url=https://litlife.club][color=#212529][font=Arial]https://litlife.club/[/font][/color][/url][/quote]text' .
 						'[quote][color=#343a40][font=Arial]quote[/font][/color][/quote]' .
 						'text',
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
@@ -63,11 +59,10 @@ class MessagePreviewTest extends TestCase
 [color=#212529]цитата[/color][/quote]
 текст';
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => $s,
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
@@ -76,31 +71,28 @@ class MessagePreviewTest extends TestCase
 
 		$s = 'test   test';
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => $s,
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
 		$this->assertEquals('test   test', $message->getPreviewText());
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => '[img]http://test/image.jpeg[/img]',
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 
 		$this->assertEquals('(' . __('message.image') . ')', $message->getPreviewText());
 
-		$message = factory(Message::class)
-			->create(
+		$message = Message::factory()->create(
 				[
 					'bb_text' => 'текст [youtube]test[/youtube] текст',
-					'recepient_id' => factory(User::class)->create()->id
+					'recepient_id' => User::factory()->create()->id
 				]
 			);
 

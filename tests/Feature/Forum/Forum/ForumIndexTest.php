@@ -13,11 +13,9 @@ class ForumIndexTest extends TestCase
 {
 	public function testIndex()
 	{
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
-		$forum2 = factory(Forum::class)
-			->create(['forum_group_id' => $forum->forum_group_id]);
+		$forum2 = Forum::factory()->create(['forum_group_id' => $forum->forum_group_id]);
 
 		$response = $this->get(route('forums.index'))
 			->assertOk();
@@ -25,9 +23,7 @@ class ForumIndexTest extends TestCase
 
 	public function testIndexForAdmin()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('forums.index'))
@@ -36,13 +32,11 @@ class ForumIndexTest extends TestCase
 
 	public function testViewPrivateForumOnForumsIndex()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$user = $post->create_user;
 
-		$forum_group = factory(ForumGroup::class)
-			->create();
+		$forum_group = ForumGroup::factory()->create();
 
 		$forum = $post->forum;
 		$forum->private = true;
@@ -62,8 +56,7 @@ class ForumIndexTest extends TestCase
 			->get(route('forums.index'))
 			->assertSeeText($forum->name);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$response = $this->actingAs($other_user)
 			->get(route('forums.index'))

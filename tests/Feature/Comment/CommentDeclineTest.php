@@ -10,7 +10,7 @@ class CommentDeclineTest extends TestCase
 {
 	public function testDecline()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->delete_my_comment = true;
 		$user->group->delete_other_user_comment = true;
 		$user->push();
@@ -21,7 +21,7 @@ class CommentDeclineTest extends TestCase
 
 		$this->assertEquals(0, Comment::getCachedOnModerationCount());
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->statusSentForReview();
 		$comment->save();
 

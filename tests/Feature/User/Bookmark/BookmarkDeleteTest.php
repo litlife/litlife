@@ -10,8 +10,7 @@ class BookmarkDeleteTest extends TestCase
 {
 	public function testDeleteHttp()
 	{
-		$bookmark = factory(Bookmark::class)
-			->create();
+		$bookmark = Bookmark::factory()->create();
 
 		$response = $this->actingAs($bookmark->create_user)
 			->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
@@ -26,8 +25,7 @@ class BookmarkDeleteTest extends TestCase
 
 	public function testRestoreHttp()
 	{
-		$bookmark = factory(Bookmark::class)
-			->create();
+		$bookmark = Bookmark::factory()->create();
 
 		$bookmark->delete();
 
@@ -44,11 +42,9 @@ class BookmarkDeleteTest extends TestCase
 
 	public function testDeleteOtherUser()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$bookmark = factory(Bookmark::class)
-			->create();
+		$bookmark = Bookmark::factory()->create();
 
 		$response = $this->actingAs($user)
 			->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))

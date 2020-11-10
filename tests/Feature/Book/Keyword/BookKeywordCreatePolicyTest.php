@@ -9,9 +9,7 @@ class BookKeywordCreatePolicyTest extends TestCase
 {
 	public function testCanIfBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -20,9 +18,7 @@ class BookKeywordCreatePolicyTest extends TestCase
 
 	public function testCantIfNoPermission()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -31,9 +27,7 @@ class BookKeywordCreatePolicyTest extends TestCase
 
 	public function testCanIfHasPermission1()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = true;
@@ -44,9 +38,7 @@ class BookKeywordCreatePolicyTest extends TestCase
 
 	public function testCanIfHasPermission2()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add_new_with_check = true;
@@ -57,9 +49,7 @@ class BookKeywordCreatePolicyTest extends TestCase
 
 	public function testCanIfHasPermission3()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_moderate = true;

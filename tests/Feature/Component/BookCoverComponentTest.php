@@ -45,9 +45,7 @@ blade;
 	 */
 	public function testBookCoverDeleted()
 	{
-		$book = factory(Book::class)
-			->states('with_cover')
-			->create();
+		$book = Book::factory()->with_cover()->create();
 
 		$book->cover->delete();
 
@@ -79,8 +77,7 @@ blade;
 	 */
 	public function testBookDeleted()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->delete();
 
@@ -112,9 +109,7 @@ blade;
 	 */
 	public function testBookCoverExists()
 	{
-		$book = factory(Book::class)
-			->states('with_cover')
-			->create();
+		$book = Book::factory()->with_cover()->create();
 
 		$component = new BookCover($book, 200, 200);
 
@@ -144,9 +139,7 @@ blade;
 	 */
 	public function testShowEvenIfTrashed()
 	{
-		$book = factory(Book::class)
-			->states('with_cover')
-			->create();
+		$book = Book::factory()->with_cover()->create();
 
 		$book->delete();
 
@@ -157,9 +150,7 @@ blade;
 
 	public function testDontShowIfDontHaveAccess()
 	{
-		$book = factory(Book::class)
-			->states('with_cover', 'private', 'with_create_user')
-			->create();
+		$book = Book::factory()->with_cover()->private()->with_create_user()->create();
 
 		$component = new BookCover($book, 200, 200);
 
@@ -172,9 +163,7 @@ blade;
 
 	public function testShowIfHaveAccess()
 	{
-		$book = factory(Book::class)
-			->states('with_cover', 'private', 'with_create_user')
-			->create();
+		$book = Book::factory()->with_cover()->private()->with_create_user()->create();
 
 		$this->be($book->create_user);
 

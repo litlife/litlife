@@ -10,11 +10,9 @@ class BookCollectionSelectedTest extends TestCase
 {
 	public function test()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$user = $collection->create_user;
 

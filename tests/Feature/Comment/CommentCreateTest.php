@@ -18,13 +18,11 @@ class CommentCreateTest extends TestCase
 	{
 		Notification::fake();
 
-		$book = factory(Book::class)
-			->states('with_writer', 'with_compiler', 'with_translator', 'with_illustrator', 'with_editor')
-			->create();
+		$book = Book::factory()->with_writer()->with_compiler()->with_translator()->with_illustrator()->with_editor()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -57,9 +55,7 @@ class CommentCreateTest extends TestCase
 
 	public function testCreateHttpIfRelationNotFound()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->actingAs($user)
 			->get(route('comments.create', [
@@ -71,9 +67,7 @@ class CommentCreateTest extends TestCase
 
 	public function testStoreHttpIfRelationNotFound()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->actingAs($user)
 			->post(route('comments.store', [
@@ -85,13 +79,11 @@ class CommentCreateTest extends TestCase
 
 	public function testCommentToFast()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$comments = factory(Comment::class, 10)
 			->create([
@@ -117,13 +109,13 @@ class CommentCreateTest extends TestCase
 
 	public function testCreateIfBookDoesntHaveAuthor()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
 		$book->authors()->detach();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -142,12 +134,12 @@ class CommentCreateTest extends TestCase
 
 	public function testBookWithoutAnyGenre()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->genres()->detach();
 
 		$this->assertEquals(0, $book->genres()->count());
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -170,21 +162,21 @@ class CommentCreateTest extends TestCase
 
 	public function testHideFromHomePageIfBookGenreInList()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->admin_panel_access = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$slash = factory(Genre::class)->create();
-		$genre = factory(Genre::class)->create();
+		$slash = Genre::factory()->create();
+		$genre = Genre::factory()->create();
 
-		$slash_book = factory(Book::class)->create();
+		$slash_book = Book::factory()->create();
 		$slash_book->genres()->sync([$slash->id]);
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->genres()->sync([$genre->id]);
 
 		$this->actingAs($admin)
@@ -225,11 +217,9 @@ class CommentCreateTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 

@@ -11,8 +11,7 @@ class InvitationNotificationTest extends TestCase
 {
 	public function testVia()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$notification = new InvitationNotification($invitation);
 
@@ -21,8 +20,7 @@ class InvitationNotificationTest extends TestCase
 
 	public function testMail()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$notification = new InvitationNotification($invitation);
 

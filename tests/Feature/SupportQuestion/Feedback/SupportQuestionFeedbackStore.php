@@ -10,9 +10,7 @@ class SupportQuestionFeedbackStore extends TestCase
 {
 	public function testOk()
 	{
-		$question = factory(SupportQuestion::class)
-			->states('accepted')
-			->create();
+		$question = SupportQuestion::factory()->accepted()->create();
 
 		$user = $question->create_user;
 

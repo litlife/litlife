@@ -16,8 +16,7 @@ class UserReferenceTest extends TestCase
 {
 	public function testUsersReferPageIsOkAuth()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.refer'))
@@ -38,8 +37,7 @@ class UserReferenceTest extends TestCase
 
 	public function testReferredUserRelations()
 	{
-		$reference = factory(ReferredUser::class)
-			->create()
+		$reference = ReferredUser::factory()->create()
 			->fresh();
 
 		$referred_by_user = $reference->referred_by_user;
@@ -53,9 +51,8 @@ class UserReferenceTest extends TestCase
 
 	public function testRelations()
 	{
-		$user = factory(User::class)
-			->states('referred')
-			->create()
+		$user = User::factory()->referred()->create(
+			)
 			->fresh();
 
 		$referred_by_user = $user->referred_by_user->first();
@@ -81,9 +78,9 @@ class UserReferenceTest extends TestCase
 		config(['litlife.comission_from_refrence_buyer' => $comission_buy_book]);
 		config(['litlife.comission_from_refrence_seller' => $comission_sell_book]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$referred_by_user = factory(User::class)->create();
+		$referred_by_user = User::factory()->create();
 
 		$user->setReferredByUserId($referred_by_user);
 		$user->refresh();
@@ -107,8 +104,7 @@ class UserReferenceTest extends TestCase
 
 		$name = config('litlife.name_user_refrence_get_param');
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->get(route('home', [$name => $user->id, 'other' => 'value']))
 			->assertRedirect((string)Url::fromString(route('home', ['other' => 'value']))->withPath('/'))
@@ -123,8 +119,7 @@ class UserReferenceTest extends TestCase
 
 		$this->disableCookiesEncryption($name);
 
-		$refer_user = factory(User::class)
-			->create();
+		$refer_user = User::factory()->create();
 
 		$user = factory(User::class)
 			->make()
@@ -134,8 +129,7 @@ class UserReferenceTest extends TestCase
 		$user['password'] = $password;
 		$user['password_confirmation'] = $password;
 
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$response = $this->call('post', route('users.store', ['token' => $invitation->token]), $user, [$name => $refer_user->id]);
 		if (session('errors')) dump(session('errors'));
@@ -173,21 +167,18 @@ class UserReferenceTest extends TestCase
 
 	public function testReferUsersPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->can('refer_users', User::class));
 	}
 
 	public function testViewRefferedUsersPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->can('view_referred_users', $user));
 
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
 		$this->assertFalse($user->can('view_referred_users', $user2));
 	}
@@ -196,9 +187,8 @@ class UserReferenceTest extends TestCase
 	{
 		$nick = Str::random(8);
 
-		$user = factory(User::class)
-			->states('referred')
-			->create(['nick' => $nick])
+		$user = User::factory()->referred()->create(
+			)
 			->fresh();
 
 		$referred_by_user = $user->referred_by_user->first();
@@ -213,9 +203,8 @@ class UserReferenceTest extends TestCase
 	{
 		$nick = Str::random(8);
 
-		$user = factory(User::class)
-			->states('referred')
-			->create(['nick' => $nick])
+		$user = User::factory()->referred()->create(
+			)
 			->fresh();
 
 		$referred_by_user = $user->referred_by_user->first();

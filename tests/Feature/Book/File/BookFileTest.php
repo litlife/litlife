@@ -17,9 +17,7 @@ class BookFileTest extends TestCase
 
 	public function testFactoryTxt()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertTrue($file->exists());
 		$this->assertEquals('txt', $file->format);
@@ -27,9 +25,7 @@ class BookFileTest extends TestCase
 
 	public function testGenerateDirname()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertEquals(getPath($file->book->id) . '/' . $file->folder, $file->generateDirName());
 	}
@@ -65,9 +61,7 @@ class BookFileTest extends TestCase
 
 		Storage::fake($disk);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertEquals($disk, $file->storage);
 
@@ -77,15 +71,11 @@ class BookFileTest extends TestCase
 
 		Storage::fake($disk);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertEquals($disk, $file->storage);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['storage' => 'private']);
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertEquals('private', $file->storage);
 	}
@@ -95,9 +85,7 @@ class BookFileTest extends TestCase
 		config(['litlife.book_allowed_file_extensions' => ['odt', 'docx']]);
 		config(['litlife.no_need_convert' => ['mp3', 'djvu']]);
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create();
+		$file = BookFile::factory()->odt()->create();
 
 		$this->assertEquals('odt', $file->format);
 		$this->assertTrue($file->canParsed());

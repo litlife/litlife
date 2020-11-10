@@ -10,11 +10,9 @@ class BookKeywordVotePolicyTest extends TestCase
 {
 	public function testCanIfHasPermission()
 	{
-		$bookKeyword = factory(BookKeyword::class)
-			->states('accepted')
-			->create();
+		$bookKeyword = BookKeyword::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_vote = true;
 		$user->save();
 
@@ -23,11 +21,9 @@ class BookKeywordVotePolicyTest extends TestCase
 
 	public function testCantIfNoPermission()
 	{
-		$bookKeyword = factory(BookKeyword::class)
-			->states('accepted')
-			->create();
+		$bookKeyword = BookKeyword::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_vote = false;
 		$user->save();
 

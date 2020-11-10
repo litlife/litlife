@@ -12,18 +12,13 @@ class AuthorDetectLangTest extends TestCase
 {
 	public function testUpdateLang()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+		$book2 = Book::factory()->create(['ti_lb' => 'EN']);
 
-		$book3 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+		$book3 = Book::factory()->create(['ti_lb' => 'EN']);
 
 		$author->written_books()->sync([$book->id]);
 		$author->translated_books()->sync([$book2->id, $book3->id]);
@@ -36,18 +31,13 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testUpdateLang2()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book2 = Book::factory()->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+		$book3 = Book::factory()->create(['ti_lb' => 'EN']);
 
 		$author->written_books()->sync([$book->id]);
 		$author->translated_books()->sync([$book2->id, $book3->id]);
@@ -60,18 +50,13 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testUpdateLang3()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book2 = Book::factory()->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+		$book3 = Book::factory()->create(['ti_lb' => 'EN']);
 
 		$author->written_books()->sync([$book->id]);
 		$author->compiled_books()->sync([$book2->id, $book3->id]);
@@ -86,9 +71,7 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testUpdateLangWithoutBooks()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->accepted()->create();
 
 		$author->updateLang(true);
 		$author->save();
@@ -99,13 +82,11 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testRefreshLangIfExists()
 	{
-		$author = factory(Author::class)
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->create(['lang' => 'ES']);
 
 		$this->assertEquals('ES', $author->lang);
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 		$author->written_books()->sync([$book->id]);
 		$author->updateLang();
 		$author->save();
@@ -122,8 +103,7 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testIfLangIsNullWithoutBooks()
 	{
-		$author = factory(Author::class)
-			->create(['lang' => null]);
+		$author = Author::factory()->create(['lang' => null]);
 
 		$this->assertNull($author->lang);
 
@@ -136,12 +116,11 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testIfLangIsNullWithBooks()
 	{
-		$author = factory(Author::class)
-			->create(['lang' => null]);
+		$author = Author::factory()->create(['lang' => null]);
 
 		$this->assertNull($author->lang);
 
-		$book = factory(Book::class)->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 		$author->written_books()->sync([$book->id]);
 		$author->save();
 		$author->refresh();
@@ -155,8 +134,7 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testDetectCommand()
 	{
-		$author = factory(Author::class)
-			->create(['lang' => null]);
+		$author = Author::factory()->create(['lang' => null]);
 
 		Artisan::call('author:detect_lang', ['limit' => 10]);
 
@@ -164,7 +142,7 @@ class AuthorDetectLangTest extends TestCase
 
 		$this->assertNull($author->lang);
 
-		$book = factory(Book::class)->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 		$author->written_books()->sync([$book->id]);
 		$author->save();
 		UpdateAuthorBooksCount::dispatch($author);
@@ -180,20 +158,13 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testIfAuthorPrivateAndBookPrivate()
 	{
-		$author = factory(Author::class)
-			->states('private')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->private()->create();
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+		$book2 = Book::factory()->private()->create();
 
-		$book3 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+		$book3 = Book::factory()->private()->create();
 
 		$author->written_books()->sync([$book->id]);
 		$author->translated_books()->sync([$book2->id, $book3->id]);
@@ -206,21 +177,13 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testIfAuthorAcceptedAndBooksPrivate()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->accepted()->create();
 
-		$book2 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+		$book2 = Book::factory()->private()->create();
 
-		$book3 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+		$book3 = Book::factory()->private()->create();
 
 		$author->written_books()->sync([$book->id]);
 		$author->translated_books()->sync([$book2->id, $book3->id]);
@@ -233,21 +196,13 @@ class AuthorDetectLangTest extends TestCase
 
 	public function testIfAuthorAcceptedAndBooksSentForReview()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+		$author = Author::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create(['ti_lb' => 'RU']);
+		$book = Book::factory()->sent_for_review()->create();
 
-		$book2 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+		$book2 = Book::factory()->private()->create();
 
-		$book3 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+		$book3 = Book::factory()->private()->create();
 
 		$author->written_books()->sync([$book->id]);
 		$author->translated_books()->sync([$book2->id, $book3->id]);

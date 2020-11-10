@@ -14,13 +14,13 @@ class BookFileOnCheckTest extends TestCase
 		BookFile::where('status', StatusEnum::OnReview)
 			->delete();
 
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->book_file_add_check = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->statusSentForReview();
 		$file->save();
 

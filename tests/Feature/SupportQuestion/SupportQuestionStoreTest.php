@@ -19,8 +19,7 @@ class SupportQuestionStoreTest extends TestCase
 	{
 		Bus::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$supportQuestionNew = factory(SupportQuestion::class)
 			->make();
@@ -59,8 +58,7 @@ class SupportQuestionStoreTest extends TestCase
 
 	public function testWithoutTitle()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$supportQuestionNew = factory(SupportQuestion::class)
 			->make();

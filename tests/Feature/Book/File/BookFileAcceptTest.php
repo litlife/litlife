@@ -18,11 +18,11 @@ class BookFileAcceptTest extends TestCase
 
 		BookFile::flushCachedOnModerationCount();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_file_add_check = true;
 		$admin->push();
 
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->statusSentForReview();
 		$file->save();
 

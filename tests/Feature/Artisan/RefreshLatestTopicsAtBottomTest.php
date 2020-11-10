@@ -12,8 +12,7 @@ class RefreshLatestTopicsAtBottomTest extends TestCase
 {
 	public function testRefresh()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 

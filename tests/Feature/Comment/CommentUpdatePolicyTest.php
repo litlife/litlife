@@ -11,9 +11,7 @@ class CommentUpdatePolicyTest extends TestCase
 {
 	public function testAlwaysCanUpdateIfCommentPrivate()
 	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+		$comment = Comment::factory()->private()->create();
 
 		$user = $comment->create_user;
 
@@ -22,11 +20,10 @@ class CommentUpdatePolicyTest extends TestCase
 
 	public function testUpdatePermissions()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
+		$admin = User::factory()->with_user_group()->create();
 
-		$comment = factory(Comment::class)
-			->create(['create_user_id' => $user->id]);
+		$comment = Comment::factory()->create(['create_user_id' => $user->id]);
 
 		$this->assertFalse($user->can('update', $comment));
 		$this->assertFalse($admin->can('update', $comment));
@@ -69,14 +66,13 @@ class CommentUpdatePolicyTest extends TestCase
 
 	public function testUpdatePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_edit_my = false;
 		$user->group->comment_self_edit_only_time = true;
 		$user->group->comment_edit_other_user = false;
 		$user->push();
 
-		$comment = factory(Comment::class)
-			->create(['create_user_id' => $user->id]);
+		$comment = Comment::factory()->create(['create_user_id' => $user->id]);
 
 		Carbon::setTestNow(now()->addSeconds(604800)->subSeconds(100));
 

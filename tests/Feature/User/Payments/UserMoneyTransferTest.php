@@ -11,8 +11,7 @@ class UserMoneyTransferTest extends TestCase
 {
 	public function testPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('transfer_money', User::class));
 
@@ -25,12 +24,9 @@ class UserMoneyTransferTest extends TestCase
 
 	public function testJob()
 	{
-		$sender = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$sender = User::factory()->with_thousand_money_on_balance()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$this->assertEquals(1000, $sender->balance(true));
 		$this->assertEquals(0, $recepient->balance(true));
@@ -63,15 +59,12 @@ class UserMoneyTransferTest extends TestCase
 
 	public function testNotEnoughMoneyException()
 	{
-		$sender = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$sender = User::factory()->with_thousand_money_on_balance()->create();
 		$sender->balance = 2000;
 		$sender->save();
 		$sender->refresh();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$this->assertEquals(1000, $sender->balance(true));
 		$this->assertEquals(0, $recepient->balance(true));
@@ -88,9 +81,7 @@ class UserMoneyTransferTest extends TestCase
 
 	public function testOrderTransferHttpIsOk()
 	{
-		$sender = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$sender = User::factory()->with_thousand_money_on_balance()->create();
 		$sender->group->transfer_money = true;
 		$sender->push();
 
@@ -101,14 +92,11 @@ class UserMoneyTransferTest extends TestCase
 
 	public function testTransferHttp()
 	{
-		$sender = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$sender = User::factory()->with_thousand_money_on_balance()->create();
 		$sender->group->transfer_money = true;
 		$sender->push();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$sum = rand(100, 900);
 
@@ -130,9 +118,7 @@ class UserMoneyTransferTest extends TestCase
 
 	public function testCantTransferToSelf()
 	{
-		$sender = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$sender = User::factory()->with_thousand_money_on_balance()->create();
 		$sender->group->transfer_money = true;
 		$sender->push();
 

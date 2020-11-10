@@ -11,8 +11,7 @@ class CollectionUpdatePolicyTest extends TestCase
 {
 	public function testCollectionUserCanEditWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_edit' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_edit' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -22,8 +21,7 @@ class CollectionUpdatePolicyTest extends TestCase
 
 	public function testCollectionUserCantEditWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_edit' => false]);
+		$collectionUser = CollectionUser::factory()->create(['can_edit' => false]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -33,9 +31,8 @@ class CollectionUpdatePolicyTest extends TestCase
 
 	public function testUpdatePolicy()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create()
+		$collection = Collection::factory()->private()->create(
+			)
 			->fresh();
 
 		$user = $collection->create_user;
@@ -51,7 +48,7 @@ class CollectionUpdatePolicyTest extends TestCase
 
 		$this->assertTrue($user->can('update', $collection));
 
-		$other_user = factory(User::class)->create();
+		$other_user = User::factory()->create();
 		$other_user->group->manage_collections = true;
 		$other_user->push();
 		$other_user->refresh();
@@ -61,12 +58,9 @@ class CollectionUpdatePolicyTest extends TestCase
 
 	public function testEditOtherUserCollectionsUserGroup()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 		$admin->group->edit_other_user_collections = false;
 		$admin->push();
 

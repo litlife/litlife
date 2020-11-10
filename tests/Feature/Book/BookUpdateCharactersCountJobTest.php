@@ -10,9 +10,7 @@ class BookUpdateCharactersCountJobTest extends TestCase
 {
 	public function testCharactersCount()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_annotation', 'with_section', 'with_note')
-			->create();
+		$book = Book::factory()->accepted()->with_annotation()->with_section()->with_note()->create();
 
 		$annotation = $book->annotation;
 		$annotation->characters_count = 100;

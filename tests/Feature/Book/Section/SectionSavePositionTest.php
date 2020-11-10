@@ -14,13 +14,9 @@ class SectionSavePositionTest extends TestCase
 	{
 		Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$chapters = $book->sections()->chapter()->defaultOrder()->get();
 

@@ -10,11 +10,11 @@ class PostOnCheckTest extends TestCase
 {
 	public function testOnCheck()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_post_comments = true;
 		$user->push();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->statusSentForReview();
 		$post->save();
 

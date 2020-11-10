@@ -9,13 +9,9 @@ class UserEmailConfirmEmailTest extends TestCase
 {
 	public function test()
 	{
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed')
-			->create(['email' => $email->email]);
+		$email2 = UserEmail::factory()->confirmed()->create();
 
 		$email2->user->setting->loginWithIdDisable();
 		$email2->push();

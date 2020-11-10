@@ -14,9 +14,7 @@ class BookSaleEditTest extends TestCase
 
 		$now = now();
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_cover_annotation')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();

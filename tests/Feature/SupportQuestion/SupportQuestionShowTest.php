@@ -10,8 +10,7 @@ class SupportQuestionShowTest extends TestCase
 {
 	public function testShowIfAuthUserCreator()
 	{
-		$request = factory(SupportQuestionMessage::class)
-			->create();
+		$request = SupportQuestionMessage::factory()->create();
 
 		$request = $request->supportQuestion;
 
@@ -26,12 +25,11 @@ class SupportQuestionShowTest extends TestCase
 
 	public function testShowIfAuthUserNotCreator()
 	{
-		$request = factory(SupportQuestionMessage::class)
-			->create();
+		$request = SupportQuestionMessage::factory()->create();
 
 		$request = $request->supportQuestion;
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 

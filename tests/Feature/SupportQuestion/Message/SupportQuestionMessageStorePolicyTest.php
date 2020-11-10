@@ -10,8 +10,7 @@ class SupportQuestionMessageStorePolicyTest extends TestCase
 {
 	public function testCanIfUserCreatorOfRequest()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
 		$user = $supportQuestion->create_user;
 
@@ -20,20 +19,18 @@ class SupportQuestionMessageStorePolicyTest extends TestCase
 
 	public function testCantIfUserNotCreatorOfRequest()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('createMessage', $supportQuestion));
 	}
 
 	public function testCantIfUserDoesntHavePermission()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = false;
 		$user->push();
 
@@ -42,11 +39,9 @@ class SupportQuestionMessageStorePolicyTest extends TestCase
 
 	public function testCantIfUserNotStartReview()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 
@@ -55,9 +50,7 @@ class SupportQuestionMessageStorePolicyTest extends TestCase
 
 	public function testCanIfUserStartReview()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->review_starts()->create();
 
 		$user = $supportQuestion->status_changed_user;
 		$user->group->reply_to_support_service = true;

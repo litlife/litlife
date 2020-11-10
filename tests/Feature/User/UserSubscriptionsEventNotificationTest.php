@@ -15,13 +15,11 @@ class UserSubscriptionsEventNotificationTest extends TestCase
 {
 	public function testToggle()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create()
+		$collection = Collection::factory()->accepted()->create(
+			)
 			->fresh();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
 		$response = $this->actingAs($admin)
 			->get(route('collections.event_notification_subcriptions.toggle', $collection),
@@ -56,22 +54,16 @@ class UserSubscriptionsEventNotificationTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$subscription = factory(UserSubscriptionsEventNotification::class)
-			->states('collection', 'new_comment')
-			->create(['notifiable_user_id' => $user->id]);
+		$subscription = UserSubscriptionsEventNotification::factory()->collection()->new_comment()->create(['notifiable_user_id' => $user->id]);
 
 		$collection = $subscription->eventable;
 		$collection->who_can_comment = 'everyone';
 		$collection->save();
 		$collection->refresh();
 
-		$commentator = factory(User::class)
-			->states('admin')
-			->create();
+		$commentator = User::factory()->admin()->create();
 
 		$this->actingAs($commentator)
 			->post(route('comments.store', [
@@ -140,9 +132,7 @@ class UserSubscriptionsEventNotificationTest extends TestCase
 	{
 		Notification::fake();
 
-		$subscriber_user = factory(User::class)
-			->states('admin')
-			->create();
+		$subscriber_user = User::factory()->admin()->create();
 
 		$parent_comment = factory(Comment::class)
 			->states('collection')
@@ -159,9 +149,7 @@ class UserSubscriptionsEventNotificationTest extends TestCase
 				'notifiable_user_id' => $subscriber_user->id
 			]);
 
-		$commentator = factory(User::class)
-			->states('admin')
-			->create();
+		$commentator = User::factory()->admin()->create();
 
 		$collection->who_can_comment = 'everyone';
 		$collection->save();

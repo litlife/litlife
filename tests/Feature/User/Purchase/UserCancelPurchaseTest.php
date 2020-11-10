@@ -17,13 +17,12 @@ class UserCancelPurchaseTest extends TestCase
 	 */
 	public function testCancelSuccessful()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create()
+		$purchase = UserPurchase::factory()->book()->create(
+			)
 			->fresh();
 
 		Bus::fake();

@@ -21,11 +21,10 @@ class LikeTest extends TestCase
 	 */
 	public function testShowUsersHttp()
 	{
-		$like = factory(Like::class)
-			->create()
+		$like = Like::factory()->create()
 			->fresh();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('likes.users', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
@@ -35,14 +34,13 @@ class LikeTest extends TestCase
 
 	public function testDontSeeDeletedLikeUsersHttp()
 	{
-		$like = factory(Like::class)
-			->create()
+		$like = Like::factory()->create()
 			->fresh();
 		$like->delete();
 
 		$this->assertSoftDeleted($like);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('likes.users', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
@@ -52,13 +50,11 @@ class LikeTest extends TestCase
 
 	public function testAddLikeHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create()
+		$blog = Blog::factory()->create()
 			->fresh();
 
 		$response = $this->actingAs($user)
@@ -75,7 +71,7 @@ class LikeTest extends TestCase
 
 	public function testRestoreLikeHttp()
 	{
-		$like = factory(Like::class)->create();
+		$like = Like::factory()->create();
 		$like->delete();
 
 		$blog = $like->likeable;
@@ -100,13 +96,11 @@ class LikeTest extends TestCase
 
 	public function testCantAddLikeToSelfItemsHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$response = $this->actingAs($user)
@@ -121,13 +115,11 @@ class LikeTest extends TestCase
 
 	public function testCanRemoveLikeToSelfItemsHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$like = factory(Like::class)
-			->states('blog')
-			->create(['create_user_id' => $user->id]);
+		$like = Like::factory()->blog()->create();
 
 		$blog = $like->likeable;
 		$blog->create_user_id = $like->create_user_id;
@@ -151,12 +143,11 @@ class LikeTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create()
+		$blog = Blog::factory()->create()
 			->fresh();
 
 		$notifiable = $blog->create_user;
@@ -190,12 +181,11 @@ class LikeTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create()
+		$post = Post::factory()->create()
 			->fresh();
 
 		$notifiable = $post->create_user;
@@ -229,13 +219,12 @@ class LikeTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create()
+		$book = Book::factory()->with_create_user()->create(
+			)
 			->fresh();
 
 		$notifiable = $book->create_user;
@@ -273,12 +262,11 @@ class LikeTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create()
+		$blog = Blog::factory()->create()
 			->fresh();
 
 		$notifiable = $blog->create_user;
@@ -308,12 +296,11 @@ class LikeTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$collection = factory(Collection::class)
-			->create()
+		$collection = Collection::factory()->create()
 			->fresh();
 
 		$notifiable = $collection->create_user;
@@ -352,12 +339,11 @@ class LikeTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create()
+		$blog = Blog::factory()->create()
 			->fresh();
 
 		$notifiable = $blog->create_user;
@@ -405,8 +391,7 @@ class LikeTest extends TestCase
 
 	public function testTooltip()
 	{
-		$like = factory(Like::class)
-			->create();
+		$like = Like::factory()->create();
 
 		$likeable = $like->likeable;
 
@@ -418,8 +403,7 @@ class LikeTest extends TestCase
 
 	public function testTooltipIfUserDeleted()
 	{
-		$like = factory(Like::class)
-			->create();
+		$like = Like::factory()->create();
 
 		$like->create_user->delete();
 

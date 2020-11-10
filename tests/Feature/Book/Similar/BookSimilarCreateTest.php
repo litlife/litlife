@@ -10,10 +10,10 @@ class BookSimilarCreateTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$book = factory(Book::class)->create();
-		$book2 = factory(Book::class)->create();
+		$book = Book::factory()->create();
+		$book2 = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_similar_vote = true;
 		$user->push();
 
@@ -38,9 +38,9 @@ class BookSimilarCreateTest extends TestCase
 
 	public function testCreateAddSameBookHttp()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_similar_vote = true;
 		$user->push();
 

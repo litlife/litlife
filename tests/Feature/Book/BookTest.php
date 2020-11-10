@@ -22,11 +22,9 @@ class BookTest extends TestCase
 
 	public function testRefreshCounters()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.refresh_counters', ['book' => $book]))
@@ -37,9 +35,7 @@ class BookTest extends TestCase
 	{
 		$title = Str::random(10);
 
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create(['title' => 'ё' . $title]);
+		$book = Book::factory()->with_create_user()->create();
 
 		$this->assertEquals(1, Book::query()->titleFulltextSearch('ё' . $title)->count());
 		$this->assertEquals(1, Book::query()->titleFulltextSearch('е' . $title)->count());
@@ -47,17 +43,15 @@ class BookTest extends TestCase
 
 	public function testPrivateBookPolicy()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_vote = true;
 		$user->push();
 
-		$section = factory(Section::class)->create(['book_id' => $book->id]);
-		$attachment = factory(Attachment::class)->create(['book_id' => $book->id]);
-		$file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 
 		$book->refresh();
 
@@ -97,8 +91,7 @@ class BookTest extends TestCase
 		$this->assertTrue($user->can('delete', $file));
 		$this->assertTrue($user->can('set_source_and_make_pages', $file));
 
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($user->can('addKeywords', $book));
 		$this->assertTrue($user->can('delete', $book_keyword));
@@ -107,7 +100,7 @@ class BookTest extends TestCase
 
 	public function testAutoCreateAverageRatingForPeriodInDatabase()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$book = new Book();
 		$book->title = Str::random(8);

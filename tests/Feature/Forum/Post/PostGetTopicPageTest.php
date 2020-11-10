@@ -10,7 +10,7 @@ class PostGetTopicPageTest extends TestCase
 {
 	public function test()
 	{
-		$topic = factory(Topic::class)->create([
+		$topic = Topic::factory()->create([
 			'post_desc' => true
 		]);
 
@@ -57,7 +57,7 @@ class PostGetTopicPageTest extends TestCase
 
 	public function testIfPostFixed()
 	{
-		$topic = factory(Topic::class)->create([
+		$topic = Topic::factory()->create([
 			'post_desc' => true
 		]);
 

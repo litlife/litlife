@@ -10,11 +10,9 @@ class BookParseCancelTest extends TestCase
 {
 	public function testCancelParseHttp()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->retry_failed_book_parse = true;
 		$user->push();
 

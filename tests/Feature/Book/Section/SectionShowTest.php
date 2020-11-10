@@ -13,19 +13,15 @@ class SectionShowTest extends TestCase
 {
 	public function testViewSectionIfBookPurchasedHttp()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create(['price' => 100, 'free_sections_count' => 1]);
+		$book = Book::factory()->with_section()->create();
 
 		$book->delete();
 
 		$section = $book->sections()->first();
 
-		$reader = factory(User::class)
-			->create();
+		$reader = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
+		$purchase = UserPurchase::factory()->create([
 				'buyer_user_id' => $reader->id,
 				'purchasable_type' => 'book',
 				'purchasable_id' => $section->book->id,
@@ -40,16 +36,13 @@ class SectionShowTest extends TestCase
 
 	public function testViewSectionIfBookNotPurchasedAndBookDeletedHttp()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create(['price' => 100, 'free_sections_count' => 1]);
+		$book = Book::factory()->with_section()->create();
 
 		$book->delete();
 
 		$section = $book->sections()->first();
 
-		$reader = factory(User::class)
-			->create();
+		$reader = User::factory()->create();
 
 		$this->assertFalse($reader->can('view', $section));
 
@@ -61,9 +54,7 @@ class SectionShowTest extends TestCase
 
 	public function testViewSectionIfItIsAPrivate()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -78,8 +69,7 @@ class SectionShowTest extends TestCase
 			->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
 			->assertOk();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
@@ -93,9 +83,7 @@ class SectionShowTest extends TestCase
 
 	public function testViewSectionIfBookPurchasedAndFreeSectionsHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->any_books()->first();
 		$book->free_sections_count = 1;
@@ -103,11 +91,9 @@ class SectionShowTest extends TestCase
 
 		$section = $book->sections()->defaultOrder()->first();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id, 'inner_id' => 3]);
+		$section2 = Section::factory()->create(['book_id' => $book->id, 'inner_id' => 3]);
 
 		$this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
 			->assertOk();
@@ -130,9 +116,7 @@ class SectionShowTest extends TestCase
 
 	public function testViewIfBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_section', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_section()->with_create_user()->create();
 
 		$section = $book->sections()->first();
 		$user = $book->create_user;
@@ -147,9 +131,7 @@ class SectionShowTest extends TestCase
 
 	public function testViewIfSectionPrivateAndBookPrivate()
 	{
-		$section = factory(Section::class)
-			->states('private', 'book_private')
-			->create();
+		$section = Section::factory()->private()->book_private()->create();
 
 		$book = $section->book;
 		$user = $section->book->create_user;
@@ -165,9 +147,7 @@ class SectionShowTest extends TestCase
 
 	public function testShowRouteIsOkIfNoPagesIfPageFirst()
 	{
-		$section = factory(Section::class)
-			->states('no_pages')
-			->create();
+		$section = Section::factory()->no_pages()->create();
 
 		$section->book->statusAccepted();
 		$section->push();
@@ -187,8 +167,7 @@ class SectionShowTest extends TestCase
 
 	public function testShowNotFound()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 
@@ -198,9 +177,7 @@ class SectionShowTest extends TestCase
 
 	public function testCantViewPrivateBookSectionText()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_section')
-			->create();
+		$book = Book::factory()->private()->with_section()->create();
 
 		$section = $book->sections()->chapter()->first();
 
@@ -210,9 +187,7 @@ class SectionShowTest extends TestCase
 
 	public function testCanViewSectionTextIfBookPublished()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_section')
-			->create();
+		$book = Book::factory()->accepted()->with_section()->create();
 
 		$section = $book->sections()->chapter()->first();
 
@@ -222,9 +197,7 @@ class SectionShowTest extends TestCase
 
 	public function testSectionShowRouteIsNotFoundIfPageNotExists()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_section')
-			->create();
+		$book = Book::factory()->accepted()->with_section()->create();
 
 		$section = $book->sections()->chapter()->first();
 
@@ -240,9 +213,7 @@ class SectionShowTest extends TestCase
 
 	public function testNotFound()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
 		$this->get(route('books.sections.show', ['book' => $book, 'section' => rand(100, 1000)]))
 			->assertNotFound();

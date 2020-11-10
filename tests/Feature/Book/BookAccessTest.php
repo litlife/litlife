@@ -13,11 +13,9 @@ class BookAccessTest extends TestCase
 {
 	public function testChangeReason()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->downloadAccessEnable();
 		$book->readAccessEnable();
 		$book->save();
@@ -43,11 +41,9 @@ class BookAccessTest extends TestCase
 
 	public function testDontSaveIfNothingChange()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->downloadAccessDisable();
 		$book->readAccessEnable();
 		$book->save();
@@ -68,11 +64,9 @@ class BookAccessTest extends TestCase
 
 	public function testCanEnableDownloadAccessIfFilesCountEnough()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->downloadAccessDisable();
 		$book->files_count = 1;
 		$book->save();
@@ -91,11 +85,9 @@ class BookAccessTest extends TestCase
 
 	public function testCantEnableDownloadAccessIfFilesCountNotEnough()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->downloadAccessDisable();
 		$book->files_count = 0;
 		$book->save();
@@ -115,11 +107,9 @@ class BookAccessTest extends TestCase
 
 	public function testCantEnableReadAccessIfNotEnoughCharactersCount()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->readAccessDisable();
 		$book->characters_count = 90;
 		$book->save();
@@ -138,11 +128,9 @@ class BookAccessTest extends TestCase
 
 	public function testCanEnableReadAccessIfEnoughCharactersCount()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->readAccessDisable();
 		$book->characters_count = 110;
 		$book->save();
@@ -161,13 +149,11 @@ class BookAccessTest extends TestCase
 
 	public function testCanDownloadIfUserCanCheckFiles()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_file_add_check = true;
 		$admin->push();
 
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 
 		$this->assertTrue($admin->can('download', $book));
 		$this->assertTrue($admin->can('view_download_files', $book));
@@ -175,13 +161,11 @@ class BookAccessTest extends TestCase
 
 	public function testCanDownloadIfUserHasAccessToClosedBooks()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->access_to_closed_books = true;
 		$admin->push();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 		$book->downloadAccessDisable();
 		$book->save();
 
@@ -191,11 +175,9 @@ class BookAccessTest extends TestCase
 
 	public function testCantDownloadIfAccessToDownloadClosed()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 		$book->downloadAccessDisable();
 		$book->save();
 
@@ -205,17 +187,17 @@ class BookAccessTest extends TestCase
 
 	public function testCantReadAccessDisableIfBookPurchased()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_secret_hide_set = true;
 		$user->push();
 
-		$book = factory(Book::class)->states('with_writer')->create();
+		$book = Book::factory()->with_writer()->create();
 		$book->bought_times_count = 0;
 		$book->push();
 
 		$this->assertTrue($user->can('change_access', $book));
 
-		$book = factory(Book::class)->states('with_writer', 'with_read_and_download_access')->create();
+		$book = Book::factory()->with_writer()->with_read_and_download_access()->create();
 		$book->bought_times_count = 1;
 		$book->push();
 
@@ -229,9 +211,7 @@ class BookAccessTest extends TestCase
 
 	public function testRemovedFromSaleIfRemoveAccessWarning()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -261,9 +241,7 @@ class BookAccessTest extends TestCase
 
 	public function testYouNeedEnableReadOrDownloadAccessWarning()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -294,9 +272,7 @@ class BookAccessTest extends TestCase
 	{
 		config(['litlife.book_removed_from_sale_cooldown_in_days' => 5]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale_purchased')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale_purchased()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -323,9 +299,9 @@ class BookAccessTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('administrator')->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_writer', 'with_read_and_download_access')->create();
+		$book = Book::factory()->with_writer()->with_read_and_download_access()->create();
 
 		$this->assertTrue($book->isReadAccess());
 		$this->assertTrue($book->isDownloadAccess());
@@ -359,9 +335,7 @@ class BookAccessTest extends TestCase
 
 	public function testAuthorCantSellIfNoReadOrDownloadAccessPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -376,9 +350,7 @@ class BookAccessTest extends TestCase
 
 	public function testAuthorCanSellIfReadAccessAndDownloadAccessDisablePolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -395,9 +367,7 @@ class BookAccessTest extends TestCase
 
 	public function testIfReadDownloadAccessDisableThenRemoveFromSaleIfBookOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -433,9 +403,7 @@ class BookAccessTest extends TestCase
 
 	public function testIfCloseAccessThenRemoveFromSaleIfBookOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -463,9 +431,7 @@ class BookAccessTest extends TestCase
 
 	public function testIfReadDownloadAccessDisableAndIfBookPurchasedThenShowWarningRemoveFromSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale_purchased')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale_purchased()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -492,9 +458,7 @@ class BookAccessTest extends TestCase
 
 	public function testCloseAccessAndIfBookPurchasedThenShowWarningRemoveFromSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale_purchased')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale_purchased()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -526,9 +490,7 @@ class BookAccessTest extends TestCase
 
 	public function testRedirectToSalesEditIfBookOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -548,9 +510,7 @@ class BookAccessTest extends TestCase
 
 	public function testSeeOpenAccessAlertIfUserIsVerifiedAuthorOfBook()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();

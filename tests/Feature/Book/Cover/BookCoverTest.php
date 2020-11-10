@@ -9,9 +9,7 @@ class BookCoverTest extends TestCase
 {
 	public function testShow()
 	{
-		$book = factory(Book::class)
-			->states('with_cover')
-			->create();
+		$book = Book::factory()->with_cover()->create();
 
 		$this->get(route('books.cover.show', ['book' => $book]))
 			->assertOk()
@@ -21,9 +19,7 @@ class BookCoverTest extends TestCase
 
 	public function testShowAjax()
 	{
-		$book = factory(Book::class)
-			->states('with_cover')
-			->create();
+		$book = Book::factory()->with_cover()->create();
 
 		$this->ajax()
 			->get(route('books.cover.show', ['book' => $book]))
@@ -32,8 +28,7 @@ class BookCoverTest extends TestCase
 
 	public function testNotFound()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->get(route('books.cover.show', ['book' => $book]))
 			->assertNotFound();

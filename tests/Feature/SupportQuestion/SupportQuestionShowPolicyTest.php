@@ -10,8 +10,7 @@ class SupportQuestionShowPolicyTest extends TestCase
 {
 	public function testCanIfUserCreator()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
 		$user = $supportQuestion->create_user;
 
@@ -20,10 +19,9 @@ class SupportQuestionShowPolicyTest extends TestCase
 
 	public function testCanIfHasPermissionToReply()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 
@@ -32,20 +30,18 @@ class SupportQuestionShowPolicyTest extends TestCase
 
 	public function testCantIfUserNotCreator()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('show', $supportQuestion));
 	}
 
 	public function testCantIfHasDoesntHavePermissionToReply()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = false;
 		$user->push();
 

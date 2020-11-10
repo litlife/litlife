@@ -25,7 +25,7 @@ class AttachmentCreateTest extends TestCase
 	 */
 	public function testCreate()
 	{
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -47,12 +47,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)
-			->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 
 		$image_path = $this->fakeImageStream();
 
@@ -85,9 +82,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$image_path = $this->fakeImageStream();
 		$file = new UploadedFile($image_path, 'test.jpg', null, null, true);
@@ -115,9 +112,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_section')->create();
+		$book = Book::factory()->with_section()->create();
 
 		$image_path = $this->fakeImageStream();
 		$file = new UploadedFile($image_path, 'test.jpg', null, null, true);
@@ -153,9 +150,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_section')->create();
+		$book = Book::factory()->with_section()->create();
 
 		$tmp = tmpfile();
 
@@ -179,9 +176,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_section')->create();
+		$book = Book::factory()->with_section()->create();
 
 		$image_path = $this->fakeImageStream();
 
@@ -220,9 +217,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_section')->create();
+		$book = Book::factory()->with_section()->create();
 
 		$tmp = tmpfile();
 
@@ -249,9 +246,9 @@ class AttachmentCreateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_section')->create();
+		$book = Book::factory()->with_section()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('books.attachments.store_from_sceditor', ['book' => $book]), [
@@ -272,7 +269,7 @@ class AttachmentCreateTest extends TestCase
 
 	public function testCreateWithSameName()
 	{
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,

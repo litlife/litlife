@@ -18,9 +18,7 @@ class BlogTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->states('with_user_permissions')
-			->create();
+		$user = User::factory()->with_user_permissions()->create();
 
 		$text = $this->faker->realText(100);
 
@@ -49,8 +47,7 @@ class BlogTest extends TestCase
 
 	public function testDeleteRestoreHttp()
 	{
-		$blog = factory(Blog::class)
-			->create();
+		$blog = Blog::factory()->create();
 
 		$user = $blog->create_user;
 		$owner = $blog->owner;
@@ -74,8 +71,7 @@ class BlogTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$blog = factory(Blog::class)
-			->create();
+		$blog = Blog::factory()->create();
 
 		$user = $blog->create_user;
 		$owner = $blog->owner;
@@ -87,8 +83,7 @@ class BlogTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$blog = factory(Blog::class)
-			->create();
+		$blog = Blog::factory()->create();
 
 		$user = $blog->create_user;
 		$owner = $blog->owner;
@@ -107,8 +102,7 @@ class BlogTest extends TestCase
 
 	public function testCreate()
 	{
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'bb_text' => 'text https://domain.com/away?=test text'
 			]);
 
@@ -117,14 +111,12 @@ class BlogTest extends TestCase
 
 	public function testFixUnfixPermissions()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->group->blog = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id,
 			]);
@@ -152,15 +144,14 @@ class BlogTest extends TestCase
 
 	public function testAdminCanFixOrUnfix()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id,
 			]);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->blog_other_user = true;
 		$admin->push();
 
@@ -178,10 +169,9 @@ class BlogTest extends TestCase
 
 	public function testFixReply()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id
 			]);
 
@@ -189,8 +179,7 @@ class BlogTest extends TestCase
 		$this->assertFalse($user->can('fix', $blog));
 		$this->assertFalse($user->can('unfix', $blog));
 
-		$reply = factory(Blog::class)
-			->create([
+		$reply = Blog::factory()->create([
 				'parent' => $blog->id,
 				'create_user_id' => $user->id,
 			]);
@@ -202,14 +191,12 @@ class BlogTest extends TestCase
 
 	public function testDeleteOrRestorePermissions()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->group->blog = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id,
 			]);
@@ -236,9 +223,9 @@ class BlogTest extends TestCase
 
 	public function testShowWhoLikes()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
-		$like = factory(Like::class)->create([
+		$like = Like::factory()->create([
 			'likeable_type' => 'blog',
 			'likeable_id' => $blog->id
 		]);
@@ -250,20 +237,15 @@ class BlogTest extends TestCase
 
 	public function testDeleteAndRestoreRecursive()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
-		$blog2 = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
+		$blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
 
-		$blog3 = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
+		$blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
 
-		$blog4 = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
+		$blog4 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
 
 		$blog->delete();
 
@@ -282,20 +264,15 @@ class BlogTest extends TestCase
 
 	public function testDeleteAndRestoreRecursiveExceptMessagesDeletedBefore()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
-		$blog2 = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
+		$blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
 
-		$blog3 = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
+		$blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
 
-		$blog4 = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
+		$blog4 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
 
 		$blog3->delete();
 
@@ -321,16 +298,14 @@ class BlogTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$notifiable = factory(User::class)->states('with_confirmed_email')->create();
+		$notifiable = User::factory()->with_confirmed_email()->create();
 		$notifiable->email_notification_setting->wall_reply = true;
 		$notifiable->email_notification_setting->db_wall_reply = false;
 		$notifiable->push();
 
-		$parent = factory(Blog::class)
-			->create(['create_user_id' => $notifiable->id]);
+		$parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$blog = factory(Blog::class)
-			->create(['parent' => $parent->id]);
+		$blog = Blog::factory()->create(['parent' => $parent->id]);
 
 		Notification::assertSentTo(
 			$notifiable,
@@ -349,16 +324,14 @@ class BlogTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$notifiable = factory(User::class)->create();
+		$notifiable = User::factory()->create();
 		$notifiable->email_notification_setting->wall_reply = false;
 		$notifiable->email_notification_setting->db_wall_reply = true;
 		$notifiable->push();
 
-		$parent = factory(Blog::class)
-			->create(['create_user_id' => $notifiable->id]);
+		$parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$blog = factory(Blog::class)
-			->create(['parent' => $parent->id]);
+		$blog = Blog::factory()->create(['parent' => $parent->id]);
 
 		Notification::assertSentTo(
 			$notifiable,
@@ -380,16 +353,14 @@ class BlogTest extends TestCase
 
 	public function testReplyUnreadDatabaseNotificationCount()
 	{
-		$notifiable = factory(User::class)->create();
+		$notifiable = User::factory()->create();
 		$notifiable->email_notification_setting->wall_reply = false;
 		$notifiable->email_notification_setting->db_wall_reply = true;
 		$notifiable->push();
 
-		$parent = factory(Blog::class)
-			->create(['create_user_id' => $notifiable->id]);
+		$parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$blog = factory(Blog::class)
-			->create(['parent' => $parent->id]);
+		$blog = Blog::factory()->create(['parent' => $parent->id]);
 
 		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
 	}
@@ -399,13 +370,12 @@ class BlogTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$notifiable = factory(User::class)->states('with_confirmed_email')->create();
+		$notifiable = User::factory()->with_confirmed_email()->create();
 		$notifiable->email_notification_setting->wall_message = true;
 		$notifiable->email_notification_setting->db_wall_message = false;
 		$notifiable->push();
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $notifiable->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
 
 		Notification::assertSentTo(
 			$notifiable,
@@ -424,13 +394,12 @@ class BlogTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$notifiable = factory(User::class)->create();
+		$notifiable = User::factory()->create();
 		$notifiable->email_notification_setting->wall_message = false;
 		$notifiable->email_notification_setting->db_wall_message = true;
 		$notifiable->push();
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $notifiable->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
 
 		Notification::assertSentTo(
 			$notifiable,
@@ -452,13 +421,12 @@ class BlogTest extends TestCase
 
 	public function testCreateUnreadDatabaseNotificationCount()
 	{
-		$notifiable = factory(User::class)->create();
+		$notifiable = User::factory()->create();
 		$notifiable->email_notification_setting->wall_message = false;
 		$notifiable->email_notification_setting->db_wall_message = true;
 		$notifiable->push();
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $notifiable->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
 
 		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
 	}
@@ -468,14 +436,13 @@ class BlogTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$owner = factory(User::class)->create();
-		$create_user = factory(User::class)->create();
+		$owner = User::factory()->create();
+		$create_user = User::factory()->create();
 
 		$owner->email_notification_setting->wall_message = true;
 		$owner->email_notification_setting->save();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $owner->id,
 				'create_user_id' => $create_user->id
 			]);
@@ -500,8 +467,7 @@ class BlogTest extends TestCase
 
 	public function testBBEmpty()
 	{
-		$blog = factory(Blog::class)
-			->create();
+		$blog = Blog::factory()->create();
 
 		$this->expectException(QueryException::class);
 
@@ -513,7 +479,7 @@ class BlogTest extends TestCase
 	{
 		$text = Str::random(32);
 
-		$blog = factory(Blog::class)->create(['bb_text' => $text]);
+		$blog = Blog::factory()->create(['bb_text' => $text]);
 		$blog->statusSentForReview();
 		$blog->save();
 
@@ -533,9 +499,9 @@ class BlogTest extends TestCase
 
 	public function testApprove()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 		$blog->statusSentForReview();
 		$blog->save();
 
@@ -553,13 +519,11 @@ class BlogTest extends TestCase
 
 	public function testSeeWallPostOnCheck()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$text = Str::random(32);
 
-		$blog = factory(Blog::class)->create(['bb_text' => $text]);
+		$blog = Blog::factory()->create(['bb_text' => $text]);
 		$blog->statusSentForReview();
 		$blog->save();
 
@@ -573,34 +537,30 @@ class BlogTest extends TestCase
 	{
 		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$blog = factory(Blog::class)
-			->create(['bb_text' => $text]);
+		$blog = Blog::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(2, $blog->getExternalLinksCount($blog->getContent()));
 
 		$text = 'текст [url]' . route('home') . '[/url] текст ';
 
-		$blog = factory(Blog::class)
-			->create(['bb_text' => $text]);
+		$blog = Blog::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(0, $blog->getExternalLinksCount($blog->getContent()));
 
 		$text = 'текст текст';
 
-		$blog = factory(Blog::class)
-			->create(['bb_text' => $text]);
+		$blog = Blog::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(0, $blog->getExternalLinksCount($blog->getContent()));
 	}
 
 	public function testAcceptedIfExternalUrlOnSelfWall()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'create_user_id' => $user->id,
 				'blog_user_id' => $user->id,
 				'bb_text' => $text
@@ -611,13 +571,12 @@ class BlogTest extends TestCase
 
 	public function testSentForReviewIfExternalUrlOnOtherUserWall()
 	{
-		$user = factory(User::class)->create();
-		$owner = factory(User::class)->create();
+		$user = User::factory()->create();
+		$owner = User::factory()->create();
 
 		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'create_user_id' => $user->id,
 				'blog_user_id' => $owner->id,
 				'bb_text' => $text
@@ -628,7 +587,7 @@ class BlogTest extends TestCase
 
 	public function testPerPage()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->get(route('profile', ['user' => $user, 'per_page' => 5]))
 			->assertOk();
@@ -645,11 +604,9 @@ class BlogTest extends TestCase
 	{
 		$count = Blog::getCachedOnModerationCount();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'bb_text' => '[url=https://example.com]https://example.com[/url]'
 			]);
@@ -667,25 +624,20 @@ class BlogTest extends TestCase
 
 	public function testCantReplyIfWallPostOnReview()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$blog = factory(Blog::class)
-			->states('sent_for_review')
-			->create();
+		$blog = Blog::factory()->sent_for_review()->create();
 
 		$this->assertFalse($user->can('reply', $blog));
 	}
 
 	public function testDontDownloadExternalOnLike()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->like_click = true;
 		$user->push();
 
-		$blog = factory(Blog::class)
-			->create()
+		$blog = Blog::factory()->create()
 			->fresh();
 		$blog->external_images_downloaded = false;
 		$blog->save();

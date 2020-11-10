@@ -11,14 +11,11 @@ class MessageIsDeletedForUser extends TestCase
 {
 	public function testTrueIfFoundInUserDeletitions()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->create(['recepient_id' => $recepient->id]);
 
-		$deletion = factory(MessageDelete::class)
-			->create([
+		$deletion = MessageDelete::factory()->create([
 				'user_id' => $recepient->id,
 				'message_id' => $message->id,
 			]);
@@ -28,20 +25,16 @@ class MessageIsDeletedForUser extends TestCase
 
 	public function testFalseIfFoundInUserDeletitions()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->create(['recepient_id' => $recepient->id]);
 
-		$deletion = factory(MessageDelete::class)
-			->create([
+		$deletion = MessageDelete::factory()->create([
 				'user_id' => $recepient->id,
 				'message_id' => $message->id,
 			]);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($message->isDeletedForUser($user));
 	}

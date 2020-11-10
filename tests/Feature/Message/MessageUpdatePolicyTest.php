@@ -11,14 +11,11 @@ class MessageUpdatePolicyTest extends TestCase
 {
 	public function testPolicy()
 	{
-		$sender = factory(User::class)
-			->create();
+		$sender = User::factory()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'create_user_id' => $sender->id,
 				'recepient_id' => $recepient->id
 			]);

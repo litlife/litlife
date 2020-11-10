@@ -170,9 +170,9 @@ class SectionCkeditorContentFilterTest extends DuskTestCase
 		if (empty($this->browser)) {
 			$this->browse(function ($browser) {
 
-				$admin = factory(User::class)->states('admin')->create();
+				$admin = User::factory()->admin()->create();
 
-				$section = factory(Section::class)->create(['content' => '']);
+				$section = Section::factory()->create(['content' => '']);
 
 				$browser->resize(1000, 1000)
 					->loginAs($admin)

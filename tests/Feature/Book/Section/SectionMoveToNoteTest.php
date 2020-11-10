@@ -14,13 +14,12 @@ class SectionMoveToNoteTest extends TestCase
 	{
 		Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();

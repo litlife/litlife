@@ -14,11 +14,11 @@ class AdminMiddlewareTest extends TestCase
 	/** @test */
 	public function non_admins_are_redirected()
 	{
-		$group = factory(UserGroup::class)->create();
+		$group = UserGroup::factory()->create();
 
 		config(['litlife.admin_group_id' => $group->id]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->groups()->sync([$group->id]);
 		$user->refresh();
 
@@ -37,12 +37,11 @@ class AdminMiddlewareTest extends TestCase
 	/** @test */
 	public function admins_are_not_redirected()
 	{
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		config(['litlife.admin_group_id' => $group->id]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user);
 

@@ -15,11 +15,9 @@ class BookParseCancelPolicyTest extends TestCase
 	 */
 	public function testCancelParsePolicy()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->retry_failed_book_parse = true;
 		$user->push();
 
@@ -46,9 +44,7 @@ class BookParseCancelPolicyTest extends TestCase
 
 	public function testCantCancelParseIfPrivateBook()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_create_user()->private()->create();
 
 		$book->parse->wait();
 		$book->push();

@@ -17,8 +17,7 @@ class ScrollToTopTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->create();
+			$book = Book::factory()->create();
 
 			$browser->resize(300, 300)
 				->visit(route('books.show', ['book' => $book]));

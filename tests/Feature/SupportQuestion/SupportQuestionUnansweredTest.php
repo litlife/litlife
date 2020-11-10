@@ -10,13 +10,11 @@ class SupportQuestionUnansweredTest extends TestCase
 {
 	public function testIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 
-		$request = factory(SupportQuestion::class)
-			->states('with_message')
-			->create();
+		$request = SupportQuestion::factory()->with_message()->create();
 
 		$this->actingAs($user)
 			->get(route('support_questions.unsolved'))

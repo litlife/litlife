@@ -11,13 +11,9 @@ class AuthorManagerOnReviewTest extends TestCase
 {
 	public function testSeeAuthorIsNotPublished()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('on_review')
-			->create();
+		$manager = Manager::factory()->on_review()->create();
 
 		$author = $manager->manageable;
 		$author->statusPrivate();
@@ -31,9 +27,7 @@ class AuthorManagerOnReviewTest extends TestCase
 
 	public function testIfAuthorDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'on_review'])
@@ -60,9 +54,7 @@ class AuthorManagerOnReviewTest extends TestCase
 
 	public function testDontShowPrivate()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'private'])

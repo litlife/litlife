@@ -10,8 +10,7 @@ class CollectionShowTest extends TestCase
 {
 	public function testShowViewCount()
 	{
-		$collection = factory(Collection::class)
-			->create(['views_count' => 5]);
+		$collection = Collection::factory()->create(['views_count' => 5]);
 
 		$this->actingAs($collection->create_user)
 			->get(route('collections.show', ['collection' => $collection]))
@@ -24,9 +23,7 @@ class CollectionShowTest extends TestCase
 
 	public function testShowOkIfUserGuestCanSeeEveryone()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
 		$this->get(route('collections.show', $collection))
 			->assertOk();
@@ -34,9 +31,7 @@ class CollectionShowTest extends TestCase
 
 	public function testShowForbiddenIfUserGuestCanSeeMe()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
 		$this->get(route('collections.show', $collection))
 			->assertForbidden();

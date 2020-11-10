@@ -15,7 +15,7 @@ class WallPolicyTest extends TestCase
 	{
 		// if blacklist
 
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Blacklist]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Blacklist]);
 
 		$active_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -52,7 +52,7 @@ class WallPolicyTest extends TestCase
 
 		// if nobody
 
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Null]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Null]);
 
 		$active_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -82,7 +82,7 @@ class WallPolicyTest extends TestCase
 
 		// if subscriber
 
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Subscriber]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Subscriber]);
 
 		$active_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -112,7 +112,7 @@ class WallPolicyTest extends TestCase
 
 		// if friend
 
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Friend]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Friend]);
 
 		$active_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -142,12 +142,11 @@ class WallPolicyTest extends TestCase
 
 	public function testReplyPolicyIfInBlacklist()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
-		$active_user = factory(User::class)->create();
+		$active_user = User::factory()->create();
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $blog->owner,
 				'user_id2' => $active_user,
 				'status' => UserRelationType::Blacklist
@@ -183,12 +182,11 @@ class WallPolicyTest extends TestCase
 
 	public function testReplyPolicyIfNobody()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
-		$active_user = factory(User::class)->create();
+		$active_user = User::factory()->create();
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $active_user,
 				'user_id2' => $blog->owner,
 				'status' => UserRelationType::Null
@@ -225,12 +223,11 @@ class WallPolicyTest extends TestCase
 
 	public function testReplyPolicyIfSubscriber()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
-		$active_user = factory(User::class)->create();
+		$active_user = User::factory()->create();
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $active_user,
 				'user_id2' => $blog->owner,
 				'status' => UserRelationType::Subscriber
@@ -267,12 +264,11 @@ class WallPolicyTest extends TestCase
 
 	public function testReplyPolicyIfFriend()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
-		$active_user = factory(User::class)->create();
+		$active_user = User::factory()->create();
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $active_user,
 				'user_id2' => $blog->owner,
 				'status' => UserRelationType::Friend
@@ -308,14 +304,13 @@ class WallPolicyTest extends TestCase
 
 	public function testAdminDeleteOrRestorePermissions()
 	{
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->blog_other_user = true;
 		$admin->push();
 
-		$user = factory(User::class)->states('with_user_permissions')->create();
+		$user = User::factory()->with_user_permissions()->create();
 
-		$blog = factory(Blog::class)
-			->create([
+		$blog = Blog::factory()->create([
 				'blog_user_id' => $user->id,
 				'create_user_id' => $user->id,
 			]);
@@ -340,7 +335,7 @@ class WallPolicyTest extends TestCase
 
 	public function testViewOnCheckPolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('viewOnCheck', Blog::class));
 
@@ -352,9 +347,9 @@ class WallPolicyTest extends TestCase
 
 	public function testApprovePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
 		$this->assertFalse($user->can('approve', $blog));
 

@@ -9,17 +9,14 @@ class AttachmentIsCoverTest extends TestCase
 {
 	public function testTrue()
 	{
-		$cover = factory(Attachment::class)
-			->states('cover')
-			->create();
+		$cover = Attachment::factory()->cover()->create();
 
 		$this->assertTrue($cover->isCover());
 	}
 
 	public function testFalse()
 	{
-		$attachment = factory(Attachment::class)
-			->create();
+		$attachment = Attachment::factory()->create();
 
 		$book = $attachment->book;
 

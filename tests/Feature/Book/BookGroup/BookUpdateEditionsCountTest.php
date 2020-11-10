@@ -9,9 +9,7 @@ class BookUpdateEditionsCountTest extends TestCase
 {
 	public function testUpdateMainBookEditionsCount()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -32,9 +30,7 @@ class BookUpdateEditionsCountTest extends TestCase
 
 	public function testUpdateMinorBookEditionsCount()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 

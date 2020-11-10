@@ -20,12 +20,11 @@ class CommentTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->comment_view_who_likes_or_dislikes = true;
 			$user->push();
 
-			$comment = factory(Comment::class)
-				->create([
+			$comment = Comment::factory()->create([
 					'create_user_id' => $user->id
 				]);
 
@@ -44,8 +43,7 @@ class CommentTest extends DuskTestCase
 			$user->group->comment_view_who_likes_or_dislikes = false;
 			$user->push();
 
-			$comment = factory(Comment::class)
-				->create([
+			$comment = Comment::factory()->create([
 					'create_user_id' => $user->id
 				]);
 
@@ -68,17 +66,14 @@ class CommentTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$user_relation = factory(UserRelation::class)
-				->create([
+			$user_relation = UserRelation::factory()->create([
 					'user_id' => $user->id,
 					'status' => UserRelationType::Subscriber
 				]);
 
-			$user_relation2 = factory(UserRelation::class)
-				->create([
+			$user_relation2 = UserRelation::factory()->create([
 					'user_id' => $user->id,
 					'status' => UserRelationType::Friend
 				]);
@@ -87,14 +82,11 @@ class CommentTest extends DuskTestCase
 			$this->assertFalse($user->isSubscriptionOf($user_relation->second_user));
 			$this->assertTrue($user->isFriendOf($user_relation2->second_user));
 
-			$comment = factory(Comment::class)
-				->create(['create_user_id' => $user_relation->second_user->id]);
+			$comment = Comment::factory()->create(['create_user_id' => $user_relation->second_user->id]);
 
-			$comment2 = factory(Comment::class)
-				->create(['create_user_id' => $user_relation2->second_user->id]);
+			$comment2 = Comment::factory()->create(['create_user_id' => $user_relation2->second_user->id]);
 
-			$comment3 = factory(Comment::class)
-				->create(['create_user_id' => $user->id]);
+			$comment3 = Comment::factory()->create(['create_user_id' => $user->id]);
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -117,9 +109,7 @@ class CommentTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$author = factory(Author::class)
-				->states('with_author_manager', 'with_book')
-				->create();
+			$author = Author::factory()->with_author_manager()->with_book()->create();
 
 			$manager = $author->managers()->first();
 			$user = $manager->user;

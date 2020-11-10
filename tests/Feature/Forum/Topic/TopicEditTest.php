@@ -12,11 +12,10 @@ class TopicEditTest extends TestCase
 {
 	public function testEditNotFound()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->push();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$id = $topic->id;
 
@@ -29,13 +28,13 @@ class TopicEditTest extends TestCase
 
 	public function testEditSpecialSettingsHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = false;
 		$user->group->edit_forum_self_topic = true;
 		$user->group->edit_forum_other_user_topic = true;
 		$user->push();
 
-		$topic = factory(Topic::class)->create(['forum_priority' => 0, 'main_priority' => 0])->fresh();
+		$topic = Topic::factory()->create(['forum_priority' => 0, 'main_priority' => 0])->fresh();
 
 		$name = $this->faker->realText(50);
 
@@ -81,17 +80,16 @@ class TopicEditTest extends TestCase
 
 	public function testEditLabel()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->edit_forum_self_topic = true;
 		$admin->group->edit_forum_other_user_topic = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 		$forum->is_idea_forum = true;
 		$forum->save();
 
-		$topic = factory(Topic::class)
-			->create(['forum_id' => $forum->id]);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
 
 		$this->assertNull($topic->label);
 
@@ -128,18 +126,17 @@ class TopicEditTest extends TestCase
 
 	public function testChangeLabel()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->edit_forum_self_topic = true;
 		$admin->group->edit_forum_other_user_topic = true;
 		$admin->group->manipulate_topic = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 		$forum->is_idea_forum = true;
 		$forum->save();
 
-		$topic = factory(Topic::class)
-			->create(['forum_id' => $forum->id]);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
 
 		$this->assertNull($topic->label);
 

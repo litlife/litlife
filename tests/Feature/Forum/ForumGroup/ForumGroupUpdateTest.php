@@ -11,9 +11,7 @@ class ForumGroupUpdateTest extends TestCase
 {
 	public function testUpdateWithImageHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$title = $this->faker->realText(100);
 
@@ -21,8 +19,7 @@ class ForumGroupUpdateTest extends TestCase
 		$filename = 'test.jpeg';
 		$image = new UploadedFile($jpeg_image_path, $filename, null, null, true);
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$this->assertNull($forumGroup->image);
 
@@ -44,14 +41,11 @@ class ForumGroupUpdateTest extends TestCase
 
 	public function testUpdateWithoutImageHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$title = $this->faker->realText(100);
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$this->assertNull($forumGroup->image);
 

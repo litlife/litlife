@@ -10,7 +10,7 @@ class CollectionCreatePolicyTest extends TestCase
 {
 	public function testCreatePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_collections = true;
 		$user->push();
 		$user->refresh();

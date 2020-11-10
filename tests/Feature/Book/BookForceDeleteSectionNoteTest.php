@@ -10,9 +10,7 @@ class BookForceDeleteSectionNoteTest extends TestCase
 {
 	public function testPageDeleted()
 	{
-		$section = factory(Section::class)
-			->states('with_two_pages')
-			->create();
+		$section = Section::factory()->with_two_pages()->create();
 
 		$page = $section->pages()->first();
 		$book = $page->book;

@@ -9,8 +9,7 @@ class CheckedItemsTest extends TestCase
 {
 	public function testOnReview()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->be($user);
 
@@ -26,8 +25,7 @@ class CheckedItemsTest extends TestCase
 
 	public function testSentForReview()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->be($user);
 
@@ -43,8 +41,7 @@ class CheckedItemsTest extends TestCase
 
 	public function testAccepted()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->be($user);
 
@@ -61,8 +58,7 @@ class CheckedItemsTest extends TestCase
 
 	public function testRejected()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->be($user);
 

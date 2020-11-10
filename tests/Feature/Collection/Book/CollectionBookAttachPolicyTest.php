@@ -13,8 +13,7 @@ class CollectionBookAttachPolicyTest extends TestCase
 {
 	public function testCollectionUserCanAddBooksWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_add_books' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_add_books' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -24,9 +23,7 @@ class CollectionBookAttachPolicyTest extends TestCase
 
 	public function testCollectionUserCanAddBooksWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->states('collection_who_can_add_me')
-			->create(['can_add_books' => false]);
+		$collectionUser = CollectionUser::factory()->collection_who_can_add_me()->create();
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -36,29 +33,26 @@ class CollectionBookAttachPolicyTest extends TestCase
 
 	public function testAddBookPolicy()
 	{
-		$collection = factory(Collection::class)
-			->create(['who_can_add' => 'me'])
+		$collection = Collection::factory()->create(['who_can_add' => 'me'])
 			->fresh();
 
 		$creator = $collection->create_user;
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $creator->id,
 				'status' => UserRelationType::Friend
 			]);
 
 		$friend = $relation->second_user;
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id2' => $creator->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
 		$subscriber = $relation->first_user;
 
-		$nobody_user = factory(User::class)->create();
+		$nobody_user = User::factory()->create();
 
 		$this->assertTrue($creator->can('addBook', $collection));
 		//$this->assertFalse($friend->can('addBook', $collection));
@@ -97,8 +91,7 @@ class CollectionBookAttachPolicyTest extends TestCase
 
 	public function testAddBookPolicyManageCollections()
 	{
-		$collection = factory(Collection::class)
-			->create(['who_can_add' => 'me'])
+		$collection = Collection::factory()->create(['who_can_add' => 'me'])
 			->fresh();
 
 		$user = $collection->create_user;

@@ -10,9 +10,7 @@ class SupportQuestionFeedbackStorePolicyTest extends TestCase
 {
 	public function testCanIfQuestionAccepted()
 	{
-		$question = factory(SupportQuestion::class)
-			->states('accepted')
-			->create();
+		$question = SupportQuestion::factory()->accepted()->create();
 
 		$user = $question->create_user;
 
@@ -21,9 +19,7 @@ class SupportQuestionFeedbackStorePolicyTest extends TestCase
 
 	public function testCantIfQuestionNotAccepted()
 	{
-		$question = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+		$question = SupportQuestion::factory()->sent_for_review()->create();
 
 		$user = $question->create_user;
 
@@ -32,12 +28,9 @@ class SupportQuestionFeedbackStorePolicyTest extends TestCase
 
 	public function testCantIfUserNotCreator()
 	{
-		$question = factory(SupportQuestion::class)
-			->states('accepted')
-			->create();
+		$question = SupportQuestion::factory()->accepted()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('create_feedback', $question));
 	}

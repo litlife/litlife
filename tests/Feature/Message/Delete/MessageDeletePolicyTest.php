@@ -10,11 +10,9 @@ class MessageDeletePolicyTest extends TestCase
 {
 	public function testPolicy()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')

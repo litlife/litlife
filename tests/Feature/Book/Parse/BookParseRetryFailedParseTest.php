@@ -10,9 +10,9 @@ class BookParseRetryFailedParseTest extends TestCase
 {
 	public function testRetryFailedParseHttp()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$parse = factory(BookParse::class)->states('failed')->create();
+		$parse = BookParse::factory()->failed()->create();
 
 		$book = $parse->book;
 

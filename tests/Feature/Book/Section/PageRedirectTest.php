@@ -11,16 +11,11 @@ class PageRedirectTest extends TestCase
 {
 	public function testIsRedirectOk()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$chapter1 = factory(Section::class)
-			->states('with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter1 = Section::factory()->with_two_pages()->create();
 
-		$chapter2 = factory(Section::class)
-			->states('with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter2 = Section::factory()->with_two_pages()->create();
 
 		BookUpdatePageNumbersJob::dispatch($book);
 
@@ -41,12 +36,9 @@ class PageRedirectTest extends TestCase
 
 	public function testPageNotFound()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$chapter1 = factory(Section::class)
-			->states('with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter1 = Section::factory()->with_two_pages()->create();
 
 		BookUpdatePageNumbersJob::dispatch($book);
 
@@ -56,8 +48,7 @@ class PageRedirectTest extends TestCase
 
 	public function testPageGreaterThanSmallIntIsNotFound()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->get(route('books.pages', ['book' => $book, 'page' => 99999999999]))
 			->assertNotFound();
@@ -65,12 +56,9 @@ class PageRedirectTest extends TestCase
 
 	public function testIfSectionDeleted()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$chapter = factory(Section::class)
-			->states('with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter = Section::factory()->with_two_pages()->create();
 
 		BookUpdatePageNumbersJob::dispatch($book);
 

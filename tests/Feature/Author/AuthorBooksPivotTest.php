@@ -12,24 +12,17 @@ class AuthorBooksPivotTest extends TestCase
 {
 	public function testType()
 	{
-		$book = factory(Book::class)
-			->states('with_writer')
-			->create();
+		$book = Book::factory()->with_writer()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$translator = factory(Author::class)
-			->create();
+		$translator = Author::factory()->create();
 
-		$editor = factory(Author::class)
-			->create();
+		$editor = Author::factory()->create();
 
-		$compiler = factory(Author::class)
-			->create();
+		$compiler = Author::factory()->create();
 
-		$illustrator = factory(Author::class)
-			->create();
+		$illustrator = Author::factory()->create();
 
 		$book->writers()->syncWithoutDetaching([$author->id]);
 		$book->translators()->syncWithoutDetaching([$translator->id]);
@@ -69,18 +62,13 @@ class AuthorBooksPivotTest extends TestCase
 
 	public function testNew()
 	{
-		$book = factory(Book::class)
-			->states('with_writer')
-			->create();
+		$book = Book::factory()->with_writer()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$translator = factory(Author::class)
-			->create();
+		$translator = Author::factory()->create();
 
-		$editor = factory(Author::class)
-			->create();
+		$editor = Author::factory()->create();
 
 		$book->writers()->syncWithoutDetaching([$author->id]);
 		$book->translators()->syncWithoutDetaching([$translator->id]);

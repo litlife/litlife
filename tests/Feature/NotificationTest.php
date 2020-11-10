@@ -18,8 +18,7 @@ class NotificationTest extends TestCase
 	 */
 	public function testViewCounter()
 	{
-		$notification = factory(DatabaseNotification::class)
-			->create();
+		$notification = DatabaseNotification::factory()->create();
 
 		$notifiable = $notification->notifiable;
 
@@ -34,11 +33,9 @@ class NotificationTest extends TestCase
 
 	public function testViewForbidden()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$notification = factory(DatabaseNotification::class)
-			->create();
+		$notification = DatabaseNotification::factory()->create();
 
 		$notifiable = $notification->notifiable;
 
@@ -53,8 +50,7 @@ class NotificationTest extends TestCase
 
 	public function testViewNothinfFound()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.notifications.index', ['user' => $user]))
@@ -72,8 +68,7 @@ class NotificationTest extends TestCase
 
 		//NotificationFacade::fake();
 
-		$like = factory(Like::class)
-			->create();
+		$like = Like::factory()->create();
 
 		$user = $like->likeable->create_user;
 		$user->email_notification_setting->db_like = true;

@@ -35,8 +35,7 @@ class BookSqliteTest extends TestCase
 
 		//$this->tmp_file = tmpfile();
 
-		$this->book = factory(Book::class)
-			->create([
+		$this->book = Book::factory()->create([
 				'online_read_new_format' => false,
 				'page_count' => 1
 			]);

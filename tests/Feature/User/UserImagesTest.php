@@ -15,11 +15,9 @@ class UserImagesTest extends TestCase
 
 	public function testPermissions()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
 		$this->assertFalse($user2->can('view_images', $user));
 		$this->assertTrue($user->can('view_images', $user));
@@ -27,8 +25,7 @@ class UserImagesTest extends TestCase
 
 	public function testRouteIsOk()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.images.index', ['user' => $user]))

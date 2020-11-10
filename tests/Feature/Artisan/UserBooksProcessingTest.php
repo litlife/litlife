@@ -12,9 +12,7 @@ class UserBooksProcessingTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$book = factory(Book::class)
-			->states('private', 'parsed', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->parsed()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -33,9 +31,7 @@ class UserBooksProcessingTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$book = factory(Book::class)
-			->states('with_file', 'parsed', 'with_create_user')
-			->create();
+		$book = Book::factory()->with_file()->parsed()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$file = $book->files()->first();
@@ -57,9 +53,7 @@ class UserBooksProcessingTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$book = factory(Book::class)
-			->states('with_writer', 'parsed', 'with_read_and_download_access', 'with_create_user')
-			->create();
+		$book = Book::factory()->with_writer()->parsed()->with_read_and_download_access()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -80,7 +74,7 @@ class UserBooksProcessingTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 		$book->parse->wait();
 		$book->push();
 

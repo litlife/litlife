@@ -10,7 +10,7 @@ class CommentAcceptTest extends TestCase
 {
 	public function testApprove()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_post_comments = true;
 		$user->push();
 
@@ -20,7 +20,7 @@ class CommentAcceptTest extends TestCase
 
 		$this->assertEquals(0, Comment::getCachedOnModerationCount());
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->statusSentForReview();
 		$comment->save();
 

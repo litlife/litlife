@@ -11,11 +11,9 @@ class BookCollectionSearchTest extends TestCase
 {
 	public function testEmptyQuery()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -26,11 +24,9 @@ class BookCollectionSearchTest extends TestCase
 
 	public function testQuery()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$user = $collection->create_user;
 

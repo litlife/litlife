@@ -11,7 +11,7 @@ class CollectionCreateTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)->states('with_user_permissions')->create();
+		$user = User::factory()->with_user_permissions()->create();
 
 		$this->actingAs($user)
 			->get(route('collections.create'))
@@ -20,7 +20,7 @@ class CollectionCreateTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)->states('with_user_permissions')->create();
+		$user = User::factory()->with_user_permissions()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -56,9 +56,7 @@ class CollectionCreateTest extends TestCase
 
 	public function testStoreNotPrivateHttp()
 	{
-		$user = factory(User::class)
-			->states('with_user_permissions')
-			->create();
+		$user = User::factory()->with_user_permissions()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -83,7 +81,7 @@ class CollectionCreateTest extends TestCase
 
 	public function testStoreStatusValidationError()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),

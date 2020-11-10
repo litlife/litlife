@@ -13,8 +13,7 @@ class UserOnlineTest extends TestCase
 	{
 		$this->withMiddleware(RefreshUserLastActivity::class);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('profile', ['user' => $user->id]))
@@ -56,8 +55,7 @@ class UserOnlineTest extends TestCase
 
 	public function testOfflineAfterActivityExpired()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('profile', ['user' => $user->id]))

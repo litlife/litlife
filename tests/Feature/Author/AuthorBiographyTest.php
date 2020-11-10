@@ -9,8 +9,7 @@ class AuthorBiographyTest extends TestCase
 {
 	public function testAutoParagraph()
 	{
-		$bio = factory(AuthorBiography::class)
-			->create(['text' => '<p>текст</p>']);
+		$bio = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 		$bio->refresh();
 
 		$this->assertEquals('<p>текст</p>', $bio->text);
@@ -20,8 +19,7 @@ class AuthorBiographyTest extends TestCase
 	{
 		$text = 'текст http://example.com текст';
 
-		$authorBiography = factory(AuthorBiography::class)
-			->create(['text' => $text]);
+		$authorBiography = AuthorBiography::factory()->create(['text' => $text]);
 
 		$authorBiography->refresh();
 

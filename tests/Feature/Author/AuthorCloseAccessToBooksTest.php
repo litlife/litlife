@@ -11,11 +11,9 @@ class AuthorCloseAccessToBooksTest extends TestCase
 {
 	public function testCantCloseAccessIfNoPermission()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$admin->group->book_secret_hide_set = false;
 		$admin->push();
@@ -25,11 +23,9 @@ class AuthorCloseAccessToBooksTest extends TestCase
 
 	public function testCanCloseAccessIfHasPermission()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$admin->group->book_secret_hide_set = true;
 		$admin->push();
@@ -39,17 +35,15 @@ class AuthorCloseAccessToBooksTest extends TestCase
 
 	public function testBooksCloseAccess()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 		$admin->group->book_secret_hide_set = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$book = factory(Book::class)->create();
-		$translated_book = factory(Book::class)->create();
-		$illustrated_book = factory(Book::class)->create();
+		$book = Book::factory()->create();
+		$translated_book = Book::factory()->create();
+		$illustrated_book = Book::factory()->create();
 
 		$author->books()->sync([$book->id]);
 		$author->translated_books()->sync([$book->id]);

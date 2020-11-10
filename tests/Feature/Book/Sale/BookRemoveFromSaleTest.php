@@ -9,9 +9,7 @@ class BookRemoveFromSaleTest extends TestCase
 {
 	public function testRemoveFromSalePolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -19,9 +17,7 @@ class BookRemoveFromSaleTest extends TestCase
 
 		$this->assertFalse($user->can('remove_from_sale', $book));
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();

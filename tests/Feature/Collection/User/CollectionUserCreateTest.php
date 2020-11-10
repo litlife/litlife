@@ -12,8 +12,7 @@ class CollectionUserCreateTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$this->actingAs($collection->create_user)
 			->get(route('collections.users.create', $collection))
@@ -22,11 +21,9 @@ class CollectionUserCreateTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$description = Str::random(8);
 
@@ -67,8 +64,7 @@ class CollectionUserCreateTest extends TestCase
 
 	public function testCantAddUserIfAlreadyAdded()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -96,8 +92,7 @@ class CollectionUserCreateTest extends TestCase
 
 	public function testCantAddUserIfItsCollectionCreator()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$post = [
 			'can_user_manage' => false,
@@ -122,8 +117,7 @@ class CollectionUserCreateTest extends TestCase
 
 	public function testAutoRestoreUserHttp()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

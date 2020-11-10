@@ -15,7 +15,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->data->save();
 
 		$this->assertNull($user->data->invitation_to_take_survey_has_been_sent);
@@ -37,7 +37,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$user->notify(new SendingInvitationToTakeSurveyNotification($user));
 
@@ -66,7 +66,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->data->invitation_to_take_survey_has_been_sent = true;
 		$user->data->save();
 
@@ -87,7 +87,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->data->invitation_to_take_survey_has_been_sent = false;
 		$user->data->save();
 
@@ -110,7 +110,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->data->invitation_to_take_survey_has_been_sent = false;
 		$user->data->save();
 
@@ -136,7 +136,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->data->invitation_to_take_survey_has_been_sent = false;
 		$user->data->save();
 
@@ -161,7 +161,7 @@ class SendInvitationToTakeSurveyCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->data->invitation_to_take_survey_has_been_sent = false;
 		$user->data->save();
 

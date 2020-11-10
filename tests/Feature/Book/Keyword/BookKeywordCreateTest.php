@@ -13,16 +13,15 @@ class BookKeywordCreateTest extends TestCase
 {
 	public function testIfKeywordExists()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 		$keyword->statusAccepted();
 		$keyword->save();
 
@@ -39,17 +38,17 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCanAttachExisted()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = false;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 		$keyword->statusAccepted();
 		$keyword->save();
 
@@ -66,17 +65,17 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCanAttachById()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = false;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 		$keyword->statusAccepted();
 		$keyword->save();
 
@@ -94,11 +93,11 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCantAttachNew()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = false;
@@ -116,11 +115,11 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCanAttachNewOnCheck()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = true;
 		$user->group->book_keyword_moderate = false;
@@ -142,11 +141,11 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCanAttachNewAccepted()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = true;
 		$user->group->book_keyword_moderate = true;
@@ -169,11 +168,11 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCanAttachNewAccepted2()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = false;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = true;
@@ -195,9 +194,7 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCantAttachNewToPrivateBook()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_create_user()->private()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = false;
@@ -217,9 +214,7 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCanAttachExistedToPrivateBook()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_create_user()->private()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = false;
@@ -227,7 +222,7 @@ class BookKeywordCreateTest extends TestCase
 		$user->group->book_keyword_moderate = false;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 		$keyword->statusAccepted();
 		$keyword->save();
 
@@ -244,9 +239,7 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testCantAttachExistedPrivateToPrivateBook()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_create_user()->private()->create();
 
 		$user = $book->create_user;
 		$user->group->book_keyword_add = false;
@@ -254,7 +247,7 @@ class BookKeywordCreateTest extends TestCase
 		$user->group->book_keyword_moderate = false;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 		$keyword->statusPrivate();
 		$keyword->save();
 
@@ -270,17 +263,17 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testAttachExistedAndNew()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = false;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 		$keyword->statusAccepted();
 		$keyword->save();
 
@@ -307,15 +300,11 @@ class BookKeywordCreateTest extends TestCase
 
 	public function testIfKeywordForceDeleted()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$id = $keyword->id;
 

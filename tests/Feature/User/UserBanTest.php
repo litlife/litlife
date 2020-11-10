@@ -11,12 +11,9 @@ class UserBanTest extends TestCase
 {
 	public function testBan()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('users.ban', $user))
@@ -34,33 +31,25 @@ class UserBanTest extends TestCase
 
 	public function testCantBanSelf()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->assertFalse($admin->can('ban', $admin));
 	}
 
 	public function testCantBanOtherAdmin()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$admin2 = factory(User::class)
-			->states('admin')
-			->create();
+		$admin2 = User::factory()->admin()->create();
 
 		$this->assertFalse($admin->can('ban', $admin2));
 	}
 
 	public function testCantBanIfPermissionEnable()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($admin->can('ban', $user));
 
@@ -72,11 +61,9 @@ class UserBanTest extends TestCase
 
 	public function testCantBanIfUserAlreadyBanned()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($admin->can('ban', $user));
 

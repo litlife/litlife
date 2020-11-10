@@ -9,7 +9,7 @@ class BookCollectionRelationTest extends TestCase
 {
 	public function test()
 	{
-		$collectedBook = factory(CollectedBook::class)->create();
+		$collectedBook = CollectedBook::factory()->create();
 
 		$book = $collectedBook->book;
 		$collection = $collectedBook->collection;

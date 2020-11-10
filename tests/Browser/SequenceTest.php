@@ -19,15 +19,13 @@ class SequenceTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$sequence = factory(Sequence::class)
-				->create();
+			$sequence = Sequence::factory()->create();
 
-			$book = factory(Book::class)
-				->create(['title' => Str::random(8)]);
+			$book = Book::factory()->create(['title' => Str::random(8)]);
 
 			$book->sequences()->sync([$sequence->id]);
 
-			$comment = factory(Comment::class)->create();
+			$comment = Comment::factory()->create();
 			$comment->commentable_type = 'book';
 			$comment->commentable_id = $book->id;
 			$comment->save();
@@ -57,8 +55,7 @@ class SequenceTest extends DuskTestCase
 
 			$title = Str::random(10);
 
-			$sequence = factory(Sequence::class)
-				->create(['name' => $title]);
+			$sequence = Sequence::factory()->create(['name' => $title]);
 
 			$browser->resize(1000, 2000)
 				->visit(route('sequences'))

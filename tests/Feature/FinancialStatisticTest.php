@@ -17,8 +17,7 @@ class FinancialStatisticTest extends TestCase
 	 */
 	public function testUserPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('view_financial_statistics', User::class));
 
@@ -31,8 +30,7 @@ class FinancialStatisticTest extends TestCase
 
 	public function testViewHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('financial_statistic.index'))
@@ -60,8 +58,7 @@ class FinancialStatisticTest extends TestCase
 
 	public function testViewAllTransactionsHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('financial_statistic.all_transactions'))
@@ -78,7 +75,7 @@ class FinancialStatisticTest extends TestCase
 
 	public function testViewAllTransactionsHttpSeeDepositPayment()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 
@@ -98,7 +95,7 @@ class FinancialStatisticTest extends TestCase
 
 	public function testViewAllTransactionsHttpSeeWithdrawalPayment()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 
@@ -121,17 +118,13 @@ class FinancialStatisticTest extends TestCase
 			->wait()
 			->delete();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'wait')
-			->create(['sum' => 100]);
+		$transaction = UserPaymentTransaction::factory()->outgoing()->wait()->create(['sum' => 100]);
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'wait')
-			->create(['sum' => 200]);
+		$transaction = UserPaymentTransaction::factory()->outgoing()->wait()->create(['sum' => 200]);
 
 		$response = new UnitPayApiResponse(json_encode([
 			'result' => [
@@ -156,7 +149,7 @@ class FinancialStatisticTest extends TestCase
 
 	public function testViewPurchases()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 

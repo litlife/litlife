@@ -10,13 +10,11 @@ class BookFileEditPolicyTest extends TestCase
 {
 	public function testCanIfFilePrivate()
 	{
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$user = $book->create_user;
 
-		$file = factory(BookFile::class)
-			->states('odt', 'private')
-			->create(['create_user_id' => $user->id]);
+		$file = BookFile::factory()->odt()->private()->create(['create_user_id' => $user->id]);
 
 		$user->group->add_book = true;
 		$user->push();
@@ -26,13 +24,11 @@ class BookFileEditPolicyTest extends TestCase
 
 	public function testCanIfOnReview()
 	{
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$user = $book->create_user;
 
-		$file = factory(BookFile::class)
-			->states('odt', 'sent_for_review')
-			->create(['create_user_id' => $user->id]);
+		$file = BookFile::factory()->odt()->sent_for_review()->create(['create_user_id' => $user->id]);
 
 		$user->group->add_book = true;
 		$user->push();

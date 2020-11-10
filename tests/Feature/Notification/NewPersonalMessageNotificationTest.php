@@ -19,12 +19,11 @@ class NewPersonalMessageNotificationTest extends TestCase
 
 	public function testViaMailIfEnabled()
 	{
-		$recepient = factory(User::class)->states('with_confirmed_email')->create();
+		$recepient = User::factory()->with_confirmed_email()->create();
 		$recepient->email_notification_setting->private_message = true;
 		$recepient->email_notification_setting->save();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'recepient_id' => $recepient->id
 			]);
 
@@ -35,12 +34,11 @@ class NewPersonalMessageNotificationTest extends TestCase
 
 	public function testViaEmptyIfDisabled()
 	{
-		$recepient = factory(User::class)->states('with_confirmed_email')->create();
+		$recepient = User::factory()->with_confirmed_email()->create();
 		$recepient->email_notification_setting->private_message = false;
 		$recepient->email_notification_setting->save();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'recepient_id' => $recepient->id
 			]);
 
@@ -51,11 +49,9 @@ class NewPersonalMessageNotificationTest extends TestCase
 
 	public function testToMail()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'recepient_id' => $recepient->id
 			]);
 

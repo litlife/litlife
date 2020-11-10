@@ -14,14 +14,12 @@ class SectionMoveToChaptersTest extends TestCase
 	{
 		Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$section = factory(Section::class)
-			->states('note')
-			->create();
+		$section = Section::factory()->note()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
@@ -52,14 +50,12 @@ class SectionMoveToChaptersTest extends TestCase
 
 	public function testMoveToChapters()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$section = factory(Section::class)
-			->states('note')
-			->create();
+		$section = Section::factory()->note()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();

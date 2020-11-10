@@ -9,7 +9,7 @@ class UserCreatedBookTest extends TestCase
 {
 	public function testCreatedIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.books.created', ['user' => $user]))

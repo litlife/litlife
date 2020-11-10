@@ -10,11 +10,9 @@ class ComplainAcceptTest extends TestCase
 {
 	public function testAcceptHttp()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)->states('comment', 'review_starts')->create();
+		$complain = Complain::factory()->comment()->review_starts()->create();
 		$complain->status_changed_user_id = $admin->id;
 		$complain->save();
 

@@ -10,12 +10,9 @@ class ForumEditTest extends TestCase
 {
 	public function testUpdate()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$forumNew = factory(Forum::class)
 			->make();
@@ -36,12 +33,11 @@ class ForumEditTest extends TestCase
 
 	public function testUpdateAutofixFirstPostInCreatedTopicsHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_edit_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertFalse($forum->isAutofixFirstPostInCreatedTopics());
 
@@ -58,12 +54,11 @@ class ForumEditTest extends TestCase
 
 	public function testUpdateOrderTopicsBasedOnFixPostLikesHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_edit_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertFalse($forum->isOrderTopicsBasedOnFixPostLikes());
 
@@ -80,12 +75,11 @@ class ForumEditTest extends TestCase
 
 	public function testIdeaForumEnable()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_edit_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertFalse($forum->isIdeaForum());
 

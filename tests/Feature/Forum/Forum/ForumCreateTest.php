@@ -12,12 +12,9 @@ class ForumCreateTest extends TestCase
 {
 	public function testCreate()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('forums.create', ['forum_group_id' => $forumGroup->id]))
@@ -26,12 +23,9 @@ class ForumCreateTest extends TestCase
 
 	public function testStore()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$forumNew = factory(Forum::class)->make();
 
@@ -51,15 +45,13 @@ class ForumCreateTest extends TestCase
 
 	public function testStorePrivate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_forum = true;
 		$user->push();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
-		$forum_group = factory(ForumGroup::class)
-			->create();
+		$forum_group = ForumGroup::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('forums.store', ['forum_group_id' => $forum_group->id]),
@@ -84,8 +76,7 @@ class ForumCreateTest extends TestCase
 		$this->assertNotNull($forum->user_access->where('user_id', $user->id)->first());
 		$this->assertNotNull($forum->user_access->where('user_id', $other_user->id)->first());
 
-		$other_user2 = factory(User::class)
-			->create();
+		$other_user2 = User::factory()->create();
 
 		$this->assertNull($forum->user_access->where('user_id', $other_user2->id)->first());
 	}

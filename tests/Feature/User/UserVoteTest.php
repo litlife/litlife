@@ -15,8 +15,7 @@ class UserVoteTest extends TestCase
 	 */
 	public function testRouteIsOk()
 	{
-		$vote = factory(BookVote::class)
-			->create();
+		$vote = BookVote::factory()->create();
 
 		$this->actingAs($vote->create_user)
 			->get(route('users.votes', ['user' => $vote->create_user]))
@@ -25,11 +24,9 @@ class UserVoteTest extends TestCase
 
 	public function testRouteIsOkViewOtherUser()
 	{
-		$vote = factory(BookVote::class)
-			->create();
+		$vote = BookVote::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.votes', ['user' => $vote->create_user]))

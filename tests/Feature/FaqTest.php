@@ -27,8 +27,7 @@ class FaqTest extends TestCase
 		$name = $this->faker->realText(100);
 		$text = $this->faker->realText(200);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->forum_message_count = $forum->min_message_count + 10;
 		$user->group->add_forum_topic = true;
 		$user->push();

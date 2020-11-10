@@ -15,13 +15,9 @@ class SequenceBookNumbersTest extends TestCase
 	 */
 	public function testPageIsOk()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->states('with_book')
-			->create();
+		$sequence = Sequence::factory()->with_book()->create();
 
 		$this->actingAs($user)
 			->get(route('sequences.book_numbers', $sequence))
@@ -36,13 +32,9 @@ class SequenceBookNumbersTest extends TestCase
 	 */
 	public function testStoreIsOk()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->states('with_two_books')
-			->create();
+		$sequence = Sequence::factory()->with_two_books()->create();
 
 		$books = $sequence->books()
 			->orderBy('id', 'asc')
@@ -82,12 +74,9 @@ class SequenceBookNumbersTest extends TestCase
 	 */
 	public function testPageIfSequenceHasNoBooks()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->create();
+		$sequence = Sequence::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('sequences.book_numbers', $sequence))
@@ -103,12 +92,9 @@ class SequenceBookNumbersTest extends TestCase
 	 */
 	public function testStoreIfSequenceHasNoBooks()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->create();
+		$sequence = Sequence::factory()->create();
 
 		$this->actingAs($user)
 			->post(route('sequences.book_numbers_save', $sequence))

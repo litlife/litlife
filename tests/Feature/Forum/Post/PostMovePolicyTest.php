@@ -10,7 +10,7 @@ class PostMovePolicyTest extends TestCase
 {
 	public function testMovePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('move', Post::class));
 

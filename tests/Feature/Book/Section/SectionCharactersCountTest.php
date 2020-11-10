@@ -23,7 +23,7 @@ class SectionCharactersCountTest extends TestCase
 
 	public function testSetContentCharactersCount()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = 'test';
 		$section->save();
 		$section->refresh();
@@ -54,7 +54,7 @@ class SectionCharactersCountTest extends TestCase
 	{
 		$content = '<p>' . $this->faker->realText(100) . '</p>';
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = $content;
 		$section->save();
 
@@ -75,9 +75,7 @@ class SectionCharactersCountTest extends TestCase
 
 	public function testBookCharactersCountAfterChangeStatus()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();

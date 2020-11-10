@@ -18,11 +18,11 @@ class BookAwardTest extends TestCase
 	 */
 	public function testStoreHttp()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$award = factory(Award::class)->create();
+		$award = Award::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->awards = true;
 		$user->push();
 
@@ -43,9 +43,9 @@ class BookAwardTest extends TestCase
 
 	public function testDestroyHttp()
 	{
-		$bookAward = factory(BookAward::class)->create();
+		$bookAward = BookAward::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->awards = true;
 		$user->push();
 

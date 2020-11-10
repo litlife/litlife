@@ -9,8 +9,7 @@ class BookmarkFolderDeleteTest extends TestCase
 {
 	public function testDeleteHttp()
 	{
-		$folder = factory(BookmarkFolder::class)
-			->create();
+		$folder = BookmarkFolder::factory()->create();
 
 		$response = $this->actingAs($folder->create_user)
 			->delete(route('bookmark_folders.destroy', ['bookmark_folder' => $folder->id]))
@@ -25,8 +24,7 @@ class BookmarkFolderDeleteTest extends TestCase
 
 	public function testRestoreHttp()
 	{
-		$folder = factory(BookmarkFolder::class)
-			->create();
+		$folder = BookmarkFolder::factory()->create();
 
 		$folder->delete();
 

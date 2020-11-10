@@ -19,11 +19,11 @@ class BookFileDeleteRestoreTest extends TestCase
 		BookFile::sentOnReview()
 			->update(['status' => StatusEnum::Accepted]);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_file_delete = true;
 		$admin->push();
 
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->statusSentForReview();
 		$file->save();
 
@@ -58,11 +58,9 @@ class BookFileDeleteRestoreTest extends TestCase
 		BookFile::sentOnReview()
 			->update(['status' => StatusEnum::Accepted]);
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->statusSentForReview();
 		$file->save();
 		$file->delete();
@@ -92,11 +90,11 @@ class BookFileDeleteRestoreTest extends TestCase
 
 	public function testDeleteIfDeclined()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_file_delete = true;
 		$admin->push();
 
-		$book_file = factory(BookFile::class)->states('txt')->create();
+		$book_file = BookFile::factory()->txt()->create();
 		$book_file->statusReject();
 		$book_file->save();
 		$book_file->refresh();
@@ -111,18 +109,13 @@ class BookFileDeleteRestoreTest extends TestCase
 
 	public function testCancelFailedParseIfBookFileSourceDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$parse = factory(BookParse::class)
-			->states('failed')
-			->create();
+		$parse = BookParse::factory()->failed()->create();
 
 		$book = $parse->book;
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id, 'source' => true]);
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertTrue($admin->can('delete', $file));
 
@@ -137,9 +130,7 @@ class BookFileDeleteRestoreTest extends TestCase
 
 	public function testForceDelete()
 	{
-		$file = factory(BookFile::class)
-			->states('txt', 'with_download_log')
-			->create();
+		$file = BookFile::factory()->txt()->with_download_log()->create();
 
 		$log = $file->download_logs()->first();
 

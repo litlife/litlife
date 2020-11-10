@@ -11,9 +11,9 @@ class BookTextProcessingPolicyTest extends TestCase
 {
 	public function testCreateIfUserHasCreateTextProcessingPermission()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('createTextProcessing', $book));
 
@@ -25,11 +25,11 @@ class BookTextProcessingPolicyTest extends TestCase
 
 	public function testCantCreateIfBookForbidChange()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->forbid_to_change = true;
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->create_text_processing_books = true;
 		$user->push();
 
@@ -39,9 +39,7 @@ class BookTextProcessingPolicyTest extends TestCase
 	/*
 		public function testCanCreateIfBookPrivateAndUserCreator()
 		{
-			$book = factory(Book::class)
-				->states('private')
-				->create();
+			$book = Book::factory()->private()->create();
 
 			$user = $book->create_user;
 			$user->group->create_text_processing_books = false;
@@ -52,11 +50,9 @@ class BookTextProcessingPolicyTest extends TestCase
 	*/
 	public function testCantCreateIfBookPrivateAndUserNotCreator()
 	{
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->create_text_processing_books = false;
 		$user->push();
 
@@ -66,9 +62,7 @@ class BookTextProcessingPolicyTest extends TestCase
 	/*
 		public function testCanCreateIfUserIsVerifiedAuthor()
 		{
-			$author = factory(Author::class)
-				->states('with_author_manager', 'with_book')
-				->create();
+			$author = Author::factory()->with_author_manager()->with_book()->create();
 
 			$manager = $author->managers->first();
 			$book = $author->books->first();
@@ -79,8 +73,8 @@ class BookTextProcessingPolicyTest extends TestCase
 	*/
 	public function testCantIfPagesOldFormat()
 	{
-		$book = factory(Book::class)->create();
-		$user = factory(User::class)->create();
+		$book = Book::factory()->create();
+		$user = User::factory()->create();
 
 		$user->group->create_text_processing_books = true;
 		$user->push();
@@ -98,9 +92,9 @@ class BookTextProcessingPolicyTest extends TestCase
 
 	public function testCanViewTextProcessingIfUserHasCreateTextProcessingPermission()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('viewTextProcessing', $book));
 
@@ -112,7 +106,7 @@ class BookTextProcessingPolicyTest extends TestCase
 
 	public function testCanViewTextProcessingIfTextProcessingCreated()
 	{
-		$processing = factory(BookTextProcessing::class)->create();
+		$processing = BookTextProcessing::factory()->create();
 
 		$book = $processing->book;
 

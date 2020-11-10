@@ -10,11 +10,9 @@ class UserHasNoticeEmailTest extends TestCase
 {
 	public function testTrueIfHaveNoticeEmailEmail()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$email = factory(UserEmail::class)
-			->create([
+		$email = UserEmail::factory()->create([
 				'user_id' => $user->id,
 				'notice' => true
 			]);
@@ -24,11 +22,9 @@ class UserHasNoticeEmailTest extends TestCase
 
 	public function testFalseIfHaventNoticeEmailEmail()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$email = factory(UserEmail::class)
-			->create([
+		$email = UserEmail::factory()->create([
 				'user_id' => $user->id,
 				'notice' => false
 			]);
@@ -38,8 +34,7 @@ class UserHasNoticeEmailTest extends TestCase
 
 	public function testFalseIfDoesntHaveAnyEmail()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->hasNoticeEmail());
 	}

@@ -15,7 +15,7 @@ class QrCodeTest extends TestCase
 	 */
 	public function testIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->get(route('qrcode', ['str' => route('profile', ['user' => $user->id])]))
 			->assertOk();

@@ -47,9 +47,7 @@ blade;
 	 */
 	public function testAuthorPhotoDeleted()
 	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+		$author = Author::factory()->with_photo()->create();
 
 		$author->photo->delete();
 
@@ -80,8 +78,7 @@ blade;
 	 */
 	public function testAuthorDeleted()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$author->delete();
 
@@ -107,9 +104,7 @@ blade;
 	 */
 	public function testAuthorPhotoExists()
 	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+		$author = Author::factory()->with_photo()->create();
 
 		$component = new AuthorPhoto($author, 200, 200);
 
@@ -136,9 +131,7 @@ blade;
 
 	public function testDontShowIfDontHaveAccess()
 	{
-		$author = factory(Author::class)
-			->states('with_photo', 'private')
-			->create();
+		$author = Author::factory()->with_photo()->private()->create();
 
 		$component = new AuthorPhoto($author, 200, 200);
 
@@ -151,9 +144,7 @@ blade;
 
 	public function testShowIfHaveAccess()
 	{
-		$author = factory(Author::class)
-			->states('with_photo', 'private')
-			->create();
+		$author = Author::factory()->with_photo()->private()->create();
 
 		$this->be($author->create_user);
 

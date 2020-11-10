@@ -10,7 +10,7 @@ class SupportQuestionCreatePolicyTest extends TestCase
 {
 	public function testCanIfHasPermissions()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->send_a_support_question = true;
 		$user->push();
 
@@ -19,7 +19,7 @@ class SupportQuestionCreatePolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermissions()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->send_a_support_question = false;
 		$user->push();
 

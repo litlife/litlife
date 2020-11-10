@@ -27,12 +27,11 @@ class AuthorPhotoTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_edit = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$file = UploadedFile::fake()->image('avatar.jpg');
 
@@ -64,11 +63,11 @@ class AuthorPhotoTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_edit = true;
 		$admin->push();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
 		$photo = new AuthorPhoto;
 		$photo->storage = config('filesystems.default');
@@ -99,9 +98,9 @@ class AuthorPhotoTest extends TestCase
 
 	public function testPolicy()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
 		$author_photo = new AuthorPhoto;
 		$author_photo->openImage(__DIR__ . '/../images/test.jpeg');
@@ -117,10 +116,9 @@ class AuthorPhotoTest extends TestCase
 
 	public function testAuthorPrivatePolicy()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 		$author->statusPrivate();
 		$author->save();
 
@@ -134,8 +132,7 @@ class AuthorPhotoTest extends TestCase
 
 	public function testIndexHttp()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$this->get(route('authors.photos.index', ['author' => $author]))
 			->assertRedirect(route('authors.show', ['author' => $author]));
@@ -143,9 +140,7 @@ class AuthorPhotoTest extends TestCase
 
 	public function testShowHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+		$author = Author::factory()->with_photo()->create();
 
 		$this->actingAs($author->create_user)
 			->get(route('authors.photo', ['author' => $author]))
@@ -156,9 +151,7 @@ class AuthorPhotoTest extends TestCase
 
 	public function testShowAuthorNotFound()
 	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+		$author = Author::factory()->with_photo()->create();
 
 		$author->delete();
 
@@ -169,9 +162,7 @@ class AuthorPhotoTest extends TestCase
 
 	public function testShowPhotoNotFound()
 	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+		$author = Author::factory()->with_photo()->create();
 
 		$author->photo->delete();
 

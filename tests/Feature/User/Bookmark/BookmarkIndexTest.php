@@ -11,14 +11,11 @@ class BookmarkIndexTest extends TestCase
 {
 	public function testIndex()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$bookmark = factory(Bookmark::class)
-			->create(['create_user_id' => $user->id]);
+		$bookmark = Bookmark::factory()->create(['create_user_id' => $user->id]);
 
-		$folder = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $user->id]);
+		$folder = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
 		$this->actingAs($user)
 			->get(route('users.bookmarks.index', ['user' => $user]))

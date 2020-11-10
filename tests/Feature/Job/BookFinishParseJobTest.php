@@ -19,9 +19,7 @@ class BookFinishParseJobTest extends TestCase
 
 	public function testSentNotificationIfParseOnlyPages()
 	{
-		$bookParse = factory(BookParse::class)
-			->states('only_pages')
-			->create();
+		$bookParse = BookParse::factory()->only_pages()->create();
 
 		$user = $bookParse->create_user;
 
@@ -37,9 +35,7 @@ class BookFinishParseJobTest extends TestCase
 
 	public function testDontSentNotificationIfBookTrashed()
 	{
-		$bookParse = factory(BookParse::class)
-			->states('only_pages')
-			->create();
+		$bookParse = BookParse::factory()->only_pages()->create();
 
 		$bookParse->book->delete();
 
@@ -55,8 +51,7 @@ class BookFinishParseJobTest extends TestCase
 
 	public function testDontSentNotificationIfNotParseOnlyPages()
 	{
-		$bookParse = factory(BookParse::class)
-			->create();
+		$bookParse = BookParse::factory()->create();
 
 		$user = $bookParse->create_user;
 
@@ -70,9 +65,7 @@ class BookFinishParseJobTest extends TestCase
 
 	public function testDontSentNotificationIfParseCreateUserNotFound()
 	{
-		$bookParse = factory(BookParse::class)
-			->states('only_pages')
-			->create();
+		$bookParse = BookParse::factory()->only_pages()->create();
 
 		$bookParse->create_user_id = 0;
 		$bookParse->save();

@@ -19,14 +19,14 @@ class AuthorSearchTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser, $other_user_browser) {
 
-			$author = factory(Author::class)->create([
+			$author = Author::factory()->create([
 				'nickname' => uniqid() . uniqid(),
 				'status' => StatusEnum::Private
 			]);
 
 			$author = Author::any()->findOrFail($author->id);
 
-			$other_user = factory(User::class)->create();
+			$other_user = User::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($author->create_user)
@@ -46,7 +46,7 @@ class AuthorSearchTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$author = factory(Author::class)->create([
+			$author = Author::factory()->create([
 				'nickname' => uniqid() . uniqid(),
 				'status' => StatusEnum::Private
 			]);

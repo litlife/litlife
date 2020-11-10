@@ -12,13 +12,11 @@ class OldBooksConnetToNewTest extends TestCase
 {
 	public function testInit()
 	{
-		$group = factory(BookGroup::class)
-			->states('with_main_book')
-			->create();
+		$group = BookGroup::factory()->with_main_book()->create();
 
 		$mainBook = $group->books()->first();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 		$minorBook->addToGroup($group);
 		$minorBook->save();
 
@@ -34,17 +32,15 @@ class OldBooksConnetToNewTest extends TestCase
 
 	public function testMainBookNotFound()
 	{
-		$group = factory(BookGroup::class)
-			->states('with_main_book')
-			->create();
+		$group = BookGroup::factory()->with_main_book()->create();
 
 		$mainBook = $group->books()->first();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 		$minorBook->addToGroup($group);
 		$minorBook->save();
 
-		$minorBook2 = factory(Book::class)->create(['vote_average' => 10]);
+		$minorBook2 = Book::factory()->create(['vote_average' => 10]);
 		$minorBook2->addToGroup($group);
 		$minorBook2->save();
 
@@ -62,17 +58,15 @@ class OldBooksConnetToNewTest extends TestCase
 
 	public function testMainBookSoftDeleted()
 	{
-		$group = factory(BookGroup::class)
-			->states('with_main_book')
-			->create();
+		$group = BookGroup::factory()->with_main_book()->create();
 
 		$mainBook = $group->books()->first();
 
-		$minorBook = factory(Book::class)->create(['vote_average' => 10]);
+		$minorBook = Book::factory()->create(['vote_average' => 10]);
 		$minorBook->addToGroup($group);
 		$minorBook->save();
 
-		$minorBook2 = factory(Book::class)->create();
+		$minorBook2 = Book::factory()->create();
 		$minorBook2->addToGroup($group);
 		$minorBook2->save();
 
@@ -90,10 +84,9 @@ class OldBooksConnetToNewTest extends TestCase
 
 	public function testOneBookInGroup()
 	{
-		$group = factory(BookGroup::class)
-			->create();
+		$group = BookGroup::factory()->create();
 
-		$minorBook = factory(Book::class)->create(['vote_average' => 10]);
+		$minorBook = Book::factory()->create(['vote_average' => 10]);
 		$minorBook->addToGroup($group);
 		$minorBook->save();
 
@@ -106,18 +99,17 @@ class OldBooksConnetToNewTest extends TestCase
 
 	public function testIfMinorBookIsMainBook()
 	{
-		$group = factory(BookGroup::class)
-			->create();
+		$group = BookGroup::factory()->create();
 
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 		$mainBook->addToGroup($group);
 		$mainBook->save();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 		$minorBook->addToGroup($group);
 		$minorBook->save();
 
-		$minorBook2 = factory(Book::class)->create();
+		$minorBook2 = Book::factory()->create();
 		$minorBook2->addToGroup($group, true);
 		$minorBook2->save();
 

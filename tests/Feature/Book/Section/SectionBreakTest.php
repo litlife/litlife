@@ -28,9 +28,9 @@ class SectionBreakTest extends TestCase
 <div class="u-empty-line">&nbsp;</div>
 <p>текст третьей главы</p>';
 
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 
@@ -77,13 +77,12 @@ class SectionBreakTest extends TestCase
 			$page3_text .= '<p>' . $this->faker->realText(100) . '</p>';
 		}
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
@@ -139,9 +138,7 @@ class SectionBreakTest extends TestCase
 			$page3_text .= '<p>' . $this->faker->realText(100) . '</p>';
 		}
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();

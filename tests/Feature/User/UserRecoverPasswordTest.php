@@ -27,9 +27,7 @@ class UserRecoverPasswordTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$user->suspend();
 		$user->save();
@@ -76,9 +74,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testEnterNewPasswordHttp()
 	{
-		$passwordReset = factory(PasswordReset::class)
-			->states('with_user_with_confirmed_email')
-			->create();
+		$passwordReset = PasswordReset::factory()->with_user_with_confirmed_email()->create();
 
 		$user = $passwordReset->user;
 		$user->suspend();
@@ -122,7 +118,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testPasswordsNotEquals()
 	{
-		$password_reset = factory(PasswordReset::class)->states('with_user_with_confirmed_email')->create();
+		$password_reset = PasswordReset::factory()->with_user_with_confirmed_email()->create();
 
 		$this->get(route('password.reset_form', ['token' => $password_reset->token]))
 			->assertOk();
@@ -139,7 +135,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testWrongToken()
 	{
-		$password_reset = factory(PasswordReset::class)->states('with_user_with_confirmed_email')->create();
+		$password_reset = PasswordReset::factory()->with_user_with_confirmed_email()->create();
 
 		$wrong_token = uniqid();
 
@@ -163,9 +159,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testRedirectIfPasswordResetIsUsed()
 	{
-		$password_reset = factory(PasswordReset::class)
-			->states('with_user_with_confirmed_email', 'used')
-			->create();
+		$password_reset = PasswordReset::factory()->with_user_with_confirmed_email()->used()->create();
 
 		$this->assertTrue($password_reset->isUsed());
 
@@ -181,9 +175,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testFrequentPassword()
 	{
-		$password_reset = factory(PasswordReset::class)
-			->states('with_user_with_confirmed_email')
-			->create();
+		$password_reset = PasswordReset::factory()->with_user_with_confirmed_email()->create();
 
 		$password = $this->fakePassword();
 
@@ -204,9 +196,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testSetNewPasswordUserNotFound()
 	{
-		$password_reset = factory(PasswordReset::class)
-			->states('with_user_with_confirmed_email')
-			->create();
+		$password_reset = PasswordReset::factory()->with_user_with_confirmed_email()->create();
 
 		$user = $password_reset->user;
 
@@ -269,8 +259,7 @@ class UserRecoverPasswordTest extends TestCase
 	{
 		Mail::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$not_confirmed_email = factory(UserEmail::class)
 			->states('not_confirmed', 'created_before_move_to_new_engine')
@@ -295,8 +284,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testEmailNotFoundIfNotConfirmed()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$not_confirmed_email = factory(UserEmail::class)
 			->states('not_confirmed')
@@ -318,9 +306,7 @@ class UserRecoverPasswordTest extends TestCase
 
 	public function testConfirmEmailAfterPasswordRecoverIfEmailNotConfirmed()
 	{
-		$password_reset = factory(PasswordReset::class)
-			->states('with_user_with_confirmed_email')
-			->create();
+		$password_reset = PasswordReset::factory()->with_user_with_confirmed_email()->create();
 
 		$user = $password_reset->user;
 
@@ -378,8 +364,8 @@ class UserRecoverPasswordTest extends TestCase
 
 		config(['litlife.number_of_days_after_which_to_delete_unused_password_recovery_tokens' => $days]);
 
-		$password_reset_outdated = factory(PasswordReset::class)->create(['created_at' => now()->subDays($days)->subMinute()]);
-		$password_reset_not_outdated = factory(PasswordReset::class)->create(['created_at' => now()->subDays($days)->addMinute()]);
+		$password_reset_outdated = PasswordReset::factory()->create(['created_at' => now()->subDays($days)->subMinute()]);
+		$password_reset_not_outdated = PasswordReset::factory()->create(['created_at' => now()->subDays($days)->addMinute()]);
 
 		Artisan::call('password_resets:delete_expired');
 

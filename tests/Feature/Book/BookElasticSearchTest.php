@@ -37,9 +37,7 @@ class BookElasticSearchTest extends TestCase
 		{
 			$title = uniqid();
 
-			$book = factory(Book::class)
-				->states('private')
-				->create(['title' => $title]);
+			$book = Book::factory()->private()->create();
 
 			sleep(1);
 
@@ -83,8 +81,7 @@ class BookElasticSearchTest extends TestCase
 
 		public function testSuggest()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'маньяк']);
+			$book = Book::factory()->create(['title' => 'маньяк']);
 
 			sleep(1);
 
@@ -104,8 +101,7 @@ class BookElasticSearchTest extends TestCase
 
 		public function testRule()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'маньяк']);
+			$book = Book::factory()->create(['title' => 'маньяк']);
 
 			sleep(1);
 
@@ -125,8 +121,7 @@ class BookElasticSearchTest extends TestCase
 
 		public function testRaw()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'test']);
+			$book = Book::factory()->create(['title' => 'test']);
 
 			sleep(1);
 
@@ -155,8 +150,7 @@ class BookElasticSearchTest extends TestCase
 
 		public function testFuzzy()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'маяк']);
+			$book = Book::factory()->create(['title' => 'маяк']);
 
 			sleep(1);
 
@@ -176,8 +170,7 @@ class BookElasticSearchTest extends TestCase
 
 		public function testSuggest2()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'маньяк']);
+			$book = Book::factory()->create(['title' => 'маньяк']);
 
 			sleep(1);
 
@@ -197,8 +190,7 @@ class BookElasticSearchTest extends TestCase
 
 		public function testAuthorFuzzy()
 		{
-			$author = factory(Author::class)
-				->create(['first_name' => 'елена', 'last_name' => 'васильевна']);
+			$author = Author::factory()->create(['first_name' => 'елена', 'last_name' => 'васильевна']);
 
 			sleep(1);
 
@@ -227,11 +219,9 @@ class BookElasticSearchTest extends TestCase
 
 		public function testPartOfWord()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'word part']);
+			$book = Book::factory()->create(['title' => 'word part']);
 
-			$book2 = factory(Book::class)
-				->create(['title' => 'tearing apart']);
+			$book2 = Book::factory()->create(['title' => 'tearing apart']);
 
 			sleep(1);
 
@@ -254,35 +244,25 @@ class BookElasticSearchTest extends TestCase
 	/*
 		public function testPartOfWord2()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'часть слова']);
+			$book = Book::factory()->create(['title' => 'часть слова']);
 
-			$book2 = factory(Book::class)
-				->create(['title' => 'части слов']);
+			$book2 = Book::factory()->create(['title' => 'части слов']);
 
-			$book3 = factory(Book::class)
-				->create(['title' => 'часть солва']);
+			$book3 = Book::factory()->create(['title' => 'часть солва']);
 
-			$book4 = factory(Book::class)
-				->create(['title' => 'ча сл']);
+			$book4 = Book::factory()->create(['title' => 'ча сл']);
 
-			$book5 = factory(Book::class)
-				->create(['title' => 'сло']);
+			$book5 = Book::factory()->create(['title' => 'сло']);
 
-			$book6 = factory(Book::class)
-				->create(['title' => 'присло']);
+			$book6 = Book::factory()->create(['title' => 'присло']);
 
-			$book7 = factory(Book::class)
-				->create(['title' => 'без слов ывфыв']);
+			$book7 = Book::factory()->create(['title' => 'без слов ывфыв']);
 
-			$book8 = factory(Book::class)
-				->create(['title' => 'например слов текст']);
+			$book8 = Book::factory()->create(['title' => 'например слов текст']);
 
-			$book9 = factory(Book::class)
-				->create(['title' => 'например солв текст']);
+			$book9 = Book::factory()->create(['title' => 'например солв текст']);
 
-			$book10 = factory(Book::class)
-				->create(['title' => ' слов текст']);
+			$book10 = Book::factory()->create(['title' => ' слов текст']);
 
 			sleep(1);
 
@@ -331,11 +311,9 @@ class BookElasticSearchTest extends TestCase
 	/*
 		public function testSuggest3()
 		{
-			$book = factory(Book::class)
-				->create(['title' => 'book title']);
+			$book = Book::factory()->create(['title' => 'book title']);
 
-			$author = factory(Author::class)
-				->create(['last_name' => 'маньяк', 'first_name' => '']);
+			$author = Author::factory()->create(['last_name' => 'маньяк', 'first_name' => '']);
 
 			sleep(1);
 
@@ -356,22 +334,19 @@ class BookElasticSearchTest extends TestCase
 	/*
 		public function testPartOfWord2()
 		{
-			$author = factory(Author::class)
-				->create([
+			$author = Author::factory()->create([
 					'first_name' => 'василий',
 					'last_name' => 'иванов',
 					'nickname' => 'test'
 				]);
 
-			$author = factory(Author::class)
-				->create([
+			$author = Author::factory()->create([
 					'first_name' => 'вас',
 					'last_name' => 'иванов',
 					'nickname' => 'test'
 				]);
 
-			$author = factory(Author::class)
-				->create([
+			$author = Author::factory()->create([
 					'first_name' => 'василий',
 					'last_name' => 'николаев',
 					'nickname' => 'test'
@@ -408,11 +383,9 @@ class BookElasticSearchTest extends TestCase
 	/*
 		public function testSearchBookByAuthorName()
 		{
-			$book = factory(Book::class)
-				->create(['title' => uniqid()]);
+			$book = Book::factory()->create(['title' => uniqid()]);
 
-			$author = factory(Author::class)
-				->create(['last_name' => uniqid()]);
+			$author = Author::factory()->create(['last_name' => uniqid()]);
 
 			$book->writers()->sync([$author->id]);
 

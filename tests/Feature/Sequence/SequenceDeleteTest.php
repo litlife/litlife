@@ -12,9 +12,9 @@ class SequenceDeleteTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)->create();
+		$sequence = Sequence::factory()->create();
 
 		$this->actingAs($admin)
 			->followingRedirects()
@@ -36,9 +36,9 @@ class SequenceDeleteTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)->create();
+		$sequence = Sequence::factory()->create();
 		$sequence->delete();
 
 		$this->actingAs($admin)

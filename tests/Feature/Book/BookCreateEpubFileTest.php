@@ -18,8 +18,7 @@ class BookCreateEpubFileTest extends TestCase
 {
 	public function testSectionCreated()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 
@@ -49,8 +48,7 @@ class BookCreateEpubFileTest extends TestCase
 	{
 		$xhtml = '<p> <a href="https://example.com/path/%D0%AD%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82?query=%D0%AD%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82">https://example.com/path</a> </p>';
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 		$section->content = $xhtml;
 		$section->save();
 
@@ -65,13 +63,13 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testImage()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$attachement = factory(Attachment::class)->create(['book_id' => $book->id]);
+		$attachement = Attachment::factory()->create(['book_id' => $book->id]);
 
 		$xhtml = '<p><img src="' . $attachement->url . '"/></p>';
 
-		$section = factory(Section::class)->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 		$section->content = $xhtml;
 		$section->save();
 		$section->refresh();
@@ -88,7 +86,7 @@ class BookCreateEpubFileTest extends TestCase
 	{
 		$xhtml = '<p> <a href="#u-section-1">test</a> </p>';
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = $xhtml;
 		$section->save();
 		$section->refresh();
@@ -103,14 +101,13 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testNoteLinkWithUrl()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
 		$xhtml = '<p> <a href="' . route('books.sections.show', ['book' => $book->id, 'section' => $section->inner_id]) . '#u-section-2">test</a> </p>';
 
-		$section2 = factory(Section::class)->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->create(['book_id' => $book->id]);
 		$section2->content = $xhtml;
 		$section2->save();
 		$section2->refresh();
@@ -123,8 +120,7 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testExternalLinkWithHash()
 	{
-		$section = factory(Section::class)
-			->create(['content' => '<p> <a href="http://example.com/test#u-section-1">test</a> </p>']);
+		$section = Section::factory()->create(['content' => '<p> <a href="http://example.com/test#u-section-1">test</a> </p>']);
 
 		$book = $section->book;
 
@@ -138,7 +134,7 @@ class BookCreateEpubFileTest extends TestCase
 	{
 		$string = 'test &><" test';
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->title = $string;
 		$book->pi_pub = $string;
 		$book->rightholder = $string;
@@ -146,8 +142,7 @@ class BookCreateEpubFileTest extends TestCase
 		$book->pi_isbn = $string;
 		$book->save();
 
-		$author = factory(Author::class)
-			->create([
+		$author = Author::factory()->create([
 				'last_name' => $string,
 				'first_name' => $string,
 				'middle_name' => $string,
@@ -155,17 +150,14 @@ class BookCreateEpubFileTest extends TestCase
 			]);
 		$book->writers()->sync([$author->id]);
 
-		$sequence = factory(Sequence::class)->create(['name' => $string]);
+		$sequence = Sequence::factory()->create(['name' => $string]);
 		$book->sequences()->sync([$sequence->id]);
 
-		$annotation = factory(Section::class)
-			->states('annotation')
-			->create(['book_id' => $book->id]);
+		$annotation = Section::factory()->annotation()->create();
 		$annotation->content = $string;
 		$annotation->save();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id, 'title' => $string, 'content' => $string]);
+		$section = Section::factory()->create(['book_id' => $book->id, 'title' => $string, 'content' => $string]);
 		$section->content = $string;
 		$section->save();
 
@@ -204,19 +196,19 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testAssertRightSection()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)->create([
+		$section = Section::factory()->create([
 			'book_id' => $book->id,
 			'content' => '<p><a href="#u-test3">текст</a></p><p><a href="#u-test4">текст</a></p>'
 		]);
 
-		$section3 = factory(Section::class)->create([
+		$section3 = Section::factory()->create([
 			'book_id' => $book->id,
 			'content' => '<p><span id="u-test3">текст</span></p>'
 		]);
 
-		$section4 = factory(Section::class)->create([
+		$section4 = Section::factory()->create([
 			'book_id' => $book->id,
 			'content' => '<p><span id="u-test4">текст</span></p>'
 		]);
@@ -229,7 +221,7 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testHasCss()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$epub = $this->createEpubAndOpenFile($book);
 
@@ -238,7 +230,7 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testHasModificationDate()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$epub = $this->createEpubAndOpenFile($book);
 
@@ -248,7 +240,7 @@ class BookCreateEpubFileTest extends TestCase
 
 	public function testIfCreatorOfBookDeleted()
 	{
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 		$book->create_user->delete();
 
 		$epub = $this->createEpubAndOpenFile($book);
@@ -260,8 +252,7 @@ class BookCreateEpubFileTest extends TestCase
 	{
 		$title = '< & > $ %' . $this->faker->realText(50);
 
-		$section = factory(Section::class)
-			->create(['title' => $title]);
+		$section = Section::factory()->create(['title' => $title]);
 
 		$book = $section->book;
 
@@ -275,8 +266,7 @@ class BookCreateEpubFileTest extends TestCase
 	{
 		$content = '<p><a href="/away?url=ftp%3A%2F%2Fftp">FTP://ftp</a>/test.pdf</p>';
 
-		$section = factory(Section::class)
-			->create(['content' => $content]);
+		$section = Section::factory()->create(['content' => $content]);
 
 		$book = $section->book;
 

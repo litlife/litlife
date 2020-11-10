@@ -11,11 +11,11 @@ class ComplainStoreTest extends TestCase
 {
 	public function testStore()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->complain = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 
 		$count = Complain::getCachedOnModerationCount();
 
@@ -43,9 +43,7 @@ class ComplainStoreTest extends TestCase
 
 	public function testStoreIfOtherExists()
 	{
-		$complain = factory(Complain::class)
-			->states('accepted')
-			->create();
+		$complain = Complain::factory()->accepted()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;

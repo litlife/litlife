@@ -170,9 +170,9 @@ class AnnotationCkeditorContentFilterTest extends DuskTestCase
 		if (empty($this->browser)) {
 			$this->browse(function ($browser) {
 
-				$admin = factory(User::class)->states('admin')->create();
+				$admin = User::factory()->admin()->create();
 
-				$book = factory(Book::class)->create();
+				$book = Book::factory()->create();
 
 				$browser->resize(1000, 1000)
 					->loginAs($admin)

@@ -10,11 +10,11 @@ class BookKeywordDeleteTest extends TestCase
 {
 	public function testDelete()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_remove = true;
 		$user->push();
 
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->statusAccepted();
 		$book_keyword->save();
 
@@ -31,9 +31,7 @@ class BookKeywordDeleteTest extends TestCase
 
 	public function testIfKeywordPrivate()
 	{
-		$book_keyword = factory(BookKeyword::class)
-			->states('private')
-			->create();
+		$book_keyword = BookKeyword::factory()->private()->create();
 
 		$keyword = $book_keyword->keyword;
 
@@ -51,20 +49,15 @@ class BookKeywordDeleteTest extends TestCase
 
 	public function testIfKeywordOnReview()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 		$admin->group->book_keyword_remove = true;
 		$admin->push();
 
-		$book_keyword = factory(BookKeyword::class)
-			->states('on_review')
-			->create();
+		$book_keyword = BookKeyword::factory()->on_review()->create();
 
 		$keyword = $book_keyword->keyword;
 
-		$book_keyword2 = factory(BookKeyword::class)
-			->states('on_review')
-			->create(['keyword_id' => $keyword->id]);
+		$book_keyword2 = BookKeyword::factory()->on_review()->create();
 
 		$this->assertTrue($book_keyword->isSentForReview());
 		$this->assertTrue($book_keyword2->isSentForReview());

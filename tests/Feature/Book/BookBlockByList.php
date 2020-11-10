@@ -11,9 +11,7 @@ class BookBlockByList extends TestCase
 {
 	public function testEnterBlockingListIsOk()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->actingAs($admin)
 			->get(route('books.access_by_list.enter'))
@@ -24,15 +22,11 @@ class BookBlockByList extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$book2 = factory(Book::class)
-			->create();
+		$book2 = Book::factory()->create();
 
 		$this->assertTrue($book->isReadAccess());
 		$this->assertTrue($book->isDownloadAccess());
@@ -80,12 +74,9 @@ class BookBlockByList extends TestCase
 
 	public function testSeeBlockedBooksList()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create(['title' => Str::random(8)]);
+		$book = Book::factory()->create(['title' => Str::random(8)]);
 
 		$this->actingAs($admin)
 			->withSession([
@@ -99,13 +90,9 @@ class BookBlockByList extends TestCase
 
 	public function testDontDisableAccessIfBookIsOnSale()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('on_sale')
-			->create();
+		$book = Book::factory()->on_sale()->create();
 
 		$this->assertTrue($book->isReadAccess());
 		$this->assertTrue($book->isDownloadAccess());
@@ -133,9 +120,7 @@ class BookBlockByList extends TestCase
 
 	public function testBookLinksNotFound()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$text = $this->faker->realText(500);
 

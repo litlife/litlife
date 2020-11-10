@@ -10,9 +10,7 @@ class UserUpdateCreatedBooksCountTest extends TestCase
 {
 	public function testUpdateUserCreatedBooksOnCreate()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$this->assertNotNull($book->create_user);
 

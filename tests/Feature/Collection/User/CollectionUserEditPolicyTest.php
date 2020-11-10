@@ -11,27 +11,23 @@ class CollectionUserEditPolicyTest extends TestCase
 {
 	public function testCollectionCreatorCanEditUser()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$this->assertTrue($collection->create_user->can('editUser', $collection));
 	}
 
 	public function testOtherUserCantEditUser()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('editUser', $collection));
 	}
 
 	public function testCollectionUserCanEditUserWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -41,8 +37,7 @@ class CollectionUserEditPolicyTest extends TestCase
 
 	public function testCollectionUserCantEditUserWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => false]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

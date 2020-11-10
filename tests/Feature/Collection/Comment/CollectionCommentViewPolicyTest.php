@@ -12,9 +12,7 @@ class CollectionCommentViewPolicyTest extends TestCase
 {
 	public function testCanIfCollectionAccepted()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
 		$comment = factory(Comment::class)
 			->make();
@@ -23,16 +21,14 @@ class CollectionCommentViewPolicyTest extends TestCase
 
 		$comment->refresh();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->can('view', $comment));
 	}
 
 	public function testCanIfCollectionPrivateAndUserIsCollectionCreator()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
 		$user = $collection->create_user;
 
@@ -48,8 +44,7 @@ class CollectionCommentViewPolicyTest extends TestCase
 
 	public function testCanIfCollectionPrivateAndUserIsParticipant()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create();
+		$collectionUser = CollectionUser::factory()->create();
 
 		$collection = $collectionUser->collection;
 		$collection->statusPrivate();
@@ -69,8 +64,7 @@ class CollectionCommentViewPolicyTest extends TestCase
 
 	public function testCantIfCollectionPrivateAndUserIsNotParticipant()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create();
+		$collectionUser = CollectionUser::factory()->create();
 
 		$collection = $collectionUser->collection;
 		$collection->statusPrivate();
@@ -83,7 +77,7 @@ class CollectionCommentViewPolicyTest extends TestCase
 
 		$comment->refresh();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('view', $comment));
 	}

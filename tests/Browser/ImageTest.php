@@ -14,7 +14,7 @@ class ImageTest extends DuskTestCase
 	{
 		$this->browse(function (Browser $browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->push();
 
 			$browser->resize(1200, 2080);
@@ -54,8 +54,7 @@ class ImageTest extends DuskTestCase
 
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$upload = UploadedFile::fake()->image('avatar.jpg');

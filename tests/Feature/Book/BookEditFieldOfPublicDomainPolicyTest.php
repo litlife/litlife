@@ -10,10 +10,9 @@ class BookEditFieldOfPublicDomainPolicyTest extends TestCase
 {
 	public function testEditFieldOfPublicDomainPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->assertFalse($user->can('editFieldOfPublicDomain', $book));
 

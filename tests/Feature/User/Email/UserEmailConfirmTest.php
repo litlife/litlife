@@ -11,9 +11,7 @@ class UserEmailConfirmTest extends TestCase
 {
 	public function testConfirm()
 	{
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
 		$this->get(route('email.confirm', ['email' => $email->id, 'token' => $email->tokens->first()->token]))
 			->assertOk()
@@ -24,9 +22,7 @@ class UserEmailConfirmTest extends TestCase
 
 	public function testIfTokenNotFound()
 	{
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
 		$this->get(route('email.confirm', ['email' => $email->id, 'token' => $email->tokens->first()->token . 'wrong_token']))
 			->assertOk()
@@ -37,13 +33,9 @@ class UserEmailConfirmTest extends TestCase
 
 	public function testIfAnotherConfirmedEmailExists()
 	{
-		$email_confirmed = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email_confirmed = UserEmail::factory()->confirmed()->create();
 
-		$email_not_confirmed = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create(['email' => $email_confirmed->email]);
+		$email_not_confirmed = UserEmail::factory()->not_confirmed()->create();
 
 		$this->assertEquals($email_confirmed->email, $email_not_confirmed->email);
 
@@ -76,17 +68,11 @@ class UserEmailConfirmTest extends TestCase
 
 	public function testDontEnableLoginByIDIfThereAreConfirmedMailboxesExists()
 	{
-		$email_confirmed = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email_confirmed = UserEmail::factory()->confirmed()->create();
 
-		$email_confirmed2 = factory(UserEmail::class)
-			->states('confirmed')
-			->create(['user_id' => $email_confirmed->user->id]);
+		$email_confirmed2 = UserEmail::factory()->confirmed()->create();
 
-		$email_not_confirmed = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create(['email' => $email_confirmed->email]);
+		$email_not_confirmed = UserEmail::factory()->not_confirmed()->create();
 
 		$this->assertFalse($email_confirmed->user->setting->isLoginWithIdEnable());
 
@@ -112,24 +98,19 @@ class UserEmailConfirmTest extends TestCase
 
 	public function testIfOtherEmailExists()
 	{
-		$user = factory(User::class)
-			->states('with_not_confirmed_email')
-			->create();
+		$user = User::factory()->with_not_confirmed_email()->create();
 
 		$user_email = $user->emails()->first();
 
 		$user->refreshConfirmedMailboxCount();
 		$user->push();
 
-		$user_email_token = factory(UserEmailToken::class)
-			->create(['user_email_id' => $user_email->id])
+		$user_email_token = UserEmailToken::factory()->create(['user_email_id' => $user_email->id])
 			->fresh();
 
 		//
 
-		$user2 = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user2 = User::factory()->with_confirmed_email()->create();
 
 		$user_email2 = $user2->emails()->first();
 		$user_email2->email = $user_email->email;
@@ -140,8 +121,7 @@ class UserEmailConfirmTest extends TestCase
 		$user2->setting->loginWithIdDisable();
 		$user2->push();
 
-		$user_email_token2 = factory(UserEmailToken::class)
-			->create(['user_email_id' => $user_email2->id])
+		$user_email_token2 = UserEmailToken::factory()->create(['user_email_id' => $user_email2->id])
 			->fresh();
 
 		$this->assertNotEquals($user->id, $user2->id);

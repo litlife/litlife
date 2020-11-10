@@ -25,8 +25,7 @@ class CommentCreateUserBookAuthorTypeTest extends TestCase
 		$book = $author->any_books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);
@@ -51,8 +50,7 @@ class CommentCreateUserBookAuthorTypeTest extends TestCase
 		$book = $author->any_books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);
@@ -77,8 +75,7 @@ class CommentCreateUserBookAuthorTypeTest extends TestCase
 		$book = $author->any_books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);
@@ -103,8 +100,7 @@ class CommentCreateUserBookAuthorTypeTest extends TestCase
 		$book = $author->any_books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'commentable_id' => $book->id
 			]);
 
@@ -135,8 +131,7 @@ class CommentCreateUserBookAuthorTypeTest extends TestCase
 
 		$this->assertEquals(4, $book->authors()->count());
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);
@@ -151,13 +146,9 @@ class CommentCreateUserBookAuthorTypeTest extends TestCase
 
 	public function testBookShowIsOkWithoutAuthorsWithComments()
 	{
-		$book = factory(Book::class)
-			->states('without_any_authors')
-			->create();
+		$book = Book::factory()->without_any_authors()->create();
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $book->id]);
+		$comment = Comment::factory()->book()->create();
 
 		$this->get(route('books.show', $book))
 			->assertOk();

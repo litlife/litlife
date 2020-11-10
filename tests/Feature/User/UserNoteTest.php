@@ -16,8 +16,7 @@ class UserNoteTest extends TestCase
 	 */
 	public function testIndexHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.notes.index', ['user' => $user]))
@@ -27,11 +26,9 @@ class UserNoteTest extends TestCase
 
 	public function testIndexHttpOtherUser()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$this->actingAs($other_user)
 			->get(route('users.notes.index', ['user' => $user]))
@@ -40,8 +37,7 @@ class UserNoteTest extends TestCase
 
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.notes.create', ['user' => $user]))
@@ -50,8 +46,7 @@ class UserNoteTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$bb_text = '[b]test[/b]';
 
@@ -74,8 +69,7 @@ class UserNoteTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
 		$this->actingAs($note->create_user)
 			->get(route('notes.edit', ['note' => $note->id]))
@@ -85,11 +79,9 @@ class UserNoteTest extends TestCase
 
 	public function testEditHttpUserNotFound()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
 		$note->create_user->delete();
 
@@ -100,11 +92,9 @@ class UserNoteTest extends TestCase
 
 	public function testEditHttpOtherUser()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$this->actingAs($other_user)
 			->get(route('notes.edit', ['note' => $note->id]))
@@ -113,8 +103,7 @@ class UserNoteTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$note = factory(UserNote::class)
-			->create(['external_images_downloaded' => false]);
+		$note = UserNote::factory()->create(['external_images_downloaded' => false]);
 
 		$bb_text = $this->faker->realText(100);
 
@@ -134,11 +123,9 @@ class UserNoteTest extends TestCase
 
 	public function testUpdateHttpOtherUser()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$this->actingAs($other_user)
 			->patch(route('notes.update', ['note' => $note->id]),
@@ -148,8 +135,7 @@ class UserNoteTest extends TestCase
 
 	public function testDelete()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
 		$this->actingAs($note->create_user)
 			->delete(route('notes.destroy', ['id' => $note->id]))
@@ -168,11 +154,9 @@ class UserNoteTest extends TestCase
 
 	public function testDelteHttpOtherUser()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$this->actingAs($other_user)
 			->delete(route('notes.destroy', ['id' => $note->id]))
@@ -181,8 +165,7 @@ class UserNoteTest extends TestCase
 
 	public function testNotFound()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
 		$note->delete();
 
@@ -193,8 +176,7 @@ class UserNoteTest extends TestCase
 
 	public function testBBEmpty()
 	{
-		$note = factory(UserNote::class)
-			->create();
+		$note = UserNote::factory()->create();
 
 		$this->expectException(QueryException::class);
 

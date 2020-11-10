@@ -41,7 +41,7 @@ blade;
 	 */
 	public function testSoftDeleted()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->delete();
 
 		$component = new UserAvatar($user, 200, 200);
@@ -68,7 +68,7 @@ blade;
 	 */
 	public function testHrefEnable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserAvatar($user, 200, 200, 90, 1);
 
@@ -94,7 +94,7 @@ blade;
 	 */
 	public function testHrefDisable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserAvatar($user, 200, 200, 90, 0);
 
@@ -116,7 +116,7 @@ blade;
 	 */
 	public function testMaxWidthOverwrite()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserAvatar($user, 200, 200, 90, 0, '', 'max-width:100%');
 
@@ -130,7 +130,7 @@ blade;
 	 */
 	public function testMaxWidthMaxHeight()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserAvatar($user, 200, 200, 90, 0, '');
 

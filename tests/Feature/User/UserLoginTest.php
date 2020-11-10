@@ -27,9 +27,7 @@ class UserLoginTest extends TestCase
 
 		$password = $this->faker->password;
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password]);
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails->first()->email;
 
@@ -51,7 +49,7 @@ class UserLoginTest extends TestCase
 
 	public function testLogoutHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('profile', $user))
@@ -76,9 +74,7 @@ class UserLoginTest extends TestCase
 
 		$password = $this->faker->password;
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password]);
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$this->assertNull($user->token);
 
@@ -116,8 +112,7 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->create(['password' => $password])
+		$user = User::factory()->create(['password' => $password])
 			->fresh();
 
 		$user->setting->login_with_id = true;
@@ -137,8 +132,7 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->create(['password' => $password])
+		$user = User::factory()->create(['password' => $password])
 			->fresh();
 
 		$user->setting->login_with_id = false;
@@ -160,9 +154,8 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_not_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_not_confirmed_email()->create(
+			)
 			->fresh();
 
 		$user->setting->login_with_id = true;
@@ -186,8 +179,7 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->create(['password' => $password])
+		$user = User::factory()->create(['password' => $password])
 			->fresh();
 
 		$user->setting->login_with_id = true;
@@ -209,15 +201,13 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
 
-		$not_confirmed_email = factory(UserEmail::class)
-			->create([
+		$not_confirmed_email = UserEmail::factory()->create([
 				'email' => $email->email,
 				'confirm' => false
 			]);
@@ -239,15 +229,13 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
 
-		$not_confirmed_email = factory(UserEmail::class)
-			->create([
+		$not_confirmed_email = UserEmail::factory()->create([
 				'email' => $email->email,
 				'confirm' => false
 			]);
@@ -268,9 +256,8 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_not_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_not_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
@@ -300,9 +287,8 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
@@ -326,9 +312,8 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
@@ -353,9 +338,8 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
@@ -380,9 +364,8 @@ class UserLoginTest extends TestCase
 	{
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails->first();
@@ -408,9 +391,7 @@ class UserLoginTest extends TestCase
 
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password]);
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails->first();
 
@@ -432,8 +413,7 @@ class UserLoginTest extends TestCase
 
 		   $password = uniqid();
 
-		   $user = factory(User::class)
-			   ->create(['password' => $password] )
+		   $user = User::factory()->create(['password' => $password] )
 			   ->fresh();
 
 		   $email = $user->emails->first();
@@ -470,9 +450,8 @@ class UserLoginTest extends TestCase
 
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 
 		$email = $user->emails()->get()->first();
@@ -512,8 +491,7 @@ class UserLoginTest extends TestCase
 
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->create(['password' => $password])
+		$user = User::factory()->create(['password' => $password])
 			->fresh();
 
 		$not_confirmed_email = factory(UserEmail::class)
@@ -541,9 +519,7 @@ class UserLoginTest extends TestCase
 
 		$password = $this->faker->password;
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password]);
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails->first()->email;
 
@@ -563,9 +539,7 @@ class UserLoginTest extends TestCase
 
 		$password = $this->faker->password;
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password]);
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails->first()->email;
 
@@ -585,9 +559,7 @@ class UserLoginTest extends TestCase
 
 		$password = $this->faker->password;
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password]);
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$user->confirmed_mailbox_count = 0;
 		$user->save();
@@ -624,9 +596,7 @@ class UserLoginTest extends TestCase
 
 		$password = $this->faker->password;
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails->first()->email;
 

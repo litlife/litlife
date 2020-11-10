@@ -9,9 +9,7 @@ class CommentPublishTest extends TestCase
 {
 	public function testPublishPrivate()
 	{
-		$comment = factory(Comment::class)
-			->states('book', 'private')
-			->create();
+		$comment = Comment::factory()->book()->private()->create();
 
 		$this->assertTrue($comment->isPrivate());
 

@@ -11,11 +11,9 @@ class TopicRestoreTest extends TestCase
 {
 	public function testRestore()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 
@@ -40,8 +38,7 @@ class TopicRestoreTest extends TestCase
 
 	public function testRestoreOnlyPostsThatAreOlderThanDeletingTheTopic()
 	{
-		$topic = factory(Topic::class)
-			->create(['deleted_at' => now()]);
+		$topic = Topic::factory()->create(['deleted_at' => now()]);
 
 		$post = factory(Post::class)
 			->make(['deleted_at' => $topic->deleted_at->subMinute()]);

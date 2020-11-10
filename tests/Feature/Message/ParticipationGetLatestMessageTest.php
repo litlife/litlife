@@ -9,9 +9,7 @@ class ParticipationGetLatestMessageTest extends TestCase
 {
 	public function testIfMessageViewed()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_viewed_message()->create();
 
 		$message = $conversation->messages()->latestWithId()->first();
 
@@ -24,9 +22,7 @@ class ParticipationGetLatestMessageTest extends TestCase
 
 	public function testIfMessageNotViewed()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
 		$message = $conversation->messages()->latestWithId()->first();
 
@@ -39,9 +35,7 @@ class ParticipationGetLatestMessageTest extends TestCase
 
 	public function testIfLatestViewedMessageDeletedForSender()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->oldestWithId()->first();
 		$secondMessage = $conversation->messages()->latestWithId()->first();
@@ -64,9 +58,7 @@ class ParticipationGetLatestMessageTest extends TestCase
 
 	public function testIfLatestViewedMessageDeletedForRecepient()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->oldestWithId()->first();
 		$secondMessage = $conversation->messages()->latestWithId()->first();
@@ -89,9 +81,7 @@ class ParticipationGetLatestMessageTest extends TestCase
 
 	public function testIfLatestNotViewedMessageDeletedForSender()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->oldestWithId()->first();
 		$secondMessage = $conversation->messages()->latestWithId()->first();
@@ -110,9 +100,7 @@ class ParticipationGetLatestMessageTest extends TestCase
 
 	public function testIfLatestNotViewedMessageDeletedForRecepient()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->oldestWithId()->first();
 		$secondMessage = $conversation->messages()->latestWithId()->first();

@@ -9,8 +9,7 @@ class UserCollectionCreateTest extends TestCase
 {
 	public function testUserCreatedCollectionsHttp()
 	{
-		$collection = factory(Collection::class)
-			->create(['title' => uniqid()]);
+		$collection = Collection::factory()->create(['title' => uniqid()]);
 
 		$user = $collection->create_user;
 

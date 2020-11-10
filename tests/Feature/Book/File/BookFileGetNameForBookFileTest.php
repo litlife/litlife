@@ -10,14 +10,11 @@ class BookFileGetNameForBookFileTest extends TestCase
 {
 	public function testNameForBookFile()
 	{
-		$book = factory(Book::class)
-			->states('without_any_authors')
-			->create(['title' => 'Название книги']);
+		$book = Book::factory()->without_any_authors()->create();
 
 		$this->assertEquals('Название книги', $book->getNameForBookFile());
 
-		$author = factory(Author::class)
-			->create([
+		$author = Author::factory()->create([
 				'first_name' => 'Имя',
 				'last_name' => 'Фамилия',
 				'middle_name' => 'Отчество',

@@ -15,12 +15,9 @@ class AdminNoteTest extends TestCase
 	 */
 	public function testPolicy()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 
-		$admin_note = factory(AdminNote::class)
-			->create();
+		$admin_note = AdminNote::factory()->create();
 
 		$this->assertFalse($user->can('create', AdminNote::class));
 		$this->assertFalse($user->can('view', AdminNote::class));
@@ -54,14 +51,12 @@ class AdminNoteTest extends TestCase
 
 	public function testIndexHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->group->admin_comment = true;
 		$user->push();
 
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('admin_notes.index', ['type' => 'user', 'id' => $user2->id]))
@@ -70,14 +65,12 @@ class AdminNoteTest extends TestCase
 
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->group->admin_comment = true;
 		$user->push();
 
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('admin_notes.create', ['type' => 'user', 'id' => $user2->id]))
@@ -86,14 +79,12 @@ class AdminNoteTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->group->admin_comment = true;
 		$user->push();
 
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
 		$text = $this->faker->realText(100);
 
@@ -113,8 +104,7 @@ class AdminNoteTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$admin_note = factory(AdminNote::class)
-			->create()->fresh();
+		$admin_note = AdminNote::factory()->create()->fresh();
 
 		$admin_note->create_user->group->admin_comment = true;
 		$admin_note->create_user->push();
@@ -126,8 +116,7 @@ class AdminNoteTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$admin_note = factory(AdminNote::class)
-			->create()->fresh();
+		$admin_note = AdminNote::factory()->create()->fresh();
 
 		$admin_note->create_user->group->admin_comment = true;
 		$admin_note->create_user->push();
@@ -148,8 +137,7 @@ class AdminNoteTest extends TestCase
 
 	public function testDeleteHttp()
 	{
-		$admin_note = factory(AdminNote::class)
-			->create()->fresh();
+		$admin_note = AdminNote::factory()->create()->fresh();
 
 		$admin_note->create_user->group->admin_comment = true;
 		$admin_note->create_user->push();
@@ -170,8 +158,7 @@ class AdminNoteTest extends TestCase
 	{
 		$this->assertGuest();
 
-		$admin_note = factory(AdminNote::class)
-			->create();
+		$admin_note = AdminNote::factory()->create();
 
 		$response = $this->get(route('admin_notes.edit', $admin_note))
 			->assertStatus(401);

@@ -16,9 +16,7 @@ class UserEmailSendConfirmTokenTest extends TestCase
 	{
 		Notification::fake();
 
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
 		$this->actingAs($email->user)
 			->followingRedirects()
@@ -57,9 +55,7 @@ class UserEmailSendConfirmTokenTest extends TestCase
 	{
 		Notification::fake();
 
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
 		$this->get(route('email.send_confirm_token', ['email' => $email->id]))
 			->assertSeeText(__('user_email.confirm_url_sended', ['email' => $email->email]));
@@ -96,9 +92,7 @@ class UserEmailSendConfirmTokenTest extends TestCase
 	{
 		Mail::fake();
 
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
 		$this->assertTrue($email->isConfirmed());
 
@@ -108,13 +102,9 @@ class UserEmailSendConfirmTokenTest extends TestCase
 
 	public function testIfAnotherConfirmedEmailExists()
 	{
-		$email_confirmed = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email_confirmed = UserEmail::factory()->confirmed()->create();
 
-		$email_not_confirmed = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create(['email' => $email_confirmed->email]);
+		$email_not_confirmed = UserEmail::factory()->not_confirmed()->create();
 
 		$this->actingAs($email_confirmed->user)
 			->followingRedirects()
@@ -129,16 +119,11 @@ class UserEmailSendConfirmTokenTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create(['user_id' => $user->id]);
+		$email = UserEmail::factory()->confirmed()->create();
 
-		$email2 = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->not_confirmed()->create();
 
 		$this->actingAs($user)
 			->followingRedirects()
@@ -195,15 +180,11 @@ class UserEmailSendConfirmTokenTest extends TestCase
 	/*
 		public function testIfOtherConfirmedEmailExists()
 		{
-			$email = factory(UserEmail::class)
-				->states('not_confirmed')
-				->create();
+			$email = UserEmail::factory()->not_confirmed()->create();
 
 			$this->assertFalse($email->isConfirmed());
 
-			$email2 = factory(UserEmail::class)
-				->states('confirmed')
-				->create(['email' => $email->email]);
+			$email2 = UserEmail::factory()->confirmed()->create();
 
 			$this->assertTrue($email2->isConfirmed());
 

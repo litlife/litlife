@@ -9,9 +9,7 @@ class BookGetFirstPaidSectionTest extends TestCase
 {
 	public function testWithOneChapter()
 	{
-		$book = factory(Book::class)
-			->states('on_sale', 'with_section')
-			->create();
+		$book = Book::factory()->on_sale()->with_section()->create();
 
 		$section = $book->sections()->chapter()->first();
 
@@ -20,9 +18,7 @@ class BookGetFirstPaidSectionTest extends TestCase
 
 	public function testWithThreeChapters()
 	{
-		$book = factory(Book::class)
-			->states('on_sale', 'with_three_sections')
-			->create(['free_sections_count' => 1]);
+		$book = Book::factory()->on_sale()->with_three_sections()->create(['free_sections_count' => 1]);
 
 		$sections = $book->sections()->chapter()->get();
 

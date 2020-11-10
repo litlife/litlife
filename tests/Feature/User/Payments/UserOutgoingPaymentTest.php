@@ -37,8 +37,7 @@ class UserOutgoingPaymentTest extends TestCase
 	 */
 	public function testSumCannotExceedAvailableBalance()
 	{
-		$wallet = factory(UserPaymentDetail::class)
-			->create()->fresh();
+		$wallet = UserPaymentDetail::factory()->create()->fresh();
 
 		$user = $wallet->user;
 		$user->group->withdrawal = true;
@@ -66,11 +65,9 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testWalletNotFound()
 	{
-		$wallet = factory(UserPaymentDetail::class)
-			->create()->fresh();
+		$wallet = UserPaymentDetail::factory()->create()->fresh();
 
-		$wallet2 = factory(UserPaymentDetail::class)
-			->create()->fresh();
+		$wallet2 = UserPaymentDetail::factory()->create()->fresh();
 		$user = $wallet2->user;
 		$user->group->withdrawal = true;
 		$user->push();
@@ -99,14 +96,11 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->states('with_thousand_earned_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_earned_money_on_balance()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
-		$wallet = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id])
+		$wallet = UserPaymentDetail::factory()->create(['user_id' => $user->id])
 			->fresh();
 
 		config(['litlife.min_outgoing_payment_sum' => 500]);
@@ -178,14 +172,11 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testMinimumSum()
 	{
-		$user = factory(User::class)
-			->states('with_thousand_earned_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_earned_money_on_balance()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
-		$wallet = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id])
+		$wallet = UserPaymentDetail::factory()->create(['user_id' => $user->id])
 			->fresh();
 
 		config(['litlife.min_outgoing_payment_sum' => 1000]);
@@ -202,9 +193,7 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testOutgoingPaymentJobStatusNotComlete()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserOutgoingPayment::factory()->wait()->create();
 
 		$this->assertTrue($payment->transaction->isStatusWait());
 
@@ -241,9 +230,7 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		Notification::fake();
 
-		$payment = factory(UserOutgoingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserOutgoingPayment::factory()->wait()->create();
 
 		$json = [
 			'result' => [
@@ -316,9 +303,7 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		Notification::fake();
 
-		$payment = factory(UserOutgoingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserOutgoingPayment::factory()->wait()->create();
 
 		$json = [
 			'result' => [
@@ -355,9 +340,7 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_money_on_balance()->create();
 
 		$payment = factory(UserPaymentTransaction::class)
 			->states(['outgoing', 'processing'])
@@ -408,9 +391,7 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		Notification::fake();
 
-		$payment = factory(UserOutgoingPayment::class)
-			->states('error')
-			->create();
+		$payment = UserOutgoingPayment::factory()->error()->create();
 
 		$this->assertTrue($payment->transaction->isStatusError());
 
@@ -449,9 +430,7 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		Notification::fake();
 
-		$payment = factory(UserOutgoingPayment::class)
-			->states('processing')
-			->create();
+		$payment = UserOutgoingPayment::factory()->processing()->create();
 
 		$json = [
 			'error' => [
@@ -479,9 +458,7 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testSetWmrPaymentType()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('processing')
-			->create(['payment_type' => 'wmr']);
+		$payment = UserOutgoingPayment::factory()->processing()->create();
 
 		$this->assertEquals('webmoney', $payment->payment_type);
 	}
@@ -553,37 +530,29 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testWithdrawalPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('withdrawal', $user));
 
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$user = $author->managers->first()->user;
 
 		$this->assertFalse($user->can('withdrawal', $user));
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$user = $author->managers->first()->user;
 
 		$this->assertFalse($user->can('withdrawal', $user));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
 		$this->assertFalse($user->can('withdrawal', $user));
 
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$user = $author->managers->first()->user;
 		$user->group->withdrawal = true;
@@ -593,9 +562,7 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testHandleWaitedToError()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserOutgoingPayment::factory()->wait()->create();
 
 		$json = [
 			'error' => [
@@ -643,9 +610,7 @@ class UserOutgoingPaymentTest extends TestCase
 	{
 		config(['litlife.max_outgoing_payment_retry_failed_count' => 3]);
 
-		$user = factory(User::class)
-			->states('with_thousand_earned_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_earned_money_on_balance()->create();
 
 		$payment = factory(UserOutgoingPayment::class)
 			->states('error')
@@ -693,9 +658,7 @@ class UserOutgoingPaymentTest extends TestCase
 		config(['unitpay.withdrawal_restrictions.card_rf.min' => $min]);
 		config(['unitpay.withdrawal_restrictions.card.min' => '10']);
 
-		$wallet = factory(UserPaymentDetail::class)
-			->states('card', 'ru_card')
-			->create()
+		$wallet = UserPaymentDetail::factory()->card()->ru_card()->create()
 			->fresh();
 
 		$response = $this->actingAs($wallet->user)
@@ -715,9 +678,8 @@ class UserOutgoingPaymentTest extends TestCase
 
 		config(['unitpay.withdrawal_restrictions.webmoney.min' => $min]);
 
-		$wallet = factory(UserPaymentDetail::class)
-			->states('webmoney')
-			->create()
+		$wallet = UserPaymentDetail::factory()->webmoney()->create(
+			)
 			->fresh();
 
 		$response = $this->actingAs($wallet->user)
@@ -737,9 +699,8 @@ class UserOutgoingPaymentTest extends TestCase
 
 		config(['unitpay.withdrawal_restrictions.yandex.max' => $max]);
 
-		$wallet = factory(UserPaymentDetail::class)
-			->states('yandex')
-			->create()
+		$wallet = UserPaymentDetail::factory()->yandex()->create(
+			)
 			->fresh();
 
 		$response = $this->actingAs($wallet->user)
@@ -755,9 +716,7 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testSeeUnitPay1000ErrorHttp()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'error', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->outgoing()->error()->unitpay()->create();
 
 		$s = json_decode('{"error":{"message":"<b> \u0412\u043d\u0438\u043c\u0430\u043d\u0438\u0435!<\/b> \u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0443\u043c\u043c\u0430 \u0435\u0434\u0438\u043d\u043e\u0432\u0440\u0435\u043c\u0435\u043d\u043d\u043e\u0433\u043e \u043f\u043b\u0430\u0442\u0435\u0436\u0430 \u0434\u043e\u043b\u0436\u043d\u0430 \u0431\u044b\u0442\u044c \u043d\u0435 \u043c\u0435\u043d\u0435\u0435 50 \u0440\u0443\u0431\u043b\u0435\u0439.","code":1000}}');
 
@@ -775,9 +734,7 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testWithdrawalPageHttp()
 	{
-		$user = factory(User::class)
-			->states('with_thousand_earned_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_earned_money_on_balance()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
@@ -788,13 +745,11 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testWithdrawalOtherUserForbiddenHttp()
 	{
-		$user = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_money_on_balance()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
-		$user2 = factory(User::class)->create();
+		$user2 = User::factory()->create();
 		$user2->group->withdrawal = true;
 		$user2->push();
 
@@ -805,19 +760,16 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testWithdrawalSaveHttp()
 	{
-		$user = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_money_on_balance()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
-		$wallet = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id])
+		$wallet = UserPaymentDetail::factory()->create(['user_id' => $user->id])
 			->fresh();
 
 		config(['litlife.min_outgoing_payment_sum' => 100]);
 
-		$user2 = factory(User::class)->create();
+		$user2 = User::factory()->create();
 		$user2->group->withdrawal = true;
 		$user2->push();
 
@@ -833,9 +785,7 @@ class UserOutgoingPaymentTest extends TestCase
 
 	public function testPayoutPartnerComission()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'success', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->outgoing()->success()->unitpay()->create();
 
 		$this->assertEquals('0.45', $transaction->operable->getPayoutComission());
 		$this->assertEquals('0', $transaction->operable->getPartnerComission());

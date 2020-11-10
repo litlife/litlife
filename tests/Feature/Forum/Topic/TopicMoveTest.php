@@ -11,14 +11,14 @@ class TopicMoveTest extends TestCase
 {
 	public function testMove()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = true;
 		$user->push();
 
-		$post = factory(Post::class)->create()->fresh();
-		$post2 = factory(Post::class)->create(['topic_id' => $post->topic->id])->fresh();
+		$post = Post::factory()->create()->fresh();
+		$post2 = Post::factory()->create(['topic_id' => $post->topic->id])->fresh();
 
-		$forum = factory(Forum::class)->create()->fresh();
+		$forum = Forum::factory()->create()->fresh();
 
 		$topic = $post->topic;
 		$forum2 = $post->topic->forum;

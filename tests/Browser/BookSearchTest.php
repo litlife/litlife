@@ -20,12 +20,11 @@ class BookSearchTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$genre = factory(Genre::class)->states('with_main_genre')->create();
+			$genre = Genre::factory()->with_main_genre()->create();
 
 			$genre_group = $genre->group;
 
-			$book = factory(Book::class)
-				->create(['title' => Str::random(8)]);
+			$book = Book::factory()->create(['title' => Str::random(8)]);
 			$book->genres()->sync([$genre->id]);
 			$book->readAccessEnable();
 			$book->downloadAccessEnable();
@@ -65,11 +64,11 @@ class BookSearchTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$genre = factory(Genre::class)->states('with_main_genre')->create();
+			$genre = Genre::factory()->with_main_genre()->create();
 
 			$genre_group = $genre->group;
 
-			$book = factory(Book::class)->create(['title' => uniqid()]);
+			$book = Book::factory()->create(['title' => uniqid()]);
 			$book->genres()->sync([$genre->id]);
 			$book->push();
 
@@ -111,7 +110,7 @@ class BookSearchTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$book_keyword = factory(BookKeyword::class)->create();
+			$book_keyword = BookKeyword::factory()->create();
 
 			$book = $book_keyword->book;
 			$keyword = $book_keyword->keyword;

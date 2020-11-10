@@ -11,11 +11,11 @@ class ComplainCreateTest extends TestCase
 {
 	public function testCreate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->complain = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('complains.report', ['type' => 'comment', 'id' => $comment->id]))
@@ -25,9 +25,7 @@ class ComplainCreateTest extends TestCase
 
 	public function testCreateNewIfOtherAcceptedExists()
 	{
-		$complain = factory(Complain::class)
-			->states('accepted')
-			->create();
+		$complain = Complain::factory()->accepted()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;
@@ -45,9 +43,7 @@ class ComplainCreateTest extends TestCase
 
 	public function testCreateIfReviewStarts()
 	{
-		$complain = factory(Complain::class)
-			->states('review_starts')
-			->create();
+		$complain = Complain::factory()->review_starts()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;

@@ -11,11 +11,9 @@ class ComplainShowTest extends TestCase
 {
 	public function testShowIsOkIfOnReview()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;
@@ -29,13 +27,9 @@ class ComplainShowTest extends TestCase
 
 	public function testComplainShowStringAsID()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('wall_post')
-			->create();
+		$complain = Complain::factory()->wall_post()->create();
 
 		$this->actingAs($admin)
 			->get(route('complaints.show', ['complain' => Str::random(5)]))
@@ -44,9 +38,7 @@ class ComplainShowTest extends TestCase
 
 	public function testSeeReviewed()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'accepted')
-			->create();
+		$complain = Complain::factory()->comment()->accepted()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;

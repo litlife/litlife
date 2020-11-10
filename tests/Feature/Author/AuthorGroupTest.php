@@ -11,17 +11,14 @@ class AuthorGroupTest extends TestCase
 {
 	public function testAuthorsGroupIndexHttp()
 	{
-		$author_group = factory(AuthorGroup::class)
-			->states('with_two_authors')
-			->create();
+		$author_group = AuthorGroup::factory()->with_two_authors()->create();
 
 		$authors = $author_group->authors()->get();
 
 		$author = $authors->first();
 		$another_author = $authors->last();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('authors.group.index', ['author' => $author]))
@@ -44,13 +41,11 @@ class AuthorGroupTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$another_author = factory(Author::class)
-			->create();
+		$another_author = Author::factory()->create();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_group_and_ungroup = true;
 		$admin->push();
 
@@ -88,13 +83,11 @@ class AuthorGroupTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_group_and_ungroup = true;
 		$admin->push();
 
-		$group = factory(AuthorGroup::class)
-			->states('with_two_authors')
-			->create();
+		$group = AuthorGroup::factory()->with_two_authors()->create();
 
 		$author = $group->authors()->get()->first();
 		$another_author = $group->authors()->get()->last();

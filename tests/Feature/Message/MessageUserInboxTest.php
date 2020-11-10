@@ -10,7 +10,7 @@ class MessageUserInboxTest extends TestCase
 {
 	public function test401UsersInbox()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->get(route('users.inbox', ['user' => $user]))
 			->assertStatus(401);
@@ -18,8 +18,8 @@ class MessageUserInboxTest extends TestCase
 
 	public function testInboxPreviewText()
 	{
-		$auth_user = factory(User::class)->create();
-		$user = factory(User::class)->create();
+		$auth_user = User::factory()->create();
+		$user = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')

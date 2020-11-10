@@ -10,9 +10,7 @@ class ForumHasUserInAccessTest extends TestCase
 {
 	public function testTrue()
 	{
-		$forum = factory(Forum::class)
-			->states('private', 'with_user_access')
-			->create();
+		$forum = Forum::factory()->private()->with_user_access()->create();
 
 		$user = $forum->users_with_access->first();
 
@@ -21,12 +19,9 @@ class ForumHasUserInAccessTest extends TestCase
 
 	public function testFalse()
 	{
-		$forum = factory(Forum::class)
-			->states('private')
-			->create();
+		$forum = Forum::factory()->private()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($forum->hasUserInAccess($user));
 	}

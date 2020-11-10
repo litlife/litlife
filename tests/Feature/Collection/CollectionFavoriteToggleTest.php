@@ -10,11 +10,9 @@ class CollectionFavoriteToggleTest extends TestCase
 {
 	public function testToggleToFavorites()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('collections.favorite.toggle', ['collection' => $collection]))
@@ -41,8 +39,7 @@ class CollectionFavoriteToggleTest extends TestCase
 
 	public function testUserFavoriteCollectionsHttp()
 	{
-		$collection = factory(Collection::class)
-			->create(['title' => uniqid()]);
+		$collection = Collection::factory()->create(['title' => uniqid()]);
 
 		$user = $collection->create_user;
 

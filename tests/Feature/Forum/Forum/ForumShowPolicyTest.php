@@ -10,18 +10,16 @@ class ForumShowPolicyTest extends TestCase
 {
 	public function testCanIfNotPrivate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertTrue($user->can('view', $forum));
 	}
 
 	public function testCanIfPrivateAndUserInAccessList()
 	{
-		$forum = factory(Forum::class)
-			->states('private', 'with_user_access')
-			->create();
+		$forum = Forum::factory()->private()->with_user_access()->create();
 
 		$user = $forum->users_with_access()->first();
 
@@ -30,12 +28,9 @@ class ForumShowPolicyTest extends TestCase
 
 	public function testCantIfPrivateAndUserNotInAccessList()
 	{
-		$forum = factory(Forum::class)
-			->states('private', 'with_user_access')
-			->create();
+		$forum = Forum::factory()->private()->with_user_access()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('view', $forum));
 	}

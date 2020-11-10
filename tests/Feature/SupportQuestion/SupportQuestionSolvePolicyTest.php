@@ -11,9 +11,7 @@ class SupportQuestionSolvePolicyTest extends TestCase
 {
 	public function testCanIfUserHasPermissionAndStartedReview()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->review_starts()->create();
 
 		$user = $supportQuestion->status_changed_user;
 		$user->group->reply_to_support_service = true;
@@ -24,10 +22,9 @@ class SupportQuestionSolvePolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermission()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = false;
 		$user->push();
 
@@ -36,11 +33,9 @@ class SupportQuestionSolvePolicyTest extends TestCase
 
 	public function testCantSolveIfAccepted()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('accepted')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 
@@ -49,11 +44,9 @@ class SupportQuestionSolvePolicyTest extends TestCase
 
 	public function testCantIfNotStartedReview()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 
@@ -62,9 +55,7 @@ class SupportQuestionSolvePolicyTest extends TestCase
 
 	public function testCanIfUserThatCreatedRequestAndLastMessageIsNotCreatorOfRequest()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
 		$user = $supportQuestion->create_user;
 
@@ -80,9 +71,7 @@ class SupportQuestionSolvePolicyTest extends TestCase
 
 	public function testCantIfUserThatCreatedRequestAndLastMessageIsCreatorOfRequest()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
 		$user = $supportQuestion->create_user;
 

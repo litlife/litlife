@@ -41,9 +41,7 @@ class BookFreeFragmentTest extends TestCase
 
 	public function testShowRightCharactersCountIfNoFreeSections()
 	{
-		$book = factory(Book::class)
-			->states('on_sale', 'with_section')
-			->create();
+		$book = Book::factory()->on_sale()->with_section()->create();
 
 		$this->assertEquals(0, $book->getFreeFragmentCharactersPercentage());
 		$this->assertEquals(0, $book->getFreeFragmentCharactersCount());
@@ -51,9 +49,7 @@ class BookFreeFragmentTest extends TestCase
 
 	public function testIfAllChaptersAreFree()
 	{
-		$book = factory(Book::class)
-			->states('on_sale', 'with_section')
-			->create();
+		$book = Book::factory()->on_sale()->with_section()->create();
 
 		$book->free_sections_count = 1;
 		$book->save();
@@ -74,17 +70,16 @@ class BookFreeFragmentTest extends TestCase
 
 	public function testGetFreeFragmentCharactersCount()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$count1 = rand(1000, 5000);
 		$count2 = rand(5000, 10000);
 
-		$section = factory(Section::class)->states('accepted', 'chapter')->create(['book_id' => $book->id]);
+		$section = Section::factory()->accepted()->chapter()->create(['book_id' => $book->id]);
 		$section->character_count = $count1;
 		$section->save();
 
-		$section2 = factory(Section::class)->states('accepted', 'chapter')->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->accepted()->chapter()->create(['book_id' => $book->id]);
 		$section2->character_count = $count2;
 		$section2->save();
 
@@ -101,9 +96,7 @@ class BookFreeFragmentTest extends TestCase
 
 	public function testSeeRecommendedMinimumFreeFragmentAsAPercentage()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -118,7 +111,7 @@ class BookFreeFragmentTest extends TestCase
 		$section->character_count = $count1;
 		$section->save();
 
-		$section2 = factory(Section::class)->states('accepted', 'chapter')->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->accepted()->chapter()->create(['book_id' => $book->id]);
 		$section2->character_count = $count2;
 		$section2->save();
 
@@ -142,9 +135,7 @@ class BookFreeFragmentTest extends TestCase
 
 	public function testDontSeeRecommendedMinimumFreeFragmentAsAPercentage()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -159,7 +150,7 @@ class BookFreeFragmentTest extends TestCase
 		$section->character_count = $count1;
 		$section->save();
 
-		$section2 = factory(Section::class)->states('accepted', 'chapter')->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->accepted()->chapter()->create(['book_id' => $book->id]);
 		$section2->character_count = $count2;
 		$section2->save();
 

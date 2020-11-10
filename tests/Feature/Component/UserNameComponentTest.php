@@ -36,7 +36,7 @@ class UserNameComponentTest extends TestCase
 	 */
 	public function testSoftDeleted()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->delete();
 
 		$component = new UserName($user);
@@ -60,7 +60,7 @@ class UserNameComponentTest extends TestCase
 	 */
 	public function testHrefEnable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserName($user);
 		/*
@@ -82,7 +82,7 @@ class UserNameComponentTest extends TestCase
 	 */
 	public function testHrefDisable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserName($user, false);
 		/*
@@ -104,7 +104,7 @@ class UserNameComponentTest extends TestCase
 	 */
 	public function testItemProp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$component = new UserName($user, false, 'prop');
 		/*

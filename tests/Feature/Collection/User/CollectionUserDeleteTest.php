@@ -9,8 +9,7 @@ class CollectionUserDeleteTest extends TestCase
 {
 	public function testDeleteHttp()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -30,8 +29,7 @@ class CollectionUserDeleteTest extends TestCase
 
 	public function testRestoreHttp()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

@@ -9,8 +9,7 @@ class UserTest extends TestCase
 {
 	public function testIndexHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users'))
@@ -26,8 +25,7 @@ class UserTest extends TestCase
 
 	public function testUseShopPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->group->shop_enable);
 
@@ -42,8 +40,7 @@ class UserTest extends TestCase
 
 	public function testRefreshCounters()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.refresh_counters', ['user' => $user]))

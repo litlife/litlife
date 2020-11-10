@@ -11,7 +11,7 @@ class BookCreateTest extends TestCase
 {
 	public function testCreateRouteIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_book = true;
 		$user->push();
 
@@ -27,9 +27,7 @@ class BookCreateTest extends TestCase
 
 	public function testIsFillDescriptionRouteIsOkIfBookSuccessfullyParsed()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -40,9 +38,7 @@ class BookCreateTest extends TestCase
 
 	public function testFillDescriptionRouteIfBookWaitForParse()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -57,9 +53,7 @@ class BookCreateTest extends TestCase
 
 	public function testInProgress()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -74,9 +68,7 @@ class BookCreateTest extends TestCase
 
 	public function testFailedParsing()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -95,9 +87,7 @@ class BookCreateTest extends TestCase
 
 	public function testUpdateRouteIsRedirect()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 
@@ -120,9 +110,7 @@ class BookCreateTest extends TestCase
 
 	public function testCompleteIsOk()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -134,9 +122,7 @@ class BookCreateTest extends TestCase
 
 	public function testRedirectToCreateRouteIfBookDeleted()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -153,9 +139,7 @@ class BookCreateTest extends TestCase
 
 	public function testFillDescriptionSeeSessionErrors()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_genre', 'with_create_user')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_genre()->with_create_user()->create();
 		$book->title = null;
 		$book->save();
 
@@ -184,12 +168,9 @@ class BookCreateTest extends TestCase
 
 	public function testCreatePolicy()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 
 		$this->assertFalse($user->can('create', $book));
 

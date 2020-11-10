@@ -10,7 +10,7 @@ class BookmarkEditTest extends TestCase
 {
 	public function testTryEditUnauthorizedHttp()
 	{
-		$bookmark = factory(Bookmark::class)->create();
+		$bookmark = Bookmark::factory()->create();
 
 		$this->get(route('bookmarks.edit', $bookmark))
 			->assertStatus(401);
@@ -18,8 +18,7 @@ class BookmarkEditTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$bookmark = factory(Bookmark::class)
-			->create(['url' => '/test']);
+		$bookmark = Bookmark::factory()->create(['url' => '/test']);
 
 		$this->actingAs($bookmark->create_user)
 			->get(route('bookmarks.edit', $bookmark))
@@ -30,8 +29,7 @@ class BookmarkEditTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$bookmark = factory(Bookmark::class)
-			->create(['url' => '/test']);
+		$bookmark = Bookmark::factory()->create(['url' => '/test']);
 
 		$title = $this->faker->realText(100);
 
@@ -49,11 +47,9 @@ class BookmarkEditTest extends TestCase
 
 	public function testUpdateChangeFolderHttp()
 	{
-		$bookmark = factory(Bookmark::class)
-			->create(['url' => '/test']);
+		$bookmark = Bookmark::factory()->create(['url' => '/test']);
 
-		$folder = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $bookmark->create_user_id]);
+		$folder = BookmarkFolder::factory()->create(['create_user_id' => $bookmark->create_user_id]);
 
 		$title = $this->faker->realText(100);
 
@@ -72,11 +68,9 @@ class BookmarkEditTest extends TestCase
 
 	public function testUpdateChangeFolderToFolderOfOtherUserHttp()
 	{
-		$bookmark = factory(Bookmark::class)
-			->create(['url' => '/test']);
+		$bookmark = Bookmark::factory()->create(['url' => '/test']);
 
-		$folder = factory(BookmarkFolder::class)
-			->create();
+		$folder = BookmarkFolder::factory()->create();
 
 		$title = $this->faker->realText(100);
 

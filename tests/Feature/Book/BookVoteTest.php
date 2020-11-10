@@ -18,18 +18,17 @@ class BookVoteTest extends TestCase
 {
 	public function testVote()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
 		$old_time = now()->subMinutes(10);
 
-		$book_read_status = factory(BookStatus::class)->create([
+		$book_read_status = BookStatus::factory()->create([
 			'book_id' => $book->id,
 			'user_id' => $user->id,
 			'status' => 'read_now',
@@ -68,12 +67,12 @@ class BookVoteTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$compiler = factory(Author::class)->create();
+		$compiler = Author::factory()->create();
 		$compiler->save();
 
-		$illustrator = factory(Author::class)->create();
+		$illustrator = Author::factory()->create();
 		$illustrator->save();
 
 		$book->compilers()->syncWithoutDetaching([$compiler->id]);
@@ -83,22 +82,19 @@ class BookVoteTest extends TestCase
 
 		$this->assertFalse($book->isRatingChanged());
 
-		$book_vote = factory(BookVote::class)
-			->create([
+		$book_vote = BookVote::factory()->create([
 				'book_id' => $book->id, 'vote' => '8',
-				'create_user_id' => factory(User::class)->create(['gender' => 'female'])->id
+				'create_user_id' => User::factory()->create(['gender' => 'female'])->id
 			]);
 
-		$book_vote2 = factory(BookVote::class)
-			->create([
+		$book_vote2 = BookVote::factory()->create([
 				'book_id' => $book->id, 'vote' => '6',
-				'create_user_id' => factory(User::class)->create(['gender' => 'male'])->id
+				'create_user_id' => User::factory()->create(['gender' => 'male'])->id
 			]);
 
-		$book_vote3 = factory(BookVote::class)
-			->create([
+		$book_vote3 = BookVote::factory()->create([
 				'book_id' => $book->id, 'vote' => '4',
-				'create_user_id' => factory(User::class)->create(['gender' => 'female'])->id
+				'create_user_id' => User::factory()->create(['gender' => 'female'])->id
 			]);
 
 		UpdateBookRating::dispatch($book);
@@ -147,13 +143,11 @@ class BookVoteTest extends TestCase
 
 		$now = now();
 
-		$book_vote = factory(BookVote::class)
-			->create(['vote' => $vote, 'created_at' => $now]);
+		$book_vote = BookVote::factory()->create(['vote' => $vote, 'created_at' => $now]);
 
 		$book = $book_vote->book;
 
-		$book_vote2 = factory(BookVote::class)
-			->create(['vote' => $vote2, 'created_at' => $now, 'book_id' => $book->id]);
+		$book_vote2 = BookVote::factory()->create(['vote' => $vote2, 'created_at' => $now, 'book_id' => $book->id]);
 
 		UpdateBookRating::dispatch($book);
 
@@ -300,8 +294,7 @@ class BookVoteTest extends TestCase
 
 	public function testVoteRemove()
 	{
-		$vote = factory(BookVote::class)
-			->create();
+		$vote = BookVote::factory()->create();
 
 		$book = $vote->book;
 		$book->refresh_rating = false;
@@ -344,7 +337,7 @@ class BookVoteTest extends TestCase
 
 	public function testUserBooksVoteCount()
 	{
-		$vote = factory(BookVote::class)->create();
+		$vote = BookVote::factory()->create();
 
 		$user = $vote->create_user;
 
@@ -358,8 +351,7 @@ class BookVoteTest extends TestCase
 
 	public function testRestoreIfDeleted()
 	{
-		$vote = factory(BookVote::class)
-			->create(['vote' => 3, 'ip' => '1.1.1.1']);
+		$vote = BookVote::factory()->create(['vote' => 3, 'ip' => '1.1.1.1']);
 		$vote->delete();
 
 		$user_updated_at = $vote->user_updated_at;
@@ -391,20 +383,17 @@ class BookVoteTest extends TestCase
 
 	public function testMaxMinVote()
 	{
-		$vote = factory(BookVote::class)
-			->create(['vote' => 15]);
+		$vote = BookVote::factory()->create(['vote' => 15]);
 
 		$this->assertEquals(10, $vote->vote);
 
-		$vote = factory(BookVote::class)
-			->create(['vote' => 0]);
+		$vote = BookVote::factory()->create(['vote' => 0]);
 
 		$this->assertEquals(1, $vote->vote);
 
 		$number = rand(2, 8);
 
-		$vote = factory(BookVote::class)
-			->create(['vote' => $number]);
+		$vote = BookVote::factory()->create(['vote' => $number]);
 
 		$this->assertEquals($number, $vote->vote);
 	}
@@ -413,8 +402,7 @@ class BookVoteTest extends TestCase
 	{
 		$number = rand(2, 6);
 
-		$vote = factory(BookVote::class)
-			->create(['vote' => 9, 'ip' => '1.1.1.1']);
+		$vote = BookVote::factory()->create(['vote' => 9, 'ip' => '1.1.1.1']);
 
 		$user = $vote->create_user;
 		$user->group->vote_for_book = true;
@@ -450,11 +438,11 @@ class BookVoteTest extends TestCase
 
 	public function testCreateReadedStatusOnVote()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('books.vote', [
@@ -473,16 +461,15 @@ class BookVoteTest extends TestCase
 
 	public function testDontChangeReadStatusIfItExists()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$oldTime = now()->subDay();
 
-		$book_read_status = factory(BookStatus::class)
-			->create([
+		$book_read_status = BookStatus::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'status' => 'read_not_complete',
@@ -510,16 +497,15 @@ class BookVoteTest extends TestCase
 
 	public function testDontChangeReadedStatusTime()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$oldTime = now()->subDay();
 
-		$book_read_status = factory(BookStatus::class)
-			->create([
+		$book_read_status = BookStatus::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'status' => 'readed',
@@ -542,16 +528,15 @@ class BookVoteTest extends TestCase
 
 	public function testChangeReadLaterToReaded()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$oldTime = now()->subDay();
 
-		$book_read_status = factory(BookStatus::class)
-			->create([
+		$book_read_status = BookStatus::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'status' => 'read_later',
@@ -574,7 +559,7 @@ class BookVoteTest extends TestCase
 
 	public function testRateInfo()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$inputArray = [
 			'10' => '100',
@@ -620,7 +605,7 @@ class BookVoteTest extends TestCase
 
 	public function testGetEmptyRateInfo()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->assertEquals(0, $book->rate_info[10]['count']);
 		$this->assertEquals(0, $book->rate_info[1]['count']);
@@ -628,8 +613,7 @@ class BookVoteTest extends TestCase
 
 	public function testDontCountDeletedUserVote()
 	{
-		$vote = factory(BookVote::class)
-			->create(['vote' => 5]);
+		$vote = BookVote::factory()->create(['vote' => 5]);
 
 		$book = $vote->book;
 		$user = $vote->create_user;
@@ -663,15 +647,14 @@ class BookVoteTest extends TestCase
 
 	public function testDontSeeUserVoteIfVoteDeleted()
 	{
-		$vote = factory(BookVote::class)
-			->create(['vote' => 5]);
+		$vote = BookVote::factory()->create(['vote' => 5]);
 
 		$vote_user = $vote->create_user;
 		$book = $vote->book;
 
 		$vote->delete();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.votes', $book))
@@ -681,7 +664,7 @@ class BookVoteTest extends TestCase
 
 	public function testShowAskUserToRateBookIfStatusReadedAndBookVoteEmpty()
 	{
-		$book_read_status = factory(BookStatus::class)->create();
+		$book_read_status = BookStatus::factory()->create();
 		$book_read_status->status = 'readed';
 		$book_read_status->save();
 

@@ -11,9 +11,7 @@ class BookDeleteKeywordsThatAreNotInTheListJobTest extends TestCase
 {
 	public function testRemoveThatNotInList()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+		$book = Book::factory()->with_writer()->with_keyword()->create();
 
 		BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, []);
 
@@ -22,9 +20,7 @@ class BookDeleteKeywordsThatAreNotInTheListJobTest extends TestCase
 
 	public function testDontRemoveThatInList()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+		$book = Book::factory()->with_writer()->with_keyword()->create();
 
 		BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, [$book->book_keywords()->first()->keyword->text]);
 
@@ -33,9 +29,7 @@ class BookDeleteKeywordsThatAreNotInTheListJobTest extends TestCase
 
 	public function testDeleteBookKeywordIfKeywordDeleted()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+		$book = Book::factory()->with_writer()->with_keyword()->create();
 
 		$book_keyword = $book->book_keywords()->first();
 		$keyword = $book_keyword->keyword;

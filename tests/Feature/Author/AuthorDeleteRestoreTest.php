@@ -13,9 +13,9 @@ class AuthorDeleteRestoreTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('authors.delete', $author))
@@ -37,9 +37,9 @@ class AuthorDeleteRestoreTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->delete();
 
 		$this->actingAs($admin)
@@ -59,13 +59,9 @@ class AuthorDeleteRestoreTest extends TestCase
 
 	public function testDetachUserAuthorGroupOnAuthorDelete()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('author', 'accepted')
-			->create();
+		$manager = Manager::factory()->author()->accepted()->create();
 
 		$user = $manager->user;
 		$author = $manager->manageable;

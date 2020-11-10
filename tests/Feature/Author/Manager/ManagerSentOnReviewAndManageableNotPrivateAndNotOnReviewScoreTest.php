@@ -9,9 +9,7 @@ class ManagerSentOnReviewAndManageableNotPrivateAndNotOnReviewScoreTest extends 
 {
 	public function testFoundIfAuthorAccepted()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'on_review')
-			->create();
+		$manager = Manager::factory()->character_author()->on_review()->create();
 
 		$author = $manager->manageable;
 		$author->statusAccepted();
@@ -26,9 +24,7 @@ class ManagerSentOnReviewAndManageableNotPrivateAndNotOnReviewScoreTest extends 
 
 	public function testNotFoundIfAuthorSentForReview()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'on_review')
-			->create();
+		$manager = Manager::factory()->character_author()->on_review()->create();
 
 		$author = $manager->manageable;
 		$author->statusSentForReview();
@@ -43,9 +39,7 @@ class ManagerSentOnReviewAndManageableNotPrivateAndNotOnReviewScoreTest extends 
 
 	public function testNotFoundIfAuthorPrivate()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'on_review')
-			->create();
+		$manager = Manager::factory()->character_author()->on_review()->create();
 
 		$author = $manager->manageable;
 		$author->statusPrivate();

@@ -9,7 +9,7 @@ class UserEditTest extends TestCase
 {
 	public function testEditProfileIsOkIfEditEmpty()
 	{
-		$user = factory(User::class)->create(['born_date' => null])->fresh();
+		$user = User::factory()->create(['born_date' => null])->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -25,15 +25,13 @@ class UserEditTest extends TestCase
 		$nick_uppercase = mb_strtoupper($nick);
 		$nick_lowercase = mb_strtolower($nick);
 
-		$user = factory(User::class)
-			->create([
+		$user = User::factory()->create([
 				'nick' => $nick_lowercase
 			]);
 		$user->group->edit_profile = true;
 		$user->push();
 
-		$user_with_same_nick = factory(User::class)
-			->create([
+		$user_with_same_nick = User::factory()->create([
 				'nick' => $nick_uppercase
 			]);
 
@@ -57,8 +55,7 @@ class UserEditTest extends TestCase
 		$nick_uppercase = mb_strtoupper($nick);
 		$nick_lowercase = mb_strtolower($nick);
 
-		$user = factory(User::class)
-			->create([
+		$user = User::factory()->create([
 				'nick' => $nick_uppercase
 			]);
 		$user->group->edit_profile = true;
@@ -86,7 +83,7 @@ class UserEditTest extends TestCase
 
 	public function testEditProfileRightDate()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -113,7 +110,7 @@ class UserEditTest extends TestCase
 
 	public function testEditProfileWrongDate()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -136,7 +133,7 @@ class UserEditTest extends TestCase
 
 	public function testEditProfileEmptyDate()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -159,7 +156,7 @@ class UserEditTest extends TestCase
 
 	public function testEditProfileDayEmpty()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 

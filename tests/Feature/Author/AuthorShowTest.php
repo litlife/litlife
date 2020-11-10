@@ -12,8 +12,7 @@ class AuthorShowTest extends TestCase
 {
 	public function testWithoutBooksHttp()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$this->get(route('authors.show', $author))
 			->assertOk();
@@ -21,17 +20,13 @@ class AuthorShowTest extends TestCase
 
 	public function testView()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$translated_book = factory(Book::class)
-			->create();
+		$translated_book = Book::factory()->create();
 
-		$illustrated_book = factory(Book::class)
-			->create();
+		$illustrated_book = Book::factory()->create();
 
 		$author->books()->sync([$book->id]);
 		$author->translated_books()->sync([$book->id]);
@@ -87,9 +82,7 @@ class AuthorShowTest extends TestCase
 
 	public function testShowPrivateHttp()
 	{
-		$author = factory(Author::class)
-			->states('private')
-			->create();
+		$author = Author::factory()->private()->create();
 
 		$this->assertTrue($author->isPrivate());
 
@@ -99,10 +92,9 @@ class AuthorShowTest extends TestCase
 
 	public function testDontSeeWrittenMinorBooks()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -117,10 +109,9 @@ class AuthorShowTest extends TestCase
 
 	public function testSeeTranslatedMinorBooks()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -135,9 +126,9 @@ class AuthorShowTest extends TestCase
 
 	public function testSeeBookNotInGroup()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
 		$author->books()->sync([$mainBook->id]);
 
@@ -149,9 +140,7 @@ class AuthorShowTest extends TestCase
 
 	public function testSeeOnReview()
 	{
-		$author = factory(Author::class)
-			->states('sent_for_review')
-			->create();
+		$author = Author::factory()->sent_for_review()->create();
 
 		$this->get(route('authors.show', $author))
 			->assertOk()

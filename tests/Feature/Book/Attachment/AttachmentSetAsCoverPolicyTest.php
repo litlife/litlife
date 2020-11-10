@@ -10,9 +10,7 @@ class AttachmentSetAsCoverPolicyTest extends TestCase
 {
 	public function testCanIfBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user', 'with_attachment')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->with_attachment()->create();
 
 		$attachment = $book->attachments()->first();
 
@@ -23,9 +21,7 @@ class AttachmentSetAsCoverPolicyTest extends TestCase
 
 	public function testCantIfAlreadyCover()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user', 'with_cover')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->with_cover()->create();
 
 		$attachment = $book->attachments()->first();
 
@@ -36,13 +32,11 @@ class AttachmentSetAsCoverPolicyTest extends TestCase
 
 	public function testCanIfHasPermission()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user', 'with_attachment')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->with_attachment()->create();
 
 		$attachment = $book->attachments()->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
@@ -51,13 +45,11 @@ class AttachmentSetAsCoverPolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermission()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user', 'with_attachment')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->with_attachment()->create();
 
 		$attachment = $book->attachments()->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_other_user_book = false;
 		$user->push();
 

@@ -14,8 +14,7 @@ class BookFileGetStreamOrFirstFileInArchiveStreamTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -30,8 +29,7 @@ class BookFileGetStreamOrFirstFileInArchiveStreamTest extends TestCase
 		$fb2->setFile($stream);
 		$this->assertIsObject($fb2->description());
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->open(__DIR__ . '/../Books/test.fb2');

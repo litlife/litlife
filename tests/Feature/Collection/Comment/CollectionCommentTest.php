@@ -9,9 +9,7 @@ class CollectionCommentTest extends TestCase
 {
 	public function testCollectionComment()
 	{
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create(['commentable_type' => 18]);
+		$comment = Comment::factory()->collection()->create();
 
 		$this->assertEquals(18, $comment->commentable_type);
 		$this->assertEquals('Collection', $comment->getCommentableModelName());

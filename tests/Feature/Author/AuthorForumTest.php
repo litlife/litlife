@@ -12,8 +12,7 @@ class AuthorForumTest extends TestCase
 {
 	public function testObjIdDefaultIsNull()
 	{
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$forum->refresh();
 
@@ -23,11 +22,9 @@ class AuthorForumTest extends TestCase
 
 	public function testForumAutoCreate()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+		$author = Author::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.forum', $author))
@@ -54,14 +51,11 @@ class AuthorForumTest extends TestCase
 
 	public function testShowTopic()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+		$author = Author::factory()->accepted()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
 		$forum = $post->topic->forum;
 		$forum->obj_type = 'author';

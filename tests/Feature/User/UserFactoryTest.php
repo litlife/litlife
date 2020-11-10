@@ -17,9 +17,7 @@ class UserFactoryTest extends TestCase
 
 	public function testWithPurchasedBookState()
 	{
-		$user = factory(User::class)
-			->states('with_purchased_book')
-			->create();
+		$user = User::factory()->with_purchased_book()->create();
 
 		$purchase = $user->purchases->first();
 		$book = $purchase->purchasable;

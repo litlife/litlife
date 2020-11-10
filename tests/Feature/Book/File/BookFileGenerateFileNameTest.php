@@ -10,15 +10,11 @@ class BookFileGenerateFileNameTest extends TestCase
 {
 	public function testGenerateFileName()
 	{
-		$file = factory(BookFile::class)
-			->states('txt', 'zip')
-			->create();
+		$file = BookFile::factory()->txt()->zip()->create();
 		$file->format = 'fb2';
 		$file->save();
 
-		$book = factory(Book::class)
-			->states('without_any_authors')
-			->create(['title' => 'Книга']);
+		$book = Book::factory()->without_any_authors()->create();
 
 		$file->book()->associate($book);
 

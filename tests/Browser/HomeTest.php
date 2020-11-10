@@ -20,13 +20,11 @@ class HomeTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('with_writer', 'accepted')
-				->create();
+			$book = Book::factory()->with_writer()->accepted()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$book_vote = factory(BookVote::class)->create([
+			$book_vote = BookVote::factory()->create([
 				'book_id' => $book->id,
 				'create_user_id' => $user->id
 			]);

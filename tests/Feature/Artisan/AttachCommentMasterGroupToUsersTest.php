@@ -15,8 +15,7 @@ class AttachCommentMasterGroupToUsersTest extends TestCase
 
 		$text = $this->faker->realText(200);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->attachUserGroupByNameIfExists('Активный комментатор');
 
@@ -57,7 +56,7 @@ class AttachCommentMasterGroupToUsersTest extends TestCase
 	{
 		$group = $this->assertGroupExists();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$text = $this->faker->realText(200);
 
@@ -78,7 +77,7 @@ class AttachCommentMasterGroupToUsersTest extends TestCase
 	{
 		$this->assertGroupExists();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$text = $this->faker->realText(200);
 

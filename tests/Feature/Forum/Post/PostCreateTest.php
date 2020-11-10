@@ -16,8 +16,7 @@ class PostCreateTest extends TestCase
 {
 	public function testCantCreateIfForumDeleted()
 	{
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$topic->forum->delete();
 
@@ -32,11 +31,9 @@ class PostCreateTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$forum = $topic->forum;
 
@@ -74,11 +71,9 @@ class PostCreateTest extends TestCase
 
 	public function testReplyHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 
@@ -92,7 +87,7 @@ class PostCreateTest extends TestCase
 
 		$response->assertRedirect(route('posts.go_to', $reply));
 
-		$response = $this->actingAs(factory(User::class)->create())
+		$response = $this->actingAs(User::factory()->create())
 			->post(route('posts.store', ['topic' => $topic, 'parent' => $reply]),
 				['bb_text' => $this->faker->realText(200)])
 			->assertSessionHasNoErrors()
@@ -128,11 +123,9 @@ class PostCreateTest extends TestCase
 
 	public function testPostCreateHttpOkWithoutParentValue()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('posts.create', ['topic' => $post->topic]))
@@ -141,11 +134,9 @@ class PostCreateTest extends TestCase
 
 	public function testPostCreateHttpOk()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('posts.create', ['topic' => $post->topic, 'parent' => $post]))
@@ -154,10 +145,9 @@ class PostCreateTest extends TestCase
 
 	public function testReplyIfCreateUserParentPostDeleted()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$post = factory(Post::class)
-			->create()
+		$post = Post::factory()->create()
 			->fresh();
 
 		$post->create_user->forceDelete();
@@ -177,11 +167,9 @@ class PostCreateTest extends TestCase
 
 	public function testPostToFast()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$posts = factory(Post::class, 10)
 			->create(['create_user_id' => $user->id, 'topic_id' => $topic->id]);
@@ -208,16 +196,14 @@ class PostCreateTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$notifiable = factory(User::class)->create();
+		$notifiable = User::factory()->create();
 		$notifiable->email_notification_setting->forum_reply = false;
 		$notifiable->email_notification_setting->db_forum_reply = true;
 		$notifiable->push();
 
-		$parent = factory(Post::class)
-			->create(['create_user_id' => $notifiable->id]);
+		$parent = Post::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$post = factory(Post::class)
-			->create(['parent' => $parent->id]);
+		$post = Post::factory()->create(['parent' => $parent->id]);
 
 		Notification::assertSentTo(
 			$notifiable,
@@ -242,32 +228,27 @@ class PostCreateTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
-		$subscription = factory(UserTopicSubscription::class)
-			->create([
+		$subscription = UserTopicSubscription::factory()->create([
 				'topic_id' => $topic->id
 			]);
 
 		$create_user = $subscription->user;
 
-		$subscription2 = factory(UserTopicSubscription::class)
-			->create([
+		$subscription2 = UserTopicSubscription::factory()->create([
 				'topic_id' => $topic->id
 			]);
 
 		$subscribed_user = $subscription2->user;
 
-		$subscription3 = factory(UserTopicSubscription::class)
-			->create([
+		$subscription3 = UserTopicSubscription::factory()->create([
 				'topic_id' => $topic->id
 			]);
 
 		$parent_post_create_user = $subscription3->user;
 
-		$parent_post = factory(Post::class)
-			->create(['create_user_id' => $parent_post_create_user->id]);
+		$parent_post = Post::factory()->create(['create_user_id' => $parent_post_create_user->id]);
 
 		$this->assertNotNull($topic->subscribed_users()->where('user_id', $create_user->id)->first());
 		$this->assertNotNull($topic->subscribed_users()->where('user_id', $subscribed_user->id)->first());
@@ -338,16 +319,14 @@ class PostCreateTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$notifiable = factory(User::class)->states('with_confirmed_email')->create();
+		$notifiable = User::factory()->with_confirmed_email()->create();
 		$notifiable->email_notification_setting->forum_reply = true;
 		$notifiable->email_notification_setting->db_forum_reply = false;
 		$notifiable->push();
 
-		$parent = factory(Post::class)
-			->create(['create_user_id' => $notifiable->id]);
+		$parent = Post::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$post = factory(Post::class)
-			->create(['parent' => $parent->id]);
+		$post = Post::factory()->create(['parent' => $parent->id]);
 
 		Notification::assertSentTo(
 			$notifiable,
@@ -363,14 +342,11 @@ class PostCreateTest extends TestCase
 
 	public function testReply()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
-		$post2 = factory(Post::class)
-			->create(['parent' => $post, 'topic_id' => $post->topic_id]);
+		$post2 = Post::factory()->create(['parent' => $post, 'topic_id' => $post->topic_id]);
 
-		$post3 = factory(Post::class)
-			->create(['parent' => $post2, 'topic_id' => $post->topic_id]);
+		$post3 = Post::factory()->create(['parent' => $post2, 'topic_id' => $post->topic_id]);
 
 		$this->assertEquals($post->id, $post2->parent->id);
 		$this->assertEquals($post2->id, $post3->parent->id);

@@ -21,9 +21,9 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$book = factory(Book::class)->create([
+			$book = Book::factory()->create([
 				'create_user_id' => $user->id,
 				'status' => StatusEnum::Private
 			]);
@@ -53,11 +53,9 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('admin')->create();
+			$user = User::factory()->admin()->create();
 
-			$book = factory(Book::class)
-				->states('with_section')->create();
+			$book = Book::factory()->with_section()->create();
 
 			$section = $book->sections()->first();
 
@@ -90,7 +88,7 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$section = factory(Section::class)->create();
+			$section = Section::factory()->create();
 
 			$browser->resize(1200, 2000)
 				->loginAs($section->book->create_user)
@@ -131,7 +129,7 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$section = factory(Section::class)->create();
+			$section = Section::factory()->create();
 
 			$browser->resize(1000, 1000)
 				->loginAs($section->book->create_user)
@@ -146,7 +144,7 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$section = factory(Section::class)->create();
+			$section = Section::factory()->create();
 
 			$browser->resize(1000, 1000)
 				->loginAs($section->book->create_user)
@@ -184,17 +182,13 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('private', 'with_create_user')
-				->create();
+			$book = Book::factory()->private()->with_create_user()->create();
 
 			$user = $book->create_user;
 
-			$section = factory(Section::class)
-				->create(['book_id' => $book->id]);
+			$section = Section::factory()->create(['book_id' => $book->id]);
 
-			$section2 = factory(Section::class)
-				->create(['book_id' => $book->id]);
+			$section2 = Section::factory()->create(['book_id' => $book->id]);
 
 			$book->refresh();
 
@@ -226,17 +220,13 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('with_create_user', 'private')
-				->create();
+			$book = Book::factory()->with_create_user()->private()->create();
 
 			$user = $book->create_user;
 
-			$section = factory(Section::class)
-				->create(['book_id' => $book->id]);
+			$section = Section::factory()->create(['book_id' => $book->id]);
 
-			$section2 = factory(Section::class)
-				->create(['book_id' => $book->id]);
+			$section2 = Section::factory()->create(['book_id' => $book->id]);
 
 			$book->refresh();
 
@@ -273,14 +263,13 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->not_show_ad = true;
 			$user->push();
 
 			$uniqid = uniqid();
 
-			$section = factory(Section::class)
-				->create(['content' => '«<a href="http://example.com">' . $uniqid . '</a>» текст текст текст']);
+			$section = Section::factory()->create(['content' => '«<a href="http://example.com">' . $uniqid . '</a>» текст текст текст']);
 			$section->refresh();
 			$book = $section->book;
 			$book->statusAccepted();
@@ -297,17 +286,13 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->states('admin')->create();
+			$user = User::factory()->admin()->create();
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 
-			$section1 = factory(Section::class)
-				->states('with_three_pages')
-				->create(['book_id' => $book->id]);
+			$section1 = Section::factory()->with_three_pages()->create();
 
-			$section2 = factory(Section::class)
-				->states('with_three_pages')
-				->create(['book_id' => $book->id]);
+			$section2 = Section::factory()->with_three_pages()->create();
 
 			$browser->resize(1000, 1000)
 				->loginAs($user)
@@ -414,9 +399,7 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$author = factory(Author::class)
-				->states('with_author_manager_can_sell', 'with_book_for_sale')
-				->create();
+			$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 			$manager = $author->managers->first();
 			$book = $author->books->first();
@@ -426,9 +409,7 @@ class SectionTest extends DuskTestCase
 
 			$section = $book->sections()->chapter()->first();
 
-			$section2 = factory(Section::class)
-				->states('chapter')
-				->create(['book_id' => $book->id]);
+			$section2 = Section::factory()->chapter()->create();
 
 			$book->free_sections_count = 1;
 			$book->save();
@@ -452,9 +433,7 @@ class SectionTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$author = factory(Author::class)
-				->states('with_author_manager_can_sell', 'with_book_for_sale_purchased')
-				->create();
+			$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale_purchased()->create();
 
 			$manager = $author->managers->first();
 			$book = $author->books->first();
@@ -465,9 +444,7 @@ class SectionTest extends DuskTestCase
 
 			$section = $book->sections()->chapter()->first();
 
-			$section2 = factory(Section::class)
-				->states('chapter')
-				->create(['book_id' => $book->id]);
+			$section2 = Section::factory()->chapter()->create();
 
 			$book->free_sections_count = 1;
 			$book->save();

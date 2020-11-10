@@ -11,9 +11,7 @@ class BookFileCreatePolicyTest extends TestCase
 {
 	public function testCanIfBookPrivateAndUserCreator()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 		$book->downloadAccessEnable();
 		$book->save();
 
@@ -26,11 +24,11 @@ class BookFileCreatePolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermissions()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_file_add = false;
 		$user->save();
 
-		$book = factory(Book::class)->states('accepted')->create();
+		$book = Book::factory()->accepted()->create();
 		$book->downloadAccessEnable();
 		$book->save();
 
@@ -39,11 +37,11 @@ class BookFileCreatePolicyTest extends TestCase
 
 	public function testCanIfHasPermissionBookDownloadAccessEnable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_file_add = true;
 		$user->save();
 
-		$book = factory(Book::class)->states('accepted')->create();
+		$book = Book::factory()->accepted()->create();
 		$book->downloadAccessEnable();
 		$book->save();
 
@@ -52,11 +50,11 @@ class BookFileCreatePolicyTest extends TestCase
 
 	public function testCantIfHasPermissionAndBookDownloadAccessDisable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_file_add = true;
 		$user->save();
 
-		$book = factory(Book::class)->states('accepted')->create();
+		$book = Book::factory()->accepted()->create();
 		$book->downloadAccessDisable();
 		$book->save();
 
@@ -65,12 +63,12 @@ class BookFileCreatePolicyTest extends TestCase
 
 	public function testCanIfHasPermissionAndHaveAccessToClosedBookAndDownloadAccessDisabled()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_file_add = true;
 		$user->group->access_to_closed_books = true;
 		$user->save();
 
-		$book = factory(Book::class)->states('accepted')->create();
+		$book = Book::factory()->accepted()->create();
 		$book->downloadAccessDisable();
 		$book->save();
 
@@ -79,11 +77,9 @@ class BookFileCreatePolicyTest extends TestCase
 
 	public function testPolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('private', 'with_file')
-			->create(['create_user_id' => $user->id])
+		$book = Book::factory()->private()->with_file()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$this->assertEquals(1, $book->files_count);
@@ -124,22 +120,16 @@ class BookFileCreatePolicyTest extends TestCase
 
 	public function testCantIfBookIsOnSale()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['price' => 100]);
+		$book = Book::factory()->accepted()->create();
 
 		$this->assertFalse($user->can('addFiles', $book));
 	}
 
 	public function testCanIfUserVerifiedAuthorOfBookAndBookHasNoDownloadAccess()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$user = $author->managers()->first()->user;
 

@@ -9,9 +9,7 @@ class UserEmailShowInProfileTest extends TestCase
 {
 	public function testEnable()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 		$email->show_in_profile = false;
@@ -29,9 +27,7 @@ class UserEmailShowInProfileTest extends TestCase
 
 	public function testDisable()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -47,9 +43,7 @@ class UserEmailShowInProfileTest extends TestCase
 
 	public function testEnableErrorNotConfirmed()
 	{
-		$user = factory(User::class)
-			->states('with_not_confirmed_email')
-			->create();
+		$user = User::factory()->with_not_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 		$email->show_in_profile = false;

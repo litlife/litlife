@@ -13,14 +13,13 @@ class AuthorFavoriteBooksTest extends TestCase
 {
 	public function testView()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create()->fresh();
+		$user_author = UserAuthor::factory()->create()->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 		$book->writers()->attach([$user_author->author->id]);
@@ -43,8 +42,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testFlushUsersAddedToFavoritesNewBooksCount()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
@@ -53,7 +51,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 		$this->assertEquals(0, $user->getNewFavoriteAuthorsBooksCount());
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 		$book->refresh();
@@ -68,8 +66,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testNoFavoriteAuthors()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$this->assertEquals(0, $user->getNewFavoriteAuthorsBooksCount());
@@ -77,15 +74,14 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testNewBookAccepted()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 		$book->refresh();
@@ -97,15 +93,14 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testNewBookSentForReview()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusSentForReview();
 		$book->save();
 		$book->refresh();
@@ -117,15 +112,14 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testNewBookPrivate()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusPrivate();
 		$book->save();
 		$book->refresh();
@@ -137,14 +131,13 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testBookPublishRefreshCounterHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->group->add_book_without_check = true;
 		$admin->group->edit_other_user_book = true;
 		$admin->push();
 
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
@@ -153,7 +146,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 		$this->assertEquals(0, $user->getNewFavoriteAuthorsBooksCount());
 
-		$book = factory(Book::class)->states('with_create_user', 'with_genre')->create();
+		$book = Book::factory()->with_create_user()->with_genre()->create();
 		$book->statusSentForReview();
 		$book->save();
 
@@ -172,19 +165,18 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testBookAddToPrivateRefreshCounterHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->push();
 
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 		$book->statusAccepted();
 		$book->save();
 		$user_author->author->any_books()->sync([$book->id]);
@@ -202,18 +194,17 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testNewBookDeletedHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->delete_other_user_book = true;
 		$admin->push();
 
-		$user_author = factory(UserAuthor::class)
-			->create()->fresh();
+		$user_author = UserAuthor::factory()->create()->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 		$user_author->author->any_books()->sync([$book->id]);
@@ -239,14 +230,13 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testPublishSelfAddedBookRefreshCounterHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_books = true;
 		$admin->group->add_book_without_check = true;
 		$admin->group->edit_other_user_book = true;
 		$admin->push();
 
-		$user_author = factory(UserAuthor::class)
-			->create()
+		$user_author = UserAuthor::factory()->create()
 			->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
@@ -255,8 +245,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 		$this->assertEquals(0, $user->getNewFavoriteAuthorsBooksCount());
 
-		$book = factory(Book::class)
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->statusSentForReview();
 		$book->save();
 		$user_author->author->any_books()->sync([$book->id]);
@@ -272,8 +261,7 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testEmptyFavoriteAuthorsBooksLatestViewedAt()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertNotNull($user->data->favorite_authors_books_latest_viewed_at);
 		$this->assertEquals(Carbon::create(2019, 05, 05, 0, 0, 0), $user->data->favorite_authors_books_latest_viewed_at);
@@ -281,14 +269,13 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testViewBooksListHttp()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create()->fresh();
+		$user_author = UserAuthor::factory()->create()->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 		$user_author->author->any_books()->sync([$book->id]);
@@ -313,17 +300,15 @@ class AuthorFavoriteBooksTest extends TestCase
 
 	public function testOtherUserViewBooksListHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$user_author = factory(UserAuthor::class)
-			->create()->fresh();
+		$user_author = UserAuthor::factory()->create()->fresh();
 
 		Carbon::setTestNow(now()->addMinute());
 
 		$user = $user_author->user;
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 		$user_author->author->any_books()->sync([$book->id]);
@@ -350,15 +335,13 @@ class AuthorFavoriteBooksTest extends TestCase
 	{
 		$title = Str::random(10);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$user_author = factory(UserAuthor::class)
-			->create(['user_id' => $user->id]);
+		$user_author = UserAuthor::factory()->create(['user_id' => $user->id]);
 
-		$user_author2 = factory(UserAuthor::class)
-			->create(['user_id' => $user->id]);
+		$user_author2 = UserAuthor::factory()->create(['user_id' => $user->id]);
 
-		$book = factory(Book::class)->create(['title' => $title]);
+		$book = Book::factory()->create(['title' => $title]);
 
 		$book->writers()->sync([$user_author->author_id]);
 		$book->translators()->sync([$user_author2->author_id]);

@@ -28,9 +28,7 @@ class BookSetSourceAndMakePageTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
 		$title = $this->faker->realText(100);
 
@@ -141,14 +139,13 @@ class BookSetSourceAndMakePageTest extends TestCase
 	 */
 	public function testDisableIfBookOnParse()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_fb2_file_convert_divide_on_page = true;
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create(['create_user_id' => $user->id])
+		$book = Book::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$file = new BookFile;
@@ -191,13 +188,9 @@ class BookSetSourceAndMakePageTest extends TestCase
 
 	public function testSendToParsingIfAnotherOneAlreadyExists()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book_parse = factory(BookParse::class)
-			->states('successed')
-			->create();
+		$book_parse = BookParse::factory()->successed()->create();
 
 		$book = $book_parse->book;
 

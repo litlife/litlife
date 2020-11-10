@@ -10,11 +10,11 @@ class ForumDeletePolicyTest extends TestCase
 {
 	public function testCanIfHasPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->delete_forum_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertTrue($admin->can('delete', $forum));
 
@@ -25,11 +25,11 @@ class ForumDeletePolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->delete_forum_forum = false;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertFalse($admin->can('delete', $forum));
 

@@ -10,7 +10,7 @@ class CollectionRestorePolicyTest extends TestCase
 {
 	public function testRestorePolicyIfUserCreator()
 	{
-		$collection = factory(Collection::class)->create()->fresh();
+		$collection = Collection::factory()->create()->fresh();
 
 		$user = $collection->create_user;
 
@@ -21,9 +21,9 @@ class CollectionRestorePolicyTest extends TestCase
 
 	public function testRestorePolicyIfUserNotCreator()
 	{
-		$collection = factory(Collection::class)->create()->fresh();
+		$collection = Collection::factory()->create()->fresh();
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$collection->delete();
 

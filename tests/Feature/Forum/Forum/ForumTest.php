@@ -17,20 +17,18 @@ class ForumTest extends TestCase
 	/*
 		public function testSeeLabelsIfIdeaForum()
 		{
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->forum_edit_forum = true;
 			$admin->group->manipulate_topic = true;
 			$admin->group->edit_forum_self_topic = true;
 			$admin->group->edit_forum_other_user_topic = true;
 			$admin->push();
 
-			$forum = factory(Forum::class)->create();
+			$forum = Forum::factory()->create();
 
-			$topic = factory(Topic::class)
-				->create(['forum_id' => $forum->id]);
+			$topic = Topic::factory()->create(['forum_id' => $forum->id]);
 
-			$post = factory(Post::class)
-				->create(['topic_id' => $topic->id]);
+			$post = Post::factory()->create(['topic_id' => $topic->id]);
 
 			$this->assertFalse($forum->isIdeaForum());
 

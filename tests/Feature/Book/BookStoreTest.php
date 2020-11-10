@@ -19,9 +19,7 @@ class BookStoreTest extends TestCase
 
 	public function testRouteIsOk()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/test.fb2', 'test.fb2', null, null, true);
 
@@ -46,9 +44,7 @@ class BookStoreTest extends TestCase
 
 	public function testEpubWithWrongMimeType()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/epub_with_zip_mime_type.epub', 'epub_with_zip_mime_type.epub', null, null, true);
 
@@ -73,9 +69,7 @@ class BookStoreTest extends TestCase
 
 	public function testFb3()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/test.fb3', 'test.fb3', null, null, true);
 
@@ -90,9 +84,7 @@ class BookStoreTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$filename = uniqid();
 
@@ -126,9 +118,7 @@ class BookStoreTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$title = $this->faker->realText(100);
 
@@ -156,9 +146,7 @@ class BookStoreTest extends TestCase
 
 	public function testEpubHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$filename = uniqid();
 
@@ -178,9 +166,7 @@ class BookStoreTest extends TestCase
 
 	public function testUnsupportFormatError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/../images/test.gif', 'test.gif', null, null, true);
 
@@ -194,9 +180,7 @@ class BookStoreTest extends TestCase
 
 	public function testBrokenZipError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/invalid.zip', 'invalid.zip', null, null, true);
 
@@ -210,9 +194,7 @@ class BookStoreTest extends TestCase
 
 	public function testZipUnsupportedFormatInsideError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/test.jpeg.zip', 'test.jpeg.zip', null, null, true);
 
@@ -226,9 +208,7 @@ class BookStoreTest extends TestCase
 
 	public function testZipFb2()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/test.fb2.zip', 'test.fb2.zip', null, null, true);
 
@@ -246,9 +226,7 @@ class BookStoreTest extends TestCase
 
 	public function testEmptyFile()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$tmp = tmpfile();
 
@@ -262,9 +240,7 @@ class BookStoreTest extends TestCase
 
 	public function testZippedEpubHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$filename = uniqid();
 
@@ -287,9 +263,7 @@ class BookStoreTest extends TestCase
 
 	public function testEmptyNameHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/test.epub', '%.epub', null, null, true);
 
@@ -311,12 +285,9 @@ class BookStoreTest extends TestCase
 
 	public function testInvalidZipCRCError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/invalid_crc.zip', 'invalid_crc.zip', null, null, true);
 
@@ -330,9 +301,7 @@ class BookStoreTest extends TestCase
 
 	public function testDocx()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$file = new UploadedFile(__DIR__ . '/Books/test2.docx', 'test2.docx', null, null, true);
 

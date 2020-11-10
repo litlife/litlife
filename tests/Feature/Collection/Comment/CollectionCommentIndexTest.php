@@ -12,13 +12,9 @@ class CollectionCommentIndexTest extends TestCase
 {
 	public function testCommentsHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create();
+		$comment = Comment::factory()->collection()->create();
 
 		$collection = $comment->commentable;
 		$collection->status = StatusEnum::Accepted;
@@ -39,9 +35,7 @@ class CollectionCommentIndexTest extends TestCase
 
 	public function testCommentsOkIfUserGuestCanSeeEveryone()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
 		$this->get(route('collections.comments', $collection))
 			->assertOk();
@@ -49,9 +43,7 @@ class CollectionCommentIndexTest extends TestCase
 
 	public function testCommentsForbiddenIfUserGuestCanSeeMe()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
 		$this->get(route('collections.comments', $collection))
 			->assertForbidden();

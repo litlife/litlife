@@ -10,22 +10,15 @@ class TopicOpenCloseTest extends TestCase
 {
 	public function testOpenClosePolicy()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->manipulate_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user2 = User::factory()->with_user_group()->create();
 
-		$opened_topic = factory(Topic::class)
-			->create();
+		$opened_topic = Topic::factory()->create();
 
-		$closed_topic = factory(Topic::class)
-			->states('closed')
-			->create();
+		$closed_topic = Topic::factory()->closed()->create();
 
 		$this->assertTrue($user->can('open', $closed_topic));
 		$this->assertFalse($user2->can('open', $closed_topic));
@@ -40,13 +33,9 @@ class TopicOpenCloseTest extends TestCase
 
 	public function testOpen()
 	{
-		$topic = factory(Topic::class)
-			->states('closed')
-			->create();
+		$topic = Topic::factory()->closed()->create();
 
-		$user = factory(User::class)
-			->states('administrator')
-			->create();
+		$user = User::factory()->administrator()->create();
 
 		$this->actingAs($user)
 			->get(route('topics.open', $topic))
@@ -59,12 +48,9 @@ class TopicOpenCloseTest extends TestCase
 
 	public function testClose()
 	{
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
-		$user = factory(User::class)
-			->states('administrator')
-			->create();
+		$user = User::factory()->administrator()->create();
 
 		$this->actingAs($user)
 			->get(route('topics.close', $topic))

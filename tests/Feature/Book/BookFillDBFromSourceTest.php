@@ -21,7 +21,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$command = new BookFillDBFromSource();
 		$command->setExtension('epub');
@@ -58,8 +58,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -84,8 +83,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -104,8 +102,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -123,8 +120,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -142,8 +138,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -165,7 +160,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->online_read_new_format = false;
 		$book->save();
 		$book->refresh();
@@ -191,8 +186,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 		$book->online_read_new_format = false;
 		$book->save();
 		$book->refresh();
@@ -229,8 +223,7 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 		$book->online_read_new_format = false;
 		$book->save();
 		$book->refresh();
@@ -258,11 +251,9 @@ class BookFillDBFromSourceTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->parse->create_user()->associate($user);
 		$book->push();
@@ -285,9 +276,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 	public function testOnlyPagesFb2()
 	{
-		$book = factory(Book::class)
-			->states('with_cover', 'with_section', 'with_note', 'with_annotation', 'with_attachment')
-			->create();
+		$book = Book::factory()->with_cover()->with_section()->with_note()->with_annotation()->with_attachment()->create();
 
 		$cover = $book->cover;
 		$section = $book->sections()->where('type', 'section')->orderBy('id', 'asc')->first();
@@ -320,9 +309,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 	public function testOnlyPagesEpub()
 	{
-		$book = factory(Book::class)
-			->states('with_cover', 'with_section', 'with_note', 'with_annotation', 'with_attachment')
-			->create();
+		$book = Book::factory()->with_cover()->with_section()->with_note()->with_annotation()->with_attachment()->create();
 
 		$cover = $book->cover;
 		$section = $book->sections()->where('type', 'section')->orderBy('id', 'asc')->first();
@@ -354,7 +341,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 	public function testIsInProgressNotConfirm()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->parse->start();
 		$book->push();
 
@@ -365,7 +352,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 	public function testIsInProgressConfirm()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->parse->start();
 		$book->push();
 
@@ -381,7 +368,7 @@ class BookFillDBFromSourceTest extends TestCase
 
 	public function testEpub()
 	{
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,

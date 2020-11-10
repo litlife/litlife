@@ -11,11 +11,9 @@ class UpdateBookPagesCountTest extends TestCase
 {
 	public function testAcceptedChapter()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('accepted')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->accepted()->create();
 
 		UpdateBookPagesCount::dispatch($book);
 
@@ -26,11 +24,9 @@ class UpdateBookPagesCountTest extends TestCase
 
 	public function testPrivateChapter()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('private')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->private()->create();
 
 		UpdateBookPagesCount::dispatch($book);
 

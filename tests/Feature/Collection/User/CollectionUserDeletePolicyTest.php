@@ -11,27 +11,23 @@ class CollectionUserDeletePolicyTest extends TestCase
 {
 	public function testCollectionCreatorCanDeleteUser()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$this->assertTrue($collection->create_user->can('deleteUser', $collection));
 	}
 
 	public function testOtherUserCantDeleteUser()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('deleteUser', $collection));
 	}
 
 	public function testCollectionUserCanDeleteUserWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -41,8 +37,7 @@ class CollectionUserDeletePolicyTest extends TestCase
 
 	public function testCollectionUserCantDeleteUserWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => false]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

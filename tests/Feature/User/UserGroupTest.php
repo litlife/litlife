@@ -21,13 +21,13 @@ class UserGroupTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
-		$group = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
+		$group = UserGroup::factory()->notify_assignment()->create()->fresh();
 
-		$group2 = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
+		$group2 = UserGroup::factory()->notify_assignment()->create()->fresh();
 
 		$text_status = $this->faker->realText(100);
 
@@ -89,17 +89,17 @@ class UserGroupTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$user->groups()->detach();
-		$group = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
+		$group = UserGroup::factory()->notify_assignment()->create()->fresh();
 		$user->groups()->sync([$group->id]);
 
-		$group1 = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
+		$group1 = UserGroup::factory()->notify_assignment()->create()->fresh();
 
-		$group2 = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
+		$group2 = UserGroup::factory()->notify_assignment()->create()->fresh();
 
 		$response = $this->actingAs($admin)
 			->patch(route('users.groups.update', ['user' => $user]),
@@ -125,13 +125,13 @@ class UserGroupTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
-		$group1 = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
-		$group2 = factory(UserGroup::class)->states('notify_assignment')->create()->fresh();
+		$group = UserGroup::factory()->notify_assignment()->create()->fresh();
+		$group1 = UserGroup::factory()->notify_assignment()->create()->fresh();
+		$group2 = UserGroup::factory()->notify_assignment()->create()->fresh();
 
 		$user->groups()->sync([$group->id, $group1->id, $group2->id]);
 
@@ -172,17 +172,13 @@ class UserGroupTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$group1 = factory(UserGroup::class)
-			->states('notify_assignment_disable')
-			->create();
+		$group1 = UserGroup::factory()->notify_assignment_disable()->create();
 
-		$group2 = factory(UserGroup::class)
-			->states('notify_assignment_disable')
-			->create();
+		$group2 = UserGroup::factory()->notify_assignment_disable()->create();
 
 		$response = $this->actingAs($admin)
 			->patch(route('users.groups.update', ['user' => $user]),
@@ -206,17 +202,13 @@ class UserGroupTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$group1 = factory(UserGroup::class)
-			->states('notify_assignment_disable')
-			->create();
+		$group1 = UserGroup::factory()->notify_assignment_disable()->create();
 
-		$group2 = factory(UserGroup::class)
-			->states('notify_assignment')
-			->create();
+		$group2 = UserGroup::factory()->notify_assignment()->create();
 
 		$response = $this->actingAs($admin)
 			->patch(route('users.groups.update', ['user' => $user]),
@@ -238,9 +230,9 @@ class UserGroupTest extends TestCase
 
 	public function testPermission()
 	{
-		$admin = factory(User::class)->create()->fresh();
+		$admin = User::factory()->create()->fresh();
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$this->assertFalse($admin->can('change_group', $user));
 
@@ -252,8 +244,7 @@ class UserGroupTest extends TestCase
 
 	public function testIndexHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
 		$response = $this
 			->get(route('groups.index'))
@@ -274,11 +265,9 @@ class UserGroupTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$response = $this
 			->get(route('groups.edit', ['group' => $group->id]))
@@ -299,11 +288,9 @@ class UserGroupTest extends TestCase
 
 	public function testEditNotFound()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$id = $group->id;
 
@@ -316,11 +303,9 @@ class UserGroupTest extends TestCase
 
 	public function testDelete()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$response = $this
 			->delete(route('groups.destroy', ['group' => $group->id]))
@@ -353,11 +338,9 @@ class UserGroupTest extends TestCase
 
 	public function testCreateHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$response = $this
 			->get(route('groups.create', ['group' => $group->id]))
@@ -378,8 +361,7 @@ class UserGroupTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
 		$post = [
 			'name' => $this->faker->realText(100),
@@ -410,11 +392,9 @@ class UserGroupTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$post = [
 			'name' => $this->faker->realText(100),
@@ -445,11 +425,9 @@ class UserGroupTest extends TestCase
 
 	public function testRelation()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$user->groups()->attach($group);
 
@@ -458,11 +436,9 @@ class UserGroupTest extends TestCase
 
 	public function testOldRelation()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create();
+		$group = UserGroup::factory()->create();
 
 		$user->group->manage_users_groups = true;
 		$user->push();
@@ -482,11 +458,9 @@ class UserGroupTest extends TestCase
 
 	public function testChangeShowHttp()
 	{
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create(['show' => true]);
+		$group = UserGroup::factory()->create(['show' => true]);
 
 		$this->assertTrue($group->show);
 
@@ -511,29 +485,28 @@ class UserGroupTest extends TestCase
 
 	public function testSeveralGroups()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)->create();
+		$group = UserGroup::factory()->create();
 		$group->add_comment = true;
 		$group->add_book = false;
 		$group->add_forum_post = false;
 		$group->save();
 
-		$group2 = factory(UserGroup::class)->create();
+		$group2 = UserGroup::factory()->create();
 		$group2->add_comment = false;
 		$group2->add_book = true;
 		$group2->add_forum_post = false;
 		$group2->save();
 
-		$group3 = factory(UserGroup::class)->create();
+		$group3 = UserGroup::factory()->create();
 		$group3->add_comment = false;
 		$group3->add_book = false;
 		$group3->add_forum_post = false;
 		$group3->add_book_without_check = true;
 		$group3->save();
 
-		$group4 = factory(UserGroup::class)->create();
+		$group4 = UserGroup::factory()->create();
 		$group4->add_comment = false;
 		$group4->add_book = false;
 		$group4->add_forum_post = false;
@@ -552,8 +525,7 @@ class UserGroupTest extends TestCase
 
 	public function testShowScope()
 	{
-		$group = factory(UserGroup::class)
-			->create(['show' => true]);
+		$group = UserGroup::factory()->create(['show' => true]);
 
 		$this->assertEquals(1, UserGroup::where('id', $group->id)->show()->count());
 		$this->assertEquals(1, UserGroup::where('id', $group->id)->count());
@@ -567,11 +539,9 @@ class UserGroupTest extends TestCase
 
 	public function testUserGroupStatus()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create(['show' => true]);
+		$group = UserGroup::factory()->create(['show' => true]);
 
 		$user->groups()->syncWithoutDetaching([$group->id]);
 
@@ -587,11 +557,9 @@ class UserGroupTest extends TestCase
 	{
 		$title = Str::random(8);
 
-		$group = factory(UserGroup::class)
-			->create(['name' => $title]);
+		$group = UserGroup::factory()->create(['name' => $title]);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->text_status = __('author.manager_characters.author') . ', text';
 		$user->attachUserGroup($group);
 		$user->save();
@@ -606,8 +574,7 @@ class UserGroupTest extends TestCase
 
 	public function testAttachUserGroupToUserIfNotExistsCommand()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->groups()->detach();
 
@@ -622,13 +589,11 @@ class UserGroupTest extends TestCase
 
 	public function testAttachUserGroupToUserIfNotExistsCommandDontAttachIfOtherGroupExists()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->groups()->detach();
 
-		$group = factory(UserGroup::class)
-			->create()
+		$group = UserGroup::factory()->create()
 			->fresh();
 
 		$user->groups()->attach($group);
@@ -644,15 +609,13 @@ class UserGroupTest extends TestCase
 
 	public function testRemoveEqualTextStatusToGroupName()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
 		$text = uniqid();
 
-		$group = factory(UserGroup::class)
-			->create(['name' => $text]);
+		$group = UserGroup::factory()->create(['name' => $text]);
 
-		$user = factory(User::class)
-			->create(['text_status' => $text]);
+		$user = User::factory()->create(['text_status' => $text]);
 
 		$this->assertEquals($text, $group->name);
 		$this->assertEquals($text, $user->text_status);
@@ -676,10 +639,9 @@ class UserGroupTest extends TestCase
 
 	public function testEmptyGroupsValidationError()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($admin)
 			->patch(route('users.groups.update', ['user' => $user]),
@@ -696,11 +658,9 @@ class UserGroupTest extends TestCase
 		$text = uniqid();
 		$text2 = uniqid();
 
-		$user = factory(User::class)
-			->create(['text_status' => $text . ', ' . $text2]);
+		$user = User::factory()->create(['text_status' => $text . ', ' . $text2]);
 
-		$group = factory(UserGroup::class)
-			->create(['name' => $text]);
+		$group = UserGroup::factory()->create(['name' => $text]);
 
 		$this->assertEquals($text, $group->name);
 		$this->assertEquals($text . ', ' . $text2, $user->text_status);
@@ -729,8 +689,7 @@ class UserGroupTest extends TestCase
 	{
 		$uniqid = uniqid();
 
-		$group = factory(UserGroup::class)
-			->create(['name' => 'Текст ' . $uniqid]);
+		$group = UserGroup::factory()->create(['name' => 'Текст ' . $uniqid]);
 
 		$this->assertEquals(1, UserGroup::whereName('Текст ' . $uniqid)->count());
 
@@ -747,10 +706,9 @@ class UserGroupTest extends TestCase
 	{
 		$name = $this->faker->realText(10);
 
-		$group = factory(UserGroup::class)
-			->create(['name' => $name]);
+		$group = UserGroup::factory()->create(['name' => $name]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->attachUserGroupByNameIfExists($name);
 		$user->refresh();
 
@@ -767,14 +725,11 @@ class UserGroupTest extends TestCase
 
 	public function testAttachUserGroupNotification()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Notification::fake();
 
-		$group = factory(UserGroup::class)
-			->states('notify_assignment')
-			->create();
+		$group = UserGroup::factory()->notify_assignment()->create();
 
 		$user->attachUserGroup($group);
 
@@ -785,12 +740,9 @@ class UserGroupTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->states('notify_assignment_disable')
-			->create();
+		$group = UserGroup::factory()->notify_assignment_disable()->create();
 
 		$user->attachUserGroup($group);
 
@@ -799,11 +751,11 @@ class UserGroupTest extends TestCase
 
 	public function testCantDeleteGroupIfGroupHasKey()
 	{
-		$group = factory(UserGroup::class)->create();
+		$group = UserGroup::factory()->create();
 		$group->key = 'test';
 		$group->save();
 
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
 		$this->assertFalse($user->can('delete', $group));
 	}

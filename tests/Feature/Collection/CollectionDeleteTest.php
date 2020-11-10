@@ -9,8 +9,7 @@ class CollectionDeleteTest extends TestCase
 {
 	public function testDeleteConfirmationPage()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -24,8 +23,7 @@ class CollectionDeleteTest extends TestCase
 
 	public function testDelete()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -39,7 +37,7 @@ class CollectionDeleteTest extends TestCase
 
 	public function testDeleteAjax()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -57,7 +55,7 @@ class CollectionDeleteTest extends TestCase
 
 	public function testRestoreAjax()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -77,9 +75,7 @@ class CollectionDeleteTest extends TestCase
 
 	public function testCommentsDeletedAndRestoredWithCollection()
 	{
-		$collection = factory(Collection::class)
-			->states('with_comment')
-			->create();
+		$collection = Collection::factory()->with_comment()->create();
 
 		$comment = $collection->comments()->first();
 

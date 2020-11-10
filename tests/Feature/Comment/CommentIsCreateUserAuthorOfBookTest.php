@@ -23,8 +23,7 @@ class CommentIsCreateUserAuthorOfBookTest extends TestCase
 		$book = $author->books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);
@@ -41,8 +40,7 @@ class CommentIsCreateUserAuthorOfBookTest extends TestCase
 		$book = $author->books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'commentable_id' => $book->id
 			]);
 
@@ -64,8 +62,7 @@ class CommentIsCreateUserAuthorOfBookTest extends TestCase
 		$book = $author->books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);
@@ -88,8 +85,7 @@ class CommentIsCreateUserAuthorOfBookTest extends TestCase
 		$book = $author->books()->get()->first();
 		$this->assertNotNull($book);
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'create_user_id' => $user->id,
 				'commentable_id' => $book->id
 			]);

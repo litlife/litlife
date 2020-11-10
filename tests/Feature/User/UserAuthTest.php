@@ -23,9 +23,8 @@ class UserAuthTest extends TestCase
 
 		$password = uniqid();
 
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create(['password' => $password])
+		$user = User::factory()->with_confirmed_email()->create(
+			)
 			->fresh();
 		$email = $user->emails()->first();
 

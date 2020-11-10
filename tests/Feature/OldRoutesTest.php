@@ -13,7 +13,7 @@ class OldRoutesTest extends TestCase
 {
 	public function testUserGenreBlackList()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get('/UserGenreBlackList')
@@ -28,7 +28,7 @@ class OldRoutesTest extends TestCase
 
 	public function testBooksGenre()
 	{
-		$genre = factory(Genre::class)->create();
+		$genre = Genre::factory()->create();
 
 		$this->call('get', 'bs', ['g' => 'sg' . $genre->id])
 			->assertRedirect(route('books', ['genre' => [$genre->id]]));
@@ -45,11 +45,11 @@ class OldRoutesTest extends TestCase
 		{
 			$mainOldGenreGroupID = rand(1000, 10000);
 
-			$genre = factory(Genre::class)->create();
+			$genre = Genre::factory()->create();
 			$genre->old_genre_group_id = $mainOldGenreGroupID;
 			$genre->save();
 
-			$genre2 = factory(Genre::class)->create();
+			$genre2 = Genre::factory()->create();
 			$genre2->old_genre_group_id = $mainOldGenreGroupID;
 			$genre2->save();
 
@@ -107,7 +107,7 @@ class OldRoutesTest extends TestCase
 
 	public function testTopic()
 	{
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$this->call('get', 'Topic', ['Id' => $topic->id, 'p' => 2, 'GoToPostId' => 3])
 			->assertRedirect(route('topics.show', ['topic' => $topic->id, 'page' => 2, 'post' => 3]));
@@ -133,7 +133,7 @@ class OldRoutesTest extends TestCase
 		$this->call('get', 'edit_profile')
 			->assertRedirect(route('home.latest_books'));
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->call('get', 'edit_profile')
@@ -163,7 +163,7 @@ class OldRoutesTest extends TestCase
 		$this->call('get', 'Forum', ['Id' => ''])
 			->assertRedirect(route('forums.index'));
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->call('get', 'Forum', ['Id' => $forum->id, 'p' => 2])
 			->assertRedirect(route('forums.show', ['forum' => $forum->id, 'page' => 2]));
@@ -201,7 +201,7 @@ class OldRoutesTest extends TestCase
 		$this->call('get', 'MessageInbox')
 			->assertRedirect(route('books'));
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->call('get', 'MessageInbox')
@@ -258,7 +258,7 @@ class OldRoutesTest extends TestCase
 
 	public function testForumPostSearch()
 	{
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$this->call('get', 'ForumPostSearch', ['TopicId' => $topic->id, 'p' => 2])
 			->assertRedirect(route('topics.posts.index', ['topic' => $topic->id, 'page' => 2]));
@@ -359,7 +359,7 @@ class OldRoutesTest extends TestCase
 
 	public function testBlogRecordRedirectTo()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
 		$this->call('get', 'BlogRecordRedirectTo', ['Id' => $blog->id])
 			->assertRedirect(route('users.blogs.go', ['user' => $blog->owner->id, 'blog' => $blog->id]));

@@ -14,8 +14,7 @@ class BookFileGetFirstFileInArchiveStreamTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;

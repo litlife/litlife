@@ -15,8 +15,7 @@ class UserSearchSettingsTest extends TestCase
 	 */
 	public function testCreate()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.books.search.settings.store', [
@@ -34,8 +33,7 @@ class UserSearchSettingsTest extends TestCase
 
 	public function testUpdate()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.books.search.settings.store', [
@@ -66,8 +64,7 @@ class UserSearchSettingsTest extends TestCase
 
 	public function testResourceDefaultValue()
 	{
-		$setting = factory(UserSearchSetting::class)
-			->create([
+		$setting = UserSearchSetting::factory()->create([
 				'name' => 'download_access',
 				'value' => 'close'
 			]);
@@ -87,8 +84,7 @@ class UserSearchSettingsTest extends TestCase
 
 	public function testResourceViewDefaultValue()
 	{
-		$setting = factory(UserSearchSetting::class)
-			->create([
+		$setting = UserSearchSetting::factory()->create([
 				'name' => 'view',
 				'value' => 'table'
 			]);

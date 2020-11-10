@@ -11,8 +11,7 @@ class CollectionUserIndexTest extends TestCase
 {
 	public function testIndexHttp()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create();
+		$collectionUser = CollectionUser::factory()->create();
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -25,12 +24,9 @@ class CollectionUserIndexTest extends TestCase
 
 	public function testSeeOtherUserCollectionIfAddedToUserList()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create(['title' => Str::random(8)]);
+		$collection = Collection::factory()->private()->create();
 
-		$collectionUser = factory(CollectionUser::class)
-			->create(['collection_id' => $collection->id]);
+		$collectionUser = CollectionUser::factory()->create(['collection_id' => $collection->id]);
 
 		$user = $collectionUser->user;
 

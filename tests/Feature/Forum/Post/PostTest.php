@@ -17,8 +17,7 @@ class PostTest extends TestCase
 
 	public function testBBEmpty()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->expectException(QueryException::class);
 
@@ -29,9 +28,9 @@ class PostTest extends TestCase
 	/*
 		public function testIsSamePostExists()
 		{
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$topic = factory(Topic::class)->create();
+			$topic = Topic::factory()->create();
 
 			$text = $this->faker->realText(100);
 

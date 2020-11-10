@@ -10,9 +10,7 @@ class BookDeleteAllPagesWhereSectionWasNotFouncCommandTest extends TestCase
 {
 	public function testDontDeleteIfSectionWasFound()
 	{
-		$section = factory(Section::class)
-			->states('with_two_pages')
-			->create();
+		$section = Section::factory()->with_two_pages()->create();
 
 		$page = $section->pages()->first();
 
@@ -25,9 +23,7 @@ class BookDeleteAllPagesWhereSectionWasNotFouncCommandTest extends TestCase
 
 	public function testDontDeleteIfSectionSoftDeleted()
 	{
-		$section = factory(Section::class)
-			->states('with_two_pages')
-			->create();
+		$section = Section::factory()->with_two_pages()->create();
 
 		$page = $section->pages()->first();
 
@@ -43,9 +39,7 @@ class BookDeleteAllPagesWhereSectionWasNotFouncCommandTest extends TestCase
 
 	public function testDeleteIfSectionForceDeleted()
 	{
-		$section = factory(Section::class)
-			->states('with_two_pages')
-			->create();
+		$section = Section::factory()->with_two_pages()->create();
 
 		$page = $section->pages()->first();
 

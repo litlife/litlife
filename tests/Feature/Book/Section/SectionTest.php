@@ -21,7 +21,7 @@ class SectionTest extends TestCase
 
 		$content = '<p>' . $this->faker->text . ' <strong>' . $this->faker->sentence . '</strong></p>';
 
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -44,7 +44,7 @@ class SectionTest extends TestCase
 
 	public function testCreateChild()
 	{
-		$book = factory(Book::class)->create([
+		$book = Book::factory()->create([
 			'create_user_id' => 50000,
 			'is_si' => false,
 			'is_lp' => false,
@@ -103,7 +103,7 @@ class SectionTest extends TestCase
 
 		$section_content = $page1_text . $page2_text . $page3_text;
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = $section_content;
 		$section->save();
 
@@ -138,8 +138,7 @@ class SectionTest extends TestCase
 
 	public function testIsChangedMethod()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$this->assertTrue($section->isChanged('character_count'));
 
@@ -156,8 +155,7 @@ class SectionTest extends TestCase
 		$this->assertFalse($section->isChanged('character_count'));
 
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$section = new Section();
 		$section->fill([
@@ -172,12 +170,11 @@ class SectionTest extends TestCase
 
 	public function testXHTMLUsed()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 
-		$attachment = factory(Attachment::class)->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
 		$xhtml = '<p>текст <img src="' . $attachment->url . '" alt="test.jpg"/> текст</p>';
 
@@ -191,7 +188,7 @@ class SectionTest extends TestCase
 
 	public function testGetFirstTag()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 
 		$section->content = '<div><div><div><div><p>текст</p><p>текст2</p></div></div></div></div>';
 		$section->save();
@@ -220,13 +217,11 @@ class SectionTest extends TestCase
 
 	public function testInnerId()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->create(['book_id' => $book->id]);
 
 		$section->refresh();
 		$section2->refresh();
@@ -237,7 +232,7 @@ class SectionTest extends TestCase
 
 	public function testEmptyContent()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = '';
 		$section->save();
 		$section->refresh();
@@ -248,15 +243,11 @@ class SectionTest extends TestCase
 
 	public function testDontCountPrivateSections()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('private')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->private()->create();
 
-		$section2 = factory(Section::class)
-			->states('accepted')
-			->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->accepted()->create();
 
 		$book->refreshSectionsCount();
 

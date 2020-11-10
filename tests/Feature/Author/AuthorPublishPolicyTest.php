@@ -10,11 +10,9 @@ class AuthorPublishPolicyTest extends TestCase
 {
 	public function testCanIfHasPerimission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$author = factory(Author::class)
-			->states('sent_for_review')
-			->create();
+		$author = Author::factory()->sent_for_review()->create();
 
 		$user->group->check_books = true;
 		$user->push();
@@ -24,11 +22,9 @@ class AuthorPublishPolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePerimission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$author = factory(Author::class)
-			->states('sent_for_review')
-			->create();
+		$author = Author::factory()->sent_for_review()->create();
 
 		$user->group->check_books = false;
 		$user->push();
@@ -38,11 +34,9 @@ class AuthorPublishPolicyTest extends TestCase
 
 	public function testCantIfAuthorNotSentForReview()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$user->group->check_books = true;
 		$user->push();

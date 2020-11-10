@@ -15,11 +15,9 @@ class InvitationTest extends DuskTestCase
 
 			$nick = Str::random(8);
 
-			$user = factory(User::class)
-				->create(['nick' => $nick]);
+			$user = User::factory()->create(['nick' => $nick]);
 
-			$invitation = factory(Invitation::class)
-				->create();
+			$invitation = Invitation::factory()->create();
 
 			$browser->resize(1000, 1000)
 				->visit(route('users.registration', ['token' => $invitation->token]))
@@ -37,8 +35,7 @@ class InvitationTest extends DuskTestCase
 
 			$nick = Str::random(8);
 
-			$invitation = factory(Invitation::class)
-				->create();
+			$invitation = Invitation::factory()->create();
 
 			$browser->resize(1000, 1000)
 				->visit(route('users.registration', ['token' => $invitation->token]))

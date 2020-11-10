@@ -11,13 +11,9 @@ class CollectionBookSelectTest extends TestCase
 {
 	public function testBooksSelectHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create(['who_can_add' => 'everyone']);
+		$collection = Collection::factory()->accepted()->create();
 
 		$this->actingAs($user)
 			->get(route('collections.books.select', $collection))
@@ -27,14 +23,11 @@ class CollectionBookSelectTest extends TestCase
 
 	public function testBooksSelectMaxCollectionNumber()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$number = rand(10, 100);
 
-		$collected = factory(CollectedBook::class)
-			->create(['number' => $number]);
+		$collected = CollectedBook::factory()->create(['number' => $number]);
 
 		$collection = $collected->collection;
 		$collection->who_can_add = 'everyone';
@@ -48,9 +41,7 @@ class CollectionBookSelectTest extends TestCase
 
 	public function testIsOkIfOpenCollectionWithNoAccess()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
 		$this->get(route('collections.books.select', $collection))
 			->assertStatus(401);

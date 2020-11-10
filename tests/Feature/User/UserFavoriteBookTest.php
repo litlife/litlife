@@ -17,8 +17,8 @@ class UserFavoriteBookTest extends TestCase
 
 	public function testToggle()
 	{
-		$book = factory(Book::class)->create();
-		$user = factory(User::class)->create();
+		$book = Book::factory()->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.favorites.toggle', $book))
@@ -51,8 +51,7 @@ class UserFavoriteBookTest extends TestCase
 	{
 		$characters_count = rand(1000, 2000);
 
-		$remembered_page = factory(BookReadRememberPage::class)
-			->create(['characters_count' => $characters_count]);
+		$remembered_page = BookReadRememberPage::factory()->create(['characters_count' => $characters_count]);
 
 		$user = $remembered_page->user;
 		$book = $remembered_page->book;

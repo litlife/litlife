@@ -13,8 +13,7 @@ class AuthorCreateTest extends TestCase
 {
 	public function testCreateAuthorAverageRatingDBRecord()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$this->assertDatabaseHas('author_average_rating_for_periods', [
 			'author_id' => $author->id
@@ -23,8 +22,7 @@ class AuthorCreateTest extends TestCase
 
 	public function testWithBiographyHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$biography = $this->faker->realText(200);
 
@@ -54,7 +52,7 @@ class AuthorCreateTest extends TestCase
 
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('authors.store'),
@@ -88,8 +86,7 @@ class AuthorCreateTest extends TestCase
 		$firstName = Str::random(6);
 		$nickName = Str::random(6);
 
-		$user = factory(User::class)
-			->create([
+		$user = User::factory()->create([
 				'last_name' => $lastName,
 				'first_name' => $firstName,
 				'nick' => $nickName

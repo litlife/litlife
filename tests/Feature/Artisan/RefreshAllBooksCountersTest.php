@@ -10,7 +10,7 @@ class RefreshAllBooksCountersTest extends TestCase
 {
 	public function testCommand()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->updated_at = now()->subYear();
 		$book->save(['timestamps' => false]);
 

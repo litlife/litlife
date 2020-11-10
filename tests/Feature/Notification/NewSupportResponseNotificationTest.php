@@ -10,8 +10,7 @@ class NewSupportResponseNotificationTest extends TestCase
 {
 	public function testVia()
 	{
-		$message = factory(SupportQuestionMessage::class)
-			->create();
+		$message = SupportQuestionMessage::factory()->create();
 
 		$notification = new NewSupportResponseNotification($message);
 
@@ -20,8 +19,7 @@ class NewSupportResponseNotificationTest extends TestCase
 
 	public function testMail()
 	{
-		$message = factory(SupportQuestionMessage::class)
-			->create();
+		$message = SupportQuestionMessage::factory()->create();
 
 		$notification = new NewSupportResponseNotification($message);
 
@@ -40,8 +38,7 @@ class NewSupportResponseNotificationTest extends TestCase
 
 	public function testDatabase()
 	{
-		$message = factory(SupportQuestionMessage::class)
-			->create();
+		$message = SupportQuestionMessage::factory()->create();
 
 		$notification = new NewSupportResponseNotification($message);
 

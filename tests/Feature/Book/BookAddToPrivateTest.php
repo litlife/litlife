@@ -19,15 +19,12 @@ class BookAddToPrivateTest extends TestCase
 {
 	public function testForm()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->group->add_book_without_check = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('books.add_to_private.form', $book))
@@ -40,32 +37,31 @@ class BookAddToPrivateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->group->add_book_without_check = true;
 		$user->push();
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->statusAccepted();
 		$book->save();
 
 		$book->authors()->detach();
 		$book->sequences()->detach();
 
-		$author = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$author = Author::factory()->create(['create_user_id' => $user->id]);
 		$author->statusAccepted();
 		$author->save();
 
-		$illustrator = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$illustrator = Author::factory()->create(['create_user_id' => $user->id]);
 		$illustrator->statusAccepted();
 		$illustrator->save();
 
-		$translator = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$translator = Author::factory()->create(['create_user_id' => $user->id]);
 		$translator->statusAccepted();
 		$translator->save();
 
-		$translator2 = factory(Author::class)->create(['create_user_id' => $user->id]);
+		$translator2 = Author::factory()->create(['create_user_id' => $user->id]);
 		$translator2->statusSentForReview();
 		$translator2->save();
 
@@ -73,7 +69,7 @@ class BookAddToPrivateTest extends TestCase
 		$book->translators()->sync([$translator->id, $translator2->id]);
 		$book->illustrators()->sync([$illustrator->id]);
 
-		$sequence = factory(Sequence::class)->create(['create_user_id' => $user->id]);
+		$sequence = Sequence::factory()->create(['create_user_id' => $user->id]);
 		$sequence->statusPrivate();
 		$sequence->save();
 		$book->sequences()->sync([$sequence->id]);
@@ -81,11 +77,11 @@ class BookAddToPrivateTest extends TestCase
 
 		$this->assertEquals(1, $sequence->fresh()->book_count);
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_file = BookFile::factory()->txt()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 		$book_file->statusAccepted();
 		$book_file->save();
 
-		$book_keyword = factory(BookKeyword::class)->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
 		$book_keyword->statusAccepted();
 		$book_keyword->save();
 
@@ -138,9 +134,9 @@ class BookAddToPrivateTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$reason = $this->faker->realText(100);
 
@@ -166,9 +162,9 @@ class BookAddToPrivateTest extends TestCase
 
 		Notification::fake();
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$reason = $this->faker->realText(100);
 
@@ -207,9 +203,9 @@ class BookAddToPrivateTest extends TestCase
 
 	public function testCantRemoveFromPrivateIfBookDeleted()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->delete();
 
 		$this->assertFalse($admin->can('addToPrivate', $book));
@@ -217,17 +213,11 @@ class BookAddToPrivateTest extends TestCase
 
 	public function testRemoveTheNotVerifiedInTheVerificationCheck()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('sent_for_review', 'with_create_user')
-			->create();
+		$book = Book::factory()->sent_for_review()->with_create_user()->create();
 
-		$manager = factory(Manager::class)
-			->states('on_review', 'character_author')
-			->create();
+		$manager = Manager::factory()->on_review()->character_author()->create();
 
 		$author = $manager->manageable;
 		$author->statusSentForReview();
@@ -252,17 +242,17 @@ class BookAddToPrivateTest extends TestCase
 
 	public function testReturnToPrivateIfBookPurchased()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->bought_times_count = 0;
 		$book->push();
 
 		$this->assertTrue($user->can('addToPrivate', $book));
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->bought_times_count = 1;
 		$book->push();
 

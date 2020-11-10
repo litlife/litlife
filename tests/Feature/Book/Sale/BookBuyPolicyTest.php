@@ -11,12 +11,9 @@ class BookBuyPolicyTest extends TestCase
 {
 	public function testCanBuyPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$book = $author->books->first();
 
@@ -27,12 +24,9 @@ class BookBuyPolicyTest extends TestCase
 
 	public function testUserCantBuyABookIfAuthorSalesDisables()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$book = $author->books->first();
 
@@ -54,9 +48,7 @@ class BookBuyPolicyTest extends TestCase
 
 	public function testCantIfAuthorPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -66,9 +58,7 @@ class BookBuyPolicyTest extends TestCase
 
 	public function testCantIfAlreadyBuyPolicy()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$buyer = $purchase->buyer;
 		$book = $purchase->purchasable;
@@ -78,9 +68,7 @@ class BookBuyPolicyTest extends TestCase
 
 	public function testCantSaleBookIfRemovedFromSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -92,7 +80,7 @@ class BookBuyPolicyTest extends TestCase
 		$this->assertFalse($user->can('sell', $book));
 		$this->assertFalse($user->can('change_sell_settings', $book));
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('buy_button', $book));
 		$this->assertFalse($user->can('buy', $book));

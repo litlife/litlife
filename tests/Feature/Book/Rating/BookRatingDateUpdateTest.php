@@ -23,8 +23,7 @@ class BookRatingDateUpdateTest extends TestCase
 	 */
 	public function testUpdateIsOk()
 	{
-		$book_vote = factory(BookVote::class)
-			->create();
+		$book_vote = BookVote::factory()->create();
 
 		$user = $book_vote->create_user;
 		$book = $book_vote->book;
@@ -53,8 +52,7 @@ class BookRatingDateUpdateTest extends TestCase
 	 */
 	public function testUpdateIfWrongDate()
 	{
-		$book_vote = factory(BookVote::class)
-			->create();
+		$book_vote = BookVote::factory()->create();
 
 		$user = $book_vote->create_user;
 		$book = $book_vote->book;

@@ -11,18 +11,13 @@ class CollectionBookAttachTest extends TestCase
 {
 	public function testAttachBook()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create(['who_can_add' => 'everyone']);
+		$collection = Collection::factory()->accepted()->create();
 
 		$this->assertNull($collection->latest_updates_at);
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$number = rand(1, 200);
 		$comment = $this->faker->realText(200);

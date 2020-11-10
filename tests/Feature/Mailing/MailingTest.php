@@ -11,7 +11,7 @@ class MailingTest extends TestCase
 {
 	public function testStore()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
 		$email = $this->faker->email;
 		$priority = 90;
@@ -43,11 +43,9 @@ class MailingTest extends TestCase
 
 	public function testDontAddIfEmailAlreadyExists()
 	{
-		$user = factory(User::class)->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mailing = factory(Mailing::class)
-			->create();
+		$mailing = Mailing::factory()->create();
 
 		$email = $mailing->email;
 		$priority = 90;
@@ -70,8 +68,7 @@ class MailingTest extends TestCase
 
 	public function testStoreTextWithoutEmail()
 	{
-		$user = factory(User::class)->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->actingAs($user)
 			->post(route('mailings.store'), [
@@ -82,8 +79,7 @@ class MailingTest extends TestCase
 
 	public function testStoreWrongEmail()
 	{
-		$user = factory(User::class)->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$email = Str::random(8);
 
@@ -98,8 +94,7 @@ class MailingTest extends TestCase
 
 	public function testStoreEmailWithoutPriority()
 	{
-		$user = factory(User::class)->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$email = $this->faker->email;
 		$email2 = $this->faker->email;
@@ -116,8 +111,7 @@ class MailingTest extends TestCase
 
 	public function testSentWaitedScope()
 	{
-		$mailing = factory(Mailing::class)
-			->create();
+		$mailing = Mailing::factory()->create();
 
 		$this->assertEquals(0, Mailing::whereEmail($mailing->email)->sent()->count());
 		$this->assertEquals(1, Mailing::whereEmail($mailing->email)->waited()->count());
@@ -131,8 +125,7 @@ class MailingTest extends TestCase
 
 	public function testIsSent()
 	{
-		$mailing = factory(Mailing::class)
-			->create();
+		$mailing = Mailing::factory()->create();
 
 		$this->assertFalse($mailing->isSent());
 
@@ -144,10 +137,9 @@ class MailingTest extends TestCase
 
 	public function testIndexIsOk()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$mailing = factory(Mailing::class)
-			->create();
+		$mailing = Mailing::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('mailings.index'))
@@ -156,8 +148,7 @@ class MailingTest extends TestCase
 
 	public function testStoreWithName()
 	{
-		$user = factory(User::class)->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$email = $this->faker->email;
 		$name = $this->faker->name;
@@ -179,8 +170,7 @@ class MailingTest extends TestCase
 
 	public function testManagerMailersPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('manage_mailings', User::class));
 

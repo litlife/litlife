@@ -18,9 +18,7 @@ class AttachmentTest extends TestCase
 
 	public function testFixAttachmentExtensionIfWrong()
 	{
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$attachment = new Attachment();
 		$attachment->openImage(__DIR__ . '/../../images/test.jpg_0');

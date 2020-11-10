@@ -9,8 +9,7 @@ class CollectionBookDetachPolicyTest extends TestCase
 {
 	public function testCollectionUserCanDetachBooksWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_remove_books' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_remove_books' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -20,9 +19,7 @@ class CollectionBookDetachPolicyTest extends TestCase
 
 	public function testCollectionUserCanDetachBooksWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->states('collection_who_can_add_me')
-			->create(['can_remove_books' => false]);
+		$collectionUser = CollectionUser::factory()->collection_who_can_add_me()->create();
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

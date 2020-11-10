@@ -9,9 +9,7 @@ class AuthorConvertAllBooksInTheOldFormatToTheNewOneTest extends TestCase
 {
 	public function testConvertAllBooksInTheOldFormatToTheNewOne()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_source')
-			->create(['online_read_new_format' => false]);
+		$book = Book::factory()->with_writer()->with_source()->create(['online_read_new_format' => false]);
 
 		$author = $book->authors()->first();
 		$file = $book->files()->first();

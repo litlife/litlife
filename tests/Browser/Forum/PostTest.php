@@ -19,22 +19,17 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$topic = factory(Topic::class)->create();
+			$topic = Topic::factory()->create();
 
-			$post = factory(Post::class)
-				->create(['topic_id' => $topic->id])->fresh();
+			$post = Post::factory()->create(['topic_id' => $topic->id])->fresh();
 
-			$post2 = factory(Post::class)
-				->create(['parent' => $post, 'topic_id' => $topic->id])->fresh();
+			$post2 = Post::factory()->create(['parent' => $post, 'topic_id' => $topic->id])->fresh();
 
-			$post3 = factory(Post::class)
-				->create(['parent' => $post2, 'topic_id' => $topic->id])->fresh();
+			$post3 = Post::factory()->create(['parent' => $post2, 'topic_id' => $topic->id])->fresh();
 
-			$post4 = factory(Post::class)
-				->create(['parent' => $post3, 'topic_id' => $topic->id])->fresh();
+			$post4 = Post::factory()->create(['parent' => $post3, 'topic_id' => $topic->id])->fresh();
 
-			$post5 = factory(Post::class)
-				->create(['parent' => $post4, 'topic_id' => $topic->id])->fresh();
+			$post5 = Post::factory()->create(['parent' => $post4, 'topic_id' => $topic->id])->fresh();
 
 			$this->assertEquals(4, $post5->level);
 
@@ -50,13 +45,11 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$topic = factory(Topic::class)->create();
+			$topic = Topic::factory()->create();
 
-			$post = factory(Post::class)
-				->create(['topic_id' => $topic->id])->fresh();
+			$post = Post::factory()->create(['topic_id' => $topic->id])->fresh();
 
-			$post2 = factory(Post::class)
-				->create(['parent' => $post, 'topic_id' => $topic->id])->fresh();
+			$post2 = Post::factory()->create(['parent' => $post, 'topic_id' => $topic->id])->fresh();
 
 			$user_browser->resize(1000, 2000)
 				->visit(route('topics.show', ['topic' => $topic->id]))
@@ -79,13 +72,11 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$topic = factory(Topic::class)->create();
+			$topic = Topic::factory()->create();
 
-			$post0 = factory(Post::class)
-				->create(['topic_id' => $topic->id])->fresh();
+			$post0 = Post::factory()->create(['topic_id' => $topic->id])->fresh();
 
-			$post = factory(Post::class)
-				->create(['topic_id' => $topic->id])->fresh();
+			$post = Post::factory()->create(['topic_id' => $topic->id])->fresh();
 
 			$user_browser->resize(1000, 2000)
 				->loginAs($post0->create_user)
@@ -111,13 +102,11 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$topic = factory(Topic::class)->create();
+			$topic = Topic::factory()->create();
 
-			$post = factory(Post::class)
-				->create(['topic_id' => $topic->id])->fresh();
+			$post = Post::factory()->create(['topic_id' => $topic->id])->fresh();
 
-			$post2 = factory(Post::class)
-				->create(['topic_id' => $topic->id])->fresh();
+			$post2 = Post::factory()->create(['topic_id' => $topic->id])->fresh();
 
 			$post->fix();
 
@@ -142,8 +131,7 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$post = factory(Post::class)
-				->create()
+			$post = Post::factory()->create()
 				->fresh();
 
 			$topic = $post->topic;
@@ -171,14 +159,13 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$admin = factory(User::class)->states('admin')->create();
+			$admin = User::factory()->admin()->create();
 
 			$bb_code = 'text';
 
 			$new_bb_code = uniqid();
 
-			$post = factory(Post::class)
-				->create(['bb_text' => $bb_code, 'create_user_id' => $admin->id]);
+			$post = Post::factory()->create(['bb_text' => $bb_code, 'create_user_id' => $admin->id]);
 
 			$topic = $post->topic;
 
@@ -215,14 +202,13 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$admin = factory(User::class)->states('admin')->create();
+			$admin = User::factory()->admin()->create();
 
 			$long_text = 'test ' . implode("\r\n", array_fill(0, 50, ' ')) . ' test';
 
 			$short_text = uniqid();
 
-			$post = factory(Post::class)
-				->create(['bb_text' => $long_text, 'create_user_id' => $admin->id]);
+			$post = Post::factory()->create(['bb_text' => $long_text, 'create_user_id' => $admin->id]);
 
 			$topic = $post->topic;
 
@@ -264,8 +250,7 @@ class PostTest extends DuskTestCase
 
 			$bb = '[b]' . $begin . '[/b] ' . implode("\r\n", array_fill(0, 50, ' ')) . ' [i]' . $end . '[/i]';
 
-			$post = factory(Post::class)
-				->create(['bb_text' => $bb]);
+			$post = Post::factory()->create(['bb_text' => $bb]);
 
 			$topic = $post->topic;
 
@@ -310,8 +295,7 @@ class PostTest extends DuskTestCase
 
 			$bb = '[b]' . $begin . '[/b] ' . implode("\r\n", array_fill(0, 50, ' ')) . ' [i]' . $end . '[/i]';
 
-			$post = factory(Post::class)
-				->create(['bb_text' => $bb]);
+			$post = Post::factory()->create(['bb_text' => $bb]);
 
 			$topic = $post->topic;
 
@@ -363,8 +347,7 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$post = factory(Post::class)
-				->create(['bb_text' => '[b]text[/b]']);
+			$post = Post::factory()->create(['bb_text' => '[b]text[/b]']);
 
 			$topic = $post->topic;
 
@@ -387,11 +370,9 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$post = factory(Post::class)
-				->create();
+			$post = Post::factory()->create();
 
 			$topic = $post->topic;
 
@@ -431,12 +412,11 @@ class PostTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->forum_edit_self_post = true;
 			$user->push();
 
-			$post = factory(Post::class)
-				->create();
+			$post = Post::factory()->create();
 
 			$topic = $post->topic;
 

@@ -27,8 +27,7 @@ class SequenceSearchTest extends TestCase
 
 	public function testFullTextSearch()
 	{
-		$sequence = factory(Sequence::class)
-			->create();
+		$sequence = Sequence::factory()->create();
 		$sequence->name = 'Время&—&детство!';
 		$sequence->save();
 
@@ -47,7 +46,7 @@ class SequenceSearchTest extends TestCase
 	{
 		$str = Str::random(10);
 
-		$sequence = factory(Sequence::class)->create(['name' => $str]);
+		$sequence = Sequence::factory()->create(['name' => $str]);
 
 		$response = $this->get(route('sequences.search', ['q' => $sequence->id]))
 			->assertOk()
@@ -58,7 +57,7 @@ class SequenceSearchTest extends TestCase
 	{
 		$str = Str::random(10);
 
-		$sequence = factory(Sequence::class)->create(['name' => $str]);
+		$sequence = Sequence::factory()->create(['name' => $str]);
 
 		$response = $this->get(route('sequences.search', ['q' => mb_substr($sequence->name, 0, 5)]))
 			->assertOk()

@@ -35,7 +35,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testSoftDeleted()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->delete();
 
 		$component = new BookName($book, true, false);
@@ -57,7 +57,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testHrefDisable()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$component = new BookName($book, false, false, false);
 		/*
@@ -78,7 +78,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeDisabled()
 	{
-		$book = factory(Book::class)->states('si_true', 'lp_false')->create();
+		$book = Book::factory()->si_true()->lp_false()->create();
 
 		$component = new BookName($book, false, 0, false);
 
@@ -98,7 +98,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeSi()
 	{
-		$book = factory(Book::class)->states('si_true', 'lp_false')->create();
+		$book = Book::factory()->si_true()->lp_false()->create();
 
 		$component = new BookName($book, false, true, false);
 		/*
@@ -123,7 +123,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeLp()
 	{
-		$book = factory(Book::class)->states('lp_true', 'si_false')->create();
+		$book = Book::factory()->lp_true()->si_false()->create();
 
 		$component = new BookName($book, false, true, false);
 		/*
@@ -148,7 +148,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeIsCollection()
 	{
-		$book = factory(Book::class)->states('lp_false', 'si_false')->create();
+		$book = Book::factory()->lp_false()->si_false()->create();
 		$book->is_collection = true;
 		$book->save();
 
@@ -176,7 +176,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeWithAge()
 	{
-		$book = factory(Book::class)->states('lp_false', 'si_false')->create();
+		$book = Book::factory()->lp_false()->si_false()->create();
 		$book->age = 18;
 		$book->save();
 
@@ -203,9 +203,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testBadgeIsPrivate()
 	{
-		$book = factory(Book::class)
-			->states('lp_false', 'si_false', 'private', 'with_create_user')
-			->create(['age' => 0]);
+		$book = Book::factory()->lp_false()->si_false()->private()->with_create_user()->create(['age' => 0]);
 
 		$this->be($book->create_user);
 
@@ -232,9 +230,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testNameIfDontHaveAccess()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$component = new BookName($book, false, false, false);
 		/*
@@ -259,7 +255,7 @@ class BookNameComponentTest extends TestCase
 	 */
 	public function testShowEvenIfTrashed()
 	{
-		$book = factory(Book::class)->states('lp_false', 'si_false')->create();
+		$book = Book::factory()->lp_false()->si_false()->create();
 		$book->delete();
 
 		$component = new BookName($book, false, true, true);

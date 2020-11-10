@@ -11,12 +11,9 @@ class UserClearMessageHistoryForConvesationJobTest extends TestCase
 {
 	public function testException()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$conversation = factory(Conversation::class)
-			->states('with_two_users')
-			->create();
+		$conversation = Conversation::factory()->with_two_users()->create();
 
 		$this->expectExceptionMessage('The user must participate in the conversation');
 
@@ -25,12 +22,9 @@ class UserClearMessageHistoryForConvesationJobTest extends TestCase
 
 	public function testDelete()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 

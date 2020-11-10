@@ -10,22 +10,22 @@ class TopicMovePolicyTest extends TestCase
 {
 	public function testTrue()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = true;
 		$user->push();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$this->assertTrue($user->can('move', $topic));
 	}
 
 	public function testFalse()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = false;
 		$user->push();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$this->assertFalse($user->can('move', $topic));
 	}

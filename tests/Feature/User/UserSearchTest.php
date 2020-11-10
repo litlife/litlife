@@ -17,11 +17,9 @@ class UserSearchTest extends TestCase
 	 */
 	public function testOnlineFilter()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$now = now();
 
@@ -51,7 +49,7 @@ class UserSearchTest extends TestCase
 
 	public function testNameEmailAndEmailHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$email = $this->faker->email;
 
@@ -62,14 +60,11 @@ class UserSearchTest extends TestCase
 
 	public function testGroup()
 	{
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$group = factory(UserGroup::class)
-			->create(['show' => true]);
+		$group = UserGroup::factory()->create(['show' => true]);
 
 		$user->groups()->syncWithoutDetaching([$group->id]);
 
@@ -88,11 +83,9 @@ class UserSearchTest extends TestCase
 
 	public function testConfirmedEmail()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
 		$user = $email->user;
 
@@ -105,11 +98,9 @@ class UserSearchTest extends TestCase
 
 	public function testNotConfirmedEmail()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
 		$user = $email->user;
 
@@ -122,7 +113,7 @@ class UserSearchTest extends TestCase
 
 	public function testEscapeCharactersInEmail()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users', ['email' => '\\']))
@@ -131,9 +122,7 @@ class UserSearchTest extends TestCase
 
 	public function testEmail()
 	{
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
 		$user = $email->user;
 
@@ -146,8 +135,7 @@ class UserSearchTest extends TestCase
 
 	public function testPerPage()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users', ['per_page' => 5]))

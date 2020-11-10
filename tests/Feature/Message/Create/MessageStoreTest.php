@@ -15,11 +15,11 @@ class MessageStoreTest extends TestCase
 	{
 		Notification::fake();
 
-		$sender = factory(User::class)->create();
+		$sender = User::factory()->create();
 		$sender->email_notification_setting->private_message = true;
 		$sender->push();
 
-		$recepient = factory(User::class)->states('with_confirmed_email')->create();
+		$recepient = User::factory()->with_confirmed_email()->create();
 		$recepient->email_notification_setting->private_message = true;
 		$recepient->push();
 

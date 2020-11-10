@@ -10,8 +10,7 @@ class PostUpdateTest extends TestCase
 {
 	public function testIfTopicDeleted()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$post->topic->delete();
 
@@ -26,11 +25,9 @@ class PostUpdateTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
 		$this->actingAs($admin)
 			->get(route('posts.edit', $post))
@@ -39,11 +36,9 @@ class PostUpdateTest extends TestCase
 
 	public function testEditHttpSeeValidationErrors()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
 		$this->actingAs($admin)
 			->get(route('posts.edit', $post))
@@ -57,12 +52,9 @@ class PostUpdateTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
 		$text = $this->faker->text();
 
@@ -81,12 +73,9 @@ class PostUpdateTest extends TestCase
 
 	public function testUpdateHttpStringContainsAsc194()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$post = factory(Post::class)
-			->create(['create_user_id' => $admin->id]);
+		$post = Post::factory()->create(['create_user_id' => $admin->id]);
 
 		$text = '   ';
 

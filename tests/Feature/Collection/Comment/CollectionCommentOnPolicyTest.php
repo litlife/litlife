@@ -13,8 +13,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 {
 	public function testCollectionUserCanCommentWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_comment' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_comment' => true]);
 
 		$user = $collectionUser->user;
 		$user->group->add_comment = true;
@@ -27,8 +26,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 
 	public function testCollectionUserCanCommentWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_comment' => false]);
+		$collectionUser = CollectionUser::factory()->create(['can_comment' => false]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -38,8 +36,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 
 	public function testCollectionUserCantCommentWithoutGlobalPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_comment' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_comment' => true]);
 
 		$user = $collectionUser->user;
 		$user->group->add_comment = false;
@@ -53,7 +50,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 
 	public function testCommentOnPolicyIfHavePermission()
 	{
-		$collection = factory(Collection::class)->create()->fresh();
+		$collection = Collection::factory()->create()->fresh();
 
 		$user = $collection->create_user;
 		$user->group->add_comment = true;
@@ -64,7 +61,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 
 	public function testCommentOnPolicyIfDoesNotHavePermission()
 	{
-		$collection = factory(Collection::class)->create()->fresh();
+		$collection = Collection::factory()->create()->fresh();
 
 		$user = $collection->create_user;
 		$user->group->add_comment = false;
@@ -75,16 +72,14 @@ class CollectionCommentOnPolicyTest extends TestCase
 
 	public function testCommentOnPolicy()
 	{
-		$collection = factory(Collection::class)
-			->create(['who_can_comment' => 'me'])
+		$collection = Collection::factory()->create(['who_can_comment' => 'me'])
 			->fresh();
 
 		$creator = $collection->create_user;
 		$creator->group->add_comment = true;
 		$creator->push();
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $creator->id,
 				'status' => UserRelationType::Friend
 			]);
@@ -93,8 +88,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 		$friend->group->add_comment = true;
 		$friend->push();
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id2' => $creator->id,
 				'status' => UserRelationType::Subscriber
 			]);
@@ -103,7 +97,7 @@ class CollectionCommentOnPolicyTest extends TestCase
 		$subscriber->group->add_comment = true;
 		$subscriber->push();
 
-		$nobody_user = factory(User::class)->create();
+		$nobody_user = User::factory()->create();
 		$nobody_user->group->add_comment = true;
 		$nobody_user->push();
 

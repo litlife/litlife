@@ -16,11 +16,9 @@ class UserBookStatusTest extends TestCase
 	 */
 	public function testNew()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('books.read_status.store', ['book' => $book, 'code' => 'read_now']));
@@ -36,8 +34,7 @@ class UserBookStatusTest extends TestCase
 
 	public function testUpdate()
 	{
-		$book_status = factory(BookStatus::class)
-			->create(['status' => 'readed']);
+		$book_status = BookStatus::factory()->create(['status' => 'readed']);
 
 		$user = $book_status->user;
 

@@ -10,13 +10,11 @@ class BookKeywordVoteTest extends TestCase
 {
 	public function testVoteUpRemoveVoteUp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_vote = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_keyword')
-			->create();
+		$book = Book::factory()->with_keyword()->create();
 
 		$book_keyword = $book->book_keywords->first();
 
@@ -61,13 +59,11 @@ class BookKeywordVoteTest extends TestCase
 
 	public function testVoteUpVoteDown()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_vote = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_keyword')
-			->create();
+		$book = Book::factory()->with_keyword()->create();
 
 		$book_keyword = $book->book_keywords->first();
 
@@ -112,13 +108,11 @@ class BookKeywordVoteTest extends TestCase
 
 	public function testVoteDownRemoveVoteDown()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_vote = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_keyword')
-			->create();
+		$book = Book::factory()->with_keyword()->create();
 
 		$book_keyword = $book->book_keywords->first();
 

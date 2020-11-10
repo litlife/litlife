@@ -29,8 +29,7 @@ class UserPaymentsTest extends TestCase
 	 */
 	public function testSetBalanceAttribute()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->balance = 1.123456;
 		$user->save();
@@ -45,15 +44,11 @@ class UserPaymentsTest extends TestCase
 
 	public function testRefreshBalance()
 	{
-		$user = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_money_on_balance()->create();
 
 		$this->assertEquals(1000, $user->balance);
 
-		$outgoing_payment = factory(UserPaymentTransaction::class)
-			->states('outgoing')
-			->create(['user_id' => $user->id, 'sum' => 100]);
+		$outgoing_payment = UserPaymentTransaction::factory()->outgoing()->create();
 
 		$user->refresh();
 
@@ -62,9 +57,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testFrozenBalance()
 	{
-		$user = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$user = User::factory()->with_thousand_money_on_balance()->create();
 
 		$this->assertEquals(1000, $user->balance());
 		$this->assertEquals(0, $user->frozen_balance());
@@ -84,16 +77,13 @@ class UserPaymentsTest extends TestCase
 
 	public function testBalanceForWaitedDeposit()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$this->assertEquals(0, $user->balance());
 		$this->assertEquals(0, $user->frozen_balance());
 
-		$payment = factory(UserIncomingPayment::class)
-			->states('wait')
-			->create(['user_id' => $user->id]);
+		$payment = UserIncomingPayment::factory()->wait()->create();
 
 		$user->balance(true);
 
@@ -103,8 +93,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testBalanceForCancelIncomingPayment()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$this->assertEquals(0, $user->balance());
@@ -122,21 +111,15 @@ class UserPaymentsTest extends TestCase
 
 	public function testMorphRelation()
 	{
-		$incoming_payment = factory(UserIncomingPayment::class)
-			->states('unitpay_success')
-			->create();
+		$incoming_payment = UserIncomingPayment::factory()->unitpay_success()->create();
 
 		$this->assertEquals($incoming_payment->transaction->fresh(), $incoming_payment->transaction->operable->transaction);
 
-		$outgoing_payment = factory(UserOutgoingPayment::class)
-			->states('success')
-			->create();
+		$outgoing_payment = UserOutgoingPayment::factory()->success()->create();
 
 		$this->assertEquals($outgoing_payment->transaction->fresh(), $outgoing_payment->transaction->operable->transaction);
 
-		$payment = factory(UserIncomingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserIncomingPayment::factory()->wait()->create();
 
 		$transaction = new UserPaymentTransaction;
 		$transaction->user_id = 50000;
@@ -151,8 +134,7 @@ class UserPaymentsTest extends TestCase
 	{
 		$sum = '50';
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$transaction = factory(UserPaymentTransaction::class)
 			->states('incoming', 'wait')
@@ -233,8 +215,7 @@ class UserPaymentsTest extends TestCase
 	{
 		$sum = '50';
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$transaction = factory(UserPaymentTransaction::class)
 			->states('incoming', 'success', 'unitpay')
@@ -281,8 +262,7 @@ class UserPaymentsTest extends TestCase
 	{
 		$sum = '50';
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$transaction = factory(UserPaymentTransaction::class)
 			->states('incoming', 'success', 'unitpay')
@@ -323,8 +303,7 @@ class UserPaymentsTest extends TestCase
 	{
 		$sum = '50';
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$transaction = factory(UserPaymentTransaction::class)
 			->states('incoming', 'success', 'unitpay')
@@ -363,9 +342,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testErrorCheck()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$buyer = $transaction->user;
 
@@ -417,9 +394,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeller()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 
@@ -428,9 +403,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testTryBuyWithNotEnoughMoney()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = 100;
@@ -438,7 +411,7 @@ class UserPaymentsTest extends TestCase
 
 		$seller = $author->seller();
 
-		$buyer = factory(User::class)->create();
+		$buyer = User::factory()->create();
 		$buyer->balance = 99;
 		$buyer->save();
 
@@ -471,9 +444,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeeDescriptionDeposit()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'success', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->success()->unitpay()->create();
 
 		$this->actingAs($transaction->user)
 			->get(route('users.wallet', ['user' => $transaction->user]))
@@ -488,9 +459,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeeDescriptionWithdrawal()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'success', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->outgoing()->success()->unitpay()->create();
 
 		$this->actingAs($transaction->user)
 			->get(route('users.wallet', ['user' => $transaction->user]))
@@ -506,9 +475,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeeDescriptionWithdrawalProcessing()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'processing', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->outgoing()->processing()->unitpay()->create();
 
 		$this->assertEquals('0.45', $transaction->operable->getPayoutComission());
 
@@ -526,9 +493,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeeDescriptionSellBuy()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->actingAs($purchase->seller)
 			->get(route('users.wallet', ['user' => $purchase->seller]))
@@ -551,9 +516,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeeDescriptionTransactionErrorButWithWaitStatusReceived()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'error', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->error()->unitpay()->create();
 
 		$json = [
 			'result' => [
@@ -591,9 +554,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testSeeDescriptionSellBuyWithBuyerReferAndSellerRefer()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book', 'with_seller_referer', 'with_buyer_referer')
-			->create();
+		$purchase = UserPurchase::factory()->book()->with_seller_referer()->with_buyer_referer()->create();
 
 		$seller_referer = $purchase->seller->referred_by_user->first();
 		$buyer_referer = $purchase->buyer->referred_by_user->first();
@@ -628,8 +589,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositFormHttp()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$this->actingAs($user)
@@ -639,8 +599,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositPayHttp()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$payments_type = config('unitpay.allowed_payment_types');
@@ -672,13 +631,10 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositForBuyABook()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = 10;
@@ -723,12 +679,9 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositSuccessUrlRedirectBuyABook()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'success', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->success()->unitpay()->create();
 
-		$book = factory(Book::class)
-			->create(['price' => $transaction->sum]);
+		$book = Book::factory()->create(['price' => $transaction->sum]);
 
 		$transaction->params = ['buy_book' => $book->id];
 		$transaction->statusProcessing();
@@ -776,11 +729,9 @@ class UserPaymentsTest extends TestCase
 	{
 		Notification::fake();
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'success', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->success()->unitpay()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$transaction->statusProcessing();
 		$transaction->push();
 
@@ -840,9 +791,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositErrorUrl()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'error', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->error()->unitpay()->create();
 
 		$json = [
 			'result' => [
@@ -876,64 +825,48 @@ class UserPaymentsTest extends TestCase
 
 	public function testTransactionPayPolicy()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create();
 
 		$this->assertTrue($transaction->user->can('pay', $transaction));
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->wait()->unitpay()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('pay', $transaction));
 
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->wait()->unitpay()->create();
 
 		$this->assertTrue($transaction->user->can('pay', $transaction));
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('outgoing', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->outgoing()->wait()->unitpay()->create();
 
 		$this->assertFalse($transaction->user->can('pay', $transaction));
 	}
 
 	public function testTransactionCancelPolicy()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create();
 
 		$this->assertFalse($transaction->user->can('cancel', $transaction));
 
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->wait()->unitpay()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('cancel', $transaction));
 
 
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->wait()->unitpay()->create();
 
 		$this->assertTrue($transaction->user->can('cancel', $transaction));
 	}
 
 	public function testTransactionCancel()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->wait()->unitpay()->create();
 
 		$user = $transaction->user;
 
@@ -952,9 +885,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testTransactionPayWaited()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'wait', 'unitpay')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->incoming()->wait()->unitpay()->create();
 
 		$user = $transaction->user;
 
@@ -981,8 +912,7 @@ class UserPaymentsTest extends TestCase
 	{
 		$sum = '50';
 
-		$buyer = factory(User::class)
-			->create();
+		$buyer = User::factory()->create();
 
 		$transaction = factory(UserPaymentTransaction::class)
 			->states('incoming', 'wait', 'unitpay')
@@ -1065,9 +995,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testWithdrawalIfTransactionReceiptExists()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('receipt')
-			->create();
+		$transaction = UserPaymentTransaction::factory()->receipt()->create();
 
 		$user = $transaction->user;
 		$user->group->withdrawal = false;
@@ -1102,7 +1030,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositRouteIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->shop_enable = true;
 		$user->push();
 
@@ -1113,7 +1041,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testDepositPayValidationPaymentTypeError()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->shop_enable = true;
 		$user->push();
 
@@ -1155,9 +1083,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testHandlerSendErrorButGetWaitTransactionResponse()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$buyer = $transaction->user;
 
@@ -1223,18 +1149,14 @@ class UserPaymentsTest extends TestCase
 
 	public function testCanPayErrorTransaction()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'error', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->error()->unitpay()->create(['sum' => '50']);
 
 		$this->assertTrue($transaction->user->can('pay', $transaction));
 	}
 
 	public function testTodayProfit()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'success', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->success()->unitpay()->create(['sum' => '50']);
 
 		$user = $transaction->user;
 
@@ -1251,9 +1173,7 @@ class UserPaymentsTest extends TestCase
 
 	public function testMonthProfit()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'success', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->success()->unitpay()->create(['sum' => '50']);
 
 		$user = $transaction->user;
 

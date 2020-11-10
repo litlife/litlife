@@ -12,7 +12,7 @@ class KeywordTest extends TestCase
 {
 	public function testCanAddIfBookPrivateAndUserCreatorOfBook()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$book = factory(Book::class)
 			->states('private')
@@ -25,48 +25,42 @@ class KeywordTest extends TestCase
 
 	public function testCantAddIfBookPrivateAndUserNotCreatorOfBookAndAdmin()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_keyword_add = true;
 		$admin->group->save();
 
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
 		$this->assertFalse($admin->can('addKeywords', $book));
 	}
 
 	public function testCantAddIfBookAcceptedAndNoPermissions()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = false;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = false;
 		$user->group->save();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
 		$this->assertFalse($user->can('addKeywords', $book));
 	}
 
 	public function testCanAddIfBookAcceptedAndHasPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->book_keyword_add = true;
 		$admin->group->save();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
 		$this->assertTrue($admin->can('addKeywords', $book));
 	}
 
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_moderate = true;
 		$user->push();
 
@@ -96,14 +90,13 @@ class KeywordTest extends TestCase
 
 	public function testCreateIfTextExistedNotDeletedHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_moderate = true;
 		$user->push();
 
 		$text = uniqid();
 
-		$keyword = factory(Keyword::class)
-			->create(['text' => $text]);
+		$keyword = Keyword::factory()->create(['text' => $text]);
 
 		$response = $this->actingAs($user)
 			->followingRedirects()
@@ -113,14 +106,13 @@ class KeywordTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_edit = true;
 		$user->push();
 
 		$text = uniqid();
 
-		$keyword = factory(Keyword::class)
-			->create(['text' => $text]);
+		$keyword = Keyword::factory()->create(['text' => $text]);
 
 		$response = $this->actingAs($user)
 			->get(route('keywords.edit', $keyword->id))
@@ -129,14 +121,13 @@ class KeywordTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_edit = true;
 		$user->push();
 
 		$text = uniqid();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$response = $this->actingAs($user)
 			->patch(route('keywords.update', $keyword->id), [
@@ -152,12 +143,11 @@ class KeywordTest extends TestCase
 
 	public function testDeleteRestoreHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_remove = true;
 		$user->push();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$response = $this->actingAs($user)
 			->delete(route('keywords.destroy', ['keyword' => $keyword->id]))
@@ -181,16 +171,16 @@ class KeywordTest extends TestCase
 
 	public function testAttachExistedKeyword()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->save();
 
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->statusAccepted();
 		$book_keyword->statusAccepted();
 		$book_keyword->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$title = $book_keyword->fresh()->keyword->text;
 
@@ -209,11 +199,11 @@ class KeywordTest extends TestCase
 
 	public function testAcceptBookKeyword()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_moderate = true;
 		$user->group->save();
 
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->statusSentForReview();
 		$book_keyword->statusSentForReview();
 		$book_keyword->push();
@@ -231,10 +221,10 @@ class KeywordTest extends TestCase
 	/*
 		public function testAddNewToPrivateBook()
 		{
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->save();
 
-			$book = factory(Book::class)->create(['create_user_id' => $user->id]);
+			$book = Book::factory()->create(['create_user_id' => $user->id]);
 			$book->statusPrivate();
 			$book->save();
 			$book->refresh();
@@ -256,11 +246,11 @@ class KeywordTest extends TestCase
 
 	public function testDelete()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_remove = true;
 		$user->group->save();
 
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->statusAccepted();
 		$book_keyword->statusAccepted();
 		$book_keyword->push();
@@ -277,7 +267,7 @@ class KeywordTest extends TestCase
 
 	public function testDeletePrivateKeyword()
 	{
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->statusPrivate();
 		$book_keyword->statusPrivate();
 		$book_keyword->push();
@@ -295,7 +285,7 @@ class KeywordTest extends TestCase
 
 	public function testDeleteOnReviewKeyword()
 	{
-		$book_keyword = factory(BookKeyword::class)->create();
+		$book_keyword = BookKeyword::factory()->create();
 		$book_keyword->keyword->statusSentForReview();
 		$book_keyword->statusSentForReview();
 		$book_keyword->push();
@@ -314,10 +304,10 @@ class KeywordTest extends TestCase
 	public function testDisableAddNewKeywordIfBookNotAccepted()
 	{
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->save();
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->statusPrivate();
 		$book->save();
 
@@ -333,7 +323,7 @@ class KeywordTest extends TestCase
 
 		//
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->statusSentForReview();
 		$book->save();
 
@@ -350,7 +340,7 @@ class KeywordTest extends TestCase
 
 	public function testCreatePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = false;
 		$user->group->book_keyword_add_new_with_check = false;
 		$user->group->book_keyword_moderate = false;
@@ -377,14 +367,13 @@ class KeywordTest extends TestCase
 
 	public function testUpdatePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = true;
 		$user->group->book_keyword_moderate = true;
 		$user->push();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$this->assertFalse($user->can('update', $keyword));
 
@@ -396,15 +385,14 @@ class KeywordTest extends TestCase
 
 	public function testDeletePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_add = true;
 		$user->group->book_keyword_add_new_with_check = true;
 		$user->group->book_keyword_moderate = true;
 		$user->group->book_keyword_edit = true;
 		$user->push();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$this->assertFalse($user->can('delete', $keyword));
 
@@ -420,11 +408,11 @@ class KeywordTest extends TestCase
 
 	public function testRestorePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_remove = true;
 		$user->push();
 
-		$keyword = factory(Keyword::class)->create();
+		$keyword = Keyword::factory()->create();
 
 		$this->assertFalse($user->can('restore', $keyword));
 
@@ -435,15 +423,14 @@ class KeywordTest extends TestCase
 
 	public function testViewIndexPolicy()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->can('view_index', Keyword::class));
 	}
 
 	public function testViewAtSidebarPolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_edit = false;
 		$user->push();
 

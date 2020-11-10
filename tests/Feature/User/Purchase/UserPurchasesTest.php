@@ -17,9 +17,7 @@ class UserPurchasesTest extends TestCase
 {
 	public function testRelation()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->assertEquals($purchase->buyer_user_id, $purchase->buyer->id);
 		$this->assertEquals($purchase->seller_user_id, $purchase->seller->id);
@@ -28,9 +26,7 @@ class UserPurchasesTest extends TestCase
 
 	public function testIsBook()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create(['price' => 110]);
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->assertTrue($purchase->isBook());
 	}
@@ -39,9 +35,7 @@ class UserPurchasesTest extends TestCase
 	{
 		Notification::fake();
 
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = rand(50, 200) . '.' . rand(0, 99);
@@ -55,9 +49,7 @@ class UserPurchasesTest extends TestCase
 
 		$seller = $author->seller();
 
-		$buyer = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$buyer = User::factory()->with_thousand_money_on_balance()->create();
 
 		$this->assertEquals(1000, $buyer->balance);
 
@@ -145,9 +137,7 @@ class UserPurchasesTest extends TestCase
 
 	public function testBuyDeposit()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = 100;
@@ -155,9 +145,7 @@ class UserPurchasesTest extends TestCase
 
 		$seller = $author->seller();
 
-		$buyer = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$buyer = User::factory()->with_thousand_money_on_balance()->create();
 
 		$response = $this->actingAs($buyer)
 			->post(route('books.buy.deposit', $book),
@@ -181,9 +169,7 @@ class UserPurchasesTest extends TestCase
 
 	public function testTryBuyAgain()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = 100;
@@ -191,9 +177,7 @@ class UserPurchasesTest extends TestCase
 
 		$seller = $author->seller();
 
-		$buyer = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$buyer = User::factory()->with_thousand_money_on_balance()->create();
 
 		$this->assertEquals(1000, $buyer->balance);
 
@@ -211,9 +195,7 @@ class UserPurchasesTest extends TestCase
 
 	public function testUsersListBoughtHttp()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->actingAs($purchase->seller)
 			->get(route('books.users.bought', $purchase->purchasable))
@@ -223,9 +205,7 @@ class UserPurchasesTest extends TestCase
 
 	public function testDontSeeUserIfPurchaseCanceled()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book', 'canceled')
-			->create();
+		$purchase = UserPurchase::factory()->book()->canceled()->create();
 
 		$this->actingAs($purchase->seller)
 			->get(route('books.users.bought', $purchase->purchasable))
@@ -240,9 +220,7 @@ class UserPurchasesTest extends TestCase
 		$comission_from_reference_buyer = rand(1, 9);
 		$comission_from_reference_seller = rand(1, 9);
 
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = rand(50, 200) . '.' . rand(0, 99);
@@ -263,12 +241,9 @@ class UserPurchasesTest extends TestCase
 
 		$seller = $author->seller();
 
-		$buyer = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$buyer = User::factory()->with_thousand_money_on_balance()->create();
 
-		$reference = factory(ReferredUser::class)
-			->create([
+		$reference = ReferredUser::factory()->create([
 				'comission_buy_book' => $comission_from_reference_buyer,
 				'comission_sell_book' => $comission_from_reference_seller,
 				'referred_user_id' => $buyer->id
@@ -324,9 +299,7 @@ class UserPurchasesTest extends TestCase
 		$comission_from_reference_buyer = rand(1, 9);
 		$comission_from_reference_seller = rand(1, 9);
 
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = rand(50, 200) . '.' . rand(0, 99);
@@ -347,8 +320,7 @@ class UserPurchasesTest extends TestCase
 
 		$seller = $author->seller();
 
-		$reference = factory(ReferredUser::class)
-			->create([
+		$reference = ReferredUser::factory()->create([
 				'comission_buy_book' => $comission_from_reference_buyer,
 				'comission_sell_book' => $comission_from_reference_seller,
 				'referred_user_id' => $seller->id
@@ -357,9 +329,7 @@ class UserPurchasesTest extends TestCase
 
 		$referer = $reference->referred_by_user;
 
-		$buyer = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$buyer = User::factory()->with_thousand_money_on_balance()->create();
 
 		$this->assertEquals(1000, $buyer->balance);
 
@@ -406,9 +376,7 @@ class UserPurchasesTest extends TestCase
 		$comission_from_reference_buyer = rand(1, 9);
 		$comission_from_reference_seller = rand(1, 9);
 
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$book = $author->books->first();
 		$book->price = rand(50, 200) . '.' . rand(0, 99);
@@ -430,8 +398,7 @@ class UserPurchasesTest extends TestCase
 
 		$seller = $author->seller();
 
-		$reference = factory(ReferredUser::class)
-			->create([
+		$reference = ReferredUser::factory()->create([
 				'comission_buy_book' => $comission_from_reference_buyer,
 				'comission_sell_book' => $comission_from_reference_seller,
 				'referred_user_id' => $seller->id
@@ -440,14 +407,11 @@ class UserPurchasesTest extends TestCase
 
 		$seller_referer = $reference->referred_by_user;
 
-		$buyer = factory(User::class)
-			->states('with_thousand_money_on_balance')
-			->create();
+		$buyer = User::factory()->with_thousand_money_on_balance()->create();
 
 		$this->assertEquals(1000, $buyer->balance);
 
-		$reference = factory(ReferredUser::class)
-			->create([
+		$reference = ReferredUser::factory()->create([
 				'comission_buy_book' => $comission_from_reference_buyer,
 				'comission_sell_book' => $comission_from_reference_seller,
 				'referred_user_id' => $buyer->id

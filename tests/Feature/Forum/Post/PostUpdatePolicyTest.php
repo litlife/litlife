@@ -10,11 +10,11 @@ class PostUpdatePolicyTest extends TestCase
 {
 	public function testCanEditSelfPostIfUserCreatorAndHasPermissions()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->forum_edit_self_post = true;
 		$user->push();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->create_user()->associate($user);
 		$post->push();
 
@@ -23,11 +23,11 @@ class PostUpdatePolicyTest extends TestCase
 
 	public function testCantEditSelfPostIfNoPermissions()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->forum_edit_self_post = false;
 		$user->push();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->create_user()->associate($user);
 		$post->push();
 
@@ -36,35 +36,33 @@ class PostUpdatePolicyTest extends TestCase
 
 	public function testCantEditOtherUserIfNoPermissions()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->forum_edit_other_user_post = false;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->assertFalse($user->can('update', $post));
 	}
 
 	public function testCanEditOtherUserIfHasPermissions()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->forum_edit_other_user_post = true;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->assertTrue($user->can('update', $post));
 	}
 
 	public function testEditOnlyTimePolicy()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->forum_edit_self_post = false;
 		$user->push();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->create_user()->associate($user);
 		$post->push();
 

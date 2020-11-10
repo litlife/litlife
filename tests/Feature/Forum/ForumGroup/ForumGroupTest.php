@@ -14,8 +14,7 @@ class ForumGroupTest extends TestCase
 		Variable::where('name', VariablesEnum::getValue('ForumGroupSort'))
 			->delete();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+		$forumGroup = ForumGroup::factory()->create();
 
 		$this->assertNull($forumGroup->getSort());
 	}

@@ -19,11 +19,11 @@ class BlogTest extends DuskTestCase
 	{
 		$this->browse(function ($first, $second) {
 
-			$first_user = factory(User::class)->create();
+			$first_user = User::factory()->create();
 			$first_user->group->blog = true;
 			$first_user->push();
 
-			$second_user = factory(User::class)->create();
+			$second_user = User::factory()->create();
 			$second_user->group->blog = true;
 			$second_user->push();
 
@@ -73,16 +73,13 @@ class BlogTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$blog = factory(Blog::class)
-				->create(['blog_user_id' => $user->id]);
+			$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
-			$blog2 = factory(Blog::class)
-				->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
+			$blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
 
-			$blog3 = factory(Blog::class)
-				->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
+			$blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
 
 			$browser->loginAs($user)
 				->visit(route('profile', ['user' => $user]))

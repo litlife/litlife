@@ -10,11 +10,11 @@ class SequenceUpdateTest extends TestCase
 {
 	public function testEdit()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->sequence_edit = true;
 		$user->save();
 
-		$sequence = factory(Sequence::class)->create();
+		$sequence = Sequence::factory()->create();
 		$sequence->statusAccepted();
 		$sequence->save();
 
@@ -25,11 +25,11 @@ class SequenceUpdateTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->sequence_edit = true;
 		$user->save();
 
-		$sequence = factory(Sequence::class)->create();
+		$sequence = Sequence::factory()->create();
 		$sequence->statusAccepted();
 		$sequence->save();
 

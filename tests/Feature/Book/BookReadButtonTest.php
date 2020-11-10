@@ -13,9 +13,7 @@ class BookReadButtonTest extends TestCase
 {
 	public function testSeeReadButtonText()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 		$book->price = 100;
 		$book->free_sections_count = 1;
 		$book->save();
@@ -52,16 +50,14 @@ class BookReadButtonTest extends TestCase
 
 	public function testSeeReadButtonTextIfBookForSellAndUserHaveAccessToClosedBooks()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections', 'complete')
-			->create();
+		$book = Book::factory()->with_three_sections()->complete()->create();
 		$book->price = 100;
 		$book->free_sections_count = 0;
 		$book->is_si = true;
 		$book->is_lp = false;
 		$book->save();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->access_to_closed_books = true;
 		$admin->push();
 
@@ -74,13 +70,11 @@ class BookReadButtonTest extends TestCase
 
 	public function testSeeReadButtonTextIfReadAccessDisabledAndUserHaveAccessToClosedBooks()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 		$book->readAccessDisable();
 		$book->save();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->access_to_closed_books = true;
 		$admin->push();
 
@@ -94,9 +88,7 @@ class BookReadButtonTest extends TestCase
 
 	public function testSeeReadButtonTextIfAuthorOfBook()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -138,15 +130,12 @@ class BookReadButtonTest extends TestCase
 
 	public function testDontSeeReadButtonIfReadAccessDisabled()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 		$book->readAccessDisable();
 		$book->downloadAccessDisable();
 		$book->save();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($book->isReadOrDownloadAccess());
 
@@ -160,9 +149,7 @@ class BookReadButtonTest extends TestCase
 
 	public function testSeeIfBookForSaleAndPrivate()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_private_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_private_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -184,17 +171,14 @@ class BookReadButtonTest extends TestCase
 
 	public function testDontShowIfBookForSaleAndClosed()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 		$book->readAccessDisable();
 		$book->downloadAccessDisable();
 		$book->price = 100;
 		$book->free_sections_count = 1;
 		$book->save();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($book->isReadOrDownloadAccess());
 
@@ -208,9 +192,7 @@ class BookReadButtonTest extends TestCase
 
 	public function testDontShowBuyButtonIfAlreadyBuy()
 	{
-		$user = factory(User::class)
-			->states('with_purchased_book')
-			->create();
+		$user = User::factory()->with_purchased_book()->create();
 
 		$book = $user->purchases->first()->purchasable;
 		$book->price = 100;
@@ -225,14 +207,12 @@ class BookReadButtonTest extends TestCase
 
 	public function testDontShowBookForSaleIfShopDisable()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 		$book->price = 100;
 		$book->free_sections_count = 1;
 		$book->save();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->shop_enable = false;
 		$user->push();
 
@@ -245,11 +225,9 @@ class BookReadButtonTest extends TestCase
 
 	public function testDontShowIfSectionPrivate()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('private')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->private()->create();
 
 		UpdateBookPagesCount::dispatch($book);
 

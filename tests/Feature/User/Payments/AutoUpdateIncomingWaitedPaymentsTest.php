@@ -12,9 +12,7 @@ class AutoUpdateIncomingWaitedPaymentsTest extends TestCase
 {
 	public function testUpdateProcessingPaymentTransaction()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$transaction->status_changed_at = now()->subHour();
 		$transaction->push();
@@ -52,9 +50,7 @@ class AutoUpdateIncomingWaitedPaymentsTest extends TestCase
 
 	public function testTimeHasntPassedYet()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$transaction->status_changed_at = now();
 		$transaction->push();
@@ -68,9 +64,7 @@ class AutoUpdateIncomingWaitedPaymentsTest extends TestCase
 
 	public function testPaymentIdIsNotSet()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$transaction->operable->payment_id = null;
 		$transaction->push();

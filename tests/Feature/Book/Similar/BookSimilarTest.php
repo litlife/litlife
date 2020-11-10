@@ -10,13 +10,11 @@ class BookSimilarTest extends TestCase
 {
 	public function testVoteCount()
 	{
-		$book_similar_vote = factory(BookSimilarVote::class)
-			->create();
+		$book_similar_vote = BookSimilarVote::factory()->create();
 
 		$this->assertEquals(1, $book_similar_vote->book->similars->first()->sum);
 
-		$book_similar_vote2 = factory(BookSimilarVote::class)
-			->create([
+		$book_similar_vote2 = BookSimilarVote::factory()->create([
 				'book_id' => $book_similar_vote->book_id,
 				'other_book_id' => $book_similar_vote->other_book_id,
 				'vote' => '1'
@@ -24,8 +22,7 @@ class BookSimilarTest extends TestCase
 
 		$this->assertEquals(2, $book_similar_vote->book->fresh()->similars->first()->sum);
 
-		$book_similar_vote3 = factory(BookSimilarVote::class)
-			->create([
+		$book_similar_vote3 = BookSimilarVote::factory()->create([
 				'book_id' => $book_similar_vote->book_id,
 				'other_book_id' => $book_similar_vote->other_book_id,
 				'vote' => '-1'
@@ -37,8 +34,7 @@ class BookSimilarTest extends TestCase
 
 	public function testSeeSimilarBooks()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->get(route('books.show', $book))
 			->assertSeeText(__('book.attach_similar_book'));

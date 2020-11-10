@@ -10,13 +10,9 @@ class CommentCreateLeaveInPersonalAccess extends TestCase
 {
 	public function testStoreHttp()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$text = $this->faker->realText(100);
 

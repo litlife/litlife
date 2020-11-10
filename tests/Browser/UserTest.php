@@ -20,12 +20,12 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($admin_browser, $second_browser) {
 
-			$admin_user = factory(User::class)->create();
+			$admin_user = User::factory()->create();
 			$admin_user->group->user_suspend = true;
 			$admin_user->group->save();
 
-			$second_user = factory(User::class)->create();
-			$second_user_email = factory(UserEmail::class)->create([
+			$second_user = User::factory()->create();
+			$second_user_email = UserEmail::factory()->create([
 				'user_id' => $second_user->id,
 				'confirm' => true
 			]);
@@ -69,12 +69,12 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($admin_browser, $second_browser) {
 
-			$admin_user = factory(User::class)->create();
+			$admin_user = User::factory()->create();
 			$admin_user->group->user_delete = true;
 			$admin_user->group->save();
 
-			$second_user = factory(User::class)->create();
-			$second_user_email = factory(UserEmail::class)->create([
+			$second_user = User::factory()->create();
+			$second_user_email = UserEmail::factory()->create([
 				'user_id' => $second_user->id,
 				'confirm' => true
 			]);
@@ -117,11 +117,11 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->edit_profile = true;
 			$user->push();
 
-			$user_email = factory(UserEmail::class)->create([
+			$user_email = UserEmail::factory()->create([
 				'user_id' => $user->id,
 				'confirm' => true
 			]);
@@ -151,7 +151,7 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->edit_profile = true;
 			$user->push();
 
@@ -188,7 +188,7 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user);
@@ -211,9 +211,7 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->states('with_user_group')
-				->create();
+			$user = User::factory()->with_user_group()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -229,8 +227,7 @@ class UserTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)

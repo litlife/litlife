@@ -14,9 +14,7 @@ class UserPurchasedBooksTest extends TestCase
 	 */
 	public function testSeeNotCanceledPurchase()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$user = $purchase->buyer;
 		$book = $purchase->purchasable;
@@ -34,9 +32,7 @@ class UserPurchasedBooksTest extends TestCase
 	 */
 	public function testDontSeeCanceledPurchase()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book', 'canceled')
-			->create();
+		$purchase = UserPurchase::factory()->book()->canceled()->create();
 
 		$user = $purchase->buyer;
 		$book = $purchase->purchasable;

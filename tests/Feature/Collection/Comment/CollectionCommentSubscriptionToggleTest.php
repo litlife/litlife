@@ -10,13 +10,11 @@ class CollectionCommentSubscriptionToggleTest extends TestCase
 {
 	public function testToggleWithoutAjax()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create()
+		$collection = Collection::factory()->accepted()->create(
+			)
 			->fresh();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 
 		$response = $this->actingAs($admin)
 			->followingRedirects()

@@ -16,7 +16,7 @@ class BookAppendFromStorageTest extends TestCase
 
 		$contents = Str::random(64);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::disk('public')->put('/test/file.fb2', $contents);
 
@@ -47,7 +47,7 @@ class BookAppendFromStorageTest extends TestCase
 
 		$contents = Str::random(64);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::disk('public')->put('/test/file.fb2', $contents);
 		Storage::disk('public')->put('/test/file2.fb2', $contents);
@@ -70,7 +70,7 @@ class BookAppendFromStorageTest extends TestCase
 
 		$contents = Str::random(64);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::disk('public')->put('/test/file.fb2', $contents);
 
@@ -92,7 +92,7 @@ class BookAppendFromStorageTest extends TestCase
 
 		$contents = Str::random(64);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::disk('public')->put('/test/file.fb2', $contents);
 
@@ -112,7 +112,7 @@ class BookAppendFromStorageTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::disk('public')->put('/test/file.fb2', Str::random(64));
 		Storage::disk('public')->put('/test/file.doc', Str::random(64));
@@ -133,7 +133,7 @@ class BookAppendFromStorageTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::disk('public')->put('/test/file.fb2', Str::random(64));
 		Storage::disk('public')->put('/test/file2.fb2', Str::random(64));

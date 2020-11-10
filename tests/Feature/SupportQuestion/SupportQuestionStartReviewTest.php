@@ -16,12 +16,9 @@ class SupportQuestionStartReviewTest extends TestCase
 	{
 		Bus::fake();
 
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$supportQuestion->status_changed_user_id = $user->id;
 		$supportQuestion->push();
@@ -44,12 +41,9 @@ class SupportQuestionStartReviewTest extends TestCase
 
 	public function testWithAjax()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+		$supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$supportQuestion->status_changed_user_id = $user->id;
 		$supportQuestion->push();

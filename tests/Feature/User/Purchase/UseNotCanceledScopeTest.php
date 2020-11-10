@@ -15,9 +15,7 @@ class UseNotCanceledScopeTest extends TestCase
 	 */
 	public function testFoundNotCanceled()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->assertEquals(1, UserPurchase::where('id', $purchase->id)
 			->notCanceled()
@@ -31,9 +29,7 @@ class UseNotCanceledScopeTest extends TestCase
 	 */
 	public function testNotFoundCanceled()
 	{
-		$purchase = factory(UserPurchase::class)
-			->states('book', 'canceled')
-			->create();
+		$purchase = UserPurchase::factory()->book()->canceled()->create();
 
 		$this->assertEquals(0, UserPurchase::where('id', $purchase->id)
 			->notCanceled()

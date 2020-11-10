@@ -10,8 +10,7 @@ class ClearBookViewIpTest extends TestCase
 {
 	public function testViewClear()
 	{
-		$book_view_ip = factory(BookViewIp::class)
-			->create();
+		$book_view_ip = BookViewIp::factory()->create();
 
 		$book = $book_view_ip->book;
 

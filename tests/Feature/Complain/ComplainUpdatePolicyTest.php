@@ -10,9 +10,7 @@ class ComplainUpdatePolicyTest extends TestCase
 {
 	public function testCanIfOnReview()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;
@@ -23,11 +21,9 @@ class ComplainUpdatePolicyTest extends TestCase
 
 	public function testCantIfOtherUser()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->complain = true;
 		$user->push();
 
@@ -36,9 +32,7 @@ class ComplainUpdatePolicyTest extends TestCase
 
 	public function testCantIfReviewStarts()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'review_starts')
-			->create();
+		$complain = Complain::factory()->comment()->review_starts()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;
@@ -49,9 +43,7 @@ class ComplainUpdatePolicyTest extends TestCase
 
 	public function testCantIfAccepted()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'accepted')
-			->create();
+		$complain = Complain::factory()->comment()->accepted()->create();
 
 		$user = $complain->create_user;
 		$user->group->complain = true;

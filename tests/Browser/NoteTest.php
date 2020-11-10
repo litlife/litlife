@@ -21,9 +21,9 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$book = factory(Book::class)->create([
+			$book = Book::factory()->create([
 				'create_user_id' => $user->id,
 				'status' => StatusEnum::Private
 			]);
@@ -87,7 +87,7 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$section = factory(Section::class)->create(['type' => 'note']);
+			$section = Section::factory()->create(['type' => 'note']);
 
 			$browser->resize(1000, 1000)
 				->loginAs($section->book->create_user)
@@ -125,17 +125,13 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('with_create_user', 'private')
-				->create();
+			$book = Book::factory()->with_create_user()->private()->create();
 
 			$user = $book->create_user;
 
-			$section = factory(Section::class)
-				->create(['book_id' => $book->id, 'type' => 'note']);
+			$section = Section::factory()->create(['book_id' => $book->id, 'type' => 'note']);
 
-			$section2 = factory(Section::class)
-				->create(['book_id' => $book->id, 'type' => 'note']);
+			$section2 = Section::factory()->create(['book_id' => $book->id, 'type' => 'note']);
 
 			UpdateBookNotesCount::dispatch($book);
 
@@ -168,17 +164,13 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('with_create_user', 'private')
-				->create();
+			$book = Book::factory()->with_create_user()->private()->create();
 
 			$user = $book->create_user;
 
-			$section = factory(Section::class)
-				->create(['book_id' => $book->id, 'type' => 'note']);
+			$section = Section::factory()->create(['book_id' => $book->id, 'type' => 'note']);
 
-			$section2 = factory(Section::class)
-				->create(['book_id' => $book->id, 'type' => 'note']);
+			$section2 = Section::factory()->create(['book_id' => $book->id, 'type' => 'note']);
 
 			$book->refresh();
 
@@ -217,9 +209,9 @@ class NoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->states('admin')->create();
+			$user = User::factory()->admin()->create();
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 
 			$note_text = 'текст сноски';
 
@@ -232,8 +224,7 @@ class NoteTest extends DuskTestCase
 
 			$section_text = 'текст главы <a href="#' . $note->getSectionId() . '">сноска</a>';
 
-			$section = factory(Section::class)
-				->create([
+			$section = Section::factory()->create([
 					'content' => $section_text,
 					'book_id' => $book->id
 				]);

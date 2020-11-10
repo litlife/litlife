@@ -15,13 +15,11 @@ class UserCancelPurchasePolicyTest extends TestCase
 	 */
 	public function testCancelTrue()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->assertTrue($user->can('cancel', $purchase));
 	}
@@ -33,13 +31,11 @@ class UserCancelPurchasePolicyTest extends TestCase
 	 */
 	public function testCancelFalseIfPurchaseCanceled()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = true;
 		$user->push();
 
-		$purchase = factory(UserPurchase::class)
-			->states('book', 'canceled')
-			->create();
+		$purchase = UserPurchase::factory()->book()->canceled()->create();
 
 		$this->assertFalse($user->can('cancel', $purchase));
 	}
@@ -51,13 +47,11 @@ class UserCancelPurchasePolicyTest extends TestCase
 	 */
 	public function testCancelFalseIfCantViewFinStatistics()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_financial_statistics = false;
 		$user->push();
 
-		$purchase = factory(UserPurchase::class)
-			->states('book')
-			->create();
+		$purchase = UserPurchase::factory()->book()->create();
 
 		$this->assertFalse($user->can('cancel', $purchase));
 	}

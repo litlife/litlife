@@ -9,8 +9,7 @@ class BookFilePurgeDownloadLogsTest extends TestCase
 {
 	public function testPurgeDownloadLogs()
 	{
-		$log = factory(BookFileDownloadLog::class)
-			->create();
+		$log = BookFileDownloadLog::factory()->create();
 
 		$book_file = $log->book_file;
 

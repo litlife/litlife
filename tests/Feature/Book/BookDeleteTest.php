@@ -16,17 +16,17 @@ class BookDeleteTest extends TestCase
 {
 	public function testCantDeleteIfBookPurchased()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->delete_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->bought_times_count = 0;
 		$book->push();
 
 		$this->assertTrue($user->can('delete', $book));
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->bought_times_count = 1;
 		$book->push();
 
@@ -35,8 +35,7 @@ class BookDeleteTest extends TestCase
 
 	public function testViewBookDeletedHttpCode()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->delete();
 
@@ -47,9 +46,9 @@ class BookDeleteTest extends TestCase
 
 	public function testDeleteFormIsOk()
 	{
-		$admin = factory(User::class)->states('administrator')->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('books.delete.form', $book))
@@ -63,9 +62,9 @@ class BookDeleteTest extends TestCase
 
 		Notification::fake();
 
-		$admin = factory(User::class)->states('administrator')->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$reason = $this->faker->realText(100);
 
@@ -120,9 +119,9 @@ class BookDeleteTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->states('soft_deleted')->create();
+		$book = Book::factory()->soft_deleted()->create();
 
 		$this->assertTrue($book->trashed());
 
@@ -144,32 +143,30 @@ class BookDeleteTest extends TestCase
 
 	public function testPrivateBookRestorePolicy()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
-		$section = factory(Section::class)->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 		$section->delete();
 		$this->assertTrue($user->can('restore', $section));
 
-		$attachment = factory(Attachment::class)->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 		$attachment->delete();
 		$this->assertTrue($user->can('restore', $attachment));
 
-		$file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 		$file->delete();
 		$this->assertTrue($user->can('restore', $file));
 
-		$book_keyword = factory(BookKeyword::class)->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 		$book_keyword->delete();
 		$this->assertTrue($user->can('restore', $book_keyword));
 	}
 
 	public function testForceDeleteWithAttachment()
 	{
-		$book = factory(Book::class)->states('with_cover')->create();
+		$book = Book::factory()->with_cover()->create();
 
 		$book->forceDelete();
 
@@ -178,11 +175,9 @@ class BookDeleteTest extends TestCase
 
 	public function testBookDeleteNotificaionWithoutReason()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$notification = new BookDeletedNotification($book, '');
 
@@ -198,9 +193,7 @@ class BookDeleteTest extends TestCase
 	/*
 		public function testCanDeleteBookIfNoRatingAndNoComments()
 		{
-			$author = factory(Author::class)
-				->states('with_author_manager', 'with_book')
-				->create();
+			$author = Author::factory()->with_author_manager()->with_book()->create();
 
 			$user = $author->managers->first()->user;
 			$book = $author->books->first();
@@ -210,9 +203,7 @@ class BookDeleteTest extends TestCase
 
 			public function testCantDeleteBookIfHasComment()
 			{
-				$author = factory(Author::class)
-					->states('with_author_manager', 'with_book')
-					->create();
+				$author = Author::factory()->with_author_manager()->with_book()->create();
 
 				$user = $author->managers->first()->user;
 				$book = $author->books->first();
@@ -224,9 +215,7 @@ class BookDeleteTest extends TestCase
 
 			public function testCantDeleteBookIfHasVotes()
 			{
-				$author = factory(Author::class)
-					->states('with_author_manager', 'with_book')
-					->create();
+				$author = Author::factory()->with_author_manager()->with_book()->create();
 
 				$user = $author->managers->first()->user;
 				$book = $author->books->first();

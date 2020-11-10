@@ -11,9 +11,7 @@ class DetachInactiveEditorsTest extends TestCase
 {
 	public function testDontDeleteIfNotEditor()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'accepted')
-			->create();
+		$manager = Manager::factory()->character_author()->accepted()->create();
 
 		$user = $manager->user;
 
@@ -28,9 +26,7 @@ class DetachInactiveEditorsTest extends TestCase
 
 	public function testDeleteIfTimePassed()
 	{
-		$manager = factory(Manager::class)
-			->states('character_editor', 'accepted')
-			->create();
+		$manager = Manager::factory()->character_editor()->accepted()->create();
 
 		$user = $manager->user;
 
@@ -45,9 +41,7 @@ class DetachInactiveEditorsTest extends TestCase
 
 	public function testDontDeleteIfTimeNotPassed()
 	{
-		$manager = factory(Manager::class)
-			->states('character_editor', 'accepted')
-			->create();
+		$manager = Manager::factory()->character_editor()->accepted()->create();
 
 		$user = $manager->user;
 

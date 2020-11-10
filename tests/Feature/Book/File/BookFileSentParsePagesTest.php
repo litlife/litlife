@@ -30,9 +30,7 @@ class BookFileSentParsePagesTest extends TestCase
 	{
 		config(['litlife.book_allowed_file_extensions' => ['odt']]);
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create();
+		$file = BookFile::factory()->odt()->create();
 
 		$file->book->parse->wait();
 		$file->push();
@@ -45,9 +43,7 @@ class BookFileSentParsePagesTest extends TestCase
 	{
 		config(['litlife.book_allowed_file_extensions' => ['odt']]);
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create();
+		$file = BookFile::factory()->odt()->create();
 
 		$file->book->parse->failed([]);
 		$file->push();
@@ -60,9 +56,7 @@ class BookFileSentParsePagesTest extends TestCase
 	{
 		config(['litlife.book_allowed_file_extensions' => ['odt']]);
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create();
+		$file = BookFile::factory()->odt()->create();
 
 		$file->book->parse->start();
 		$file->push();
@@ -75,9 +69,7 @@ class BookFileSentParsePagesTest extends TestCase
 	{
 		config(['litlife.book_allowed_file_extensions' => ['odt']]);
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create();
+		$file = BookFile::factory()->odt()->create();
 
 		$book = $file->book;
 		$book->parse->reset();

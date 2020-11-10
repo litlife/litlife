@@ -11,9 +11,8 @@ class UserAuthLogsTest extends TestCase
 {
 	public function testSeeInProfileHttp()
 	{
-		$user = factory(User::class)
-			->states('with_auth_log')
-			->create()
+		$user = User::factory()->with_auth_log()->create(
+			)
 			->fresh();
 
 		$auth_log = $user->auth_logs()->first();
@@ -29,8 +28,7 @@ class UserAuthLogsTest extends TestCase
 			->assertOk()
 			->assertDontSeeText($auth_log->ip);
 
-		$admin = factory(User::class)
-			->create()
+		$admin = User::factory()->create()
 			->fresh();
 		$admin->group->display_technical_information = true;
 		$admin->push();
@@ -50,9 +48,7 @@ class UserAuthLogsTest extends TestCase
 			->assertOk()
 			->assertSeeText($auth_log->ip);
 
-		$user2 = factory(User::class)
-			->states('with_user_permissions')
-			->create();
+		$user2 = User::factory()->with_user_permissions()->create();
 
 		$this->assertFalse($user2->can('watch_auth_logs', $user));
 
@@ -77,8 +73,7 @@ class UserAuthLogsTest extends TestCase
 
 	public function testSeeInProfileIfNotExistsHttp()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$this->actingAs($user)
@@ -88,16 +83,12 @@ class UserAuthLogsTest extends TestCase
 
 	public function testIfUserAgentNotExists()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
-		$log = factory(UserAuthLog::class)
-			->states('without_user_agent')
-			->create(['user_id' => $user->id]);
+		$log = UserAuthLog::factory()->without_user_agent()->create();
 
-		$admin = factory(User::class)
-			->create()
+		$admin = User::factory()->create()
 			->fresh();
 		$admin->group->display_technical_information = true;
 		$admin->push();
@@ -115,16 +106,12 @@ class UserAuthLogsTest extends TestCase
 
 	public function testUserAuthFailsRouteIsOk()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
-		$fail = factory(UserAuthFail::class)
-			->states('without_user_agent')
-			->create(['user_id' => $user->id]);
+		$fail = UserAuthFail::factory()->without_user_agent()->create();
 
-		$admin = factory(User::class)
-			->create()
+		$admin = User::factory()->create()
 			->fresh();
 		$admin->group->display_technical_information = true;
 		$admin->push();

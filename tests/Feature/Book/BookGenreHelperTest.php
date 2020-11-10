@@ -10,8 +10,7 @@ class BookGenreHelperTest extends TestCase
 {
 	public function test()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->genres()->detach();
 
@@ -38,16 +37,14 @@ class BookGenreHelperTest extends TestCase
 
 	public function testUpdatedAfterEdit()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_writer()->with_create_user()->private()->create();
 
 		$user = $book->create_user;
 
-		$genre = factory(Genre::class)->create();
-		$genre2 = factory(Genre::class)->create();
-		$genre3 = factory(Genre::class)->create();
-		$genre4 = factory(Genre::class)->create();
+		$genre = Genre::factory()->create();
+		$genre2 = Genre::factory()->create();
+		$genre3 = Genre::factory()->create();
+		$genre4 = Genre::factory()->create();
 
 		$post = [
 			'title' => 'текст ' . $book->title,
@@ -109,12 +106,11 @@ class BookGenreHelperTest extends TestCase
 
 	public function testSync()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$genre = factory(Genre::class)->create();
-		$genre2 = factory(Genre::class)->create();
-		$genre3 = factory(Genre::class)->create();
+		$genre = Genre::factory()->create();
+		$genre2 = Genre::factory()->create();
+		$genre3 = Genre::factory()->create();
 
 		$book->genres()->sync([$genre->id, $genre2->id, $genre3->id]);
 		$book->save();
@@ -156,10 +152,10 @@ class BookGenreHelperTest extends TestCase
 
 	public function testUpdate()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$genre = factory(Genre::class)->create();
-		$genre2 = factory(Genre::class)->create();
+		$genre = Genre::factory()->create();
+		$genre2 = Genre::factory()->create();
 
 		$book->genres()->sync([$genre->id, $genre2->id]);
 

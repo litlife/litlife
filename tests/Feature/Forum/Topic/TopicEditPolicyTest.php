@@ -10,13 +10,13 @@ class TopicEditPolicyTest extends TestCase
 {
 	public function testUpdatePolicy()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->edit_forum_self_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)->states('with_user_group')->create();
+		$user2 = User::factory()->with_user_group()->create();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->create_user_id = $user->id;
 		$topic->push();
 
@@ -25,18 +25,18 @@ class TopicEditPolicyTest extends TestCase
 
 		//
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_forum_self_topic = true;
 		$user->group->edit_forum_other_user_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)->states('with_user_group')->create();
+		$user2 = User::factory()->with_user_group()->create();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->create_user_id = $user->id;
 		$topic->push();
 
-		$topic2 = factory(Topic::class)->create();
+		$topic2 = Topic::factory()->create();
 		$topic2->create_user_id = $user2->id;
 		$topic2->push();
 

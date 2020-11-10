@@ -12,11 +12,9 @@ class UserPassAgeRestrictionTest extends TestCase
 	{
 		$age = 12;
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->create(['age' => 18]);
+		$book = Book::factory()->create(['age' => 18]);
 
 		$name = 'can_pass_age';
 

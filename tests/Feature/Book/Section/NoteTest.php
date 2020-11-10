@@ -18,14 +18,12 @@ class NoteTest extends TestCase
 		$title = $this->faker->realText(100);
 		$content = '<p>' . $this->faker->realText(100) . '</p>';
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$section = factory(Section::class)
-			->states('note')
-			->create();
+		$section = Section::factory()->note()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
@@ -64,16 +62,14 @@ class NoteTest extends TestCase
 
 	public function testIndexIfBookPrivate()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusPrivate();
 		$book->save();
 		$book->refresh();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->get(route('books.notes.index', ['book' => $book]))
 			->assertForbidden();

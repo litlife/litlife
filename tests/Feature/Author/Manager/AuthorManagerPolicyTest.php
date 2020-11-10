@@ -16,12 +16,9 @@ class AuthorManagerPolicyTest extends TestCase
 {
 	public function testPolicy()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 
-		$manager = factory(Manager::class)
-			->create();
+		$manager = Manager::factory()->create();
 
 		$this->assertFalse($user->can('view', $manager));
 		$this->assertFalse($user->can('viewOnCheck', Manager::class));
@@ -105,15 +102,11 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testAuthorCharacterPolicy()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$manager = factory(Manager::class)
-			->create([
+		$manager = Manager::factory()->create([
 				'character' => 'author',
 				'user_id' => $user->id,
 				'manageable_id' => $author->id
@@ -136,15 +129,11 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testEditorCharacterPolicy()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$manager = factory(Manager::class)
-			->create([
+		$manager = Manager::factory()->create([
 				'character' => 'editor',
 				'user_id' => $user->id,
 				'manageable_id' => $author->id
@@ -167,20 +156,16 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testIfVerifiedAuthorAndBookIsBookHasNotBeenPublishedByPublisher()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->add_comment = true;
 		$user->group->book_similar_vote = true;
 		$user->group->book_keyword_vote = true;
 		$user->push();
 		$user->refresh();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$manager = factory(Manager::class)
-			->create([
+		$manager = Manager::factory()->create([
 				'character' => 'author',
 				'user_id' => $user->id,
 				'manageable_id' => $author->id
@@ -189,24 +174,18 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertEquals('author', $manager->character);
 		$this->assertTrue($user->can('manage', $author));
 
-		$book = factory(Book::class)
-			->states('with_cover', 'si_false', 'lp_false', 'publish_fields_empty')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->with_cover()->si_false()->lp_false()->publish_fields_empty()->create(['create_user_id' => $user->id]);
 		$book->writers()->sync([$author->id]);
 		$book->user_vote_count = 1;
 		$book->save();
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
 		$cover = $book->cover;
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($cover->isCover());
 		$this->assertFalse($attachment->isCover());
@@ -244,12 +223,9 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertFalse($user->can('view_deleted', $book));
 		$this->assertFalse($user->can('cancel_parse', $book));
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertTrue($user->can('create_section', $book));
 		$this->assertTrue($user->can('update', $section));
@@ -263,8 +239,7 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertTrue($user->can('setAsCover', $attachment));
 		$this->assertTrue($user->can('remove_cover', $book));
 
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($user->can('addKeywords', $book));
 		$this->assertTrue($user->can('delete', $book_keyword));
@@ -281,20 +256,16 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testIfVerifiedAuthorAndBookIsPublishedByPublisher()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->add_comment = true;
 		$user->group->book_similar_vote = true;
 		$user->group->book_keyword_vote = true;
 		$user->push();
 		$user->refresh();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$manager = factory(Manager::class)
-			->create([
+		$manager = Manager::factory()->create([
 				'character' => 'author',
 				'user_id' => $user->id,
 				'manageable_id' => $author->id
@@ -303,20 +274,16 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertEquals('author', $manager->character);
 		$this->assertTrue($user->can('manage', $author));
 
-		$book = factory(Book::class)->create(['is_si' => false]);
+		$book = Book::factory()->create(['is_si' => false]);
 		$book->writers()->sync([$author->id]);
 		$book->user_vote_count = 1;
 		$book->save();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
 		$book->refresh();
 
@@ -352,12 +319,9 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertFalse($user->can('view_deleted', $book));
 		$this->assertFalse($user->can('cancel_parse', $book));
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertFalse($user->can('create_section', $book));
 		$this->assertFalse($user->can('update', $section));
@@ -370,8 +334,7 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertFalse($user->can('setAsCover', $attachment));
 		$this->assertFalse($user->can('remove_cover', $book));
 
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($user->can('addKeywords', $book));
 		$this->assertTrue($user->can('delete', $book_keyword));
@@ -388,20 +351,16 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testIfCharacterEditorAndManagerNotCreatorOfBook()
 	{
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->add_comment = true;
 		$user->group->book_similar_vote = true;
 		$user->group->book_keyword_vote = true;
 		$user->push();
 		$user->refresh();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$manager = factory(Manager::class)
-			->create([
+		$manager = Manager::factory()->create([
 				'character' => 'editor',
 				'user_id' => $user->id,
 				'manageable_id' => $author->id
@@ -410,18 +369,14 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertEquals('editor', $manager->character);
 		$this->assertTrue($user->can('manage', $author));
 
-		$book = factory(Book::class)->create(['is_si' => false]);
+		$book = Book::factory()->create(['is_si' => false]);
 		$book->writers()->sync([$author->id]);
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
 		$book->refresh();
 
@@ -477,8 +432,7 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertFalse($user->can('view_on_moderation', $file));
 		$this->assertFalse($user->can('set_source_and_make_pages', $file));
 
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($user->can('addKeywords', $book));
 		$this->assertTrue($user->can('delete', $book_keyword));
@@ -488,9 +442,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testCanEditBookIfCreatorAndSi()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_author_manager')
-			->create();
+		$author = Author::factory()->with_book()->with_author_manager()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -505,9 +457,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testCanEditBookIfNotCreatorAndSi()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_author_manager')
-			->create();
+		$author = Author::factory()->with_book()->with_author_manager()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -521,9 +471,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testCanEditBookIfCreatorAndNotSi()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_author_manager')
-			->create();
+		$author = Author::factory()->with_book()->with_author_manager()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -538,9 +486,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testCharacterEditorCanEditBookIfCreatorAndSi()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_editor_manager')
-			->create();
+		$author = Author::factory()->with_book()->with_editor_manager()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -560,9 +506,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testCharacterEditorCantEditBookIfNotCreatorAndSi()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_editor_manager')
-			->create();
+		$author = Author::factory()->with_book()->with_editor_manager()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -576,9 +520,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testCharacterEditorCantEditBookIfCreatorAndNotSi()
 	{
-		$author = factory(Author::class)
-			->states('with_book', 'with_editor_manager')
-			->create();
+		$author = Author::factory()->with_book()->with_editor_manager()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;
@@ -593,26 +535,18 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testIfAdmin()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('with_book')
-			->create();
+		$author = Author::factory()->with_book()->create();
 
 		$book = $author->books->first();
 		$book->writers()->sync([$author->id]);
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
-		$attachment = factory(Attachment::class)
-			->create(['book_id' => $book->id]);
+		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
 		$book->refresh();
 
@@ -654,8 +588,7 @@ class AuthorManagerPolicyTest extends TestCase
 		$this->assertTrue($user->can('view_on_moderation', $file));
 		$this->assertTrue($user->can('set_source_and_make_pages', $file));
 
-		$book_keyword = factory(BookKeyword::class)
-			->create(['book_id' => $book->id]);
+		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
 		$this->assertTrue($user->can('addKeywords', $book));
 		$this->assertTrue($user->can('delete', $book_keyword));
@@ -665,12 +598,10 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testPolicyIfManager()
 	{
-		$user = factory(User::class)->create();
-		$user2 = factory(User::class)->create();
+		$user = User::factory()->create();
+		$user2 = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_translator', 'with_writer')
-			->create();
+		$book = Book::factory()->with_translator()->with_writer()->create();
 
 		$book->refresh();
 
@@ -725,9 +656,7 @@ class AuthorManagerPolicyTest extends TestCase
 
 	public function testAuthorPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -735,14 +664,11 @@ class AuthorManagerPolicyTest extends TestCase
 
 		$this->assertTrue($user->can('author', $book));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('author', $book));
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$user = $manager->user;

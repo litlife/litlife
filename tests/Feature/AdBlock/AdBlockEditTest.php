@@ -10,12 +10,11 @@ class AdBlockEditTest extends TestCase
 {
 	public function testEdit()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
-		$block = factory(AdBlock::class)
-			->create();
+		$block = AdBlock::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('ad_blocks.edit', ['ad_block' => $block->id]))
@@ -24,8 +23,7 @@ class AdBlockEditTest extends TestCase
 
 	public function testEditIfGuest()
 	{
-		$block = factory(AdBlock::class)
-			->create();
+		$block = AdBlock::factory()->create();
 
 		$this->get(route('ad_blocks.edit', ['ad_block' => $block->id]))
 			->assertStatus(401);
@@ -33,12 +31,11 @@ class AdBlockEditTest extends TestCase
 
 	public function testUpdate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
-		$block = factory(AdBlock::class)
-			->create();
+		$block = AdBlock::factory()->create();
 
 		$blockNew = factory(AdBlock::class)
 			->make();

@@ -10,8 +10,7 @@ class UserEmailStoreTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.emails.create', ['user' => $user]))
@@ -20,9 +19,7 @@ class UserEmailStoreTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$this->assertEquals(1, $user->emails()->count());
 
@@ -41,13 +38,9 @@ class UserEmailStoreTest extends TestCase
 
 	public function testIfSameEmailInOtherUserAccountExists()
 	{
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
-		$user = factory(User::class)
-			->states('without_email')
-			->create();
+		$user = User::factory()->without_email()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.emails.store', ['user' => $user]), [
@@ -72,9 +65,7 @@ class UserEmailStoreTest extends TestCase
 
 	public function testIfEmailAlreadyAddedToUserAccount()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 

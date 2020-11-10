@@ -25,7 +25,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testIsAuthentificated()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.how_to_start_selling_books'))
@@ -40,9 +40,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testUserDontHaveConfirmedEmail()
 	{
-		$user = factory(User::class)
-			->states('with_not_confirmed_email')
-			->create();
+		$user = User::factory()->with_not_confirmed_email()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.how_to_start_selling_books'))
@@ -53,9 +51,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testUserHaveConfirmedEmail()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.how_to_start_selling_books'))
@@ -66,7 +62,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testIsDontHaveManager()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.how_to_start_selling_books'))
@@ -76,9 +72,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testIsManagerOnReview()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'on_review')
-			->create();
+		$manager = Manager::factory()->character_author()->on_review()->create();
 
 		$user = $manager->user;
 
@@ -90,9 +84,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testIsManagerRejected()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'rejected')
-			->create();
+		$manager = Manager::factory()->character_author()->rejected()->create();
 
 		$user = $manager->user;
 
@@ -104,9 +96,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testIsManagerAccepted()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author', 'accepted')
-			->create();
+		$manager = Manager::factory()->character_author()->accepted()->create();
 
 		$user = $manager->user;
 
@@ -124,9 +114,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testCanSellABookWithoutBooks()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -145,9 +133,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testCanSellABookWithBookNotOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -169,9 +155,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testCanSellABookWithBookOnSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -194,9 +178,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testSaleRequestOnReview()
 	{
-		$sale_request = factory(AuthorSaleRequest::class)
-			->states('on_review')
-			->create();
+		$sale_request = AuthorSaleRequest::factory()->on_review()->create();
 
 		$manager = $sale_request->manager;
 		$author = $sale_request->author;
@@ -210,9 +192,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testSaleRequestRejected()
 	{
-		$sale_request = factory(AuthorSaleRequest::class)
-			->states('rejected')
-			->create();
+		$sale_request = AuthorSaleRequest::factory()->rejected()->create();
 
 		$manager = $sale_request->manager;
 		$author = $sale_request->author;
@@ -226,9 +206,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testSaleRequestReviewStarts()
 	{
-		$sale_request = factory(AuthorSaleRequest::class)
-			->states('starts_review')
-			->create();
+		$sale_request = AuthorSaleRequest::factory()->starts_review()->create();
 
 		$manager = $sale_request->manager;
 		$author = $sale_request->author;
@@ -242,9 +220,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testHasNoWallet()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -259,15 +235,12 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testHasWallet()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$wallet = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id]);
+		$wallet = UserPaymentDetail::factory()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(1, $user->wallets->count());
 
@@ -279,7 +252,7 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testSeeWalletOptionWhenLogined()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.how_to_start_selling_books'))
@@ -290,17 +263,14 @@ class AuthorHowToStartSellingBooksTest extends TestCase
 
 	public function testSeeOrderPayment()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 		$user->balance = config('litlife.min_outgoing_payment_sum') + 100;
 		$user->save();
 
-		$wallet = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id]);
+		$wallet = UserPaymentDetail::factory()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(1, $user->wallets->count());
 

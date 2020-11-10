@@ -10,14 +10,11 @@ class BookmarkFolderSavePositionTest extends TestCase
 {
 	public function testSavePosition()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$bookmark_folder = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $user->id]);
+		$bookmark_folder = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
-		$bookmark_folder2 = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $user->id]);
+		$bookmark_folder2 = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
 		$this->actingAs($user)
 			->post(route('users.bookmark_folders.save_position'), [
@@ -56,7 +53,7 @@ class BookmarkFolderSavePositionTest extends TestCase
 
 	public function testSavePositionIfDeleted()
 	{
-		$bookmark_folder = factory(BookmarkFolder::class)->create();
+		$bookmark_folder = BookmarkFolder::factory()->create();
 		$bookmark_folder->delete();
 
 		$user = $bookmark_folder->create_user;

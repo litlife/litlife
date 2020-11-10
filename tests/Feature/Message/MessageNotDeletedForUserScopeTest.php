@@ -10,9 +10,7 @@ class MessageNotDeletedForUserScopeTest extends TestCase
 {
 	public function testFoundMessageIfNotDeleted()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -26,9 +24,7 @@ class MessageNotDeletedForUserScopeTest extends TestCase
 
 	public function testNotFoundMessageIfDeleted()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -41,9 +37,7 @@ class MessageNotDeletedForUserScopeTest extends TestCase
 
 	public function testIfDeletedForSender()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -62,9 +56,7 @@ class MessageNotDeletedForUserScopeTest extends TestCase
 
 	public function testIfDeletedForRecepient()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 

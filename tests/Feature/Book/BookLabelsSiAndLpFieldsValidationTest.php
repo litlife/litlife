@@ -11,12 +11,9 @@ class BookLabelsSiAndLpFieldsValidationTest extends TestCase
 {
 	public function testHasErrorOnUpdate()
 	{
-		$user = factory(User::class)
-			->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
 		$post = [
 			'title' => $book->title,

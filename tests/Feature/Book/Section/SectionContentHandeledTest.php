@@ -11,10 +11,9 @@ class SectionContentHandeledTest extends TestCase
 {
 	public function testContentHandeledNotesAnchors()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'book_id' => $book->id,
 				'content' => '<p><a href="#test2">текст</a> <span id="test1">текст</span></p>'
 			])->fresh();
@@ -35,15 +34,13 @@ class SectionContentHandeledTest extends TestCase
 
 	public function testContentHandeledImages()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$attachment = factory(Attachment::class)
-			->create([
+		$attachment = Attachment::factory()->create([
 				'book_id' => $book->id
 			])->fresh();
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'book_id' => $book->id,
 				'content' => '<p><img src="' . $attachment->url . '"/></p>'
 			])->fresh();
@@ -54,10 +51,9 @@ class SectionContentHandeledTest extends TestCase
 
 	public function testContentHandeledNotesAnchorsIfAnchorNotExists()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'book_id' => $book->id,
 				'content' => '<p><a href="#test2">текст</a> <span id="test1">текст</span></p>'
 			])->fresh();
@@ -68,10 +64,9 @@ class SectionContentHandeledTest extends TestCase
 
 	public function testContentHandeledIfRemoteLinkWithHash()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'book_id' => $book->id,
 				'content' => '<p><a href="https://example.com/test/?query=value#test2">текст</a> <span id="test1">текст</span></p>'
 			])->fresh();

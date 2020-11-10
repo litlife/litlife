@@ -28,15 +28,12 @@ class GenreTest extends TestCase
 
 	public function testStore()
 	{
-		$user = factory(User::class)
-			->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
 		$str = 'Название жанра';
 		$fb2_code = 'test';
 
-		$genre = factory(Genre::class)
-			->states('main_genre')
-			->create();
+		$genre = Genre::factory()->main_genre()->create();
 
 		$this->actingAs($user)
 			->post(route('genres.store'), [
@@ -66,7 +63,7 @@ class GenreTest extends TestCase
 	{
 		$str = Str::random(10);
 
-		$sequence = factory(Genre::class)->create(['name' => $str]);
+		$sequence = Genre::factory()->create(['name' => $str]);
 
 		$response = $this->get(route('genres.search', ['q' => $sequence->id]))
 			->assertOk()
@@ -77,7 +74,7 @@ class GenreTest extends TestCase
 	{
 		$str = Str::random(10);
 
-		$sequence = factory(Genre::class)->create(['name' => $str]);
+		$sequence = Genre::factory()->create(['name' => $str]);
 
 		$response = $this->get(route('genres.search', ['q' => mb_substr($sequence->name, 0, 5)]))
 			->assertOk()

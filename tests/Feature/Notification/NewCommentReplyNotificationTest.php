@@ -19,10 +19,9 @@ class NewCommentReplyNotificationTest extends TestCase
 
 	public function testViaMail()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
-		$user = factory(User::class)->states('with_confirmed_email')->create();
+		$user = User::factory()->with_confirmed_email()->create();
 		$user->email_notification_setting->comment_reply = true;
 		$user->email_notification_setting->db_comment_reply = false;
 		$user->push();
@@ -34,10 +33,9 @@ class NewCommentReplyNotificationTest extends TestCase
 
 	public function testViaDatabase()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
-		$user = factory(User::class)->states('with_confirmed_email')->create();
+		$user = User::factory()->with_confirmed_email()->create();
 		$user->email_notification_setting->comment_reply = false;
 		$user->email_notification_setting->db_comment_reply = true;
 		$user->push();
@@ -49,11 +47,9 @@ class NewCommentReplyNotificationTest extends TestCase
 
 	public function testToArray()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$notification = new NewCommentReplyNotification($comment);
 
@@ -66,11 +62,9 @@ class NewCommentReplyNotificationTest extends TestCase
 
 	public function testToMail()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$notification = new NewCommentReplyNotification($comment);
 

@@ -34,7 +34,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testSoftDeleted()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->delete();
 
 		$component = new AuthorName($author);
@@ -54,7 +54,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testHrefEnable()
 	{
-		$author = factory(Author::class)->create(['lang' => 'EN']);
+		$author = Author::factory()->create(['lang' => 'EN']);
 
 		$component = new AuthorName($author);
 		/*
@@ -79,7 +79,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testHrefDisable()
 	{
-		$author = factory(Author::class)->create(['lang' => 'EN']);
+		$author = Author::factory()->create(['lang' => 'EN']);
 
 		$component = new AuthorName($author, false);
 		/*
@@ -101,7 +101,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testLangRUDontShow()
 	{
-		$author = factory(Author::class)->create(['lang' => 'RU']);
+		$author = Author::factory()->create(['lang' => 'RU']);
 
 		$component = new AuthorName($author);
 		/*
@@ -123,9 +123,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testShowLockIfPrivate()
 	{
-		$author = factory(Author::class)
-			->states('private')
-			->create(['lang' => 'EN']);
+		$author = Author::factory()->private()->create();
 
 		$component = new AuthorName($author);
 
@@ -145,9 +143,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testShowOnlineEnable()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create(['lang' => 'RU']);
+		$author = Author::factory()->with_author_manager()->create();
 
 		$component = new AuthorName($author, true, true);
 
@@ -166,9 +162,7 @@ class AuthorNameComponentTest extends TestCase
 	 */
 	public function testShowOnlineDisable()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create(['lang' => 'RU']);
+		$author = Author::factory()->with_author_manager()->create();
 
 		$component = new AuthorName($author, true, false);
 

@@ -65,8 +65,7 @@ class SearchTest extends TestCase
 
 	public function testLogCreatedAuthUser()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$query = Str::random(10);
 

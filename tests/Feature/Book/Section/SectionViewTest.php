@@ -13,9 +13,7 @@ class SectionViewTest extends TestCase
 	{
 		Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 
 		//Bus::assertDispatched(BookUpdatePageNumbersJob::class);
 

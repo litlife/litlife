@@ -17,11 +17,9 @@ class UserOnModerationTest extends TestCase
 	 */
 	public function testCreateCommentHttp()
 	{
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+		$user_on_moderation = UserOnModeration::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$user = $user_on_moderation->user;
 		$user->group->add_comment = true;
@@ -44,7 +42,7 @@ class UserOnModerationTest extends TestCase
 			->assertOk()
 			->assertSeeText($text);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_post_comments = true;
 		$admin->push();
 
@@ -61,11 +59,9 @@ class UserOnModerationTest extends TestCase
 
 	public function testCreatePostHttp()
 	{
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+		$user_on_moderation = UserOnModeration::factory()->create();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$user = $user_on_moderation->user;
 		$user->group->add_comment = true;
@@ -87,7 +83,7 @@ class UserOnModerationTest extends TestCase
 			->assertOk()
 			->assertSeeText($text);
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->check_post_comments = true;
 		$admin->push();
 
@@ -104,8 +100,7 @@ class UserOnModerationTest extends TestCase
 
 	public function testIsOnModeration()
 	{
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+		$user_on_moderation = UserOnModeration::factory()->create();
 
 		$user = $user_on_moderation->user;
 
@@ -119,9 +114,9 @@ class UserOnModerationTest extends TestCase
 
 	public function testAddUserOnModeration()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->isOnModeration());
 
@@ -136,10 +131,9 @@ class UserOnModerationTest extends TestCase
 
 	public function testRemoveUserOnModeration()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+		$user_on_moderation = UserOnModeration::factory()->create();
 
 		$user = $user_on_moderation->user;
 

@@ -11,35 +11,29 @@ class BookKeywordDeletePolicyTest extends TestCase
 {
 	public function testCantIfNoPermission()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book_keyword = factory(BookKeyword::class)
-			->create();
+		$book_keyword = BookKeyword::factory()->create();
 
 		$this->assertFalse($user->can('delete', $book_keyword));
 	}
 
 	public function testCanIfHasPermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_keyword_remove = true;
 		$user->push();
 
-		$book_keyword = factory(BookKeyword::class)
-			->create();
+		$book_keyword = BookKeyword::factory()->create();
 
 		$this->assertTrue($user->can('delete', $book_keyword));
 	}
 
 	public function testCanIfBookPrivate()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->private()->create();
 
 		$book_keyword = factory(BookKeyword::class)
 			->states('private')
@@ -52,8 +46,7 @@ class BookKeywordDeletePolicyTest extends TestCase
 
 	public function testCanDeleteIfOnReviewAndUserCreator()
 	{
-		$book_keyword = factory(BookKeyword::class)
-			->states('on_review')->create();
+		$book_keyword = BookKeyword::factory()->on_review()->create();
 
 		$user = $book_keyword->create_user;
 
@@ -62,8 +55,7 @@ class BookKeywordDeletePolicyTest extends TestCase
 
 	public function testCantDeleteIfAcceptedAndUserCreator()
 	{
-		$book_keyword = factory(BookKeyword::class)
-			->states('accepted')->create();
+		$book_keyword = BookKeyword::factory()->accepted()->create();
 
 		$user = $book_keyword->create_user;
 

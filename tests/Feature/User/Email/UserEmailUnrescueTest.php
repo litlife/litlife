@@ -10,9 +10,7 @@ class UserEmailUnrescueTest extends TestCase
 {
 	public function test()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -20,9 +18,7 @@ class UserEmailUnrescueTest extends TestCase
 		$this->assertTrue($email->isConfirmed());
 		$this->assertTrue($email->isNotice());
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed', 'rescued', 'noticed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->confirmed()->rescued()->noticed()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(2, $user->emails()->rescuing()->count());
 
@@ -37,9 +33,7 @@ class UserEmailUnrescueTest extends TestCase
 
 	public function testErrorAtLeastOneEmailForRescue()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -47,9 +41,7 @@ class UserEmailUnrescueTest extends TestCase
 		$this->assertTrue($email->isConfirmed());
 		$this->assertTrue($email->isNotice());
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed', 'not_rescued', 'noticed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->confirmed()->not_rescued()->noticed()->create(['user_id' => $user->id]);
 
 		$this->assertEquals(1, $user->emails()->rescuing()->count());
 
@@ -63,9 +55,7 @@ class UserEmailUnrescueTest extends TestCase
 
 	public function testErrorNotConfirmed()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -73,9 +63,7 @@ class UserEmailUnrescueTest extends TestCase
 		$this->assertTrue($email->isConfirmed());
 		$this->assertTrue($email->isNotice());
 
-		$email2 = factory(UserEmail::class)
-			->states('not_confirmed', 'rescued', 'noticed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->not_confirmed()->rescued()->noticed()->create(['user_id' => $user->id]);
 
 		$this->actingAs($user)
 			->followingRedirects()
@@ -85,9 +73,7 @@ class UserEmailUnrescueTest extends TestCase
 
 	public function testEnable()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -95,9 +81,7 @@ class UserEmailUnrescueTest extends TestCase
 		$this->assertTrue($email->isConfirmed());
 		$this->assertTrue($email->isNotice());
 
-		$email2 = factory(UserEmail::class)
-			->states('confirmed', 'rescued', 'not_noticed')
-			->create(['user_id' => $user->id]);
+		$email2 = UserEmail::factory()->confirmed()->rescued()->not_noticed()->create(['user_id' => $user->id]);
 
 		$this->actingAs($user)
 			->followingRedirects()

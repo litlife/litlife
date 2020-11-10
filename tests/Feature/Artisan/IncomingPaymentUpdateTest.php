@@ -11,9 +11,7 @@ class IncomingPaymentUpdateTest extends TestCase
 {
 	public function testUpdate()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$buyer = $transaction->user;
 
@@ -53,9 +51,7 @@ class IncomingPaymentUpdateTest extends TestCase
 
 	public function testTransactionNotFound()
 	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+		$transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
 		$id = $transaction->id;
 

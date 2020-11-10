@@ -9,9 +9,7 @@ class BookEditSiLpPublishFieldsPolicyTest extends TestCase
 {
 	public function testCantIfSiBook()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_si_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_si_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -22,9 +20,7 @@ class BookEditSiLpPublishFieldsPolicyTest extends TestCase
 
 	public function testCanIfNotSiNotLpNotPublished()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();

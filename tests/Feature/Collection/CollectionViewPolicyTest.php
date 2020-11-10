@@ -14,30 +14,27 @@ class CollectionViewPolicyTest extends TestCase
 {
 	public function testViewPolicy()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create()
+		$collection = Collection::factory()->private()->create(
+			)
 			->fresh();
 
 		$creator = $collection->create_user;
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $creator->id,
 				'status' => UserRelationType::Friend
 			]);
 
 		$friend = $relation->second_user;
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id2' => $creator->id,
 				'status' => UserRelationType::Subscriber
 			]);
 
 		$subscriber = $relation->first_user;
 
-		$nobody_user = factory(User::class)->create();
+		$nobody_user = User::factory()->create();
 
 		$this->assertTrue($creator->can('view', $collection));
 		$this->assertFalse($friend->can('view', $collection));
@@ -62,25 +59,20 @@ class CollectionViewPolicyTest extends TestCase
 
 	public function testCantViewIfNotCollectionUser()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('view', $collection));
 	}
 
 	public function testCanViewIfCollectionUser()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$collectionUser = factory(CollectionUser::class)
-			->create([
+		$collectionUser = CollectionUser::factory()->create([
 				'collection_id' => $collection->id,
 				'user_id' => $user->id
 			]);

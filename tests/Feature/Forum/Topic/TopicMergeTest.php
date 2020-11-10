@@ -11,14 +11,14 @@ class TopicMergeTest extends TestCase
 {
 	public function testMergeHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = true;
 		$user->push();
 
-		$post = factory(Post::class)->create();
-		$post2 = factory(Post::class)->create();
-		$post3 = factory(Post::class)->create();
-		$post4 = factory(Post::class)->create();
+		$post = Post::factory()->create();
+		$post2 = Post::factory()->create();
+		$post3 = Post::factory()->create();
+		$post4 = Post::factory()->create();
 
 		$topic = $post->topic;
 		$topic4 = $post4->topic;
@@ -68,15 +68,13 @@ class TopicMergeTest extends TestCase
 
 	public function testMergeTopics()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$topic = $post->topic;
 		$post->fix();
 
-		$post2 = factory(Post::class)->create();
+		$post2 = Post::factory()->create();
 		$topic2 = $post2->topic;
 		$post2->fix();
 

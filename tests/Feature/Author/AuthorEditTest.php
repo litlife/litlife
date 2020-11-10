@@ -11,13 +11,12 @@ class AuthorEditTest extends TestCase
 {
 	public function testEditDeletedHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->author_edit = true;
 		$user->push();
 
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create()
+		$author = Author::factory()->with_photo()->create(
+			)
 			->fresh();
 
 		$this->assertEquals(1, $author->photos()->count());
@@ -34,11 +33,11 @@ class AuthorEditTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->author_edit = true;
 		$user->push();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->save();
 
 		$response = $this->actingAs($user)
@@ -61,11 +60,11 @@ class AuthorEditTest extends TestCase
 
 	public function testBiographyHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->author_edit = true;
 		$user->push();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->save();
 
 		$biography = $this->faker->realText(100);
@@ -107,12 +106,9 @@ class AuthorEditTest extends TestCase
 
 	public function testDeleteBiographyIfClear()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$biography = factory(AuthorBiography::class)
-			->create(['text' => '<p>текст</p>']);
+		$biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 
 		$author = $biography->author;
 
@@ -131,12 +127,9 @@ class AuthorEditTest extends TestCase
 
 	public function testRestoreDeletedBiography()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$biography = factory(AuthorBiography::class)
-			->create(['text' => '<p>текст</p>']);
+		$biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 
 		$author = $biography->author;
 
@@ -158,12 +151,9 @@ class AuthorEditTest extends TestCase
 
 	public function testDontDeleteBiographyIfImageExists()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$biography = factory(AuthorBiography::class)
-			->create(['text' => '<p>текст</p>']);
+		$biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 
 		$author = $biography->author;
 
@@ -183,13 +173,9 @@ class AuthorEditTest extends TestCase
 
 	public function testIsBookAttributeTitleAuthorsHelperUpdateAfterAuthorUpdate()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('with_book')
-			->create();
+		$author = Author::factory()->with_book()->create();
 
 		$book = $author->books()->first();
 

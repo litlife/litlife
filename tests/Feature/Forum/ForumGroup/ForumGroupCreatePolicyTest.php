@@ -10,7 +10,7 @@ class ForumGroupCreatePolicyTest extends TestCase
 {
 	public function testIfUserHasPermission()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_group_handle = true;
 		$admin->push();
 
@@ -19,7 +19,7 @@ class ForumGroupCreatePolicyTest extends TestCase
 
 	public function testIfUserDoesntHavePermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_group_handle = false;
 		$user->push();
 

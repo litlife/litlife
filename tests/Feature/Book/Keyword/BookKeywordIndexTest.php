@@ -10,16 +10,13 @@ class BookKeywordIndexTest extends TestCase
 {
 	public function testShowBookKeywordsIfBookDeleted()
 	{
-		$bookKeyword = factory(BookKeyword::class)
-			->create();
+		$bookKeyword = BookKeyword::factory()->create();
 
 		$book = $bookKeyword->book;
 
 		$book->delete();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('books.keywords.index', ['book' => $book]))
@@ -28,16 +25,13 @@ class BookKeywordIndexTest extends TestCase
 
 	public function testShowBookEditIfKeywordDeleted()
 	{
-		$bookKeyword = factory(BookKeyword::class)
-			->create();
+		$bookKeyword = BookKeyword::factory()->create();
 
 		$book = $bookKeyword->book;
 
 		$bookKeyword->keyword->delete();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('books.edit', ['book' => $book]))

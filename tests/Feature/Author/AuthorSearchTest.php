@@ -17,8 +17,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testSearch()
 	{
-		$author = factory(Author::class)
-			->create(['last_name' => uniqid(), 'first_name' => uniqid(), 'nickname' => uniqid()]);
+		$author = Author::factory()->create(['last_name' => uniqid(), 'first_name' => uniqid(), 'nickname' => uniqid()]);
 
 		$this->get(route('authors', ['search' => $author->last_name]))
 			->assertOk()
@@ -41,9 +40,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testInt()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+		$author = Author::factory()->accepted()->create();
 
 		$this->get(route('authors.search', ['q' => $author->id]))
 			->assertOk()
@@ -54,9 +51,7 @@ class AuthorSearchTest extends TestCase
 	{
 		$last_name = Str::random(16);
 
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['last_name' => $last_name]);
+		$author = Author::factory()->accepted()->create();
 
 		// https://litlife.club/posts/697632/go_to
 		$this->assertNotNull($author->toArray()['fullName']);
@@ -72,7 +67,7 @@ class AuthorSearchTest extends TestCase
 	{
 		$last_name = Str::random(10);
 
-		$book = factory(Author::class)->create(['last_name' => 'ё' . $last_name]);
+		$book = Author::factory()->create(['last_name' => 'ё' . $last_name]);
 
 		$this->assertEquals(1, Author::query()->fulltextSearch('ё' . $last_name)->count());
 		$this->assertEquals(1, Author::query()->fulltextSearch('е' . $last_name)->count());
@@ -117,7 +112,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testUserReaded()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.authors.readed', $user))
@@ -126,7 +121,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testUserReadLater()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.authors.read_later', $user))
@@ -135,7 +130,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testUserReadNotComplete()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.authors.read_not_complete', $user))
@@ -144,7 +139,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testUserReadNow()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.authors.read_now', $user))
@@ -153,7 +148,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testUserNotRead()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.authors.not_read', $user))
@@ -162,7 +157,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testUserCreated()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.authors.created', $user))
@@ -196,9 +191,7 @@ class AuthorSearchTest extends TestCase
 	{
 		$str = Str::random(16);
 
-		$author = factory(Author::class)
-			->states('accepted', 'with_author_manager')
-			->create(['nickname' => $str]);
+		$author = Author::factory()->accepted()->with_author_manager()->create(['nickname' => $str]);
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -219,9 +212,7 @@ class AuthorSearchTest extends TestCase
 
 	public function testFullTextSearch()
 	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['nickname' => 'EyyKOMRBa6clJDaI']);
+		$author = Author::factory()->accepted()->create();
 
 		$this->assertGreaterThanOrEqual(1, Author::fulltextSearch('Eyyk')->get()->count());
 		$this->assertGreaterThanOrEqual(0, Author::fulltextSearch('EYY')->get()->count());

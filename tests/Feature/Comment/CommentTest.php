@@ -23,11 +23,11 @@ class CommentTest extends TestCase
 
 	public function testCommentsOnCheck()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_post_comments = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->statusSentForReview();
 		$comment->save();
 		$comment->refresh();
@@ -42,18 +42,15 @@ class CommentTest extends TestCase
 
 	public function testUserReadedBooksHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.books.readed.comments', $user))
 			->assertDontSee($comment->text);
 
-		$book_status = factory(BookStatus::class)
-			->create([
+		$book_status = BookStatus::factory()->create([
 				'book_id' => $comment->commentable->id,
 				'user_id' => $user->id,
 				'status' => 'read_now'
@@ -73,7 +70,7 @@ class CommentTest extends TestCase
 
 	public function testViewInUserCommentList()
 	{
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->statusSentForReview();
 		$comment->save();
 
@@ -81,8 +78,7 @@ class CommentTest extends TestCase
 
 		$this->assertEquals(1, $comment->create_user->comment_count);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($comment->create_user)
 			->get(route('users.books.comments', ['user' => $comment->create_user->id]))
@@ -98,8 +94,7 @@ class CommentTest extends TestCase
 
 	public function testBBEmpty()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->expectException(QueryException::class);
 
@@ -109,10 +104,9 @@ class CommentTest extends TestCase
 
 	public function testRelationUserBookVote()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$comment = factory(Comment::class)
-			->create([
+		$comment = Comment::factory()->create([
 				'commentable_type' => 'book',
 				'create_user_id' => $user->id
 			]);
@@ -121,19 +115,16 @@ class CommentTest extends TestCase
 
 		$this->assertInstanceOf(Book::class, $book);
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $book->id,
 				'create_user_id' => $user->id
 			])->fresh();
 
-		$vote2 = factory(BookVote::class)
-			->create([
+		$vote2 = BookVote::factory()->create([
 				'book_id' => $book->id
 			])->fresh();
 
-		$vote3 = factory(BookVote::class)
-			->create([
+		$vote3 = BookVote::factory()->create([
 				'create_user_id' => $user->id
 			])->fresh();
 
@@ -152,32 +143,28 @@ class CommentTest extends TestCase
 	{
 		$text = '[I]текст[/I][b]Текст Текст Текст[/b]';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(3, $comment->getUpperCaseCharactersCount($comment->getContent()));
 		$this->assertEquals(15, $comment->getUpperCaseLettersPercent($comment->getContent()));
 
 		$text = ' ТЕКСТ текст';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(5, $comment->getUpperCaseCharactersCount($comment->getContent()));
 		$this->assertEquals(50, $comment->getUpperCaseLettersPercent($comment->getContent()));
 
 		$text = ' ТЕКСТ ТЕКСТ тек';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(10, $comment->getUpperCaseCharactersCount($comment->getContent()));
 		$this->assertEquals(77, $comment->getUpperCaseLettersPercent($comment->getContent()));
 
 		$text = ' :) ';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertEquals(0, $comment->getUpperCaseCharactersCount($comment->getContent()));
 		$this->assertEquals(0, $comment->getUpperCaseLettersPercent($comment->getContent()));
@@ -187,36 +174,33 @@ class CommentTest extends TestCase
 	{
 		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertTrue($comment->isSentForReview());
 	}
 
 	public function testAcceptedIfExternalLinksAndEnoughOfCommentsCount()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->comment_count = 100;
 		$user->save();
 
 		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$comment = factory(Comment::class)
-			->create(['create_user_id' => $user->id, 'bb_text' => $text]);
+		$comment = Comment::factory()->create(['create_user_id' => $user->id, 'bb_text' => $text]);
 
 		$this->assertTrue($comment->isAccepted());
 	}
 
 	public function testAcceptedIfExternalLinksAndEnoughOfPostsCount()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->forum_message_count = 100;
 		$user->save();
 
 		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$comment = factory(Comment::class)
-			->create(['create_user_id' => $user->id, 'bb_text' => $text]);
+		$comment = Comment::factory()->create(['create_user_id' => $user->id, 'bb_text' => $text]);
 
 		$this->assertTrue($comment->isAccepted());
 	}
@@ -225,8 +209,7 @@ class CommentTest extends TestCase
 	{
 		$text = 'ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertTrue($comment->isSentForReview());
 	}
@@ -235,8 +218,7 @@ class CommentTest extends TestCase
 	{
 		$text = 'ТЕ';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+		$comment = Comment::factory()->create(['bb_text' => $text]);
 
 		$this->assertTrue($comment->isAccepted());
 	}
@@ -256,7 +238,7 @@ class CommentTest extends TestCase
 
 	public function testPerPage()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
 		$response = $this->get(route('authors.comments', ['author' => $author, 'per_page' => 5]))
 			->assertOk();
@@ -271,8 +253,7 @@ class CommentTest extends TestCase
 
 	public function testSetGetParentComment()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$comment2 = new Comment();
 		$comment2->parent = $comment;
@@ -282,9 +263,7 @@ class CommentTest extends TestCase
 
 	public function testOriginCommentableRelation()
 	{
-		$comment = factory(Comment::class)
-			->states('book')
-			->create();
+		$comment = Comment::factory()->book()->create();
 
 		$book = $comment->commentable;
 

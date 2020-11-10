@@ -14,7 +14,7 @@ class CommentGoToTest extends TestCase
 {
 	public function testGoToIfOnReview()
 	{
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->statusSentForReview();
 		$comment->save();
 
@@ -25,12 +25,11 @@ class CommentGoToTest extends TestCase
 
 	public function testGoToReplyToTopPost()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
-		$top_comment = factory(Comment::class)
-			->create([
+		$top_comment = Comment::factory()->create([
 				'commentable_id' => $book->id,
 				'commentable_type' => 'book'
 			]);
@@ -53,8 +52,7 @@ class CommentGoToTest extends TestCase
 				'commentable_type' => 'book'
 			]);
 
-		$reply = factory(Comment::class)
-			->create([
+		$reply = Comment::factory()->create([
 				'commentable_id' => $book->id,
 				'commentable_type' => 'book',
 				'parent' => $top_comment->id
@@ -71,11 +69,9 @@ class CommentGoToTest extends TestCase
 
 	public function testGoToIfBooksGrouped()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$book2 = factory(Book::class)
-			->create();
+		$book2 = Book::factory()->create();
 
 		$comment = factory(Comment::class)
 			->states('book')
@@ -103,29 +99,19 @@ class CommentGoToTest extends TestCase
 
 	public function testGoToIfBooksGroupedAndHasReply()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$book2 = factory(Book::class)
-			->create();
+		$book2 = Book::factory()->create();
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $book->id]);
+		$comment = Comment::factory()->book()->create();
 
-		$reply = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $book->id]);
+		$reply = Comment::factory()->book()->create();
 		$reply->parent = $comment;
 		$reply->save();
 
-		$comment2 = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $book2->id]);
+		$comment2 = Comment::factory()->book()->create();
 
-		$reply2 = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $book2->id]);
+		$reply2 = Comment::factory()->book()->create();
 		$reply2->parent = $comment2;
 		$reply2->save();
 

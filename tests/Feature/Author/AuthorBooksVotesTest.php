@@ -9,9 +9,7 @@ class AuthorBooksVotesTest extends TestCase
 {
 	public function testBookVotesHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_book_vote')
-			->create();
+		$author = Author::factory()->with_book_vote()->create();
 
 		$book = $author->books()->get()->first();
 		$vote = $book->votes()->get()->first();
@@ -24,9 +22,7 @@ class AuthorBooksVotesTest extends TestCase
 
 	public function testBookVotesHttpIfUserDeleted()
 	{
-		$author = factory(Author::class)
-			->states('with_book_vote')
-			->create();
+		$author = Author::factory()->with_book_vote()->create();
 
 		$book = $author->books()->get()->first();
 		$vote = $book->votes()->get()->first();

@@ -10,13 +10,13 @@ class TopicDeletePolicyTest extends TestCase
 {
 	public function testDeletePolicy()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->delete_forum_self_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)->states('with_user_group')->create();
+		$user2 = User::factory()->with_user_group()->create();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->create_user_id = $user->id;
 		$topic->push();
 
@@ -25,18 +25,18 @@ class TopicDeletePolicyTest extends TestCase
 
 		//
 
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->delete_forum_self_topic = true;
 		$user->group->delete_forum_other_user_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)->states('with_user_group')->create();
+		$user2 = User::factory()->with_user_group()->create();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->create_user_id = $user->id;
 		$topic->push();
 
-		$topic2 = factory(Topic::class)->create();
+		$topic2 = Topic::factory()->create();
 		$topic2->create_user_id = $user2->id;
 		$topic2->push();
 
@@ -48,14 +48,14 @@ class TopicDeletePolicyTest extends TestCase
 
 	public function testRestorePolicy()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 		$user->group->delete_forum_self_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)->create();
+		$user2 = User::factory()->create();
 		$user2->push();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->create_user_id = $user->id;
 		$topic->push();
 		$topic->delete();
@@ -65,19 +65,19 @@ class TopicDeletePolicyTest extends TestCase
 
 		//
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->delete_forum_self_topic = true;
 		$user->group->delete_forum_other_user_topic = true;
 		$user->push();
 
-		$user2 = factory(User::class)->states('with_user_group')->create();
+		$user2 = User::factory()->with_user_group()->create();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->create_user_id = $user->id;
 		$topic->push();
 		$topic->delete();
 
-		$topic2 = factory(Topic::class)->create();
+		$topic2 = Topic::factory()->create();
 		$topic2->create_user_id = $user2->id;
 		$topic2->push();
 		$topic2->delete();

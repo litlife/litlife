@@ -10,8 +10,7 @@ class ManagerViewPolicyTest extends TestCase
 {
 	public function testCanIfUserManager()
 	{
-		$manager = factory(Manager::class)
-			->create();
+		$manager = Manager::factory()->create();
 
 		$user = $manager->user;
 		$author = $manager->manageable;
@@ -21,12 +20,11 @@ class ManagerViewPolicyTest extends TestCase
 
 	public function testCantIfOtherUser()
 	{
-		$manager = factory(Manager::class)
-			->create();
+		$manager = Manager::factory()->create();
 
 		$author = $manager->manageable;
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->moderator_add_remove = false;
 		$user->push();
 
@@ -35,14 +33,11 @@ class ManagerViewPolicyTest extends TestCase
 
 	public function testCanIfAdmin()
 	{
-		$manager = factory(Manager::class)
-			->create();
+		$manager = Manager::factory()->create();
 
 		$author = $manager->manageable;
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->assertTrue($user->can('view', $manager));
 	}

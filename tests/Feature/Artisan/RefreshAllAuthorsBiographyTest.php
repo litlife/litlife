@@ -13,8 +13,7 @@ class RefreshAllAuthorsBiographyTest extends TestCase
 	{
 		$text = 'текст http://example.com текст';
 
-		$authorBiography = factory(AuthorBiography::class)
-			->create(['text' => $text]);
+		$authorBiography = AuthorBiography::factory()->create(['text' => $text]);
 
 		$author = $authorBiography->author;
 
@@ -27,8 +26,7 @@ class RefreshAllAuthorsBiographyTest extends TestCase
 
 	public function testAuthorWithoutBiography()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		Artisan::call('refresh:all_authors_biography', ['latest_id' => $author->id]);
 

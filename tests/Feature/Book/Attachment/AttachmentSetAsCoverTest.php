@@ -12,9 +12,9 @@ class AttachmentSetAsCoverTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$attachment = factory(Attachment::class)->create();
+		$attachment = Attachment::factory()->create();
 
 		$book = $attachment->book;
 		$book->sections_count = 10;

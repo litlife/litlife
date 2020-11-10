@@ -10,13 +10,9 @@ class BookFileUpdateFileNameTest extends TestCase
 {
 	public function testUpdateFileName()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
-		$book = factory(Book::class)
-			->states('without_any_authors')
-			->create(['title' => 'Книга']);
+		$book = Book::factory()->without_any_authors()->create();
 
 		$file->book()->associate($book);
 
@@ -32,13 +28,9 @@ class BookFileUpdateFileNameTest extends TestCase
 
 	public function testUpdateFileNameInZipArchive()
 	{
-		$file = factory(BookFile::class)
-			->states('txt', 'zip')
-			->create();
+		$file = BookFile::factory()->txt()->zip()->create();
 
-		$book = factory(Book::class)
-			->states('without_any_authors')
-			->create(['title' => 'Книга']);
+		$book = Book::factory()->without_any_authors()->create();
 
 		$file->book()->associate($book);
 

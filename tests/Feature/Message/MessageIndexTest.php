@@ -11,8 +11,7 @@ class MessageIndexTest extends TestCase
 {
 	public function testRedirectIfUserMatchAuthUser()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.messages.index', ['user' => $user]))
@@ -21,11 +20,9 @@ class MessageIndexTest extends TestCase
 
 	public function testEmpty()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$user2 = factory(User::class)
-			->create();
+		$user2 = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.messages.index', ['user' => $user2]))
@@ -38,11 +35,9 @@ class MessageIndexTest extends TestCase
 
 	public function testIfUserDeletedSeeUserViewMessageAndDelete()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$deleted_user = factory(User::class)
-			->create();
+		$deleted_user = User::factory()->create();
 
 		$deleted_user->delete();
 
@@ -86,9 +81,7 @@ class MessageIndexTest extends TestCase
 
 	public function testMessagesViewed()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_and_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_and_not_viewed_message()->create();
 
 		$message = $conversation->messages()
 			->latestWithId()
@@ -120,8 +113,8 @@ class MessageIndexTest extends TestCase
 
 	public function testViewCounterBug()
 	{
-		$iam = factory(User::class)->create();
-		$user = factory(User::class)->create();
+		$iam = User::factory()->create();
+		$user = User::factory()->create();
 
 		$text = $this->faker->realText(100);
 

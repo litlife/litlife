@@ -11,20 +11,16 @@ class MessageIsViewedTest extends TestCase
 {
 	public function testIsViewedFactoryState()
 	{
-		$recepient = factory(User::class)->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->states('viewed')
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->viewed()->create();
 
 		$this->assertTrue($message->isViewed());
 	}
 
 	public function testWithMessageFactoryState()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_not_viewed_message()->create();
 
 		$message = $conversation->messages->first();
 
@@ -33,9 +29,7 @@ class MessageIsViewedTest extends TestCase
 
 	public function testWithViewedMessageFactoryState()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages->first();
 
@@ -44,9 +38,7 @@ class MessageIsViewedTest extends TestCase
 
 	public function testTrueIfRecepientPaticipationHasLatestSeenMessageWithGreaterId()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -59,9 +51,7 @@ class MessageIsViewedTest extends TestCase
 
 	public function testTrueIfRecepientPaticipationHasLatestSeenMessageWithEqualsId()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -74,9 +64,7 @@ class MessageIsViewedTest extends TestCase
 
 	public function testFalseIfRecepientPaticipationHasLatestSeenMessageWithLessId()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -89,12 +77,9 @@ class MessageIsViewedTest extends TestCase
 
 	public function testViewed()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->states('viewed')
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->viewed()->create();
 
 		$message2 = factory(Message::class)
 			->states('viewed')
@@ -108,12 +93,9 @@ class MessageIsViewedTest extends TestCase
 
 		// two viewed messages from one user
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->states('viewed')
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->viewed()->create();
 
 		$message2 = factory(Message::class)
 			->states('viewed')
@@ -128,16 +110,13 @@ class MessageIsViewedTest extends TestCase
 
 		// // two not viewed messages from one user
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		//dump("recepient id: $recepient->id");
 
-		$message = factory(Message::class)
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->create(['recepient_id' => $recepient->id]);
 
-		$message2 = factory(Message::class)
-			->create([
+		$message2 = Message::factory()->create([
 				'create_user_id' => $message->create_user_id,
 				'recepient_id' => $recepient->id
 			]);
@@ -159,14 +138,11 @@ class MessageIsViewedTest extends TestCase
 
 	public function testNotViewedShouldBeLastViewedToSender()
 	{
-		$sender = factory(User::class)
-			->create();
+		$sender = User::factory()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'create_user_id' => $sender->id,
 				'recepient_id' => $recepient->id
 			]);

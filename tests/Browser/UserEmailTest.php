@@ -12,14 +12,12 @@ class UserEmailTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('with_confirmed_email')
-				->create();
+			$user = User::factory()->with_confirmed_email()->create();
 
 			$email = $user->emails()->get()->first();
 			$email->show_in_profile = false;
 			$email->save();
-			//$second_email = factory(UserEmail::class)->create(['user_id' => $user->id]);
+			//$second_email = UserEmail::factory()->create(['user_id' => $user->id]);
 
 			$browser->resize(1000, 1000)
 				->loginAs($user)
@@ -63,14 +61,12 @@ class UserEmailTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('with_confirmed_email')
-				->create();
+			$user = User::factory()->with_confirmed_email()->create();
 
 			$email = $user->emails()->get()->first();
 			$email->rescue = true;
 			$email->save();
-			//$second_email = factory(UserEmail::class)->create(['user_id' => $user->id]);
+			//$second_email = UserEmail::factory()->create(['user_id' => $user->id]);
 
 			$browser->resize(1000, 1000)
 				->loginAs($user)
@@ -124,13 +120,11 @@ class UserEmailTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('with_confirmed_email')
-				->create();
+			$user = User::factory()->with_confirmed_email()->create();
 
 			$email = $user->emails()->get()->first();
 
-			$second_email = factory(UserEmail::class)->create([
+			$second_email = UserEmail::factory()->create([
 				'user_id' => $user->id,
 				'notice' => false,
 				'confirm' => true
@@ -176,9 +170,7 @@ class UserEmailTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('with_not_confirmed_email')
-				->create();
+			$user = User::factory()->with_not_confirmed_email()->create();
 
 			$email = $user->emails()->get()->first();
 
@@ -201,9 +193,7 @@ class UserEmailTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('with_confirmed_email')
-				->create();
+			$user = User::factory()->with_confirmed_email()->create();
 
 			$email = $user->emails()->get()->first();
 

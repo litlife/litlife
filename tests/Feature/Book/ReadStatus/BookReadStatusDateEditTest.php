@@ -22,7 +22,7 @@ class BookReadStatusDateEditTest extends TestCase
 	 */
 	public function testEditHttpIsOk()
 	{
-		$user_read_status = factory(BookStatus::class)->create();
+		$user_read_status = BookStatus::factory()->create();
 
 		$user = $user_read_status->user;
 		$book = $user_read_status->book;
@@ -43,8 +43,7 @@ class BookReadStatusDateEditTest extends TestCase
 	 */
 	public function testEditHttpIfUserUpdatedAtIsNull()
 	{
-		$user_read_status = factory(BookStatus::class)
-			->create(['user_updated_at' => null]);
+		$user_read_status = BookStatus::factory()->create(['user_updated_at' => null]);
 
 		$user = $user_read_status->user;
 		$book = $user_read_status->book;

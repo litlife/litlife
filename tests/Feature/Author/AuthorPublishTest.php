@@ -12,13 +12,11 @@ class AuthorPublishTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->push();
 
-		$author = factory(Author::class)
-			->states('sent_for_review')
-			->create();
+		$author = Author::factory()->sent_for_review()->create();
 
 		$response = $this->actingAs($user)
 			->followingRedirects()

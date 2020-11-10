@@ -12,10 +12,9 @@ class BookReadOnlineTest extends TestCase
 {
 	public function testReadOnlineRedirectNew()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
 		$firstSection = $book->sections()
 			->chapter()
@@ -30,7 +29,7 @@ class BookReadOnlineTest extends TestCase
 
 	public function testReadOnlineRedirectOld()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->online_read_new_format = false;
 		$book->save();
 
@@ -42,13 +41,11 @@ class BookReadOnlineTest extends TestCase
 
 	public function testFirstSectionIfItsPrivate()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)->states('private')
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->private()->create();
 
-		$section2 = factory(Section::class)->states('accepted')
-			->create(['book_id' => $book->id]);
+		$section2 = Section::factory()->accepted()->create();
 
 		$sections = $book->sections()->defaultOrder()->get();
 
@@ -65,17 +62,13 @@ class BookReadOnlineTest extends TestCase
 
 	public function testReadOnlineWithSectionAndPage()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$section = $book->sections()->first();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'inner_section_id' => $section->inner_id,
@@ -90,15 +83,13 @@ class BookReadOnlineTest extends TestCase
 
 	public function testReadOnlineRedirectOldWithRememberedPage()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->online_read_new_format = false;
 		$book->save();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'inner_section_id' => null,
@@ -115,17 +106,13 @@ class BookReadOnlineTest extends TestCase
 
 	public function testRememberedSectionDeletedIsOk()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$section = $book->sections()->first();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'inner_section_id' => $section->inner_id,
@@ -148,17 +135,13 @@ class BookReadOnlineTest extends TestCase
 
 	public function testRememberedSectionIsNullOk()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$section = $book->sections()->first();
 
-		$book_read_remember_page = factory(BookReadRememberPage::class)
-			->create([
+		$book_read_remember_page = BookReadRememberPage::factory()->create([
 				'book_id' => $book->id,
 				'user_id' => $user->id,
 				'inner_section_id' => null,
@@ -181,12 +164,9 @@ class BookReadOnlineTest extends TestCase
 
 	public function testShowReadButtonIfAllChaptersArePaid()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'on_sale', 'with_section', 'with_read_and_download_access')
-			->create();
+		$book = Book::factory()->with_writer()->on_sale()->with_section()->with_read_and_download_access()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$section = $book->sections()->first();
 

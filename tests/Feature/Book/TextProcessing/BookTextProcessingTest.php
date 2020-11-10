@@ -12,10 +12,9 @@ class BookTextProcessingTest extends TestCase
 {
 	public function testIndexRouteIsOk()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->create_text_processing_books = true;
 		$user->push();
 
@@ -27,10 +26,9 @@ class BookTextProcessingTest extends TestCase
 
 	public function testCreateRouteIsOk()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->create_text_processing_books = true;
 		$user->push();
 
@@ -44,11 +42,9 @@ class BookTextProcessingTest extends TestCase
 
 	public function testStoreRouteIsOk()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->create_text_processing_books = true;
 		$user->push();
 
@@ -151,7 +147,7 @@ class BookTextProcessingTest extends TestCase
 
 	public function testWaitedScope()
 	{
-		$processing = factory(BookTextProcessing::class)->create();
+		$processing = BookTextProcessing::factory()->create();
 		$processing->wait();
 		$processing->save();
 
@@ -170,9 +166,9 @@ class BookTextProcessingTest extends TestCase
 
 	public function testIsAllValueFalseError()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->create_text_processing_books = true;
 		$user->push();
 

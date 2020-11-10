@@ -10,7 +10,7 @@ class PostOnCheckPolicyTest extends TestCase
 {
 	public function testCanIfHasPermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_post_comments = true;
 		$user->push();
 
@@ -19,7 +19,7 @@ class PostOnCheckPolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_post_comments = false;
 		$user->push();
 

@@ -9,8 +9,7 @@ class BookmarkFolderEditTest extends TestCase
 {
 	public function testEditHttp()
 	{
-		$folder = factory(BookmarkFolder::class)
-			->create();
+		$folder = BookmarkFolder::factory()->create();
 
 		$this->actingAs($folder->create_user)
 			->get(route('bookmark_folders.edit', $folder))
@@ -20,8 +19,7 @@ class BookmarkFolderEditTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$folder = factory(BookmarkFolder::class)
-			->create();
+		$folder = BookmarkFolder::factory()->create();
 
 		$title = $this->faker->realText(100);
 

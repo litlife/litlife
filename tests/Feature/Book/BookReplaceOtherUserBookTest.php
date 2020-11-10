@@ -16,20 +16,14 @@ class BookReplaceOtherUserBookTest extends TestCase
 	 */
 	public function testReplace()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
-		$book2 = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book2 = Book::factory()->accepted()->create();
 
 		$book->writers()->sync([$author->id]);
 		$book2->writers()->sync([$author->id]);
@@ -67,16 +61,12 @@ class BookReplaceOtherUserBookTest extends TestCase
 
 	public function testSeeIdMustNotMatchError()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
 		$book->writers()->sync([$author->id]);
 
@@ -89,20 +79,14 @@ class BookReplaceOtherUserBookTest extends TestCase
 
 	public function testSeeMustAddedByAnotherUserError()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
-		$book2 = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book2 = Book::factory()->accepted()->create();
 
 		$book->writers()->sync([$author->id]);
 		$book2->writers()->sync([$author->id]);
@@ -116,22 +100,16 @@ class BookReplaceOtherUserBookTest extends TestCase
 
 	public function testSeeMustBelongsToYourAuthorPageError()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
-		$book2 = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book2 = Book::factory()->accepted()->create();
 
-		$author2 = factory(Author::class)->create();
+		$author2 = Author::factory()->create();
 
 		$book->writers()->sync([$author->id]);
 		$book2->writers()->sync([$author2->id]);
@@ -145,20 +123,14 @@ class BookReplaceOtherUserBookTest extends TestCase
 
 	public function testPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
-		$book2 = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book2 = Book::factory()->accepted()->create();
 
 		$book->writers()->sync([$author->id]);
 		$book2->writers()->sync([$author->id]);
@@ -175,19 +147,14 @@ class BookReplaceOtherUserBookTest extends TestCase
 
 	public function testPolicyCantReplaceWithThisIfBookMainInGroup()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
-		$group = factory(BookGroup::class)
-			->create();
+		$group = BookGroup::factory()->create();
 		$book->addToGroup($group, true);
 		$book->save();
 		$book->refresh();
@@ -197,24 +164,16 @@ class BookReplaceOtherUserBookTest extends TestCase
 
 	public function testAttachThirdBook()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->accepted()->create();
 
-		$book2 = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book2 = Book::factory()->accepted()->create();
 
-		$book3 = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book3 = Book::factory()->accepted()->create();
 
 		$book->writers()->sync([$author->id]);
 		$book2->writers()->sync([$author->id]);

@@ -11,8 +11,7 @@ class BookmarkCreateTest extends TestCase
 {
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$title = $this->faker->realText(100);
 		$url = '/test?test=test';
@@ -34,11 +33,9 @@ class BookmarkCreateTest extends TestCase
 
 	public function testStoreInFolderHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$folder = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $user]);
+		$folder = BookmarkFolder::factory()->create(['create_user_id' => $user]);
 
 		$title = $this->faker->realText(100);
 		$url = '/test?test=test';
@@ -61,11 +58,9 @@ class BookmarkCreateTest extends TestCase
 
 	public function testStoreInFolderOtherUserNotFoundErrorHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$folder = factory(BookmarkFolder::class)
-			->create();
+		$folder = BookmarkFolder::factory()->create();
 
 		$title = $this->faker->realText(100);
 		$url = '/test?test=test';
@@ -81,8 +76,7 @@ class BookmarkCreateTest extends TestCase
 
 	public function testTitleMaxLengthValidation()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$title = Str::random(260);
 		$url = '/test?test=test';

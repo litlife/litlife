@@ -22,7 +22,7 @@ class BookRatingDateEditTest extends TestCase
 	 */
 	public function testEditHttpIsOk()
 	{
-		$book_vote = factory(BookVote::class)->create();
+		$book_vote = BookVote::factory()->create();
 
 		$user = $book_vote->create_user;
 		$book = $book_vote->book;

@@ -21,8 +21,7 @@ class SupportQuestionMessageStoreTest extends TestCase
 		$messageNew = factory(SupportQuestionMessage::class)
 			->make();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('support_question_messages.store'),
@@ -52,9 +51,7 @@ class SupportQuestionMessageStoreTest extends TestCase
 		Bus::fake();
 		Notification::fake();
 
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
 		$messageNew = factory(SupportQuestionMessage::class)
 			->make();
@@ -97,9 +94,7 @@ class SupportQuestionMessageStoreTest extends TestCase
 		Bus::fake();
 		Notification::fake();
 
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('with_message', 'review_starts')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->with_message()->review_starts()->create();
 
 		$messageNew = factory(SupportQuestionMessage::class)
 			->make();

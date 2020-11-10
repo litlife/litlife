@@ -31,14 +31,12 @@ class BookEditTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.edit', ['book' => $book]))
@@ -47,9 +45,7 @@ class BookEditTest extends TestCase
 
 	public function testUpdateHttpAnotherAuthorAppear()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 
@@ -60,8 +56,7 @@ class BookEditTest extends TestCase
 		$this->assertTrue($book->isAccepted());
 		$this->assertTrue($user->can('update', $book));
 
-		$author = factory(Author::class)
-			->create(['last_name' => 'test']);
+		$author = Author::factory()->create(['last_name' => 'test']);
 
 		$post = [
 			'title' => $book->title,
@@ -100,15 +95,12 @@ class BookEditTest extends TestCase
 
 	public function testEditTitle()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_writer', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->with_genre()->create();
 
 		$array = $book->toArray();
 		$array = [
@@ -141,13 +133,12 @@ class BookEditTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$fillable = $book->getFillable();
 
@@ -164,11 +155,11 @@ class BookEditTest extends TestCase
 		$post['translators'] = factory(Author::class, 2)->create()->pluck('id')->toArray();
 		$post['sequences'] = [
 			[
-				'id' => factory(Sequence::class)->create()->id,
+				'id' => Sequence::factory()->create()->id,
 				'number' => rand(0, 3),
 				'order' => 0
 			], [
-				'id' => factory(Sequence::class)->create()->id,
+				'id' => Sequence::factory()->create()->id,
 				'number' => rand(0, 3),
 				'order' => 1
 			]
@@ -238,19 +229,15 @@ class BookEditTest extends TestCase
 
 	public function testUpdateAuthorsHttpAuthorsBooksCounters()
 	{
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
-		$writer = factory(Author::class)->create();
-		$translator = factory(Author::class)->create();
-		$editor = factory(Author::class)->create();
-		$compiler = factory(Author::class)->create();
-		$illustrator = factory(Author::class)->create();
+		$writer = Author::factory()->create();
+		$translator = Author::factory()->create();
+		$editor = Author::factory()->create();
+		$compiler = Author::factory()->create();
+		$illustrator = Author::factory()->create();
 
 		$post = [
 			'title' => $book->title,
@@ -331,16 +318,12 @@ class BookEditTest extends TestCase
 
 	public function testUpdateAuthorsHttpChangedRating()
 	{
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
-		$writer = factory(Author::class)->create();
-		$editor = factory(Author::class)->create();
+		$writer = Author::factory()->create();
+		$editor = Author::factory()->create();
 
 		$post = [
 			'title' => $book->title,
@@ -376,9 +359,7 @@ class BookEditTest extends TestCase
 
 	public function testCopyProtection()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_genre', 'with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_writer()->with_genre()->with_create_user()->private()->create();
 
 		$user = $book->create_user;
 
@@ -415,12 +396,9 @@ class BookEditTest extends TestCase
 
 	public function testSeeEditFieldOfPublicDomain()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.edit', $book))
@@ -442,13 +420,11 @@ class BookEditTest extends TestCase
 
 	public function testCantChangeIfEditFieldOfPublicDomainEnabled()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 		$user->group->edit_field_of_public_domain = false;
 		$user->push();
 
-		$book = factory(Book::class)->states('with_writer', 'with_genre')->create();
+		$book = Book::factory()->with_writer()->with_genre()->create();
 		$book->is_public = true;
 		$book->year_public = 2005;
 		$book->push();
@@ -478,13 +454,9 @@ class BookEditTest extends TestCase
 
 	public function testCanChangeIfEditFieldOfPublicDomainEnabled()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('with_writer', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->with_genre()->create();
 
 		$post = [
 			'title' => $book->title,
@@ -513,16 +485,11 @@ class BookEditTest extends TestCase
 	{
 		config(['litlife.max_section_characters_count' => '10']);
 
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
-		$writer = factory(Author::class)
-			->create();
+		$writer = Author::factory()->create();
 
 		$annotation = Str::random(11);
 
@@ -550,16 +517,11 @@ class BookEditTest extends TestCase
 	{
 		config(['litlife.max_section_characters_count' => '10']);
 
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
-		$writer = factory(Author::class)
-			->create();
+		$writer = Author::factory()->create();
 
 		$annotation = '<p>' . Str::random(5) . '      ' . Str::random(5) . '</p>';
 
@@ -582,9 +544,7 @@ class BookEditTest extends TestCase
 
 	public function testCantEditIfUserCreatorAndEditSelfBookPermissionDisable()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->edit_self_book = false;
@@ -595,9 +555,7 @@ class BookEditTest extends TestCase
 
 	public function testCanEditIfUserCreatorAndEditSelfBookPermissionEnable()
 	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+		$book = Book::factory()->accepted()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->edit_self_book = true;
@@ -608,19 +566,13 @@ class BookEditTest extends TestCase
 
 	public function testMakeABookAnAmateurTranslationIfTheBookIsSIAndATranslatorIsAdded()
 	{
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
-		$writer = factory(Author::class)
-			->create();
+		$writer = Author::factory()->create();
 
-		$translator = factory(Author::class)
-			->create();
+		$translator = Author::factory()->create();
 
 		$post = [
 			'title' => $book->title,
@@ -644,9 +596,7 @@ class BookEditTest extends TestCase
 	{
 		config(['litlife.min_annotation_characters_count_for_sale' => 10]);
 
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -656,9 +606,7 @@ class BookEditTest extends TestCase
 		$book->create_user()->associate($user);
 		$book->save();
 
-		$annotation = factory(Section::class)
-			->states('annotation')
-			->create(['book_id' => $book->id]);
+		$annotation = Section::factory()->annotation()->create();
 
 		$this->assertNotNull($book->fresh()->annotation);
 		$this->assertTrue($book->isForSale());
@@ -693,13 +641,11 @@ class BookEditTest extends TestCase
 
 	public function testBookAutoSetAge()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_create_user', 'private')
-			->create();
+		$book = Book::factory()->with_writer()->with_create_user()->private()->create();
 
 		$user = $book->create_user;
 
-		$genre = factory(Genre::class)->create();
+		$genre = Genre::factory()->create();
 		$genre->age = 18;
 		$genre->save();
 
@@ -724,14 +670,11 @@ class BookEditTest extends TestCase
 
 	public function testAddNewKeyword()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$array = [
 			'title' => $book->title,
@@ -763,14 +706,11 @@ class BookEditTest extends TestCase
 
 	public function testAddNewKeywordIfOtherExists()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_keyword()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$book_keyword = $book->book_keywords()->first();
 
@@ -799,9 +739,7 @@ class BookEditTest extends TestCase
 
 	public function testRemoveKeyword()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_keyword()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 
@@ -829,9 +767,7 @@ class BookEditTest extends TestCase
 
 	public function test()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'private', 'with_keyword', 'with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_writer()->private()->with_keyword()->with_create_user()->with_genre()->create();
 
 		$user = $book->create_user;
 
@@ -859,9 +795,7 @@ class BookEditTest extends TestCase
 
 	public function testBookOnSaleChangeGenre()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -871,7 +805,7 @@ class BookEditTest extends TestCase
 
 		$this->assertTrue($book->isForSale());
 
-		$genre = factory(Genre::class)->create();
+		$genre = Genre::factory()->create();
 
 		$array = [
 			'title' => $book->title,

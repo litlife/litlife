@@ -12,7 +12,7 @@ class UsersRemoveAllPostsTest extends TestCase
 {
 	public function testWallPosts()
 	{
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 
 		$user = $blog->create_user;
 
@@ -25,7 +25,7 @@ class UsersRemoveAllPostsTest extends TestCase
 
 	public function testComments()
 	{
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 
 		$user = $comment->create_user;
 
@@ -38,7 +38,7 @@ class UsersRemoveAllPostsTest extends TestCase
 
 	public function testPosts()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
 		$user = $post->create_user;
 

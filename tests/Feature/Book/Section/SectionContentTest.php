@@ -12,8 +12,7 @@ class SectionContentTest extends TestCase
 	{
 		$content = '<p>' . $this->faker->realText(300) . '</p>';
 
-		$section = factory(Section::class)
-			->create(['content' => $content]);
+		$section = Section::factory()->create(['content' => $content]);
 
 		$this->assertEquals($content, $section->getContent());
 	}
@@ -22,7 +21,7 @@ class SectionContentTest extends TestCase
 	{
 		$content = '<p>' . $this->faker->realText(300) . '</p>';
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = $content;
 		$section->save();
 
@@ -35,7 +34,7 @@ class SectionContentTest extends TestCase
 	{
 		$content = '<p>' . $this->faker->realText(300) . '</p>';
 
-		$section = factory(Section::class)->create(['content' => $content]);
+		$section = Section::factory()->create(['content' => $content]);
 		$section->refresh();
 
 		$page_id = $section->pages()->first()->id;
@@ -54,7 +53,7 @@ class SectionContentTest extends TestCase
 	{
 		$content = '<p>' . $this->faker->realText(300) . '</p>';
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = $content;
 		$section->save();
 		$section->refresh();
@@ -72,8 +71,7 @@ class SectionContentTest extends TestCase
 	{
 		$content = '<p>' . $this->faker->realText(300) . '</p>';
 
-		$section = factory(Section::class)
-			->create(['content' => $content]);
+		$section = Section::factory()->create(['content' => $content]);
 
 		$this->assertEquals($content, $section->getContent());
 
@@ -87,8 +85,7 @@ class SectionContentTest extends TestCase
 	{
 		config(['litlife.class_prefix' => 'prefix-']);
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$section->prefix = 'prefix-';
 
@@ -115,8 +112,7 @@ class SectionContentTest extends TestCase
 	{
 		config(['litlife.class_prefix' => 'prefix-']);
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 		$section->prefix = config('litlife.class_prefix');
 
 		$section->content = '<div class="epigraph">текст</div>';
@@ -179,7 +175,7 @@ class SectionContentTest extends TestCase
 		config(['purify.settings.URI.Host' => null]);
 		config(['purify.settings.URI.Munge' => null]);
 
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = '<p> <a href="http://example.com/test#u-section-1">test</a> </p>';
 		$section->save();
 		$section->refresh();
@@ -189,7 +185,7 @@ class SectionContentTest extends TestCase
 
 	public function testContentRightScheme()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->content = '<h4>текст</h4>текст<h4>текст</h4><a href="http://example.com">текст</a>';
 		$section->save();
 		$section->refresh();
@@ -199,10 +195,9 @@ class SectionContentTest extends TestCase
 
 	public function testCheckEmptyTagsNotSelfClosing()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'book_id' => $book->id,
 				'content' => '<p>текст </p><p><a href="#test"></a></p><p> текст</p>'
 			])->fresh();
@@ -215,10 +210,9 @@ class SectionContentTest extends TestCase
 	{
 		$content = '<div id="u-test"><div><h2>62</h2></div><p>текст</p><br/><a href="#u-test2">ссылка</a></div>';
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'book_id' => $book->id,
 				'content' => $content
 			])->fresh();

@@ -11,7 +11,7 @@ class AdBlockCreateTest extends TestCase
 {
 	public function testCreate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
@@ -22,7 +22,7 @@ class AdBlockCreateTest extends TestCase
 
 	public function testStore()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
@@ -49,13 +49,11 @@ class AdBlockCreateTest extends TestCase
 
 	public function testStoreUniqueName()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
-		$block = factory(AdBlock::class)
-			->states('enabled')
-			->create();
+		$block = AdBlock::factory()->enabled()->create();
 
 		Carbon::setTestNow(now()->addMinute());
 
@@ -83,7 +81,7 @@ class AdBlockCreateTest extends TestCase
 
 	public function testCodeAsViewError()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 

@@ -10,13 +10,11 @@ class ComplainGetComplainableNameTest extends TestCase
 {
 	public function testGetComplainableName()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$this->assertEquals('comment', $complain->getComplainableName());
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
 		$complain->complainable_type = 'post';
 		$complain->complainable_id = $post->id;

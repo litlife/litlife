@@ -13,11 +13,9 @@ class CommentAutoSentForReviewTest extends TestCase
 {
 	public function testSentForReviewIfFoundCheckWordInTextIfString()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -48,11 +46,9 @@ class CommentAutoSentForReviewTest extends TestCase
 
 	public function testSentForReviewIfFoundCheckWordInText()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -83,11 +79,9 @@ class CommentAutoSentForReviewTest extends TestCase
 
 	public function testStoreOkIfNoSettingExists()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -110,11 +104,9 @@ class CommentAutoSentForReviewTest extends TestCase
 
 	public function testSentForReviewIfFoundEmail()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -135,9 +127,7 @@ class CommentAutoSentForReviewTest extends TestCase
 
 	public function testAcceptedIfAfterUpdateNoFoundEmail()
 	{
-		$comment = factory(Comment::class)
-			->states('sent_for_review')
-			->create(['bb_text' => $this->faker->realText(100) . ' ' . $this->faker->email]);
+		$comment = Comment::factory()->sent_for_review()->create();
 
 		$user = $comment->create_user;
 		$user->group->comment_self_edit_only_time = true;

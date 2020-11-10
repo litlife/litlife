@@ -13,11 +13,11 @@ class TopicCreateTest extends TestCase
 {
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_topic = true;
 		$user->push();
 
-		$forum = factory(Forum::class)->create()->fresh();
+		$forum = Forum::factory()->create()->fresh();
 
 		$response = $this->actingAs($user)
 			->post(route('topics.store', ['forum' => $forum->id]),
@@ -53,11 +53,11 @@ class TopicCreateTest extends TestCase
 
 	public function testNotAttachLabelIdeaOnReviewIfNotIdeaForum()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_topic = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertFalse($forum->isIdeaForum());
 
@@ -79,11 +79,11 @@ class TopicCreateTest extends TestCase
 
 	public function testAttachLabelIdeaOnReviewIfIdeaForum()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_topic = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 		$forum->is_idea_forum = true;
 		$forum->save();
 
@@ -106,11 +106,9 @@ class TopicCreateTest extends TestCase
 
 	public function testCantCreateTopicWithTheSameNameWithin5Minutes()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$name = $this->faker->realText(50) . ' ' . Str::random(10);
 
@@ -156,12 +154,11 @@ class TopicCreateTest extends TestCase
 
 	public function testAutofixFirstPostInCreatedTopicsEnabled()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_topic = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create(['autofix_first_post_in_created_topics' => true]);
+		$forum = Forum::factory()->create(['autofix_first_post_in_created_topics' => true]);
 
 		$this->assertTrue($forum->isAutofixFirstPostInCreatedTopics());
 
@@ -180,12 +177,11 @@ class TopicCreateTest extends TestCase
 
 	public function testAutofixFirstPostInCreatedTopicsDisabled()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_topic = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create(['autofix_first_post_in_created_topics' => false]);
+		$forum = Forum::factory()->create(['autofix_first_post_in_created_topics' => false]);
 
 		$this->assertFalse($forum->isAutofixFirstPostInCreatedTopics());
 

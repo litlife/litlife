@@ -13,9 +13,9 @@ class BookCommentOpenCloseTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('administrator')->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->create(['comments_closed' => true]);
+		$book = Book::factory()->create(['comments_closed' => true]);
 
 		$this->assertTrue($book->comments_closed);
 
@@ -39,9 +39,9 @@ class BookCommentOpenCloseTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('administrator')->create();
+		$admin = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)->create(['comments_closed' => false]);
+		$book = Book::factory()->create(['comments_closed' => false]);
 
 		$this->assertFalse($book->comments_closed);
 
@@ -63,8 +63,7 @@ class BookCommentOpenCloseTest extends TestCase
 
 	public function testBookComment()
 	{
-		$comment = factory(Comment::class)
-			->create(['commentable_type' => 'book']);
+		$comment = Comment::factory()->create(['commentable_type' => 'book']);
 
 		$this->assertEquals('book', $comment->commentable_type);
 		$this->assertEquals('Book', $comment->getCommentableModelName());

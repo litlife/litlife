@@ -10,14 +10,11 @@ class BookUpdateTitleAuthorsHelperTest extends TestCase
 {
 	public function testUpdateTitleAuthorsHelper()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$author2 = factory(Author::class)
-			->create();
+		$author2 = Author::factory()->create();
 
 		$book->writers()->sync([$author->id, $author2->id]);
 

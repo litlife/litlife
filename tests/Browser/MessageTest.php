@@ -19,9 +19,9 @@ class MessageTest extends DuskTestCase
 	{
 		$this->browse(function ($browser, $browser2) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
-			$user2 = factory(User::class)->create();
+			$user2 = User::factory()->create();
 
 			$text = $this->faker->realText(100);
 
@@ -89,10 +89,9 @@ class MessageTest extends DuskTestCase
 	{
 		$this->browse(function ($browser, $browser2) {
 
-			$recepient = factory(User::class)->create()->fresh();
+			$recepient = User::factory()->create()->fresh();
 
-			$message = factory(Message::class)
-				->create([
+			$message = Message::factory()->create([
 					'recepient_id' => $recepient->id
 				])
 				->fresh();
@@ -146,8 +145,7 @@ class MessageTest extends DuskTestCase
 	{
 		$this->browse(function ($sender_browser, $recepient_browser) {
 
-			$recepient = factory(User::class)
-				->create()
+			$recepient = User::factory()->create()
 				->fresh();
 
 			$message_viewed = factory(Message::class)
@@ -157,15 +155,13 @@ class MessageTest extends DuskTestCase
 				])
 				->fresh();
 
-			$message = factory(Message::class)
-				->create([
+			$message = Message::factory()->create([
 					'create_user_id' => $message_viewed->create_user_id,
 					'recepient_id' => $recepient->id
 				])
 				->fresh();
 
-			$message2 = factory(Message::class)
-				->create([
+			$message2 = Message::factory()->create([
 					'create_user_id' => $message_viewed->create_user_id,
 					'recepient_id' => $recepient->id
 				])

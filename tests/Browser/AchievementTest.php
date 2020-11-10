@@ -17,23 +17,15 @@ class AchievementTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$topic = factory(Topic::class)->create();
+			$topic = Topic::factory()->create();
 
-			$post = factory(Post::class)
-				->states('create_user_with_achievement')
-				->create(['topic_id' => $topic->id]);
+			$post = Post::factory()->create_user_with_achievement()->create();
 
-			$post2 = factory(Post::class)
-				->states('create_user_with_achievement')
-				->create(['topic_id' => $topic->id]);
+			$post2 = Post::factory()->create_user_with_achievement()->create();
 
-			$post3 = factory(Post::class)
-				->states('create_user_with_achievement')
-				->create(['topic_id' => $topic->id]);
+			$post3 = Post::factory()->create_user_with_achievement()->create();
 
-			$post4 = factory(Post::class)
-				->states('create_user_with_achievement')
-				->create(['topic_id' => $topic->id]);
+			$post4 = Post::factory()->create_user_with_achievement()->create();
 
 			$browser->resize(1000, 1000)
 				->visit(route('topics.show', $topic))

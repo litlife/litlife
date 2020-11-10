@@ -10,8 +10,7 @@ class ClearBookViewCountsPeriodTest extends TestCase
 {
 	public function testClearPeriodDay()
 	{
-		$book_view_count = factory(ViewCount::class)
-			->create(['day' => '1',
+		$book_view_count = ViewCount::factory()->create(['day' => '1',
 				'week' => '2',
 				'month' => '3',
 				'year' => '4',

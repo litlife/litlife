@@ -12,12 +12,9 @@ class CollectionBookIndexTest extends TestCase
 {
 	public function testBooksHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$collected_book = factory(CollectedBook::class)
-			->create();
+		$collected_book = CollectedBook::factory()->create();
 
 		$collection = $collected_book->collection;
 		$collection->status = StatusEnum::Accepted;
@@ -41,9 +38,7 @@ class CollectionBookIndexTest extends TestCase
 
 	public function testBooksOkIfUserGuestCanSeeEveryone()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
 		$this->get(route('collections.books', $collection))
 			->assertOk();
@@ -51,9 +46,7 @@ class CollectionBookIndexTest extends TestCase
 
 	public function testBooksForbiddenIfUserGuestCanSeeMe()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+		$collection = Collection::factory()->private()->create();
 
 		$this->get(route('collections.books', $collection))
 			->assertForbidden();
@@ -61,12 +54,9 @@ class CollectionBookIndexTest extends TestCase
 
 	public function testOrderIsOk()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
-		$collectedBook = factory(CollectedBook::class)
-			->create([
+		$collectedBook = CollectedBook::factory()->create([
 				'collection_id' => $collection->id,
 				'number' => 2,
 				'comment' => 'test'

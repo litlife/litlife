@@ -21,8 +21,7 @@ class UserSettingReadStyleTest extends TestCase
 		$this->assertEquals('#000000', $readStyle->font_color);
 		$this->assertEquals(true, $readStyle->show_sidebar);
 
-		$readStyle = factory(UserReadStyle::class)
-			->create([
+		$readStyle = UserReadStyle::factory()->create([
 				'font' => 'Tahoma',
 				'align' => 'right',
 				'size' => '16',
@@ -71,7 +70,7 @@ class UserSettingReadStyleTest extends TestCase
 
 	public function testIncorrectFontLength()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->readStyle->background_color = '#999999';
 		$user->push();
 		$user->refresh();
@@ -142,7 +141,7 @@ class UserSettingReadStyleTest extends TestCase
 
 	public function testSettingReadStyleRouteRedirect()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('settings.read_style'))
@@ -151,7 +150,7 @@ class UserSettingReadStyleTest extends TestCase
 
 	public function testSettingSaveAsAjax()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->ajax()
@@ -164,7 +163,7 @@ class UserSettingReadStyleTest extends TestCase
 
 	public function testReadStyleColorValidationError()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->post(route('users.settings.read_style.update', $user),
@@ -185,8 +184,7 @@ class UserSettingReadStyleTest extends TestCase
 
 	public function testSetDefaultFontIfWrongValue()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->post(route('users.settings.read_style.update', $user),

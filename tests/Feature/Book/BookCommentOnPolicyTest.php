@@ -10,26 +10,23 @@ class BookCommentOnPolicyTest extends TestCase
 {
 	public function testTrueIfUserCreatorOfPrivateBook()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->private()->create();
 
 		$this->assertTrue($user->can('commentOn', $book));
 	}
 
 	public function testFalseIfUserNotCreatorOfPrivateBook()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('private')
-			->create()
+		$book = Book::factory()->private()->create(
+			)
 			->fresh();
 
 		$this->assertFalse($user->can('commentOn', $book));
@@ -37,24 +34,22 @@ class BookCommentOnPolicyTest extends TestCase
 
 	public function testTrueIfCommentsNotClosed()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 
 		$this->assertTrue($user->can('commentOn', $book));
 	}
 
 	public function testFalseIfCommentsClosed()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->comments_closed = true;
 		$book->push();
 

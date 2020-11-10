@@ -10,14 +10,12 @@ class BookPurchaseTest extends TestCase
 {
 	public function testIsOk()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertTrue($user->can('buy', $book));
 

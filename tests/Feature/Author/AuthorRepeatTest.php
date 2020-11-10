@@ -27,20 +27,19 @@ class AuthorRepeatTest extends TestCase
 
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->author_repeat_report_add = true;
 		$user->push();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->statusAccepted();
 		$author->save();
 
-		$author2 = factory(Author::class)->create();
+		$author2 = Author::factory()->create();
 		$author2->statusAccepted();
 		$author2->save();
 
-		$author3 = factory(Author::class)->create();
+		$author3 = Author::factory()->create();
 		$author3->statusAccepted();
 		$author3->save();
 
@@ -76,20 +75,19 @@ class AuthorRepeatTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->author_repeat_report_edit = true;
 		$user->push();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->statusAccepted();
 		$author->save();
 
-		$author2 = factory(Author::class)->create();
+		$author2 = Author::factory()->create();
 		$author2->statusAccepted();
 		$author2->save();
 
-		$author3 = factory(Author::class)->create();
+		$author3 = Author::factory()->create();
 		$author3->statusAccepted();
 		$author3->save();
 
@@ -135,20 +133,19 @@ class AuthorRepeatTest extends TestCase
 
 	public function testDeleteHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->group->author_repeat_report_delete = true;
 		$user->push();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->statusAccepted();
 		$author->save();
 
-		$author2 = factory(Author::class)->create();
+		$author2 = Author::factory()->create();
 		$author2->statusAccepted();
 		$author2->save();
 
-		$author3 = factory(Author::class)->create();
+		$author3 = Author::factory()->create();
 		$author3->statusAccepted();
 		$author3->save();
 
@@ -176,16 +173,16 @@ class AuthorRepeatTest extends TestCase
 
 	public function testMergeButton()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->author_repeat_report_add = true;
 		$user->push();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->merge_authors = true;
 		$admin->group->author_repeat_report_delete = true;
 		$admin->push();
 
-		$author_repeat = factory(AuthorRepeat::class)->create();
+		$author_repeat = AuthorRepeat::factory()->create();
 		$author = $author_repeat->authors()->first();
 
 		$this->actingAs($user)

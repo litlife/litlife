@@ -10,12 +10,9 @@ class CommentDeleteTest extends TestCase
 {
 	public function testIsOkIfBookSoftDeleted()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$book = $comment->commentable;
 		$book->delete();
@@ -31,12 +28,9 @@ class CommentDeleteTest extends TestCase
 
 	public function testIsOkIfBookForceDeleted()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$book = $comment->commentable;
 		$book->forceDelete();
@@ -52,9 +46,7 @@ class CommentDeleteTest extends TestCase
 
 	public function testIfCreatorDeleted()
 	{
-		$comment = factory(Comment::class)
-			->states('book')
-			->create();
+		$comment = Comment::factory()->book()->create();
 
 		$comment->create_user->delete();
 		$comment->refresh();
@@ -62,9 +54,7 @@ class CommentDeleteTest extends TestCase
 
 		$this->assertTrue($comment->trashed());
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create();
+		$comment = Comment::factory()->book()->create();
 
 		$comment->create_user->forceDelete();
 		$comment->refresh();

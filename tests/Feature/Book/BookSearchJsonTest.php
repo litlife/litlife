@@ -17,9 +17,7 @@ class BookSearchJsonTest extends TestCase
 	{
 		$title = Str::random(10);
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create(['title' => $title]);
+		$book = Book::factory()->with_genre()->create();
 
 		$this->get(route('books.search', ['q' => $title]))
 			->assertOk()
@@ -30,9 +28,7 @@ class BookSearchJsonTest extends TestCase
 	{
 		$title = uniqid();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create(['title' => $title]);
+		$book = Book::factory()->with_genre()->create();
 
 		$this->get(route('books.search', ['q' => $book->id]))
 			->assertOk()

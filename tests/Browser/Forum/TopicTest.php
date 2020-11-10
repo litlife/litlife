@@ -21,33 +21,24 @@ class TopicTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->forum_edit_forum = true;
 			$admin->group->manipulate_topic = true;
 			$admin->group->edit_forum_self_topic = true;
 			$admin->group->edit_forum_other_user_topic = true;
 			$admin->push();
 
-			$forum = factory(Forum::class)->create();
+			$forum = Forum::factory()->create();
 
-			$topic = factory(Topic::class)
-				->states('idea_implemented')
-				->create(['forum_id' => $forum->id]);
+			$topic = Topic::factory()->idea_implemented()->create();
 
-			$topic2 = factory(Topic::class)
-				->states('idea_on_review')
-				->create(['forum_id' => $forum->id]);
+			$topic2 = Topic::factory()->idea_on_review()->create();
 
-			$topic3 = factory(Topic::class)
-				->states('idea_rejected')
-				->create(['forum_id' => $forum->id]);
+			$topic3 = Topic::factory()->idea_rejected()->create();
 
-			$topic4 = factory(Topic::class)
-				->states('idea_in_progress')
-				->create(['forum_id' => $forum->id]);
+			$topic4 = Topic::factory()->idea_in_progress()->create();
 
-			$post = factory(Post::class)
-				->create(['topic_id' => $topic->id]);
+			$post = Post::factory()->create(['topic_id' => $topic->id]);
 
 			$this->assertFalse($forum->isIdeaForum());
 
@@ -82,17 +73,16 @@ class TopicTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->push();
 
-			$forum = factory(Forum::class)->create();
+			$forum = Forum::factory()->create();
 			$forum->is_idea_forum = true;
 			$forum->save();
 
 			$this->assertTrue($forum->fresh()->isIdeaForum());
 
-			$topic = factory(Topic::class)
-				->create(['forum_id' => $forum->id]);
+			$topic = Topic::factory()->create(['forum_id' => $forum->id]);
 			$topic->label = TopicLabelEnum::IdeaImplemented;
 			$topic->save();
 
@@ -121,11 +111,9 @@ class TopicTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$topic = factory(Topic::class)
-				->create();
+			$topic = Topic::factory()->create();
 
 			$user_browser->resize(1000, 2000)
 				->loginAs($user)

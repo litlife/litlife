@@ -10,11 +10,9 @@ class BookGroupPolicyTest extends TestCase
 {
 	public function testCantGroupOrUngroupIfNoPermission()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('group', $book));
 		$this->assertFalse($user->can('ungroup', $book));
@@ -23,13 +21,9 @@ class BookGroupPolicyTest extends TestCase
 
 	public function testCantGroupOrUngroupIfBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->assertFalse($user->can('group', $book));
 		$this->assertFalse($user->can('ungroup', $book));
@@ -38,13 +32,9 @@ class BookGroupPolicyTest extends TestCase
 
 	public function testCantGroupOrUngroup()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->assertTrue($user->can('group', $book));
 		$this->assertTrue($user->can('ungroup', $book));
@@ -53,12 +43,10 @@ class BookGroupPolicyTest extends TestCase
 
 	public function testCantGroupOrUngroupIfBookDeleted()
 	{
-		$book = factory(Book::class)->states('accepted')->create();
+		$book = Book::factory()->accepted()->create();
 		$book->delete();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->assertFalse($user->can('group', $book));
 		$this->assertFalse($user->can('ungroup', $book));

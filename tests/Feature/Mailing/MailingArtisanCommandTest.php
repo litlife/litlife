@@ -15,8 +15,7 @@ class MailingArtisanCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$mailing = factory(Mailing::class)
-			->create();
+		$mailing = Mailing::factory()->create();
 
 		$this->assertFalse($mailing->isSent());
 
@@ -52,8 +51,7 @@ class MailingArtisanCommandTest extends TestCase
 	{
 		Notification::fake();
 
-		$mailing = factory(Mailing::class)
-			->create(['sent_at' => now()]);
+		$mailing = Mailing::factory()->create(['sent_at' => now()]);
 
 		$this->assertTrue($mailing->isSent());
 

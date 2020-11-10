@@ -10,9 +10,9 @@ class BookCollectionIndexTest extends TestCase
 {
 	public function test()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$collectedBook = factory(CollectedBook::class)->create();
+		$collectedBook = CollectedBook::factory()->create();
 
 		$book = $collectedBook->book;
 		$collection = $collectedBook->collection;

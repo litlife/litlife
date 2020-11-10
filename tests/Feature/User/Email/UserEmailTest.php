@@ -10,9 +10,7 @@ class UserEmailTest extends TestCase
 {
 	public function testRefreshConfirmedMailboxCount()
 	{
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
 		$user = $email->user;
 
@@ -49,9 +47,7 @@ class UserEmailTest extends TestCase
 
 	public function testSeeYouNeedAtLeastOneConfirmedEmail()
 	{
-		$email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$email = UserEmail::factory()->not_confirmed()->create();
 
 		$user = $email->user;
 
@@ -72,8 +68,7 @@ class UserEmailTest extends TestCase
 
 	public function testIsCreatedBeforeMoveToNewEngine()
 	{
-		$email = factory(UserEmail::class)
-			->create();
+		$email = UserEmail::factory()->create();
 
 		$email->created_at = '2020-03-12 00:00:01';
 
@@ -102,8 +97,7 @@ class UserEmailTest extends TestCase
 
 	public function testCreatedBeforeMoveToNewEngineScope()
 	{
-		$email = factory(UserEmail::class)
-			->create();
+		$email = UserEmail::factory()->create();
 
 		$email->created_at = '2019-03-13 00:00:00';
 		$email->save();

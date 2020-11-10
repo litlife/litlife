@@ -29,8 +29,7 @@ class CreateSitemapTest extends TestCase
 
 	public function testSitemapRedirect()
 	{
-		$book = factory(Book::class)
-			->create([
+		$book = Book::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -171,8 +170,7 @@ EOF;
 
 	public function testBookComments()
 	{
-		$book = factory(Book::class)
-			->create(['created_at' => now()->addMinute()]);
+		$book = Book::factory()->create(['created_at' => now()->addMinute()]);
 
 		$comments = factory(Comment::class, 12)
 			->create(['commentable_type' => 'book', 'commentable_id' => $book->id]);
@@ -216,8 +214,7 @@ EOF;
 
 	public function testBookPagesNewFormat()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
@@ -241,8 +238,7 @@ EOF;
 
 	public function testBookPagesOldFormat()
 	{
-		$book = factory(Book::class)
-			->create([
+		$book = Book::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -266,8 +262,7 @@ EOF;
 
 	public function testAuthor()
 	{
-		$author = factory(Author::class)
-			->create([
+		$author = Author::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -284,8 +279,7 @@ EOF;
 
 	public function testSequence()
 	{
-		$sequence = factory(Sequence::class)
-			->create([
+		$sequence = Sequence::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -302,8 +296,7 @@ EOF;
 
 	public function testUserWall()
 	{
-		$user = factory(User::class)
-			->create([
+		$user = User::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -336,8 +329,7 @@ EOF;
 
 	public function testForum()
 	{
-		$forum = factory(Forum::class)
-			->create([
+		$forum = Forum::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -354,8 +346,7 @@ EOF;
 
 	public function testTopics()
 	{
-		$topic = factory(Topic::class)
-			->create([
+		$topic = Topic::factory()->create([
 				'created_at' => now()->addMinute()
 			]);
 
@@ -372,8 +363,7 @@ EOF;
 
 	public function testGenre()
 	{
-		$genre = factory(Genre::class)
-			->create();
+		$genre = Genre::factory()->create();
 
 		Artisan::call('sitemap:create', ['create_new' => true, '--handle' => 'genres', 'sendToSearchEngine' => false]);
 
@@ -392,8 +382,7 @@ EOF;
 
 	public function testKeywordBooks()
 	{
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		Artisan::call('sitemap:create', ['create_new' => true, '--handle' => 'keywords', 'sendToSearchEngine' => false]);
 

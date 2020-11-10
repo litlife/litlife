@@ -14,7 +14,7 @@ class UserNoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$text = $this->faker->realText(300);
 
@@ -35,7 +35,7 @@ class UserNoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$note = factory(UserNote::class)->create();
+			$note = UserNote::factory()->create();
 
 			$user = $note->create_user;
 
@@ -65,7 +65,7 @@ class UserNoteTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$note = factory(UserNote::class)->create();
+			$note = UserNote::factory()->create();
 
 			$user = $note->create_user;
 

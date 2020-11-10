@@ -19,12 +19,9 @@ class CollectionTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
-			$collected_book = factory(CollectedBook::class)
-				->create();
+			$collected_book = CollectedBook::factory()->create();
 
 			$collection = $collected_book->collection;
 			$collection->status = StatusEnum::Accepted;
@@ -55,13 +52,9 @@ class CollectionTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
-			$collection = factory(Collection::class)
-				->states('accepted')
-				->create();
+			$collection = Collection::factory()->accepted()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -87,13 +80,9 @@ class CollectionTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
-			$collection = factory(Collection::class)
-				->states('private')
-				->create();
+			$collection = Collection::factory()->private()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -110,9 +99,7 @@ class CollectionTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$collection = factory(Collection::class)
-				->states('accepted')
-				->create();
+			$collection = Collection::factory()->accepted()->create();
 
 			$user = $collection->create_user;
 
@@ -171,7 +158,7 @@ class CollectionTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->manage_collections = true;
 			$user->push();
 

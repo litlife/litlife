@@ -13,9 +13,9 @@ class BookFileEditTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$comment = $this->faker->realText(200);
 		$number = rand(1, 100);
@@ -43,20 +43,13 @@ class BookFileEditTest extends TestCase
 
 	public function testCommentIsRequiredIfOtherFileWithSameExtensionExists()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->txt()->create();
 
-		$file2 = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file2 = BookFile::factory()->txt()->create();
 
 		$this->actingAs($user)
 			->patch(route('books.files.update', compact('book', 'file')),
@@ -70,20 +63,13 @@ class BookFileEditTest extends TestCase
 
 	public function testCommentIsNotRequiredIfOtherFileWithDifferentExtensionExists()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->odt()->create();
 
-		$file2 = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+		$file2 = BookFile::factory()->txt()->create();
 
 		$this->actingAs($user)
 			->patch(route('books.files.update', compact('book', 'file')),

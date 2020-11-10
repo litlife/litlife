@@ -14,20 +14,20 @@ class SequenceMergeTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->sequence_merge = true;
 		$user->save();
 
-		$sequence = factory(Sequence::class)->create();
+		$sequence = Sequence::factory()->create();
 		$sequence->statusAccepted();
 		$sequence->save();
 
-		$sequence2 = factory(Sequence::class)->create();
+		$sequence2 = Sequence::factory()->create();
 		$sequence2->statusAccepted();
 		$sequence2->save();
 
-		$book = factory(Book::class)->create();
-		$book2 = factory(Book::class)->create();
+		$book = Book::factory()->create();
+		$book2 = Book::factory()->create();
 
 		$sequence2->books()->sync([$book->id]);
 		$sequence->books()->sync([$book->id, $book2->id]);

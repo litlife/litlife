@@ -13,8 +13,7 @@ class AttachActiveCommentatorGroupToUsersTest extends TestCase
 
 	public function testIsAttachedIfConditionMatch()
 	{
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMonths(7)]);
+		$user = User::factory()->create(['created_at' => now()->subMonths(7)]);
 
 		$text = $this->faker->realText(10);
 
@@ -51,8 +50,7 @@ class AttachActiveCommentatorGroupToUsersTest extends TestCase
 
 	public function testGroupIsNotAttachedIfTheAgeOfTheAccountIsLessThanTheDesired()
 	{
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMonths(5)]);
+		$user = User::factory()->create(['created_at' => now()->subMonths(5)]);
 
 		$text = $this->faker->realText(10);
 
@@ -81,8 +79,7 @@ class AttachActiveCommentatorGroupToUsersTest extends TestCase
 
 	public function testGroupIsNotAttachedIfTheNumberOfCommentsIsLessThanTheDesiredOne()
 	{
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMonths(7)]);
+		$user = User::factory()->create(['created_at' => now()->subMonths(7)]);
 
 		$text = $this->faker->realText(10);
 
@@ -96,8 +93,7 @@ class AttachActiveCommentatorGroupToUsersTest extends TestCase
 
 	public function testDontAttachAGroupIfTheUserIsAssignedACommentMasterGroup()
 	{
-		$user = factory(User::class)
-			->create(['created_at' => now()->subMonths(8)]);
+		$user = User::factory()->create(['created_at' => now()->subMonths(8)]);
 
 		$user->attachUserGroupByNameIfExists('Мастер комментария');
 		$user->refresh();

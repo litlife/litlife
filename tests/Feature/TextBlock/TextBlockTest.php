@@ -13,7 +13,7 @@ class TextBlockTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
 		$name = uniqid();
 
@@ -24,7 +24,7 @@ class TextBlockTest extends TestCase
 
 	public function testStoreHttp()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
 		$name = uniqid();
 		$text = $this->faker->realText(100);
@@ -51,17 +51,13 @@ class TextBlockTest extends TestCase
 
 	public function testShowHttp()
 	{
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_admin')
-			->create();
+		$textBlock = TextBlock::factory()->show_for_admin()->create();
 
 		$this->get(route('text_blocks.show', ['name' => $textBlock->name, 'id' => $textBlock->id]))
 			->assertOk()
 			->assertDontSeeText(strip_tags($textBlock->text));
 
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_all')
-			->create();
+		$textBlock = TextBlock::factory()->show_for_all()->create();
 
 		$this->get(route('text_blocks.show', ['name' => $textBlock->name, 'id' => $textBlock->id]))
 			->assertOk()
@@ -70,9 +66,9 @@ class TextBlockTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$textBlock = factory(TextBlock::class)->create();
+		$textBlock = TextBlock::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('text_blocks.edit', ['name' => $textBlock->name]))
@@ -82,9 +78,9 @@ class TextBlockTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$textBlock = factory(TextBlock::class)->create();
+		$textBlock = TextBlock::factory()->create();
 
 		$text = $this->faker->realText(100);
 
@@ -113,9 +109,9 @@ class TextBlockTest extends TestCase
 	{
 		$name = uniqid();
 
-		$textBlock1 = factory(TextBlock::class)->create(['name' => $name, 'created_at' => Carbon::now()->addDays(1), 'show_for_all' => TextBlockShowEnum::All]);
-		$textBlock2 = factory(TextBlock::class)->create(['name' => $name, 'created_at' => Carbon::now()->addDays(3), 'show_for_all' => TextBlockShowEnum::All]);
-		$textBlock3 = factory(TextBlock::class)->create(['name' => $name, 'created_at' => Carbon::now()->addDays(2), 'show_for_all' => TextBlockShowEnum::All]);
+		$textBlock1 = TextBlock::factory()->create(['name' => $name, 'created_at' => Carbon::now()->addDays(1), 'show_for_all' => TextBlockShowEnum::All]);
+		$textBlock2 = TextBlock::factory()->create(['name' => $name, 'created_at' => Carbon::now()->addDays(3), 'show_for_all' => TextBlockShowEnum::All]);
+		$textBlock3 = TextBlock::factory()->create(['name' => $name, 'created_at' => Carbon::now()->addDays(2), 'show_for_all' => TextBlockShowEnum::All]);
 
 		$this->get(route('text_blocks.show_lastest_version_for_name', ['name' => $name]))
 			->assertOk()
@@ -124,7 +120,7 @@ class TextBlockTest extends TestCase
 
 	public function testCreatePolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('create', TextBlock::class));
 
@@ -137,8 +133,8 @@ class TextBlockTest extends TestCase
 
 	public function testUpdatePolicy()
 	{
-		$user = factory(User::class)->create();
-		$textBlock = factory(TextBlock::class)->create();
+		$user = User::factory()->create();
+		$textBlock = TextBlock::factory()->create();
 
 		$this->assertFalse($user->can('update', $textBlock));
 
@@ -151,8 +147,8 @@ class TextBlockTest extends TestCase
 
 	public function testDeletePolicy()
 	{
-		$user = factory(User::class)->create();
-		$textBlock = factory(TextBlock::class)->create();
+		$user = User::factory()->create();
+		$textBlock = TextBlock::factory()->create();
 
 		$this->assertFalse($user->can('delete', $textBlock));
 
@@ -165,35 +161,29 @@ class TextBlockTest extends TestCase
 
 	public function testCanViewIfNotAdminAndShowForAll()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_all')
-			->create();
+		$textBlock = TextBlock::factory()->show_for_all()->create();
 
 		$this->assertTrue($admin->can('view', $textBlock));
 	}
 
 	public function testCantViewIfNotAdminAndShowForAdmin()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_admin')
-			->create();
+		$textBlock = TextBlock::factory()->show_for_admin()->create();
 
 		$this->assertFalse($admin->can('view', $textBlock));
 	}
 
 	public function testCanViewIfAdminAndShowForAdmin()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->text_block = true;
 		$admin->push();
 
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_admin')
-			->create();
+		$textBlock = TextBlock::factory()->show_for_admin()->create();
 
 		$this->assertTrue($admin->can('view', $textBlock));
 	}
@@ -212,7 +202,7 @@ class TextBlockTest extends TestCase
 
 	public function testPaidBookPublishingRulesHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('paid_book_publishing_rules'))
@@ -221,7 +211,7 @@ class TextBlockTest extends TestCase
 
 	public function testSalesRulesHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('sales_rules'))
@@ -230,7 +220,7 @@ class TextBlockTest extends TestCase
 
 	public function testPurchaseRulesHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('purchase_rules'))
@@ -269,9 +259,9 @@ class TextBlockTest extends TestCase
 
 	public function testVersionsIndexIsOk()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$textBlock = factory(TextBlock::class)->create();
+		$textBlock = TextBlock::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('text_blocks.versions.index', ['name' => $textBlock->name]))
@@ -280,7 +270,7 @@ class TextBlockTest extends TestCase
 
 	public function testVersionsIndexNotFound()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
 		$this->actingAs($user)
 			->get(route('text_blocks.versions.index', ['name' => Str::random(8)]))
@@ -289,13 +279,9 @@ class TextBlockTest extends TestCase
 
 	public function testShowVersion()
 	{
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_all')
-			->create(['text' => Str::random(10)]);
+		$textBlock = TextBlock::factory()->show_for_all()->create();
 
-		$textBlock2 = factory(TextBlock::class)
-			->states('show_for_all')
-			->create(['name' => $textBlock->name, 'text' => Str::random(10)]);
+		$textBlock2 = TextBlock::factory()->show_for_all()->create();
 
 		$this->get(route('text_blocks.show', ['name' => $textBlock->name, 'id' => $textBlock->id]))
 			->assertOk()

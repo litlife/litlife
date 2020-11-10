@@ -13,12 +13,11 @@ class BookFileCreateTest extends TestCase
 {
 	public function testCreateHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_file_add = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.files.create', ['book' => $book]))
@@ -29,8 +28,7 @@ class BookFileCreateTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		//$file->zip = true;
@@ -53,8 +51,7 @@ class BookFileCreateTest extends TestCase
 	{
 		config(['litlife.disk_for_files' => 'private']);
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		//$file->zip = true;
@@ -82,8 +79,7 @@ class BookFileCreateTest extends TestCase
 		fwrite($tmp, $string);
 		$uri = stream_get_meta_data($tmp)['uri'];
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->open($uri, 'txt');
@@ -105,8 +101,7 @@ class BookFileCreateTest extends TestCase
 
 	public function testCreateOutputZip()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -135,8 +130,7 @@ class BookFileCreateTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;
@@ -165,8 +159,7 @@ class BookFileCreateTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new BookFile;
 		$file->zip = true;

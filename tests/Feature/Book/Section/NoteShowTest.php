@@ -9,9 +9,7 @@ class NoteShowTest extends TestCase
 {
 	public function testNotFound()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
 		$this->get(route('books.notes.show', ['book' => $book, 'note' => rand(100, 1000)]))
 			->assertNotFound();

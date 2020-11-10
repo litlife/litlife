@@ -23,12 +23,11 @@ class BookFileStoreTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->book_file_add = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		UpdateBookPagesCount::dispatch($book);
 
@@ -71,13 +70,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testHttpDontParseWaitedIfSectionsExists()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('accepted', 'with_section')
-			->create();
+		$book = Book::factory()->accepted()->with_section()->create();
 
 		$this->assertTrue($book->parse->isSucceed());
 
@@ -101,12 +96,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testUnsupportFormatError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new UploadedFile(__DIR__ . '/../../images/test.gif', 'test.gif', null, null, true);
 
@@ -120,12 +112,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testBrokenZipError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new UploadedFile(__DIR__ . '/../Books/invalid.zip', 'invalid.zip', null, null, true);
 
@@ -139,12 +128,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testZipUnsupportedFormatInsideError()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new UploadedFile(__DIR__ . '/../Books/test.jpeg.zip', 'test.jpeg.zip', null, null, true);
 
@@ -158,11 +144,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testPrivateBook()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->statusPrivate();
 		$book->save();
 		$book->refresh();
@@ -200,11 +184,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testAcceptedBookIfCanAddWithoutCheck()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->create(['create_user_id' => $user->id]);
 		$book->statusAccepted();
 		$book->save();
 		$book->refresh();
@@ -242,12 +224,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testEmptyHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('books.files.store', compact('book')), ['file' => ''])
@@ -267,11 +246,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testMinSize()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$tmp = tmpfile();
 
@@ -284,16 +261,11 @@ class BookFileStoreTest extends TestCase
 
 	public function testFileCommentRequireIfOtherFileWithSameExtensionExists()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create(['book_id' => $book->id]);
+		$file = BookFile::factory()->odt()->create();
 
 		$this->assertEquals('odt', $file->extension);
 
@@ -317,12 +289,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testZipFb2()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new UploadedFile(__DIR__ . '/../Books/test.fb2.zip', 'test.fb2.zip', null, null, true);
 
@@ -338,12 +307,9 @@ class BookFileStoreTest extends TestCase
 
 	public function testStoreFb3()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$file = new UploadedFile(__DIR__ . '/../Books/test.fb3', 'test.fb3', null, null, true);
 

@@ -10,9 +10,7 @@ class AuthorSetLPStatusForAllBooksTest extends TestCase
 {
 	public function testCommand()
 	{
-		$author = factory(Author::class)
-			->states('with_book')
-			->create();
+		$author = Author::factory()->with_book()->create();
 
 		$book = $author->any_books()->first();
 		$book->is_lp = false;

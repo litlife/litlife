@@ -14,14 +14,13 @@ class SectionDeleteTest extends TestCase
 	{
 		Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create()
+		$book = Book::factory()->with_section()->create(
+			)
 			->fresh();
 
 		$characters_count = $book->characters_count;

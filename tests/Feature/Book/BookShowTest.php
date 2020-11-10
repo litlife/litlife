@@ -17,16 +17,13 @@ class BookShowTest extends TestCase
 {
 	public function testViewBookIfUserBuyThisBook()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->delete();
 
-		$reader = factory(User::class)
-			->create();
+		$reader = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
+		$purchase = UserPurchase::factory()->create([
 				'buyer_user_id' => $reader->id,
 				'purchasable_type' => 'book',
 				'purchasable_id' => $book->id,
@@ -41,12 +38,9 @@ class BookShowTest extends TestCase
 
 	public function testSeeTextRemoveFromSaleHttp()
 	{
-		$book = factory(Book::class)
-			->states('removed_from_sale')
-			->create();
+		$book = Book::factory()->removed_from_sale()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.show', ['book' => $book]))
@@ -56,13 +50,9 @@ class BookShowTest extends TestCase
 
 	public function testSeePrivateAuthorIfBookSentOnReview()
 	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 
-		$author = factory(Author::class)
-			->states('private')
-			->create();
+		$author = Author::factory()->private()->create();
 
 		$book->authors()->sync([$author->id]);
 
@@ -73,7 +63,7 @@ class BookShowTest extends TestCase
 			->assertOk()
 			->assertSeeText($author->name);
 
-		$other_user = factory(User::class)->create();
+		$other_user = User::factory()->create();
 
 		$this->actingAs($other_user)
 			->get(route('books.show', $book))
@@ -83,11 +73,9 @@ class BookShowTest extends TestCase
 
 	public function testShowSentForReviewOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 		$book->status_changed_user_id = $user->id;
 		$book->save();
 
@@ -99,9 +87,7 @@ class BookShowTest extends TestCase
 
 	public function testShowPrivateBook()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$this->get(route('books.show', $book))
 			->assertForbidden()
@@ -110,9 +96,7 @@ class BookShowTest extends TestCase
 
 	public function testShowSentForReviewBook()
 	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 
 		$this->get(route('books.show', $book))
 			->assertOk()
@@ -121,9 +105,7 @@ class BookShowTest extends TestCase
 
 	public function testGuestSeeOnReview()
 	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 
 		$response = $this->get(route('books.show', $book))
 			->assertOk()
@@ -138,12 +120,12 @@ class BookShowTest extends TestCase
 		foreach (BookFile::sentOnReview()->get() as $file)
 			$file->delete();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusSentForReview();
 		$book->save();
 		$book->refresh();
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
+		$book_file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 		$book_file->statusSentForReview();
 		$book_file->save();
 		UpdateBookFilesCount::dispatch($book);
@@ -153,11 +135,11 @@ class BookShowTest extends TestCase
 			->assertOk()
 			->assertDontSeeText($book_file->extension);
 
-		$admin = factory(User::class)->states('with_user_group')->create();
+		$admin = User::factory()->with_user_group()->create();
 		$admin->group->book_file_add_check = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('books.show', $book))
@@ -172,12 +154,9 @@ class BookShowTest extends TestCase
 
 	public function testIfCommentOnReview()
 	{
-		$comment = factory(Comment::class)
-			->states('sent_for_review')
-			->create();
+		$comment = Comment::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($comment->create_user)
 			->get(route('books.show', $comment->commentable->id))
@@ -193,8 +172,7 @@ class BookShowTest extends TestCase
 
 	public function testIsOkIfBookDeleted()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->assertTrue($comment->isBookType());
 
@@ -211,8 +189,7 @@ class BookShowTest extends TestCase
 
 	public function testViewCounterIncrement()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
@@ -272,7 +249,7 @@ class BookShowTest extends TestCase
 
 	public function testInCollection()
 	{
-		$collectedBook = factory(CollectedBook::class)->create();
+		$collectedBook = CollectedBook::factory()->create();
 
 		$book = $collectedBook->book;
 		$collection = $collectedBook->collection;

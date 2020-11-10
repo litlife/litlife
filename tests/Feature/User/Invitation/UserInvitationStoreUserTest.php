@@ -23,8 +23,7 @@ class UserInvitationStoreUserTest extends TestCase
 	{
 		Notification::fake();
 
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$password = $this->getPassword();
 		$ip = $this->faker->ipv4;
@@ -100,8 +99,7 @@ class UserInvitationStoreUserTest extends TestCase
 				'confirm' => false,
 			]);
 
-		$invitation = factory(Invitation::class)
-			->create([
+		$invitation = Invitation::factory()->create([
 				'email' => $email->email,
 			]);
 
@@ -129,8 +127,7 @@ class UserInvitationStoreUserTest extends TestCase
 
 	public function testStoreNewUserDate()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$password = 'Pw1' . $this->getPassword();
 
@@ -164,11 +161,9 @@ class UserInvitationStoreUserTest extends TestCase
 		$nick_uppercase = mb_strtoupper($nick);
 		$nick_lowercase = mb_strtolower($nick);
 
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
-		$user = factory(User::class)
-			->create(['nick' => $nick_uppercase]);
+		$user = User::factory()->create(['nick' => $nick_uppercase]);
 
 		$user_filled_data = factory(User::class)
 			->make(['nick' => $nick_lowercase]);
@@ -185,8 +180,7 @@ class UserInvitationStoreUserTest extends TestCase
 
 	public function testNewUser()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$user_filled_data = factory(User::class)
 			->make();
@@ -215,8 +209,7 @@ class UserInvitationStoreUserTest extends TestCase
 
 	public function testEmptyPassword()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$user_filled_data = factory(User::class)
 			->make();
@@ -237,8 +230,7 @@ class UserInvitationStoreUserTest extends TestCase
 	{
 		config(['auth.max_frequent_password_count' => 1]);
 
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$user_filled_data = factory(User::class)
 			->make();
@@ -262,8 +254,7 @@ class UserInvitationStoreUserTest extends TestCase
 
 	public function testIfInvitationDeleted()
 	{
-		$invitation = factory(Invitation::class)
-			->create();
+		$invitation = Invitation::factory()->create();
 
 		$password = $this->getPassword();
 		$ip = $this->faker->ipv4;
@@ -290,12 +281,9 @@ class UserInvitationStoreUserTest extends TestCase
 
 	public function testIfSameEmailConfirmedExists()
 	{
-		$email = factory(UserEmail::class)
-			->states('confirmed')
-			->create();
+		$email = UserEmail::factory()->confirmed()->create();
 
-		$invitation = factory(Invitation::class)
-			->create(['email' => $email->email]);
+		$invitation = Invitation::factory()->create(['email' => $email->email]);
 
 		$password = $this->getPassword();
 		$ip = $this->faker->ipv4;

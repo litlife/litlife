@@ -10,10 +10,9 @@ class CollectionLikeTest extends TestCase
 {
 	public function testAddLike()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('likes.store', ['type' => 18, 'id' => $collection->id]))

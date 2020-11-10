@@ -14,7 +14,7 @@ class CollectionEditTest extends TestCase
 {
 	public function testEditHttp()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$this->actingAs($collection->create_user)
 			->get(route('collections.edit', $collection))
@@ -23,9 +23,7 @@ class CollectionEditTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -56,7 +54,7 @@ class CollectionEditTest extends TestCase
 
 	public function testUpdateHttpSeeEnumValidationErrors()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -79,7 +77,7 @@ class CollectionEditTest extends TestCase
 
 	public function testUpdateStatusValidationError()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -99,7 +97,7 @@ class CollectionEditTest extends TestCase
 
 	public function testUpdateStatusInValidationError()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -120,9 +118,7 @@ class CollectionEditTest extends TestCase
 
 	public function testWhoCanAddAndCommentMustEqualsMeIfStatusPrivate()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
 		$post = [
 			'title' => Str::random(8) . ' ' . $this->faker->realText(100),
@@ -156,12 +152,9 @@ class CollectionEditTest extends TestCase
 
 	public function testYouCantSelectWhoCanAddMeValueIfOtherUserBooksInCollection()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
-		$collectedBook = factory(CollectedBook::class)
-			->create(['collection_id' => $collection->id]);
+		$collectedBook = CollectedBook::factory()->create(['collection_id' => $collection->id]);
 
 		$post = [
 			'title' => $this->faker->realText(100),
@@ -183,12 +176,9 @@ class CollectionEditTest extends TestCase
 
 	public function testYouCanSelectWhoCanAddMeValueIfNoOtherUserBooksInCollection()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
-		$collectedBook = factory(CollectedBook::class)
-			->create([
+		$collectedBook = CollectedBook::factory()->create([
 				'collection_id' => $collection->id,
 				'create_user_id' => $collection->create_user_id
 			]);
@@ -209,17 +199,13 @@ class CollectionEditTest extends TestCase
 
 	public function testYouCanSelectWhoCanAddMeValueIfBookAttachedByCollectionUser()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
-		$collectedBook = factory(CollectedBook::class)
-			->create([
+		$collectedBook = CollectedBook::factory()->create([
 				'collection_id' => $collection->id
 			]);
 
-		$collectionUser = factory(CollectionUser::class)
-			->create([
+		$collectionUser = CollectionUser::factory()->create([
 				'collection_id' => $collection->id,
 				'user_id' => $collectedBook->create_user_id
 			]);

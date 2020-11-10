@@ -10,8 +10,7 @@ class CollectionIndexTest extends TestCase
 {
 	public function testIndexHttp()
 	{
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -25,8 +24,7 @@ class CollectionIndexTest extends TestCase
 		$title = Str::random(5);
 		$description = Str::random(5);
 
-		$collection = factory(Collection::class)
-			->create([
+		$collection = Collection::factory()->create([
 				'title' => $title,
 				'description' => $description
 			]);

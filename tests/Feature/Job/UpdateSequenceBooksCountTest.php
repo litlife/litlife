@@ -12,13 +12,9 @@ class UpdateSequenceBooksCountTest extends TestCase
 {
 	public function testCountAcceptedBooksIfSequenceAccepted()
 	{
-		$sequence = factory(Sequence::class)
-			->states('accepted')
-			->create();
+		$sequence = Sequence::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
 		$sequence->books()->sync($book->id);
 
@@ -31,16 +27,11 @@ class UpdateSequenceBooksCountTest extends TestCase
 
 	public function testCountPrivateIfBookPrivate()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$sequence = factory(Sequence::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$sequence = Sequence::factory()->private()->create();
 
-		$book = factory(Book::class)
-			->states('private')
-			->create(['create_user_id' => $user->id]);
+		$book = Book::factory()->private()->create();
 
 		$sequence->books()->sync($book->id);
 

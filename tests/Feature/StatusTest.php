@@ -25,13 +25,11 @@ class StatusTest extends TestCase
 
 	public function testChangeStatus()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->be($user);
 
-		$book = factory(Book::class)
-			->create([
+		$book = Book::factory()->create([
 				'status' => '0',
 				'status_changed_at' => null,
 				'status_changed_user_id' => null
@@ -50,8 +48,7 @@ class StatusTest extends TestCase
 
 	public function testAccepted()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->statusAccepted();
 
@@ -62,8 +59,7 @@ class StatusTest extends TestCase
 
 	public function testSentForReview()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->statusSentForReview();
 
@@ -74,8 +70,7 @@ class StatusTest extends TestCase
 
 	public function testPrivate()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->statusPrivate();
 
@@ -86,8 +81,7 @@ class StatusTest extends TestCase
 
 	public function testRejected()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->statusReject();
 
@@ -98,8 +92,7 @@ class StatusTest extends TestCase
 
 	public function testReviewStarts()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$book->statusReviewStarts();
 
@@ -110,7 +103,7 @@ class StatusTest extends TestCase
 
 	public function testScopeWhereStatus()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
@@ -120,7 +113,7 @@ class StatusTest extends TestCase
 
 	public function testScopeWhereStatusIn()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
@@ -130,7 +123,7 @@ class StatusTest extends TestCase
 
 	public function testScopeWhereStatusNot()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
@@ -140,7 +133,7 @@ class StatusTest extends TestCase
 
 	public function testScopeAccepted()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->save();
 
@@ -150,7 +143,7 @@ class StatusTest extends TestCase
 
 	public function testScopeSentOnReview()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusSentForReview();
 		$book->save();
 
@@ -166,7 +159,7 @@ class StatusTest extends TestCase
 
 	public function testScopePrivate()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusPrivate();
 		$book->save();
 
@@ -177,7 +170,7 @@ class StatusTest extends TestCase
 
 	public function testScopeUnaccepted()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusPrivate();
 		$book->save();
 
@@ -201,7 +194,7 @@ class StatusTest extends TestCase
 
 	public function testScopeAcceptedAndSentForReview()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusPrivate();
 		$book->save();
 
@@ -225,11 +218,11 @@ class StatusTest extends TestCase
 
 	public function testScopeAcceptedOrBelongsToUser()
 	{
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 		$book->statusPrivate();
 		$book->save();
 
-		$book2 = factory(Book::class)->states('with_create_user')->create();
+		$book2 = Book::factory()->with_create_user()->create();
 		$book2->statusAccepted();
 		$book2->save();
 
@@ -242,11 +235,11 @@ class StatusTest extends TestCase
 
 	public function testScopeAcceptedOrBelongsToAuthUser()
 	{
-		$book = factory(Book::class)->states('with_create_user')->create();
+		$book = Book::factory()->with_create_user()->create();
 		$book->statusPrivate();
 		$book->save();
 
-		$book2 = factory(Book::class)->states('with_create_user')->create();
+		$book2 = Book::factory()->with_create_user()->create();
 		$book2->statusAccepted();
 		$book2->save();
 

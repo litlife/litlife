@@ -11,8 +11,7 @@ class CollectionTest extends TestCase
 {
 	public function testShareValue()
 	{
-		$collected_book = factory(CollectedBook::class)
-			->create();
+		$collected_book = CollectedBook::factory()->create();
 
 		$collection = $collected_book->collection;
 		$book = $collected_book->book;
@@ -28,10 +27,9 @@ class CollectionTest extends TestCase
 
 	public function testCreateComplainReportHttpIsOk()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('complains.report', ['type' => '18', 'id' => $collection->id]))

@@ -10,7 +10,7 @@ class RefreshAuthorsDailyRatingTest extends TestCase
 {
 	public function testCommand()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 		$author->averageRatingForPeriod->day_rating = 1;
 		$author->averageRatingForPeriod->all_rating = 0;
 		$author->averageRatingForPeriod->save();

@@ -14,9 +14,7 @@ class SettingTest extends TestCase
 		$word = uniqid();
 		$word2 = '       ' . uniqid() . ' ' . uniqid();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('settings.save'), [
@@ -36,9 +34,7 @@ class SettingTest extends TestCase
 		$word = uniqid();
 		$word2 = uniqid();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('settings.save'), [
@@ -57,9 +53,7 @@ class SettingTest extends TestCase
 		$word = Str::random(8);
 		$word2 = '       ' . Str::random(8) . ' ' . Str::random(8);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('settings.save'), [

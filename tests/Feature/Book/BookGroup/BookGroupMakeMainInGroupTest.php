@@ -15,9 +15,7 @@ class BookGroupMakeMainInGroupTest extends TestCase
 {
 	public function testMakeMainInGroup()
 	{
-		$book = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$book = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $book->groupedBooks()->first();
 
@@ -39,14 +37,11 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testMakeMainInGroupWithStatus()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create(['main_book_id' => $mainBook->id]);
+		$minorBook = Book::factory()->create(['main_book_id' => $mainBook->id]);
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $minorBook->id
 			]);
@@ -61,14 +56,11 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testMakeMainInGroupWithBookVote()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create(['main_book_id' => $mainBook->id]);
+		$minorBook = Book::factory()->create(['main_book_id' => $mainBook->id]);
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $mainBook->id,
 				'origin_book_id' => $minorBook->id,
 			]);
@@ -83,9 +75,7 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testIsMainInGroup()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -98,9 +88,7 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testMainGroupRelation()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -109,21 +97,17 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testBookWithStatusAndSameUser()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$status = factory(BookStatus::class)
-			->create(['status' => 'readed',
+		$status = BookStatus::factory()->create(['status' => 'readed',
 				'book_id' => $mainBook->id,
 				'user_id' => $user->id]);
 
-		$status2 = factory(BookStatus::class)
-			->create(['status' => 'read_later',
+		$status2 = BookStatus::factory()->create(['status' => 'read_later',
 				'book_id' => $minorBook->id,
 				'user_id' => $user->id]);
 
@@ -138,22 +122,18 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testAttachBookWithVoteAndSameUser()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $mainBook->id,
 				'create_user_id' => $user->id
 			]);
 
-		$vote2 = factory(BookVote::class)
-			->create([
+		$vote2 = BookVote::factory()->create([
 				'book_id' => $minorBook->id,
 				'create_user_id' => $user->id
 			]);
@@ -169,11 +149,9 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testTwoMinorBooks()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_two_minor_books')
-			->create();
+		$mainBook = Book::factory()->with_two_minor_books()->create();
 
 		$minorBooks = $mainBook->groupedBooks()->get();
 		$minorBook = $minorBooks[0];
@@ -201,13 +179,11 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testMakeMainInGroupHttp()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->connect_books = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -225,13 +201,11 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testChangeMainInGroupHttp()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->connect_books = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_two_minor_books')
-			->create();
+		$mainBook = Book::factory()->with_two_minor_books()->create();
 
 		$minorBooks = $mainBook->groupedBooks()->get();
 		$minorBook = $minorBooks[0];
@@ -253,19 +227,13 @@ class BookGroupMakeMainInGroupTest extends TestCase
 
 	public function testBookWithTwoComments()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $mainBook->id]);
+		$comment = Comment::factory()->book()->create();
 
-		$comment2 = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $minorBook->id]);
+		$comment2 = Comment::factory()->book()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 		BookMakeMainInGroupJob::dispatch($minorBook);

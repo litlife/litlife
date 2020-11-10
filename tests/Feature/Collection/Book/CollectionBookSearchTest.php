@@ -12,12 +12,9 @@ class CollectionBookSearchTest extends TestCase
 {
 	public function testSearchById()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+		$collection = Collection::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -31,21 +28,19 @@ class CollectionBookSearchTest extends TestCase
 
 	public function testSearchByIsbn()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
 		$title = uniqid();
 		$isbn = rand(100, 999) . '-' . rand(1, 9) . '-' . rand(100, 999) . '-' . rand(10000, 99999) . '-' . rand(1, 9);
 
-		$collected = factory(CollectedBook::class)
-			->create();
+		$collected = CollectedBook::factory()->create();
 
 		$book = $collected->book;
 		$book->title = $title;
 		$book->pi_isbn = $isbn;
 		$book->save();
 
-		$collection = factory(Collection::class)
-			->create();
+		$collection = Collection::factory()->create();
 
 		$this->actingAs($user)
 			->ajax()
@@ -57,13 +52,12 @@ class CollectionBookSearchTest extends TestCase
 
 	public function testSearchByIsbnSeeBookInCollection()
 	{
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
 		$title = uniqid();
 		$isbn = rand(100, 999) . '-' . rand(1, 9) . '-' . rand(100, 999) . '-' . rand(10000, 99999) . '-' . rand(1, 9);
 
-		$collected = factory(CollectedBook::class)
-			->create();
+		$collected = CollectedBook::factory()->create();
 
 		$collection = $collected->collection;
 		$book = $collected->book;

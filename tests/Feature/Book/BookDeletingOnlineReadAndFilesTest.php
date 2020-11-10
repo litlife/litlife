@@ -10,7 +10,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 {
 	public function testDeleteBookFile()
 	{
-		$book = factory(Book::class)->states('with_accepted_file')->create();
+		$book = Book::factory()->with_accepted_file()->create();
 
 		$file = $book->files()->first();
 
@@ -27,7 +27,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testDeleteSections()
 	{
-		$book = factory(Book::class)->states('with_section')->create();
+		$book = Book::factory()->with_section()->create();
 
 		$book->refresh();
 
@@ -48,7 +48,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testDeleteNotes()
 	{
-		$book = factory(Book::class)->states('with_note')->create();
+		$book = Book::factory()->with_note()->create();
 
 		$note = $book->sections()->notes()->first();
 
@@ -65,7 +65,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testDeleteAttachmentsButNotCover()
 	{
-		$book = factory(Book::class)->states('with_cover', 'with_attachment')->create();
+		$book = Book::factory()->with_cover()->with_attachment()->create();
 
 		$cover = $book->cover;
 		$attachment = $book->attachments()->where('id', '!=', $cover->id)->first();
@@ -87,9 +87,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testDisableAccess()
 	{
-		$book = factory(Book::class)
-			->states('with_read_and_download_access')
-			->create();
+		$book = Book::factory()->with_read_and_download_access()->create();
 
 		$this->assertTrue($book->isReadAccess());
 		$this->assertTrue($book->isDownloadAccess());
@@ -105,10 +103,9 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 
 		$section = $book->sections()->first();
 
@@ -131,9 +128,9 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testDeletingOnlineReadAndFilesPolicy()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 
 		$this->assertFalse($user->can('deletingOnlineReadAndFiles', $book));
 
@@ -146,7 +143,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testToNewOnlineReadFormat()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->online_read_new_format = false;
 		$book->save();
 
@@ -159,7 +156,7 @@ class BookDeletingOnlineReadAndFilesTest extends TestCase
 
 	public function testDontDeleteAnnotation()
 	{
-		$book = factory(Book::class)->states('with_annotation')->create();
+		$book = Book::factory()->with_annotation()->create();
 
 		$annotation = $book->annotation;
 

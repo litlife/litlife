@@ -13,7 +13,7 @@ class UserShowTest extends TestCase
 {
 	public function testProfile()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$this->get(route('profile', compact('user')))
 			->assertOk();
@@ -37,10 +37,9 @@ class UserShowTest extends TestCase
 	 */
 	public function testShowDeletedProfileWithBlogMessagesFixed()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)->create();
+		$blog = Blog::factory()->create();
 		$blog->create_user_id = $user->id;
 		$blog->blog_user_id = $user->id;
 		$blog->save();
@@ -55,9 +54,9 @@ class UserShowTest extends TestCase
 
 	public function testFixedBlogPostLikeAuth()
 	{
-		$blog = factory(Blog::class)->states('fixed')->create();
+		$blog = Blog::factory()->fixed()->create();
 
-		$like = factory(Like::class)->create([
+		$like = Like::factory()->create([
 			'likeable_type' => 'blog',
 			'likeable_id' => $blog->id
 		]);
@@ -85,9 +84,7 @@ class UserShowTest extends TestCase
 
 	public function testSeeEmailIfShowInProfile()
 	{
-		$email = factory(UserEmail::class)
-			->states('show_in_profile')
-			->create();
+		$email = UserEmail::factory()->show_in_profile()->create();
 
 		$user = $email->user;
 
@@ -100,9 +97,7 @@ class UserShowTest extends TestCase
 
 	public function testDontSeeEmailIfDontShowInProfile()
 	{
-		$email = factory(UserEmail::class)
-			->states('dont_show_in_profile')
-			->create();
+		$email = UserEmail::factory()->dont_show_in_profile()->create();
 
 		$user = $email->user;
 

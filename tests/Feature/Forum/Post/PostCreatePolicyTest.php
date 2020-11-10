@@ -12,69 +12,62 @@ class PostCreatePolicyTest extends TestCase
 {
 	public function testCanIfHasPermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_post = true;
 		$user->push();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$this->assertTrue($user->can('create_post', $topic));
 	}
 
 	public function testCantIfDoesntHavePermission()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_post = false;
 		$user->push();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$this->assertFalse($user->can('create_post', $topic));
 	}
 
 	public function testCantIfTopicDeleted()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 
 		$topic->delete();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('create_post', $topic));
 	}
 
 	public function testCantReplyIfOnReview()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$post = factory(Post::class)
-			->states('sent_for_review')
-			->create();
+		$post = Post::factory()->sent_for_review()->create();
 
 		$this->assertFalse($user->can('reply', $post));
 	}
 
 	public function testCanReplyToOtherPost()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
 		$this->assertTrue($user->can('reply', $post));
 	}
 
 	public function testCantReplyToSelfPost()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->create_user()->associate($user);
 		$post->push();
 
@@ -83,9 +76,7 @@ class PostCreatePolicyTest extends TestCase
 
 	public function testCanIfForumPrivateAndUserInList()
 	{
-		$forum = factory(Forum::class)
-			->states('private', 'with_user_access', 'with_topic')
-			->create();
+		$forum = Forum::factory()->private()->with_user_access()->with_topic()->create();
 
 		$topic = $forum->topics()->first();
 
@@ -98,13 +89,11 @@ class PostCreatePolicyTest extends TestCase
 
 	public function testCantIfForumPrivateAndUserNotInList()
 	{
-		$forum = factory(Forum::class)
-			->states('private', 'with_topic')
-			->create();
+		$forum = Forum::factory()->private()->with_topic()->create();
 
 		$topic = $forum->topics()->first();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_post = true;
 		$user->push();
 
@@ -115,14 +104,14 @@ class PostCreatePolicyTest extends TestCase
 	{
 		// create_post
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_post = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->push();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->closed = false;
 		$topic->push();
 
@@ -131,15 +120,15 @@ class PostCreatePolicyTest extends TestCase
 
 		//
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_post = true;
 		$admin->push();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_forum_post = true;
 		$user->push();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 		$topic->closed = true;
 		$topic->push();
 
@@ -148,15 +137,13 @@ class PostCreatePolicyTest extends TestCase
 
 		// create
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_topic = true;
 		$admin->push();
 
-		$user = factory(User::class)
-			->states('with_user_group')
-			->create();
+		$user = User::factory()->with_user_group()->create();
 
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$this->assertTrue($admin->can('create', $topic));
 		$this->assertFalse($user->can('create', $topic));

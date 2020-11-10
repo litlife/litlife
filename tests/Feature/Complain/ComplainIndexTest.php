@@ -14,15 +14,11 @@ class ComplainIndexTest extends TestCase
 {
 	public function testIfCommentDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
-		$complain = factory(Complain::class)
-			->create([
+		$complain = Complain::factory()->create([
 				'complainable_type' => 'comment',
 				'complainable_id' => $comment->id
 			]);
@@ -51,13 +47,9 @@ class ComplainIndexTest extends TestCase
 
 	public function testIfPostDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('post')
-			->create();
+		$complain = Complain::factory()->post()->create();
 
 		$post = $complain->complainable;
 
@@ -85,13 +77,9 @@ class ComplainIndexTest extends TestCase
 
 	public function testIfWallPostDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('wall_post')
-			->create();
+		$complain = Complain::factory()->wall_post()->create();
 
 		$wall_post = $complain->complainable;
 
@@ -119,13 +107,9 @@ class ComplainIndexTest extends TestCase
 
 	public function testComplainForBook()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('book')
-			->create();
+		$complain = Complain::factory()->book()->create();
 
 		$this->assertInstanceOf(Book::class, $complain->complainable);
 
@@ -143,13 +127,9 @@ class ComplainIndexTest extends TestCase
 
 	public function testIfWallPostCreatorIsDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('wall_post')
-			->create();
+		$complain = Complain::factory()->wall_post()->create();
 
 		$this->assertInstanceOf(Blog::class, $complain->complainable);
 
@@ -164,13 +144,9 @@ class ComplainIndexTest extends TestCase
 
 	public function testIfWallPostCreateUserIsDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('wall_post')
-			->create();
+		$complain = Complain::factory()->wall_post()->create();
 
 		$this->assertInstanceOf(Blog::class, $complain->complainable);
 

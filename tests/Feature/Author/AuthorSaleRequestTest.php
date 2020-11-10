@@ -26,13 +26,11 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testRequestFormHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_editor_request = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 
@@ -43,13 +41,11 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testRequestStoreHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_editor_request = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_complete_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_complete_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->any_books()->first();
@@ -103,9 +99,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testUserCanSaleRequestPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -116,9 +110,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testUserCantSaleRequestIfManagerIsNotAcceptedPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$manager->statusSentForReview();
@@ -140,9 +132,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testUserCantSaleRequestIfManagerIsEditorPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$manager->character = 'editor';
@@ -157,15 +147,12 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testUserCantRequestIfRequestAlreadyExistsPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->create(
+		$saleRequest = AuthorSaleRequest::factory()->create(
 				[
 					'author_id' => $author->id,
 					'create_user_id' => $user->id
@@ -196,15 +183,12 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testUserCanRequestIfRequestAlreadyExistsAndAuthorCantSalePolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->create(
+		$saleRequest = AuthorSaleRequest::factory()->create(
 				[
 					'author_id' => $author->id,
 					'create_user_id' => $user->id
@@ -224,15 +208,12 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testUserCantRequestIfRequestAlreadyExistsAndAuthorCanSalePolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->create(
+		$saleRequest = AuthorSaleRequest::factory()->create(
 				[
 					'author_id' => $author->id,
 					'create_user_id' => $user->id
@@ -258,17 +239,13 @@ class AuthorSaleRequestTest extends TestCase
 
 		$this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('accepted')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->accepted()->create();
 
 		AuthorSaleRequest::flushCachedOnModerationCount();
 
 		$this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('on_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
 
 		AuthorSaleRequest::flushCachedOnModerationCount();
 
@@ -277,9 +254,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testRelation()
 	{
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('accepted')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->accepted()->create();
 
 		$this->assertEquals($saleRequest->manager_id, $saleRequest->manager->id);
 		$this->assertEquals($saleRequest->author_id, $saleRequest->author->id);
@@ -290,13 +265,11 @@ class AuthorSaleRequestTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_sale_request_review = true;
 		$admin->push();
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('starts_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
 
 		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
@@ -345,15 +318,13 @@ class AuthorSaleRequestTest extends TestCase
 		Notification::fake();
 		Notification::assertNothingSent();
 
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_sale_request_review = true;
 		$admin->push();
 
 		$review_comment = $this->faker->realText(100);
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('starts_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
 
 		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
@@ -404,13 +375,11 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testStartReviewHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_sale_request_review = true;
 		$admin->push();
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('on_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
 
 		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
@@ -429,13 +398,11 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testStopReviewHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_sale_request_review = true;
 		$admin->push();
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('starts_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
 		$saleRequest->statusReviewStarts();
 		$saleRequest->status_changed_user_id = $admin->id;
 		$saleRequest->save();
@@ -459,9 +426,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCantSaleRequestIfAnotherAuthorWithSaleRequestExists()
 	{
-		$author = factory(Author::class)
-			->states('with_two_managers_and_one_can_sell')
-			->create();
+		$author = Author::factory()->with_two_managers_and_one_can_sell()->create();
 
 		$user = $author->managers->where('can_sale', false)->first()->user;
 
@@ -470,9 +435,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testViewForUserThatCreateRequest()
 	{
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('on_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
 
 		$this->assertTrue($saleRequest->create_user->can('show', $saleRequest));
 	}
@@ -481,13 +444,9 @@ class AuthorSaleRequestTest extends TestCase
 	{
 		config(['litlife.minimum_days_to_submit_a_new_request_for_author_sale' => 6]);
 
-		$author = factory(Author::class)
-			->states('with_complete_book')
-			->create();
+		$author = Author::factory()->with_complete_book()->create();
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('rejected')
-			->create(['author_id' => $author->id]);
+		$saleRequest = AuthorSaleRequest::factory()->rejected()->create();
 
 		$user = $saleRequest->manager->user;
 		$manager = $saleRequest->manager;
@@ -544,9 +503,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testSentAnotherRequestIfOnReview()
 	{
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('on_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
 
 		$user = $saleRequest->manager->user;
 		$manager = $saleRequest->manager;
@@ -557,9 +514,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testSentAnotherRequestIfStartsReview()
 	{
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('starts_review')
-			->create();
+		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
 
 		$user = $saleRequest->manager->user;
 		$manager = $saleRequest->manager;
@@ -570,13 +525,11 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCantSentRequestIfNoCompleteBookExists()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_editor_request = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+		$author = Author::factory()->with_author_manager()->create();
 
 		$manager = $author->managers()->first();
 		$text = $this->faker->realText(100);
@@ -604,13 +557,11 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCanSendRequestIfBookClosedHttp()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->author_editor_request = true;
 		$admin->push();
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_complete_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_complete_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -635,13 +586,9 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCantSendRequestOtherUser()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_complete_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_complete_book()->create();
 
-		$author2 = factory(Author::class)
-			->states('with_author_manager', 'with_complete_book')
-			->create();
+		$author2 = Author::factory()->with_author_manager()->with_complete_book()->create();
 
 		$manager = $author2->managers->first();
 		$book = $author2->books->first();
@@ -650,8 +597,7 @@ class AuthorSaleRequestTest extends TestCase
 		$this->assertFalse($user->can('sales_request', $author));
 		$this->assertTrue($user->can('sales_request', $author2));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('sales_request', $author));
 		$this->assertFalse($user->can('sales_request', $author2));
@@ -659,12 +605,9 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testViewSaleRequestsHttp()
 	{
-		$admin = factory(User::class)
-			->states('administrator')
-			->create();
+		$admin = User::factory()->administrator()->create();
 
-		$sale_request = factory(AuthorSaleRequest::class)
-			->create();
+		$sale_request = AuthorSaleRequest::factory()->create();
 
 		$this->actingAs($admin)
 			->get(route('authors.sales_requests.index'))
@@ -679,26 +622,20 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCantDeleteAuthorIfAuthorCanSale()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
 		$seller = $manager->user;
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->assertFalse($admin->can('delete', $author));
 	}
 
 	public function testSentNewSaleRequestIfOtherAcceptedExists()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -723,9 +660,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCantSentRequestIfNotEnoughBooksCharactersCount()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -752,9 +687,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testCanSentRequestIfEnoughBooksCharactersCount()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -788,9 +721,7 @@ class AuthorSaleRequestTest extends TestCase
 
 	public function testSeeYourAuthorPageMustHaveAtLeastOneBookAddedByYouError()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();

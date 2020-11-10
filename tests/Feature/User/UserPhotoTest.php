@@ -19,8 +19,7 @@ class UserPhotoTest extends TestCase
 	 */
 	public function testIndexHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('users.photos.index', ['user' => $user]))
@@ -29,7 +28,7 @@ class UserPhotoTest extends TestCase
 
 	public function testEditHttp()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -40,8 +39,7 @@ class UserPhotoTest extends TestCase
 
 	public function testUploadAvatar()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
@@ -75,7 +73,7 @@ class UserPhotoTest extends TestCase
 
 	public function testUploadEmpty()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -110,9 +108,7 @@ class UserPhotoTest extends TestCase
 
 	public function testDeleteHttp()
 	{
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create()->fresh();
+		$user = User::factory()->with_avatar()->create();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -141,7 +137,7 @@ class UserPhotoTest extends TestCase
 
 	public function testOpenImage()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$jpeg_image_path = __DIR__ . '/../images/test.jpeg';
 
@@ -164,7 +160,7 @@ class UserPhotoTest extends TestCase
 		config(['litlife.max_user_photo_width' => 200]);
 		config(['litlife.max_user_photo_height' => 100]);
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$image = new Imagick();
 		$image->newImage(600, 300, new ImagickPixel('red'));
@@ -187,7 +183,7 @@ class UserPhotoTest extends TestCase
 		config(['litlife.max_user_photo_width' => 200]);
 		config(['litlife.max_user_photo_height' => 100]);
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$image = new Imagick();
 		$image->newImage(300, 600, new ImagickPixel('red'));
@@ -210,7 +206,7 @@ class UserPhotoTest extends TestCase
 		config(['litlife.max_user_photo_width' => 1000]);
 		config(['litlife.max_user_photo_height' => 1000]);
 
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 
 		$image = new Imagick();
 		$image->newImage(300, 300, new ImagickPixel('red'));
@@ -230,7 +226,7 @@ class UserPhotoTest extends TestCase
 
 	public function testCreatePhotoPolicyIfCantEditProfile()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_profile = false;
 		$user->push();
 
@@ -239,7 +235,7 @@ class UserPhotoTest extends TestCase
 
 	public function testCreatePhotoPolicyIfCanEditProfile()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -248,12 +244,12 @@ class UserPhotoTest extends TestCase
 
 	public function testCreatePhotoPolicyForOtherUser()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_profile = true;
 		$user->group->edit_other_profile = false;
 		$user->push();
 
-		$other_user = factory(User::class)->create();
+		$other_user = User::factory()->create();
 
 		$this->assertTrue($user->can('create_photo', $user));
 		$this->assertFalse($user->can('create_photo', $other_user));
@@ -267,9 +263,7 @@ class UserPhotoTest extends TestCase
 
 	public function testRemovePhotoPolicyIfCantEditProfile()
 	{
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create();
+		$user = User::factory()->with_avatar()->create();
 		$user->group->edit_profile = false;
 		$user->push();
 
@@ -278,9 +272,7 @@ class UserPhotoTest extends TestCase
 
 	public function testRemovePhotoPolicyIfCanEditProfile()
 	{
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create();
+		$user = User::factory()->with_avatar()->create();
 		$user->group->edit_profile = true;
 		$user->push();
 
@@ -289,12 +281,12 @@ class UserPhotoTest extends TestCase
 
 	public function testRemovePhotoPolicyForOtherUser()
 	{
-		$user = factory(User::class)->states('with_avatar')->create();
+		$user = User::factory()->with_avatar()->create();
 		$user->group->edit_profile = true;
 		$user->group->edit_other_profile = false;
 		$user->push();
 
-		$other_user = factory(User::class)->states('with_avatar')->create();
+		$other_user = User::factory()->with_avatar()->create();
 
 		$this->assertTrue($user->can('remove_photo', $user));
 		$this->assertFalse($user->can('remove_photo', $other_user));
@@ -308,7 +300,7 @@ class UserPhotoTest extends TestCase
 
 	public function testRemovePhotoPolicyIfAvatarNotExists()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_profile = true;
 		$user->group->edit_other_profile = true;
 		$user->push();
@@ -320,8 +312,7 @@ class UserPhotoTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$file = UploadedFile::fake()->image('avatar.jpg', 500, 500);
@@ -355,7 +346,7 @@ class UserPhotoTest extends TestCase
 
 	public function testConvertIfNotSupportedImageFormat()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$image = new Imagick();
 		$image->newImage(300, 300, new ImagickPixel('red'));
@@ -377,9 +368,7 @@ class UserPhotoTest extends TestCase
 
 	public function testShowHttp()
 	{
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create();
+		$user = User::factory()->with_avatar()->create();
 
 		$this->actingAs($user)
 			->get(route('users.avatar.show', ['user' => $user]))
@@ -390,9 +379,7 @@ class UserPhotoTest extends TestCase
 
 	public function testShowIfUserNotFound()
 	{
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create();
+		$user = User::factory()->with_avatar()->create();
 
 		$user->avatar->delete();
 
@@ -403,9 +390,7 @@ class UserPhotoTest extends TestCase
 
 	public function testShowIfPhotoNotFound()
 	{
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create();
+		$user = User::factory()->with_avatar()->create();
 
 		$user->delete();
 

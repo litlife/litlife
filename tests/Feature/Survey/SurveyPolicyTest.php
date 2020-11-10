@@ -11,7 +11,7 @@ class SurveyPolicyTest extends TestCase
 {
 	public function testCantIfNotPermissions()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_user_surveys = false;
 		$user->push();
 
@@ -20,7 +20,7 @@ class SurveyPolicyTest extends TestCase
 
 	public function testCanIfHasPermissions()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->view_user_surveys = true;
 		$user->push();
 
@@ -29,7 +29,7 @@ class SurveyPolicyTest extends TestCase
 
 	public function testCanTakeSurveyIfAlreadyPass()
 	{
-		$survey = factory(UserSurvey::class)->create();
+		$survey = UserSurvey::factory()->create();
 
 		$user = $survey->create_user;
 
@@ -38,7 +38,7 @@ class SurveyPolicyTest extends TestCase
 
 	public function testCanCompleteTheSurveyIfAWeekHasPassedSinceTheRegistrationDate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(now()->addWeek()->addMinute());
 
@@ -47,7 +47,7 @@ class SurveyPolicyTest extends TestCase
 
 	public function testYouCannotCompleteTheSurveyIfAWeekHasNotPassedSinceTheRegistrationDate()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(now()->addWeek()->subHour());
 

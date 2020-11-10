@@ -19,14 +19,13 @@ class LikeTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->like_click = true;
 			$user->push();
 
-			$post = factory(Post::class)->create();
+			$post = Post::factory()->create();
 			/*
-						$like = factory(Like::class)
-							->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
+						$like = Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post->id]);
 			*/
 			$this->assertTrue($user->can('create', Like::class));
 
@@ -61,14 +60,13 @@ class LikeTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->like_click = true;
 			$user->push();
 
-			$post = factory(Post::class)->create();
+			$post = Post::factory()->create();
 
-			$like = factory(Like::class)
-				->create([
+			$like = Like::factory()->create([
 					'likeable_type' => 'post',
 					'likeable_id' => $post->id,
 					'create_user_id' => $user->id
@@ -93,14 +91,13 @@ class LikeTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->like_click = true;
 			$user->push();
 
-			$post = factory(Post::class)->create();
+			$post = Post::factory()->create();
 
-			$like = factory(Like::class)
-				->create([
+			$like = Like::factory()->create([
 					'likeable_type' => 'post',
 					'likeable_id' => $post->id,
 					'create_user_id' => $user->id
@@ -136,14 +133,13 @@ class LikeTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->like_click = true;
 			$user->push();
 
-			$post = factory(Post::class)->create();
+			$post = Post::factory()->create();
 
-			$like = factory(Like::class)
-				->create([
+			$like = Like::factory()->create([
 					'likeable_type' => 'post',
 					'likeable_id' => $post->id,
 					'create_user_id' => $user->id
@@ -179,7 +175,7 @@ class LikeTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$post = factory(Post::class)->create();
+			$post = Post::factory()->create();
 
 			$browser->visit(route('topics.show', $post->topic))
 				->with('.item[data-id="' . $post->id . '"]', function ($item) {

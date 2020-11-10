@@ -10,12 +10,9 @@ class ComplainStartReviewTest extends TestCase
 {
 	public function testStartReviewHttp()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$count = Complain::getCachedOnModerationCount();
 

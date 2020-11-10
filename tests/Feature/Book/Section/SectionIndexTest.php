@@ -11,16 +11,14 @@ class SectionIndexTest extends TestCase
 {
 	public function testIndexIfBookPrivate()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusPrivate();
 		$book->save();
 		$book->refresh();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->get(route('books.sections.index', ['book' => $book]))
 			->assertForbidden();
@@ -41,16 +39,14 @@ class SectionIndexTest extends TestCase
 
 	public function testIndexIfBookAccept()
 	{
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 		$book->statusAccepted();
 		$book->save();
 		$book->refresh();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->get(route('books.sections.index', ['book' => $book]))
 			->assertOk()
@@ -64,9 +60,7 @@ class SectionIndexTest extends TestCase
 
 	public function testSectionIndexPurchaseVariableInView()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale_purchased')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale_purchased()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
@@ -85,7 +79,7 @@ class SectionIndexTest extends TestCase
 			->assertOk()
 			->assertViewHas(['purchase' => null]);
 
-		$user2 = factory(User::class)->create();
+		$user2 = User::factory()->create();
 
 		$this->actingAs($user2)
 			->get(route('books.sections.index', $book))

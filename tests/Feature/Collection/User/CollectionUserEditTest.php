@@ -10,8 +10,7 @@ class CollectionUserEditTest extends TestCase
 {
 	public function testEditHttp()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -23,8 +22,7 @@ class CollectionUserEditTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create();
+		$collectionUser = CollectionUser::factory()->create();
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

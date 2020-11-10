@@ -16,8 +16,7 @@ class UserSettingTest extends TestCase
 	 */
 	public function testSiteApperanceHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.settings.site_appearance', $user))
@@ -82,8 +81,7 @@ class UserSettingTest extends TestCase
 
 	public function testOtherHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 		$user->setting->login_with_id = false;
 		$user->push();
 
@@ -123,14 +121,11 @@ class UserSettingTest extends TestCase
 
 	public function testGenreBlacklistHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$genre = factory(Genre::class)
-			->create();
+		$genre = Genre::factory()->create();
 
-		$genre2 = factory(Genre::class)
-			->create();
+		$genre2 = Genre::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('genre_blacklist', $user))
@@ -168,8 +163,7 @@ class UserSettingTest extends TestCase
 
 	public function testNotifications()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.settings.notifications', $user))
@@ -214,8 +208,7 @@ class UserSettingTest extends TestCase
 
 	public function testAllowance()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('allowance', $user))
@@ -252,8 +245,7 @@ class UserSettingTest extends TestCase
 
 	public function testLoginWithIdSetting()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$user->setting->loginWithIdEnable();
 		$user->setting->save();

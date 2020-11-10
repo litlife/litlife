@@ -10,11 +10,9 @@ class AttachmentDeleteTest extends TestCase
 {
 	public function testDeleteHttp()
 	{
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_cover', 'with_section')
-			->create();
+		$book = Book::factory()->with_cover()->with_section()->create();
 
 		$cover = $book->cover;
 
@@ -38,11 +36,9 @@ class AttachmentDeleteTest extends TestCase
 
 	public function testRestoreHttp()
 	{
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$book = factory(Book::class)
-			->states('with_cover', 'with_section')
-			->create();
+		$book = Book::factory()->with_cover()->with_section()->create();
 
 		$cover = $book->cover;
 

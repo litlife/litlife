@@ -24,7 +24,7 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->add_book = true;
 			$user->push();
 
@@ -47,13 +47,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser, $other_user_browser) {
 
-			$book = factory(Book::class)
-				->states('private', 'with_create_user', 'with_writer')
-				->create();
+			$book = Book::factory()->private()->with_create_user()->with_writer()->create();
 
 			$book = Book::any()->findOrFail($book->id);
 
-			$other_user = factory(User::class)->create();
+			$other_user = User::factory()->create();
 
 			$this->assertNotNull($book->create_user);
 			$this->assertEquals($book->writers()->any()->get()->first()->create_user->id, $book->create_user->id);
@@ -75,11 +73,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$book = factory(Book::class)
-				->states('accepted', 'with_create_user')
-				->create();
+			$book = Book::factory()->accepted()->with_create_user()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->vote_for_book = true;
 			$user->push();
 
@@ -111,11 +107,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$book = factory(Book::class)
-				->states('accepted', 'with_create_user')
-				->create();
+			$book = Book::factory()->accepted()->with_create_user()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -144,12 +138,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$book = factory(Book::class)
-				->states('accepted')
-				->create();
+			$book = Book::factory()->accepted()->create();
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -187,11 +178,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$book = factory(Book::class)
-				->states('accepted')
-				->create();
+			$book = Book::factory()->accepted()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->add_comment = true;
 			$user->push();
 
@@ -230,9 +219,7 @@ class BookTest extends DuskTestCase
 				->where('status', StatusEnum::OnReview)
 				->update(['status' => StatusEnum::Private]);
 
-			$book = factory(Book::class)
-				->states('with_writer', 'private', 'with_create_user', 'with_genre')
-				->create();
+			$book = Book::factory()->with_writer()->private()->with_create_user()->with_genre()->create();
 
 			$book = Book::any()->findOrFail($book->id);
 
@@ -265,16 +252,14 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->check_books = true;
 			$admin->push();
 
 			$this->assertTrue($admin->can('view_on_moderation', Book::class));
 			$this->assertTrue($admin->group->check_books);
 
-			$book = factory(Book::class)
-				->states('sent_for_review')
-				->create();
+			$book = Book::factory()->sent_for_review()->create();
 
 			Book::flushCachedOnModerationCount();
 
@@ -310,18 +295,14 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($admin_browser) {
 
-			$book = factory(Book::class)
-				->states('with_writer', 'sent_for_review', 'with_create_user', 'with_genre')
-				->create(['title' => Str::random(8)]);
+			$book = Book::factory()->with_writer()->sent_for_review()->with_create_user()->with_genre()->create(['title' => Str::random(8)]);
 
 			$book_keyword = factory(BookKeyword::class)
 				->states('on_review')->create([
 					'book_id' => $book->id
 				]);
 
-			$admin = factory(User::class)
-				->states('administrator')
-				->create();
+			$admin = User::factory()->administrator()->create();
 
 			$this->assertTrue($book->fresh()->isSentForReview());
 
@@ -344,11 +325,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($admin_browser) {
 
-			$book = factory(Book::class)
-				->states('with_writer', 'sent_for_review', 'with_create_user', 'with_genre')
-				->create();
+			$book = Book::factory()->with_writer()->sent_for_review()->with_create_user()->with_genre()->create();
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->check_books = true;
 			$admin->push();
 
@@ -375,11 +354,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 			$book->statusAccepted();
 			$book->save();
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->book_secret_hide_set = true;
 			$admin->push();
 
@@ -408,11 +387,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 			$book->statusAccepted();
 			$book->save();
 
-			$admin = factory(User::class)->create();
+			$admin = User::factory()->create();
 			$admin->group->book_secret_hide_set = true;
 			$admin->push();
 
@@ -448,9 +427,7 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$book = factory(Book::class)
-				->states('with_annotation', 'with_genre')
-				->create(['title' => uniqid()]);
+			$book = Book::factory()->with_annotation()->with_genre()->create(['title' => uniqid()]);
 
 			$book->annotation->content = $this->faker->realText(500);
 			$book->push();
@@ -473,13 +450,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->book_keyword_vote = true;
 			$user->push();
 
-			$book = factory(Book::class)
-				->states('with_keyword')
-				->create();
+			$book = Book::factory()->with_keyword()->create();
 
 			$book_keyword = $book->book_keywords->first();
 
@@ -528,8 +503,7 @@ class BookTest extends DuskTestCase
 
 			$age = 18;
 
-			$book = factory(Book::class)
-				->create(['age' => 18]);
+			$book = Book::factory()->create(['age' => 18]);
 
 			$browser->visit(route('books.show', $book))
 				->waitFor('#askAgeModal', 10)
@@ -548,8 +522,7 @@ class BookTest extends DuskTestCase
 
 			$age = 18;
 
-			$book = factory(Book::class)
-				->create(['age' => 18]);
+			$book = Book::factory()->create(['age' => 18]);
 
 			$browser->visit(route('books.show', $book))
 				->waitFor('#askAgeModal', 10)
@@ -581,15 +554,14 @@ class BookTest extends DuskTestCase
 
 			$age = 18;
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 			$book->statusAccepted();
 			$book->save();
 
-			$user = factory(User::class)->create(['born_date' => null])
+			$user = User::factory()->create(['born_date' => null])
 				->fresh();
 
-			$section = factory(Section::class)
-				->create(['book_id' => $book->id])
+			$section = Section::factory()->create(['book_id' => $book->id])
 				->fresh();
 
 			$browser->resize(1000, 1000)
@@ -658,9 +630,7 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$author = factory(Author::class)
-				->states('with_author_manager', 'with_book_for_sale')
-				->create();
+			$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 			$manager = $author->managers->first();
 			$book = $author->books->first();
@@ -682,9 +652,7 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$author = factory(Author::class)
-				->states('with_author_manager_can_sell', 'with_book_for_sale_purchased')
-				->create();
+			$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale_purchased()->create();
 
 			$manager = $author->managers->first();
 			$book = $author->books->first();
@@ -720,16 +688,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$file = factory(BookFile::class)
-				->states('txt', 'private')
-				->create(['create_user_id' => $user->id]);
+			$file = BookFile::factory()->txt()->private()->create(['create_user_id' => $user->id]);
 
-			$book = factory(Book::class)
-				->states('private')
-				->create(['create_user_id' => $user->id]);
+			$book = Book::factory()->private()->create();
 
 			$file->book()->associate($book);
 			$file->save();
@@ -753,16 +716,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$file = factory(BookFile::class)
-				->states('txt', 'sent_for_review')
-				->create(['create_user_id' => $user->id]);
+			$file = BookFile::factory()->txt()->sent_for_review()->create(['create_user_id' => $user->id]);
 
-			$book = factory(Book::class)
-				->states('sent_for_review')
-				->create();
+			$book = Book::factory()->sent_for_review()->create();
 
 			$file->book()->associate($book);
 			$file->save();
@@ -786,16 +744,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$file = factory(BookFile::class)
-				->states('txt', 'accepted')
-				->create(['create_user_id' => $user->id]);
+			$file = BookFile::factory()->txt()->accepted()->create(['create_user_id' => $user->id]);
 
-			$book = factory(Book::class)
-				->states('accepted')
-				->create();
+			$book = Book::factory()->accepted()->create();
 
 			$file->book()->associate($book);
 			$file->save();
@@ -819,16 +772,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$file = factory(BookFile::class)
-				->states('txt', 'sent_for_review')
-				->create();
+			$file = BookFile::factory()->txt()->sent_for_review()->create();
 
-			$book = factory(Book::class)
-				->states('accepted')
-				->create();
+			$book = Book::factory()->accepted()->create();
 
 			$file->book()->associate($book);
 			$file->save();
@@ -847,16 +795,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$file = factory(BookFile::class)
-				->states('txt', 'accepted')
-				->create();
+			$file = BookFile::factory()->txt()->accepted()->create();
 
-			$book = factory(Book::class)
-				->states('sent_for_review')
-				->create();
+			$book = Book::factory()->sent_for_review()->create();
 
 			$file->book()->associate($book);
 			$file->save();
@@ -880,12 +823,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$file = factory(BookFile::class)
-				->states('txt', 'accepted')
-				->create();
+			$file = BookFile::factory()->txt()->accepted()->create();
 
 			$book = $file->book;
 
@@ -900,11 +840,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->see_deleted = true;
 			$user->push();
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 			$book->delete();
 
 			$browser->resize(1000, 400)
@@ -921,11 +861,11 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->see_deleted = false;
 			$user->push();
 
-			$book = factory(Book::class)->create();
+			$book = Book::factory()->create();
 			$book->delete();
 
 			$browser->resize(1000, 400)
@@ -942,11 +882,9 @@ class BookTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+			$user = User::factory()->admin()->create();
 
-			$file = factory(BookFile::class)->states('txt')->create();
+			$file = BookFile::factory()->txt()->create();
 			$file->auto_created = true;
 			$file->save();
 

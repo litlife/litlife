@@ -15,7 +15,7 @@ class UserFriendshipTest extends TestCase
 	 */
 	public function testIfBlacklist()
 	{
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Blacklist]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Blacklist]);
 
 		$active_user = $relation->first_user;
 		$other_user = $relation->second_user;
@@ -37,7 +37,7 @@ class UserFriendshipTest extends TestCase
 
 	public function testIfFriend()
 	{
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Friend]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Friend]);
 
 		$active_user = $relation->first_user;
 		$other_user = $relation->second_user;
@@ -59,7 +59,7 @@ class UserFriendshipTest extends TestCase
 
 	public function testIfNobody()
 	{
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Null]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Null]);
 
 		$active_user = $relation->first_user;
 		$other_user = $relation->second_user;
@@ -104,7 +104,7 @@ class UserFriendshipTest extends TestCase
 
 	public function testIfSubscriber()
 	{
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Subscriber]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Subscriber]);
 
 		$active_user = $relation->first_user;
 		$other_user = $relation->second_user;

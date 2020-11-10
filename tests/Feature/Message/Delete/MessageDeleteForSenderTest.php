@@ -11,9 +11,7 @@ class MessageDeleteForSenderTest extends TestCase
 {
 	public function testIfMessageNotViewed()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
 		$secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
@@ -47,9 +45,7 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testrIfMessageViewed()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
 		$secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
@@ -88,9 +84,7 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testIfNotViewedAndItWasLatest()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_not_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -123,9 +117,7 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testIfViewedAndItWasLatest()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 
@@ -154,11 +146,9 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testRouteIsOk()
 	{
-		$sender = factory(User::class)
-			->create();
+		$sender = User::factory()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('not_viewed')
@@ -189,9 +179,7 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testRouteIsOkWithTwoMessages()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
 		$firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
 		$secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
@@ -226,11 +214,9 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testViewedAndNotViewed()
 	{
-		$sender = factory(User::class)
-			->create();
+		$sender = User::factory()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')
@@ -239,8 +225,7 @@ class MessageDeleteForSenderTest extends TestCase
 				'recepient_id' => $sender->id
 			]);
 
-		$message2 = factory(Message::class)
-			->create([
+		$message2 = Message::factory()->create([
 				'create_user_id' => $sender->id,
 				'recepient_id' => $recepient->id
 			]);
@@ -287,11 +272,9 @@ class MessageDeleteForSenderTest extends TestCase
 
 	public function testRouteIsOkViewed()
 	{
-		$sender = factory(User::class)
-			->create();
+		$sender = User::factory()->create();
 
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')

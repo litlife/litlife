@@ -9,7 +9,7 @@ class UserTextStatusTest extends TestCase
 {
 	public function testAppendTextStatus()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$value = $this->faker->sentence(2);
 
@@ -30,7 +30,7 @@ class UserTextStatusTest extends TestCase
 
 	public function testAppendUnique()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$value = $this->faker->sentence(2);
 
@@ -49,7 +49,7 @@ class UserTextStatusTest extends TestCase
 
 	public function testRemoveTextStatus()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$value = 'текст1';
 		$value2 = 'Текст2';
@@ -75,8 +75,7 @@ class UserTextStatusTest extends TestCase
 
 	public function testValueTrimed()
 	{
-		$user = factory(User::class)
-			->create(['text_status' => 'текст1, текст2, Автор, текст5']);
+		$user = User::factory()->create(['text_status' => 'текст1, текст2, Автор, текст5']);
 
 		$user->removeTextStatus('Автор');
 		$user->save();
@@ -87,8 +86,7 @@ class UserTextStatusTest extends TestCase
 
 	public function testHasTextStatus()
 	{
-		$user = factory(User::class)
-			->create(['text_status' => 'текст1, текст2, Автор, текст5']);
+		$user = User::factory()->create(['text_status' => 'текст1, текст2, Автор, текст5']);
 
 		$this->assertTrue($user->hasTextStatus('текст1'));
 		$this->assertTrue($user->hasTextStatus('текст2  '));
@@ -102,8 +100,7 @@ class UserTextStatusTest extends TestCase
 	{
 		$text = uniqid();
 
-		$user = factory(User::class)
-			->create(['text_status' => 'текст1, текст2, ' . $text . ', текст5']);
+		$user = User::factory()->create(['text_status' => 'текст1, текст2, ' . $text . ', текст5']);
 
 		$this->assertEquals(1, User::whereTextStatusLike($text)->count());
 

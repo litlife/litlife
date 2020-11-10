@@ -11,16 +11,11 @@ class BookUpdatePageNumbersJobTest extends TestCase
 {
 	public function test()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$chapter1 = factory(Section::class)
-			->states('chapter', 'with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter1 = Section::factory()->chapter()->with_two_pages()->create(['book_id' => $book->id]);
 
-		$chapter2 = factory(Section::class)
-			->states('chapter', 'with_two_pages')
-			->create(['book_id' => $book->id]);
+		$chapter2 = Section::factory()->chapter()->with_two_pages()->create(['book_id' => $book->id]);
 
 		$chapter2->appendToNode($chapter1)->save();
 

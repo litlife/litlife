@@ -95,12 +95,9 @@ class SmilesTest extends TestCase
 	{
 		Carbon::setTestNow(Carbon::create(2020, 01, 01));
 
-		$smile_for_new_year = factory(Smile::class)
-			->states('for_new_year')
-			->create();
+		$smile_for_new_year = Smile::factory()->for_new_year()->create();
 
-		$smile = factory(Smile::class)
-			->create();
+		$smile = Smile::factory()->create();
 
 		$this->assertNotNull(Smile::considerTime()->find($smile_for_new_year->id));
 		$this->assertNotNull(Smile::considerTime()->find($smile->id));
@@ -127,7 +124,7 @@ class SmilesTest extends TestCase
 		Variable::where('name', VariablesEnum::SmilesJsonUrl)
 			->delete();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('home'))

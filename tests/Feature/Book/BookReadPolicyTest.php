@@ -11,15 +11,11 @@ class BookReadPolicyTest extends TestCase
 {
 	public function testCanReadIfBookPurchased()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create(['price' => 100]);
+		$book = Book::factory()->with_section()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
+		$purchase = UserPurchase::factory()->create([
 				'buyer_user_id' => $user->id,
 				'purchasable_id' => $book->id,
 				'purchasable_type' => 'book'
@@ -34,12 +30,9 @@ class BookReadPolicyTest extends TestCase
 
 	public function testCantReadBookIfPurchaseCanceled()
 	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create(['price' => 100]);
+		$book = Book::factory()->with_section()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$purchase = factory(UserPurchase::class)
 			->states('canceled')

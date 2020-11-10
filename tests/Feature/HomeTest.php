@@ -83,8 +83,7 @@ class HomeTest extends TestCase
 
 	public function testLatestCommentsIfCreatorDeletedHttp()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->get(route('home.latest_comments'))
 			->assertOk()
@@ -103,11 +102,9 @@ class HomeTest extends TestCase
 
 	public function testLatestCommentsIfBookPrivateHttp()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$comment = factory(Comment::class)
-			->create(['commentable_id' => $book->id, 'commentable_type' => 'book']);
+		$comment = Comment::factory()->create(['commentable_id' => $book->id, 'commentable_type' => 'book']);
 
 		$this->get(route('home.latest_comments'))
 			->assertOk()
@@ -131,8 +128,7 @@ class HomeTest extends TestCase
 
 	public function testLatestPostsIfPostDeletedHttp()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->get(route('home.latest_posts'))
 			->assertOk()
@@ -151,8 +147,7 @@ class HomeTest extends TestCase
 
 	public function testLatestPostsIfUserDeletedHttp()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->get(route('home.latest_posts'))
 			->assertOk()
@@ -171,8 +166,7 @@ class HomeTest extends TestCase
 
 	public function testLatestPostsIfTopicCreatorDeletedHttp()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$this->get(route('home.latest_posts'))
 			->assertOk()
@@ -199,10 +193,9 @@ class HomeTest extends TestCase
 
 	public function testLatestWallPostsIfUserDeletedHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['blog_user_id' => $user->id, 'create_user_id' => $user->id]);
+		$blog = Blog::factory()->create(['blog_user_id' => $user->id, 'create_user_id' => $user->id]);
 
 		$this->get(route('home.latest_wall_posts'))
 			->assertOk()
@@ -235,15 +228,11 @@ class HomeTest extends TestCase
 	{
 		Carbon::setTestNow(now()->addYear());
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+		$book = Book::factory()->with_genre()->create();
 
-		$book_vote = factory(BookVote::class)
-			->create(['book_id' => $book->id]);
+		$book_vote = BookVote::factory()->create(['book_id' => $book->id]);
 
 		$genre = $book->genres()->first();
 
@@ -276,10 +265,9 @@ class HomeTest extends TestCase
 
 	public function testLatestPostHttpSeeIfOnModeration()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
-		$post_on_review = factory(Post::class)->create();
+		$post_on_review = Post::factory()->create();
 		$post_on_review->statusSentForReview();
 		$post_on_review->save();
 
@@ -291,12 +279,11 @@ class HomeTest extends TestCase
 
 	public function testViewLatestCommentsIfOnReview()
 	{
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->statusSentForReview();
 		$comment->save();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($comment->create_user)
 			->get(route('home.latest_comments'))
@@ -311,8 +298,7 @@ class HomeTest extends TestCase
 
 	public function testViewPrivateMessageOnLatestPosts()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$forum = $post->forum;
 		$forum->private = true;
@@ -326,8 +312,7 @@ class HomeTest extends TestCase
 			->get(route('home.latest_posts'))
 			->assertSeeText($post->text);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$response = $this->actingAs($other_user)
 			->get(route('home.latest_posts'))
@@ -340,12 +325,11 @@ class HomeTest extends TestCase
 
 	public function testViewLatestPostsIfOnReview()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->statusSentForReview();
 		$post->save();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($post->create_user)
 			->get(route('home.latest_posts'))
@@ -358,8 +342,7 @@ class HomeTest extends TestCase
 
 	public function testViewPrivateTopicOnUserPostsList()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$forum = $post->forum;
 		$forum->private = true;
@@ -375,8 +358,7 @@ class HomeTest extends TestCase
 			->get(route('home.latest_posts', $topic->create_user))
 			->assertSeeText($topic->name);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		Topic::refreshLatestTopics();
 

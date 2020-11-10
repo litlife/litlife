@@ -10,7 +10,7 @@ class CollectionDeletePolicyTest extends TestCase
 {
 	public function testCanIfUserCreator()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
 		$user = $collection->create_user;
 
@@ -19,9 +19,9 @@ class CollectionDeletePolicyTest extends TestCase
 
 	public function testCantIfUserNotCreator()
 	{
-		$collection = factory(Collection::class)->create();
+		$collection = Collection::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('delete', $collection));
 	}

@@ -11,8 +11,7 @@ class TopicShowTest extends TestCase
 {
 	public function testShowHttp()
 	{
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$this->get(route('topics.show', $topic))
 			->assertOk()
@@ -21,7 +20,7 @@ class TopicShowTest extends TestCase
 
 	public function testShowHttpDontSeeNothingFoundIfFixPost()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 
 		$post->fix();
 
@@ -32,8 +31,7 @@ class TopicShowTest extends TestCase
 
 	public function testViewCount()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$topic = $post->topic;
 
@@ -55,8 +53,7 @@ class TopicShowTest extends TestCase
 
 	public function testViewPrivateTopic()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$user = $post->create_user;
 
@@ -76,8 +73,7 @@ class TopicShowTest extends TestCase
 			->assertOk()
 			->assertSeeText($forum->name);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$response = $this->actingAs($other_user)
 			->get(route('topics.show', ['topic' => $post->topic->id]))
@@ -89,8 +85,7 @@ class TopicShowTest extends TestCase
 
 	public function testForumDeletedShowTopic()
 	{
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$topic->forum->delete();
 
@@ -105,7 +100,7 @@ class TopicShowTest extends TestCase
 
 	public function testIsNotFoundIfTopicDeleted()
 	{
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$topic->delete();
 
@@ -115,9 +110,7 @@ class TopicShowTest extends TestCase
 
 	public function testCanSeeArchivedTopicPosts()
 	{
-		$topic = factory(Topic::class)
-			->states('archived', 'with_post')
-			->create();
+		$topic = Topic::factory()->archived()->with_post()->create();
 
 		$post = $topic->posts()->first();
 
@@ -128,12 +121,11 @@ class TopicShowTest extends TestCase
 
 	public function testViewInTopicIfOnReview()
 	{
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$post->statusSentForReview();
 		$post->save();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($post->create_user)
 			->get(route('topics.show', $post->topic))
@@ -147,7 +139,7 @@ class TopicShowTest extends TestCase
 
 	public function testPerPage()
 	{
-		$topic = factory(Topic::class)->create();
+		$topic = Topic::factory()->create();
 
 		$response = $this->get(route('topics.show', ['topic' => $topic, 'per_page' => 5]))
 			->assertOk();

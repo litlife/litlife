@@ -19,18 +19,14 @@ class StorableTraitTest extends TestCase
 
 	public function testFactory()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertTrue($file->exists());
 	}
 
 	public function testFactoryZip()
 	{
-		$file = factory(BookFile::class)
-			->states('txt', 'zip')
-			->create();
+		$file = BookFile::factory()->txt()->zip()->create();
 
 		$this->assertTrue($file->exists());
 		$this->assertTrue($file->isZipArchive());
@@ -39,9 +35,7 @@ class StorableTraitTest extends TestCase
 
 	public function testRename()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$new_name = 'new_file_name.txt';
 
@@ -55,9 +49,7 @@ class StorableTraitTest extends TestCase
 
 	public function testRenameZip()
 	{
-		$file = factory(BookFile::class)
-			->states('txt', 'zip')
-			->create();
+		$file = BookFile::factory()->txt()->zip()->create();
 
 		$new_name = 'new_file_name.txt.zip';
 
@@ -72,9 +64,7 @@ class StorableTraitTest extends TestCase
 
 	public function testRenameIfFileNotExists()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		Storage::disk($file->storage)
 			->delete($file->dirname . '/' . $file->name);
@@ -96,9 +86,7 @@ class StorableTraitTest extends TestCase
 
 	public function testRenameFileNotFoundInsideArchive()
 	{
-		$file = factory(BookFile::class)
-			->states('txt', 'zip')
-			->create();
+		$file = BookFile::factory()->txt()->zip()->create();
 
 		$this->assertTrue($file->isZipArchive());
 
@@ -126,9 +114,7 @@ class StorableTraitTest extends TestCase
 
 	public function testName()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$file->name = 'Название файла';
 
@@ -199,9 +185,7 @@ class StorableTraitTest extends TestCase
 
 	public function testURLEncode()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$file->name = urlencode('файл_~`$^&()[].\'') . ' test.txt';
 
@@ -232,9 +216,7 @@ class StorableTraitTest extends TestCase
 
 	public function testAvoidQuote()
 	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create();
+		$file = BookFile::factory()->txt()->create();
 
 		$file->name = "fi''le.tx''t";
 
@@ -286,9 +268,7 @@ class StorableTraitTest extends TestCase
 		Storage::fake($old_filesystem);
 		Storage::fake($new_filesystem);
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['storage' => $old_filesystem]);
+		$file = BookFile::factory()->txt()->create();
 
 		$size = $file->size;
 		$this->assertTrue(Storage::disk($old_filesystem)->exists($file->dirname . '/' . $file->name));
@@ -308,9 +288,7 @@ class StorableTraitTest extends TestCase
 	{
 		Storage::fake('local');
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['storage' => 'local']);
+		$file = BookFile::factory()->txt()->create();
 
 		$this->assertTrue(Storage::disk('local')->exists($file->dirname . '/' . $file->name));
 
@@ -326,9 +304,7 @@ class StorableTraitTest extends TestCase
 	{
 		Storage::fake('public');
 
-		$file = factory(BookFile::class)
-			->states('storage_public', 'txt')
-			->create();
+		$file = BookFile::factory()->storage_public()->txt()->create();
 
 		Storage::shouldReceive('disk')->times(3)->andReturn(new class()
 		{

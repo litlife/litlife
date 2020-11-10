@@ -10,13 +10,9 @@ class PostFixTest extends TestCase
 {
 	public function testFix()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$topic = factory(Topic::class)
-			->states('with_post')
-			->create();
+		$topic = Topic::factory()->with_post()->create();
 
 		$post = $topic->posts()->first();
 
@@ -33,13 +29,9 @@ class PostFixTest extends TestCase
 
 	public function testUnFix()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$topic = factory(Topic::class)
-			->states('with_fixed_post')
-			->create();
+		$topic = Topic::factory()->with_fixed_post()->create();
 
 		$post = $topic->posts()->first();
 

@@ -12,9 +12,9 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 {
 	public function testCommand()
 	{
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -37,9 +37,9 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 
 	public function testTrue()
 	{
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -62,9 +62,7 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 
 	public function testFalseIfCommentableIsNotBook()
 	{
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create();
+		$comment = Comment::factory()->collection()->create();
 
 		$command = new CorrectionOfBookIDForComments;
 
@@ -75,7 +73,7 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 
 	public function testFalseIfOriginCommentableMustBeInGroup()
 	{
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		$comment = factory(Comment::class)
 			->states('book')
@@ -93,9 +91,9 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 
 	public function testFalseIfOriginCommentableMustBeNotMainInGroup()
 	{
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -115,9 +113,9 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 
 	public function testFalseIfOriginCommentableMustBeNotCommentable()
 	{
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		$comment = factory(Comment::class)
 			->states('book')
@@ -138,9 +136,9 @@ class CorrectionOfBookIDForCommentsTest extends TestCase
 
 	public function testFalseOnExceptionOriginCommentableMustBeInstanceOfBook()
 	{
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		$comment = factory(Comment::class)
 			->states('book')

@@ -12,18 +12,15 @@ class AuthorMergeTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$main_author = factory(Author::class)
-			->states('with_biography', 'with_book')->create();
+		$main_author = Author::factory()->with_biography()->with_book()->create();
 
-		$author = factory(Author::class)
-			->states('with_biography', 'with_book')->create();
+		$author = Author::factory()->with_biography()->with_book()->create();
 
-		$author2 = factory(Author::class)
-			->states('with_biography', 'with_book')->create();
+		$author2 = Author::factory()->with_biography()->with_book()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('authors.merge', [
@@ -73,15 +70,13 @@ class AuthorMergeTest extends TestCase
 
 	public function testWithoutBooks()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$illustrator = factory(Author::class)
-			->create();
+		$illustrator = Author::factory()->create();
 
 		$this->assertEquals(0, $author->books()->count());
 		$this->assertEquals(0, $illustrator->illustrated_books()->count());
@@ -102,29 +97,19 @@ class AuthorMergeTest extends TestCase
 
 	public function testIllustratedTranslatedCompiled()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$author = factory(Author::class)
-			->states('with_book')
-			->create();
+		$author = Author::factory()->with_book()->create();
 
-		$illustrator = factory(Author::class)
-			->states('with_illustrated_book')
-			->create();
+		$illustrator = Author::factory()->with_illustrated_book()->create();
 
-		$editor = factory(Author::class)
-			->states('with_edited_book')
-			->create();
+		$editor = Author::factory()->with_edited_book()->create();
 
-		$translator = factory(Author::class)
-			->states('with_translated_book')
-			->create();
+		$translator = Author::factory()->with_translated_book()->create();
 
-		$compiler = factory(Author::class)
-			->states('with_compiled_book')
-			->create();
+		$compiler = Author::factory()->with_compiled_book()->create();
 
 		$this->assertEquals(1, $author->books()->count());
 		$this->assertEquals(1, $editor->edited_books()->count());
@@ -161,15 +146,13 @@ class AuthorMergeTest extends TestCase
 
 	public function testWithBiography()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$main_author = factory(Author::class)
-			->states('with_book')->create();
+		$main_author = Author::factory()->with_book()->create();
 
-		$author = factory(Author::class)
-			->states('with_biography', 'with_book')->create();
+		$author = Author::factory()->with_biography()->with_book()->create();
 
 		$biography = $author->biography;
 
@@ -193,14 +176,13 @@ class AuthorMergeTest extends TestCase
 
 	public function testWithBookBelongsBothAuthors()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$main_author = factory(Author::class)
-			->states('with_book')->create();
+		$main_author = Author::factory()->with_book()->create();
 
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
 		$main_author->books->first()->writers()->syncWithoutDetaching([$author->id]);
 
@@ -226,15 +208,13 @@ class AuthorMergeTest extends TestCase
 
 	public function testWithAuthorSentForReview()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$main_author = factory(Author::class)
-			->states('with_book')->create();
+		$main_author = Author::factory()->with_book()->create();
 
-		$author = factory(Author::class)
-			->states('with_book')->create();
+		$author = Author::factory()->with_book()->create();
 		$author->statusSentForReview();
 		$author->save();
 
@@ -264,12 +244,11 @@ class AuthorMergeTest extends TestCase
 
 	public function testWithBookVoteAndComment()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->merge_authors = true;
 		$user->push();
 
-		$main_author = factory(Author::class)
-			->create()->fresh();
+		$main_author = Author::factory()->create()->fresh();
 
 		$author = factory(Author::class)
 			->states(['with_book_vote', 'with_book_comment'])

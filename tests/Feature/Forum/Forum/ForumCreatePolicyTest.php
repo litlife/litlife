@@ -10,7 +10,7 @@ class ForumCreatePolicyTest extends TestCase
 {
 	public function testCantIfHasPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_forum = false;
 		$admin->push();
 
@@ -19,7 +19,7 @@ class ForumCreatePolicyTest extends TestCase
 
 	public function testCantIfDoesntHavePermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->add_forum_forum = true;
 		$admin->push();
 

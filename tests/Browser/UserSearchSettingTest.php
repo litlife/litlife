@@ -16,8 +16,7 @@ class UserSearchSettingTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
 			$browser->resize(1000, 1000)
 				->loginAs($user)

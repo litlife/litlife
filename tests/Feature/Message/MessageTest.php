@@ -11,10 +11,9 @@ class MessageTest extends TestCase
 {
 	public function testFactory()
 	{
-		$recepient = factory(User::class)->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create(['recepient_id' => $recepient->id]);
+		$message = Message::factory()->create(['recepient_id' => $recepient->id]);
 
 		$sender = $message->create_user;
 
@@ -47,11 +46,9 @@ class MessageTest extends TestCase
 
 	public function testCreateBB()
 	{
-		$recepient = factory(User::class)
-			->create();
+		$recepient = User::factory()->create();
 
-		$message = factory(Message::class)
-			->create([
+		$message = Message::factory()->create([
 				'recepient_id' => $recepient->id,
 				'bb_text' => 'text https://domain.com/away?=test text'
 			]);
@@ -61,7 +58,7 @@ class MessageTest extends TestCase
 
 	public function testBBEmpty()
 	{
-		$recepient = factory(User::class)->create();
+		$recepient = User::factory()->create();
 
 		$message = factory(Message::class)
 			->states('viewed')
@@ -77,9 +74,9 @@ class MessageTest extends TestCase
 	/*
 		public function test()
 		{
-			$firstUser = factory(User::class)->create();
+			$firstUser = User::factory()->create();
 
-			$secondUser = factory(User::class)->create();
+			$secondUser = User::factory()->create();
 
 			$text = Faker::create()->realText(200);
 

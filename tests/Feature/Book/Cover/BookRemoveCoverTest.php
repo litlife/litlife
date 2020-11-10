@@ -13,9 +13,9 @@ class BookRemoveCoverTest extends TestCase
 	{
 		config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('administrator')->create();
+		$user = User::factory()->administrator()->create();
 
-		$attachment = factory(Attachment::class)->states('cover')->create();
+		$attachment = Attachment::factory()->cover()->create();
 
 		$book = $attachment->book;
 		$book->sections_count = 10;
@@ -46,17 +46,13 @@ class BookRemoveCoverTest extends TestCase
 
 	public function testCantRemoveCoverIfBookForSale()
 	{
-		$author = factory(Author::class)
-			->states('with_book_for_sale', 'with_author_manager_can_sell')
-			->create();
+		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
 		$manager = $author->managers->first();
 		$book = $author->books->first();
 		$user = $manager->user;
 
-		$cover = factory(Attachment::class)
-			->states('cover')
-			->create(['book_id' => $book->id]);
+		$cover = Attachment::factory()->cover()->create();
 
 		$this->assertNotNull($book->fresh()->cover);
 		$this->assertTrue($book->isForSale());

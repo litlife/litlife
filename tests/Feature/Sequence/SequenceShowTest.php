@@ -10,9 +10,7 @@ class SequenceShowTest extends TestCase
 {
 	public function testIsOk()
 	{
-		$sequence = factory(Sequence::class)
-			->states('with_book')
-			->create();
+		$sequence = Sequence::factory()->with_book()->create();
 
 		$this->assertEquals(1, $sequence->book_count);
 
@@ -26,14 +24,11 @@ class SequenceShowTest extends TestCase
 
 	public function testComments()
 	{
-		$sequence = factory(Sequence::class)
-			->states('with_book')
-			->create();
+		$sequence = Sequence::factory()->with_book()->create();
 
 		$book = $sequence->books()->first();
 
-		$comment = factory(Comment::class)
-			->create(['commentable_type' => 'book', 'commentable_id' => $book->id]);
+		$comment = Comment::factory()->create(['commentable_type' => 'book', 'commentable_id' => $book->id]);
 
 		$this->get(route('sequences.comments', ['sequence' => $sequence->id]))
 			->assertOk()

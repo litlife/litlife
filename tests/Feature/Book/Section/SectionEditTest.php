@@ -15,14 +15,12 @@ class SectionEditTest extends TestCase
 {
 	public function testEditHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 
 		$section = $book->sections()->first();
 
@@ -35,14 +33,12 @@ class SectionEditTest extends TestCase
 	{
 		Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->edit_self_book = true;
 		$user->group->edit_other_user_book = true;
 		$user->push();
 
-		$book = factory(Book::class)
-			->states('with_section')
-			->create();
+		$book = Book::factory()->with_section()->create();
 
 		$section = $book->sections()->first();
 
@@ -71,9 +67,7 @@ class SectionEditTest extends TestCase
 
 	public function testUpdateIfAuthorCanSaleHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -110,12 +104,9 @@ class SectionEditTest extends TestCase
 	{
 		config(['litlife.max_section_characters_count' => 5]);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 
@@ -136,12 +127,9 @@ class SectionEditTest extends TestCase
 	{
 		config(['litlife.max_section_characters_count' => 3]);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$section = factory(Section::class)
-			->create();
+		$section = Section::factory()->create();
 
 		$book = $section->book;
 
@@ -167,12 +155,9 @@ class SectionEditTest extends TestCase
 	{
 		config(['litlife.max_section_characters_count' => 3]);
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$section = factory(Section::class)
-			->create(['content' => 'старый контент']);
+		$section = Section::factory()->create(['content' => 'старый контент']);
 
 		$book = $section->book;
 
@@ -197,9 +182,7 @@ class SectionEditTest extends TestCase
 
 	public function testRefreshPrivateChaptersCountAfterUpdate()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();

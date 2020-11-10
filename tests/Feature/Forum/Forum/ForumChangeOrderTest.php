@@ -10,22 +10,22 @@ class ForumChangeOrderTest extends TestCase
 {
 	public function testCantChangeOrderForumIfHasPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_list_manipulate = false;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertFalse($admin->can('change_order', $forum));
 	}
 
 	public function testCanChangeOrderForumIfHasPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->forum_list_manipulate = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)->create();
+		$forum = Forum::factory()->create();
 
 		$this->assertTrue($admin->can('change_order', $forum));
 	}

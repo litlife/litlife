@@ -9,9 +9,7 @@ class AttachAuthorGroupToUsersTest extends TestCase
 {
 	public function testAttached()
 	{
-		$manager = factory(Manager::class)
-			->states('accepted', 'author', 'character_author')
-			->create();
+		$manager = Manager::factory()->accepted()->author()->character_author()->create();
 
 		$user = $manager->user;
 
@@ -31,9 +29,7 @@ class AttachAuthorGroupToUsersTest extends TestCase
 
 	public function testIfCharacterEditor()
 	{
-		$manager = factory(Manager::class)
-			->states('accepted', 'character_editor')
-			->create();
+		$manager = Manager::factory()->accepted()->character_editor()->create();
 
 		$user = $manager->user;
 
@@ -50,9 +46,7 @@ class AttachAuthorGroupToUsersTest extends TestCase
 
 	public function testIfNotAccepted()
 	{
-		$manager = factory(Manager::class)
-			->states('on_review', 'character_author')
-			->create();
+		$manager = Manager::factory()->on_review()->character_author()->create();
 
 		$user = $manager->user;
 
@@ -69,9 +63,7 @@ class AttachAuthorGroupToUsersTest extends TestCase
 
 	public function testIfAuthorDeletedNotAttach()
 	{
-		$manager = factory(Manager::class)
-			->states('accepted', 'author', 'character_author')
-			->create();
+		$manager = Manager::factory()->accepted()->author()->character_author()->create();
 
 		$user = $manager->user;
 		$author = $manager->manageable;
@@ -93,9 +85,7 @@ class AttachAuthorGroupToUsersTest extends TestCase
 
 	public function testDontAttachIfAuthorMerged()
 	{
-		$manager = factory(Manager::class)
-			->states('accepted', 'author', 'character_author')
-			->create();
+		$manager = Manager::factory()->accepted()->author()->character_author()->create();
 
 		$user = $manager->user;
 		$author = $manager->manageable;

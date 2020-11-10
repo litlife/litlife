@@ -9,9 +9,7 @@ class CommentDeletePolicyTest extends TestCase
 {
 	public function testAlwaysCanUpdateIfCommentPrivate()
 	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+		$comment = Comment::factory()->private()->create();
 
 		$user = $comment->create_user;
 

@@ -11,18 +11,15 @@ class AdBlockEnableTest extends TestCase
 {
 	public function testEnable()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manage_ad_blocks = true;
 		$user->push();
 
 		$name = Str::random(8);
 
-		$block1 = factory(AdBlock::class)
-			->states('enabled')
-			->create(['name' => $name]);
+		$block1 = AdBlock::factory()->enabled()->create();
 
-		$block2 = factory(AdBlock::class)
-			->create(['name' => $name]);
+		$block2 = AdBlock::factory()->create(['name' => $name]);
 
 		$this->assertTrue($block1->isEnabled());
 		$this->assertFalse($block2->isEnabled());

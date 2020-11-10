@@ -12,12 +12,11 @@ class ForumDeleteTest extends TestCase
 {
 	public function testDelete()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->delete_forum_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$this->actingAs($admin)
 			->delete(route('forums.destroy', $forum))
@@ -30,12 +29,11 @@ class ForumDeleteTest extends TestCase
 
 	public function testRestore()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->delete_forum_forum = true;
 		$admin->push();
 
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
 		$forum->delete();
 
@@ -50,20 +48,15 @@ class ForumDeleteTest extends TestCase
 
 	public function testLastPostIfPostDeleted()
 	{
-		$forum = factory(Forum::class)
-			->create();
+		$forum = Forum::factory()->create();
 
-		$topic = factory(Topic::class)
-			->create(['forum_id' => $forum->id]);
+		$topic = Topic::factory()->create(['forum_id' => $forum->id]);
 
-		$topic2 = factory(Topic::class)
-			->create(['forum_id' => $forum->id]);
+		$topic2 = Topic::factory()->create(['forum_id' => $forum->id]);
 
-		$post = factory(Post::class)
-			->create(['topic_id' => $topic->id]);
+		$post = Post::factory()->create(['topic_id' => $topic->id]);
 
-		$post2 = factory(Post::class)
-			->create(['topic_id' => $topic2->id, 'created_at' => $post->created_at->addSeconds(2)]);
+		$post2 = Post::factory()->create(['topic_id' => $topic2->id, 'created_at' => $post->created_at->addSeconds(2)]);
 
 		$forum->refresh();
 

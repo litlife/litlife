@@ -11,11 +11,9 @@ class AuthorFavoriteTest extends TestCase
 {
 	public function testToggle()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.favorites.toggle', ['author' => $author]))
@@ -46,8 +44,7 @@ class AuthorFavoriteTest extends TestCase
 
 	public function testToggleIfAuthorDeleted()
 	{
-		$user_author = factory(UserAuthor::class)
-			->create();
+		$user_author = UserAuthor::factory()->create();
 
 		$author = $user_author->author;
 		$user = $user_author->user;

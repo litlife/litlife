@@ -11,8 +11,7 @@ class UserPostsCreatedTest extends TestCase
 {
 	public function testViewPrivateMessageOnUserPostsList()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$forum = $post->forum;
 		$forum->private = true;
@@ -26,8 +25,7 @@ class UserPostsCreatedTest extends TestCase
 			->get(route('users.posts', $post->create_user))
 			->assertSeeText($post->text);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		$response = $this->actingAs($other_user)
 			->get(route('users.posts', $post->create_user))

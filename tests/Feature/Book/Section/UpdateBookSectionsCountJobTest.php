@@ -10,9 +10,7 @@ class UpdateBookSectionsCountJobTest extends TestCase
 {
 	public function testUpdate()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections')
-			->create();
+		$book = Book::factory()->with_three_sections()->create();
 
 		$book->sections_count = 0;
 		$book->save();

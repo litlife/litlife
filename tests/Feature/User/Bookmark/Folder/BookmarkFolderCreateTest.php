@@ -9,8 +9,7 @@ class BookmarkFolderCreateTest extends TestCase
 {
 	public function testStoreHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$title = $this->faker->realText(100);
 

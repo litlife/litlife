@@ -11,12 +11,11 @@ class BookFinishParseNotificationTest extends TestCase
 {
 	public function testViaUserNotificationEnable()
 	{
-		$bookParse = factory(BookParse::class)
-			->create();
+		$bookParse = BookParse::factory()->create();
 
 		$notification = new BookFinishParseNotification($bookParse);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->email_notification_setting->db_book_finish_parse = true;
 		$user->push();
 
@@ -25,12 +24,11 @@ class BookFinishParseNotificationTest extends TestCase
 
 	public function testViaUserNotificationDiable()
 	{
-		$bookParse = factory(BookParse::class)
-			->create();
+		$bookParse = BookParse::factory()->create();
 
 		$notification = new BookFinishParseNotification($bookParse);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->email_notification_setting->db_book_finish_parse = false;
 		$user->push();
 
@@ -39,11 +37,9 @@ class BookFinishParseNotificationTest extends TestCase
 
 	public function testDatabaseNotification()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$bookParse = factory(BookParse::class)
-			->create();
+		$bookParse = BookParse::factory()->create();
 
 		$notification = new BookFinishParseNotification($bookParse);
 

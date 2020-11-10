@@ -10,9 +10,7 @@ class BookPublishPolicyTest extends TestCase
 {
 	public function testCanIfCreatorAndBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->create();
 
 		$user = $book->create_user;
 
@@ -21,11 +19,9 @@ class BookPublishPolicyTest extends TestCase
 
 	public function testCanPublishOnReviewIfCanCheckBooks()
 	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->push();
 
@@ -34,11 +30,9 @@ class BookPublishPolicyTest extends TestCase
 
 	public function testCantPublishOnReviewIfCantCheckBooks()
 	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+		$book = Book::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_books = false;
 		$user->push();
 
@@ -47,11 +41,9 @@ class BookPublishPolicyTest extends TestCase
 
 	public function testCantIfPublished()
 	{
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
+		$book = Book::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->push();
 
@@ -60,11 +52,9 @@ class BookPublishPolicyTest extends TestCase
 
 	public function testCanPublishPrivateIfCanCheckBooks()
 	{
-		$book = factory(Book::class)
-			->states('private')
-			->create();
+		$book = Book::factory()->private()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->check_books = true;
 		$user->push();
 
@@ -73,9 +63,7 @@ class BookPublishPolicyTest extends TestCase
 
 	public function testCanPublishOnReviewIfCanPublishWithoutReview()
 	{
-		$book = factory(Book::class)
-			->states('sent_for_review', 'with_create_user')
-			->create();
+		$book = Book::factory()->sent_for_review()->with_create_user()->create();
 
 		$user = $book->create_user;
 		$user->group->add_book_without_check = true;
@@ -86,9 +74,7 @@ class BookPublishPolicyTest extends TestCase
 
 	public function testCantIfBookNotSucceedParsedAndBookNotDescriptionOnly()
 	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user', 'with_section')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->with_section()->create();
 		$book->parse->wait();
 		$book->push();
 

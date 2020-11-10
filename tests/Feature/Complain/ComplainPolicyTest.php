@@ -10,11 +10,9 @@ class ComplainPolicyTest extends TestCase
 {
 	public function testPoliciesForReviewStarts()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)->states('comment', 'review_starts')->create();
+		$complain = Complain::factory()->comment()->review_starts()->create();
 		$complain->status_changed_user_id = $admin->id;
 		$complain->save();
 
@@ -22,9 +20,7 @@ class ComplainPolicyTest extends TestCase
 		$this->assertTrue($admin->can('approve', $complain));
 		$this->assertTrue($admin->can('stopReview', $complain));
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->assertFalse($admin->can('startReview', $complain));
 		$this->assertFalse($admin->can('approve', $complain));
@@ -33,13 +29,9 @@ class ComplainPolicyTest extends TestCase
 
 	public function testPoliciesForSentForReview()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->assertTrue($admin->can('startReview', $complain));
 		$this->assertFalse($admin->can('approve', $complain));
@@ -48,7 +40,7 @@ class ComplainPolicyTest extends TestCase
 
 	public function testCantComplainIfNoPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->complain = false;
 		$admin->push();
 
@@ -57,7 +49,7 @@ class ComplainPolicyTest extends TestCase
 
 	public function testCanComplainIfHasPermissions()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->complain = true;
 		$admin->push();
 
@@ -66,37 +58,34 @@ class ComplainPolicyTest extends TestCase
 
 	public function testUserCanViewComplainIfUserCreator()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$this->assertTrue($complain->create_user->can('view', $complain));
 	}
 
 	public function testUserCanViewComplainIfUserCanReview()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->complain_check = true;
 		$admin->push();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
 		$this->assertTrue($admin->can('view', $complain));
 	}
 
 	public function testUserCantViewComplainIfOtherUser()
 	{
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')->create();
+		$complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('view', $complain));
 	}
 
 	public function testUserCanViewOnReviewListIfCanCheck()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 		$admin->group->complain_check = true;
 		$admin->push();
 
@@ -105,7 +94,7 @@ class ComplainPolicyTest extends TestCase
 
 	public function testUserCantViewOnReviewListIfCanCheck()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
 		$this->assertFalse($admin->can('viewOnReviewList', Complain::class));
 	}

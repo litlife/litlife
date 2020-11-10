@@ -18,9 +18,7 @@ class SupportQuestionMarkAsSolvedTest extends TestCase
 	{
 		Bus::fake();
 
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->review_starts()->create();
 
 		$user = $supportQuestion->status_changed_user;
 		$user->group->reply_to_support_service = true;
@@ -46,9 +44,7 @@ class SupportQuestionMarkAsSolvedTest extends TestCase
 
 	public function testWithAjax()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->review_starts()->create();
 
 		$user = $supportQuestion->status_changed_user;
 		$user->group->reply_to_support_service = true;
@@ -68,9 +64,7 @@ class SupportQuestionMarkAsSolvedTest extends TestCase
 
 	public function testIfAuthUserCreator()
 	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts', 'with_message')
-			->create();
+		$supportQuestion = SupportQuestion::factory()->review_starts()->with_message()->create();
 
 		$user = $supportQuestion->create_user;
 

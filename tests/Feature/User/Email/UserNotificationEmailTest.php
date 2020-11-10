@@ -11,16 +11,13 @@ class UserNotificationEmailTest extends TestCase
 {
 	public function testFound()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 		$email->notice = true;
 		$email->save();
 
-		$like = factory(Like::class)
-			->create();
+		$like = Like::factory()->create();
 
 		$notification = new NewLikeNotification($like);
 
@@ -29,16 +26,13 @@ class UserNotificationEmailTest extends TestCase
 
 	public function testNotFound()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 		$email->notice = false;
 		$email->save();
 
-		$like = factory(Like::class)
-			->create();
+		$like = Like::factory()->create();
 
 		$notification = new NewLikeNotification($like);
 

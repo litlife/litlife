@@ -21,10 +21,9 @@ class AuthorManagerTest extends TestCase
 
 	public function testVerificationRequestHttp()
 	{
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->author_editor_request = true;
 		$user->push();
 
@@ -56,10 +55,9 @@ class AuthorManagerTest extends TestCase
 	/*
 		public function testEditorRequestHttp()
 		{
-			$author = factory(Author::class)
-				->create();
+			$author = Author::factory()->create();
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->author_editor_request = true;
 			$user->push();
 
@@ -93,8 +91,7 @@ class AuthorManagerTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 		$admin->group->author_editor_check = true;
 		$admin->push();
 
@@ -146,8 +143,7 @@ class AuthorManagerTest extends TestCase
 	{
 		Notification::fake();
 
-		$admin = factory(User::class)
-			->create();
+		$admin = User::factory()->create();
 		$admin->group->author_editor_check = true;
 		$admin->push();
 
@@ -205,9 +201,7 @@ class AuthorManagerTest extends TestCase
 
 		config(['litlife.comission' => $comission]);
 
-		$manager = factory(Manager::class)
-			->states('author')
-			->create();
+		$manager = Manager::factory()->author()->create();
 
 		$this->assertEquals($manager->profit_percent, 100 - $comission);
 
@@ -221,16 +215,12 @@ class AuthorManagerTest extends TestCase
 
 	public function testIsAuthorEditor()
 	{
-		$manager = factory(Manager::class)
-			->states('character_author')
-			->create();
+		$manager = Manager::factory()->character_author()->create();
 
 		$this->assertTrue($manager->isAuthorCharacter());
 		$this->assertFalse($manager->isEditorCharacter());
 
-		$manager = factory(Manager::class)
-			->states('character_editor')
-			->create();
+		$manager = Manager::factory()->character_editor()->create();
 
 		$this->assertFalse($manager->isAuthorCharacter());
 		$this->assertTrue($manager->isEditorCharacter());
@@ -238,7 +228,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testAttachAuthorUserGroupOnApprove()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'starts_review'])
@@ -263,7 +253,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testDetachAuthorUserGroupOnManagerDelete()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'accepted'])
@@ -289,13 +279,9 @@ class AuthorManagerTest extends TestCase
 
 	public function testStartReview()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('on_review')
-			->create();
+		$manager = Manager::factory()->on_review()->create();
 
 		$this->actingAs($admin)
 			->get(route('managers.start_review', $manager))
@@ -308,13 +294,9 @@ class AuthorManagerTest extends TestCase
 
 	public function testStopReview()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 		$manager->status_changed_user_id = $admin->id;
 		$manager->save();
 		$manager->refresh();
@@ -334,117 +316,81 @@ class AuthorManagerTest extends TestCase
 
 	public function testPolicyIsCantStartReviewIfAlreadyReviewStarts()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 
 		$this->assertFalse($admin->can('startReview', $manager));
 	}
 
 	public function testPolicyIsCantStartReviewIfAccepted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('accepted')
-			->create();
+		$manager = Manager::factory()->accepted()->create();
 
 		$this->assertFalse($admin->can('startReview', $manager));
 	}
 
 	public function testPolicyIsCantStartReviewIfRejected()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('rejected')
-			->create();
+		$manager = Manager::factory()->rejected()->create();
 
 		$this->assertFalse($admin->can('startReview', $manager));
 	}
 
 	public function testPolicyIsCantStopReviewIfRejected()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('rejected')
-			->create();
+		$manager = Manager::factory()->rejected()->create();
 
 		$this->assertFalse($admin->can('stopReview', $manager));
 	}
 
 	public function testPolicyIsCantStopReviewIfAccepted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('rejected')
-			->create();
+		$manager = Manager::factory()->rejected()->create();
 
 		$this->assertFalse($admin->can('stopReview', $manager));
 	}
 
 	public function testPolicyIsCantStopReviewIfOtherUserStarts()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 
 		$this->assertFalse($admin->can('stopReview', $manager));
 	}
 
 	public function testPolicyIsCantApproveIfOtherUserStarts()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 
 		$this->assertFalse($admin->can('approve', $manager));
 	}
 
 	public function testPolicyIsCantDeclineIfOtherUserStarts()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 
 		$this->assertFalse($admin->can('decline', $manager));
 	}
 
 	public function testPolicyCanApprove()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 		$manager->status_changed_user_id = $admin->id;
 		$manager->save();
 		$manager->refresh();
@@ -454,13 +400,9 @@ class AuthorManagerTest extends TestCase
 
 	public function testPolicyCanDecline()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 		$manager->status_changed_user_id = $admin->id;
 		$manager->save();
 		$manager->refresh();
@@ -470,13 +412,9 @@ class AuthorManagerTest extends TestCase
 
 	public function testPolicyCanStopReview()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 		$manager->status_changed_user_id = $admin->id;
 		$manager->save();
 		$manager->refresh();
@@ -486,9 +424,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testSentVerificationRequestIfAuthorPrivate()
 	{
-		$author = factory(Author::class)
-			->states('private')
-			->create();
+		$author = Author::factory()->private()->create();
 
 		$user = $author->create_user;
 		$user->group->author_editor_request = true;
@@ -513,9 +449,7 @@ class AuthorManagerTest extends TestCase
 	/*
 		public function testSentEditorRequestIfAuthorPrivate()
 		{
-			$author = factory(Author::class)
-				->states('private')
-				->create();
+			$author = Author::factory()->private()->create();
 
 			$user = $author->create_user;
 			$user->group->author_editor_request = true;
@@ -539,13 +473,9 @@ class AuthorManagerTest extends TestCase
 	*/
 	public function testCantApproveIfAuthorIsNotPublished()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('starts_review')
-			->create();
+		$manager = Manager::factory()->starts_review()->create();
 		$manager->status_changed_user_id = $admin->id;
 		$manager->save();
 		$manager->refresh();
@@ -561,13 +491,9 @@ class AuthorManagerTest extends TestCase
 
 	public function testCantStartsReviewIfAuthorIsNotPublished()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('on_review')
-			->create();
+		$manager = Manager::factory()->on_review()->create();
 
 		$manager->manageable->statusPrivate();
 		$manager->push();
@@ -580,9 +506,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testSalesDisableHttp()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -591,16 +515,13 @@ class AuthorManagerTest extends TestCase
 		$book->save();
 		$book->refresh();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->assertFalse($user->can('read', $book));
 		$this->assertTrue($user->can('buy', $book));
 		$this->assertTrue($seller->can('sell', $book));
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->actingAs($admin)
 			->get(route('authors.sales.disable', $author))
@@ -619,9 +540,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testCantSalesDisableIfNoPermissions()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book_for_sale')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -630,9 +549,7 @@ class AuthorManagerTest extends TestCase
 		$book->save();
 		$book->refresh();
 
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$this->assertTrue($admin->can('salesDisable', $author));
 
@@ -645,7 +562,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testRemoveSaleRequestIfManagerDestroyed()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'accepted'])
@@ -677,9 +594,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testCanStartReviewIfAuthorDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'on_review'])
@@ -698,9 +613,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testCantApproveIfAuthorDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'starts_review'])
@@ -722,9 +635,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testCanDeclineIfAuthorDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'starts_review'])
@@ -746,9 +657,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testCanStopReviewIfAuthorDeleted()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'starts_review'])
@@ -770,9 +679,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testDeletePrivateManagerRequestIfAuthorDeleteOrRestore()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
 		$manager = factory(Manager::class)
 			->states(['author', 'private'])
@@ -792,9 +699,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testIsUserVerifiedAuthorOfBookIsTrue()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$user = $manager->user;
@@ -805,9 +710,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testIsUserVerifiedAuthorOfBookIsFalseIfManagerIsEditor()
 	{
-		$author = factory(Author::class)
-			->states('with_editor_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_editor_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -818,9 +721,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testIsUserVerifiedAuthorOfBookIsFalseIfManagerIsNotVerified()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();
@@ -833,9 +734,7 @@ class AuthorManagerTest extends TestCase
 
 	public function testCantChangeSiLPPublishFieldsIfBookAccepted()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_si_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_si_book()->create();
 
 		$manager = $author->managers()->first();
 		$book = $author->books()->first();

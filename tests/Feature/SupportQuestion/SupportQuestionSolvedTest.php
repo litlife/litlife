@@ -9,7 +9,7 @@ class SupportQuestionSolvedTest extends TestCase
 {
 	public function testIsOk()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->reply_to_support_service = true;
 		$user->push();
 

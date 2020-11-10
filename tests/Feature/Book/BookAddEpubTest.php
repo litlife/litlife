@@ -23,9 +23,7 @@ class BookAddEpubTest extends TestCase
 	 */
 	public function testMakeFile()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'with_genre')
-			->create();
+		$book = Book::factory()->with_create_user()->with_genre()->create();
 
 		$command = new BookFillDBFromSource();
 		$command->setExtension('epub');
@@ -52,8 +50,7 @@ class BookAddEpubTest extends TestCase
 
 		$this->assertFile($epub);
 
-		$book2 = factory(Book::class)
-			->create();
+		$book2 = Book::factory()->create();
 
 		$command = new BookFillDBFromSource();
 		$command->setExtension('epub');
@@ -200,8 +197,7 @@ class BookAddEpubTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -219,8 +215,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testNewLineToSpace()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -238,8 +233,7 @@ class BookAddEpubTest extends TestCase
 		$title = $this->faker->realText(50);
 		$content = $this->faker->realText(50);
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => $title,
 				'content' => $content
 			]);
@@ -254,7 +248,7 @@ class BookAddEpubTest extends TestCase
 		fwrite($stream, $createEpubFile->getEpub()->outputAsString());
 		$path = stream_get_meta_data($stream)['uri'];
 
-		$book2 = factory(Book::class)->create();
+		$book2 = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -271,8 +265,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testUpperCaseImageName()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -296,8 +289,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testWrongExtensionBinaryName()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -321,8 +313,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testRemoteUrl()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -336,8 +327,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testDontAddLinearNo()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -354,8 +344,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testTitleAnchor()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -375,8 +364,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testRemoveEmptySectionWithoutImages()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);
@@ -396,8 +384,7 @@ class BookAddEpubTest extends TestCase
 
 	public function testImage()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$addEpubFile = new AddEpubFile();
 		$addEpubFile->setBook($book);

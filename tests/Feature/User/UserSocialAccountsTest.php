@@ -138,11 +138,9 @@ class UserSocialAccountsTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$social_account = factory(UserSocialAccount::class)
-			->create(['user_id' => $user->id]);
+		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
 		$this->mockSocialiteFacade('',
 			$social_account->access_token,
@@ -161,11 +159,9 @@ class UserSocialAccountsTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$social_account = factory(UserSocialAccount::class)
-			->create(['user_id' => $user->id]);
+		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
 		$this->mockSocialiteFacade('',
 			$this->faker->linuxPlatformToken,
@@ -186,8 +182,7 @@ class UserSocialAccountsTest extends TestCase
 
 		$provider_user_id = $this->faker->uuid;
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->mockSocialiteFacade('',
 			$this->faker->linuxPlatformToken,
@@ -216,8 +211,7 @@ class UserSocialAccountsTest extends TestCase
 
 		$provider_user_id = $this->faker->uuid;
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->mockSocialiteFacade('',
 			$this->faker->linuxPlatformToken,
@@ -244,9 +238,7 @@ class UserSocialAccountsTest extends TestCase
 	{
 		Notification::fake();
 
-		$user_email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create();
+		$user_email = UserEmail::factory()->not_confirmed()->create();
 
 		$provider_user_id = $this->faker->uuid;
 		$token = $this->faker->linuxPlatformToken;
@@ -321,11 +313,9 @@ class UserSocialAccountsTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$social_account = factory(UserSocialAccount::class)
-			->create(['user_id' => $user->id]);
+		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
 		$user->forceDelete();
 
@@ -349,8 +339,7 @@ class UserSocialAccountsTest extends TestCase
 
 		$this->disableCookiesEncryption($name);
 
-		$refer_user = factory(User::class)
-			->create();
+		$refer_user = User::factory()->create();
 
 		$email = $this->faker->email;
 		$provider_user_id = $this->faker->uuid;
@@ -402,11 +391,9 @@ class UserSocialAccountsTest extends TestCase
 
 	public function testGoogleUndefinedIndexEmails()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$social_account = factory(UserSocialAccount::class)
-			->create(['user_id' => $user->id]);
+		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
 		$this->mockSocialiteFacade('',
 			$social_account->access_token,
@@ -423,9 +410,7 @@ class UserSocialAccountsTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)
-			->states('suspended', 'with_confirmed_email')
-			->create();
+		$user = User::factory()->suspended()->with_confirmed_email()->create();
 
 		$provider_user_id = $this->faker->uuid;
 		$token = $this->faker->linuxPlatformToken;
@@ -457,9 +442,7 @@ class UserSocialAccountsTest extends TestCase
 	{
 		Notification::fake();
 
-		$user_with_not_confirmed_email = factory(User::class)
-			->states('suspended', 'with_not_confirmed_email')
-			->create();
+		$user_with_not_confirmed_email = User::factory()->suspended()->with_not_confirmed_email()->create();
 
 		$provider_user_id = $this->faker->uuid;
 		$token = $this->faker->linuxPlatformToken;
@@ -504,9 +487,7 @@ class UserSocialAccountsTest extends TestCase
 	{
 		$date = Carbon::parse('2019-03-10 00:00:00');
 
-		$user_email = factory(UserEmail::class)
-			->states('not_confirmed')
-			->create(['created_at' => $date]);
+		$user_email = UserEmail::factory()->not_confirmed()->create();
 
 		$provider_user_id = $this->faker->uuid;
 		$token = $this->faker->linuxPlatformToken;
@@ -539,9 +520,7 @@ class UserSocialAccountsTest extends TestCase
 	{
 		$provider_user_id = $this->faker->uuid;
 
-		$user = factory(User::class)
-			->states('with_avatar')
-			->create();
+		$user = User::factory()->with_avatar()->create();
 
 		$avatar = $user->avatar()->first();
 

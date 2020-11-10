@@ -16,12 +16,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$ip = $this->faker->ipv4;
 
@@ -76,12 +75,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$response = $this->actingAs($user)
 			->get(route('comments.vote', ['comment' => $comment, 'vote' => '-1']))
@@ -114,12 +112,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('comments.vote', ['comment' => $comment, 'vote' => '1']))
@@ -152,12 +149,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('comments.vote', ['comment' => $comment, 'vote' => '1']))
@@ -190,12 +186,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('comments.vote', ['comment' => $comment, 'vote' => '-1']))
@@ -228,11 +223,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->create_user->email_notification_setting->db_comment_vote_up = false;
 		$comment->push();
 
@@ -262,11 +257,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->create_user->email_notification_setting->db_comment_vote_up = true;
 		$comment->push();
 
@@ -296,11 +291,11 @@ class CommentVoteTest extends TestCase
 	{
 		Notification::fake();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->create_user->forceDelete();
 		$comment->refresh();
 
@@ -313,11 +308,11 @@ class CommentVoteTest extends TestCase
 
 	public function testCanRemoveSelfVote()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->create_user()->associate($user);
 		$comment->save();
 
@@ -347,11 +342,11 @@ class CommentVoteTest extends TestCase
 
 	public function testCanSetLikeToSelfPostIfVoteRemovedExists()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->comment_add_vote = true;
 		$user->push();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->create_user()->associate($user);
 		$comment->save();
 
@@ -381,8 +376,7 @@ class CommentVoteTest extends TestCase
 
 	public function testUpdateCommentVotesOnVoteDelete()
 	{
-		$vote = factory(CommentVote::class)
-			->create(['vote' => 1]);
+		$vote = CommentVote::factory()->create(['vote' => 1]);
 
 		$comment = $vote->comment;
 

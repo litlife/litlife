@@ -12,9 +12,7 @@ class AuthorIsOnlineTest extends TestCase
 	{
 		config(['litlife.user_last_activity' => 5]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'accepted')
-			->create()
+		$author = Author::factory()->with_author_manager()->accepted()->create()
 			->fresh();
 
 		$user = $author->managers->first()->user;
@@ -40,9 +38,7 @@ class AuthorIsOnlineTest extends TestCase
 	{
 		config(['litlife.user_last_activity' => 5]);
 
-		$author = factory(Author::class)
-			->states('with_author_manager_on_review', 'accepted')
-			->create()
+		$author = Author::factory()->with_author_manager_on_review()->accepted()->create()
 			->fresh();
 
 		$manager = $author->managers->first();

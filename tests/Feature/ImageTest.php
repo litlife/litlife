@@ -29,8 +29,7 @@ class ImageTest extends TestCase
 	 */
 	public function testCreateBmp()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -55,8 +54,7 @@ class ImageTest extends TestCase
 
 	public function testCreateSvg()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -83,8 +81,7 @@ class ImageTest extends TestCase
 
 	public function testCreatePng()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -106,11 +103,9 @@ class ImageTest extends TestCase
 
 	public function testDownloadExternalNotImage()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$url = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js';
@@ -129,11 +124,9 @@ class ImageTest extends TestCase
 
 		config(['litlife.site_hosts' => []]);
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$url = $this->remoteImageUrl;
@@ -150,11 +143,9 @@ class ImageTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		//$url = Faker::create()->imageUrl(rand(100, 500), rand(600, 500));
@@ -172,11 +163,9 @@ class ImageTest extends TestCase
 		{
 			Storage::fake(config('filesystems.default'));
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$blog = factory(Blog::class)
-				->create(['create_user_id' => $user->id])
+			$blog = Blog::factory()->create(['create_user_id' => $user->id])
 				->fresh();
 
 			$url = 'http://2.bp.blogspot.com/-W1w_Calw450/UyFBDM1idpI/AAAAAAADZTY/1SL6qWV_m44/s1600/the_tree_of_life__gif__by_luisbc-d6uiimk.gif';
@@ -193,11 +182,9 @@ class ImageTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$image_path = $this->fakeImageStream();
@@ -215,11 +202,9 @@ class ImageTest extends TestCase
 
 	public function testInvalidBase64ImageContents()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$image_base64 = base64_encode('invalid image contents');
@@ -235,11 +220,9 @@ class ImageTest extends TestCase
 
 	public function testDownloadInvalidExternalImages()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
+		$blog = Blog::factory()->create(['create_user_id' => $user->id])
 			->fresh();
 
 		$url = 'http://example.com/' . uniqid() . '.jpg';
@@ -306,8 +289,7 @@ class ImageTest extends TestCase
 
 	public function testCreate()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -328,8 +310,7 @@ class ImageTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$image = new Image();
@@ -343,8 +324,7 @@ class ImageTest extends TestCase
 
 	public function testCreateAndCheckSame()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -364,8 +344,7 @@ class ImageTest extends TestCase
 
 	public function testCreateBigSizeJpeg()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -393,8 +372,7 @@ class ImageTest extends TestCase
 
 	public function testCreateBigSizeGif()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -446,8 +424,7 @@ class ImageTest extends TestCase
 
 	public function testGifImageSize()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -475,8 +452,7 @@ class ImageTest extends TestCase
 
 	public function testDownloadRemote()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -493,8 +469,7 @@ class ImageTest extends TestCase
 
 	public function testDownloadWrongRemote()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -515,8 +490,7 @@ class ImageTest extends TestCase
 
 	public function testDownloadWrongDomain()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -537,8 +511,7 @@ class ImageTest extends TestCase
 
 	public function testDownloadWrongImageName()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -557,8 +530,7 @@ class ImageTest extends TestCase
 
 	public function testCreateFromBase64Image()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -575,8 +547,7 @@ class ImageTest extends TestCase
 
 	public function testCreateFromNotImage()
 	{
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		Storage::fake(config('filesystems.default'));
@@ -598,8 +569,7 @@ class ImageTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$user = factory(User::class)
-			->create()
+		$user = User::factory()->create()
 			->fresh();
 
 		$upload = UploadedFile::fake()->image('avatar.jpg');
@@ -666,7 +636,7 @@ class ImageTest extends TestCase
 
 	public function testRenameImageIfAlreadyExistsWithSameNameInFolder()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		Storage::fake(config('filesystems.default'));
 
@@ -702,8 +672,7 @@ class ImageTest extends TestCase
 
 			putenv('APP_ENV=production');
 
-			$user = factory(User::class)
-				->create()
+			$user = User::factory()->create()
 				->fresh();
 
 			$upload = UploadedFile::fake()->image('avatar.jpg');

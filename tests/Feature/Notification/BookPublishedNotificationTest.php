@@ -10,9 +10,7 @@ class BookPublishedNotificationTest extends TestCase
 {
 	public function testVia()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$notification = new BookPublishedNotification($book);
 
@@ -23,9 +21,7 @@ class BookPublishedNotificationTest extends TestCase
 
 	public function testMailNotification()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$book = Book::factory()->with_create_user()->create();
 
 		$notification = new BookPublishedNotification($book);
 
@@ -45,9 +41,7 @@ class BookPublishedNotificationTest extends TestCase
 
 	public function testDatabaseNotification()
 	{
-		$book = factory(Book::class)
-			->states('with_create_user', 'with_writer')
-			->create();
+		$book = Book::factory()->with_create_user()->with_writer()->create();
 
 		$notification = new BookPublishedNotification($book);
 

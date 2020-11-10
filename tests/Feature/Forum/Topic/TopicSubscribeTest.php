@@ -11,11 +11,9 @@ class TopicSubscribeTest extends TestCase
 {
 	public function testSubscribeAjax()
 	{
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('topics.subscribe', ['topic' => $topic]),
@@ -31,8 +29,7 @@ class TopicSubscribeTest extends TestCase
 
 	public function testUnsubscribeAjax()
 	{
-		$subscription = factory(UserTopicSubscription::class)
-			->create();
+		$subscription = UserTopicSubscription::factory()->create();
 
 		$user = $subscription->user;
 		$topic = $subscription->topic;
@@ -51,8 +48,7 @@ class TopicSubscribeTest extends TestCase
 
 	public function testUnsubscribe()
 	{
-		$subscription = factory(UserTopicSubscription::class)
-			->create();
+		$subscription = UserTopicSubscription::factory()->create();
 
 		$user = $subscription->user;
 		$topic = $subscription->topic;

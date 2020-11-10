@@ -11,9 +11,7 @@ class UserOutgoingPaymentStatusTest extends TestCase
 {
 	public function testError()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('error')
-			->create();
+		$payment = UserOutgoingPayment::factory()->error()->create();
 
 		$payment->params = ['error' => [
 			'message' => __('user_outgoing_payment.errors.103'),
@@ -30,9 +28,7 @@ class UserOutgoingPaymentStatusTest extends TestCase
 
 	public function testSuccess()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('success')
-			->create();
+		$payment = UserOutgoingPayment::factory()->success()->create();
 
 		$this->assertEquals(2, PaymentStatusEnum::Success);
 		$this->assertEquals('Success', $payment->transaction->status);
@@ -41,9 +37,7 @@ class UserOutgoingPaymentStatusTest extends TestCase
 
 	public function testWait()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserOutgoingPayment::factory()->wait()->create();
 
 		$this->assertEquals(0, PaymentStatusEnum::Wait);
 		$this->assertEquals('Wait', $payment->transaction->status);
@@ -52,9 +46,7 @@ class UserOutgoingPaymentStatusTest extends TestCase
 
 	public function testProcessing()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('processing')
-			->create();
+		$payment = UserOutgoingPayment::factory()->processing()->create();
 
 		$this->assertEquals(1, PaymentStatusEnum::Processing);
 		$this->assertEquals('Processing', $payment->transaction->status);
@@ -63,9 +55,7 @@ class UserOutgoingPaymentStatusTest extends TestCase
 
 	public function testCanceled()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('canceled')
-			->create();
+		$payment = UserOutgoingPayment::factory()->canceled()->create();
 
 		$this->assertEquals(4, PaymentStatusEnum::Canceled);
 		$this->assertEquals('Canceled', $payment->transaction->status);
@@ -74,9 +64,7 @@ class UserOutgoingPaymentStatusTest extends TestCase
 
 	public function testChange()
 	{
-		$payment = factory(UserOutgoingPayment::class)
-			->states('wait')
-			->create();
+		$payment = UserOutgoingPayment::factory()->wait()->create();
 
 		$this->assertTrue($payment->fresh()->transaction->isStatusWait());
 

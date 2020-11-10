@@ -9,9 +9,7 @@ class MessageIsViewedByUserTest extends TestCase
 {
 	public function testTrueForRecepient()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 		$recepient = $message->getFirstRecepientParticipation()->user;
@@ -21,9 +19,7 @@ class MessageIsViewedByUserTest extends TestCase
 
 	public function testTrueForSender()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 		$sender = $message->create_user;
@@ -33,9 +29,7 @@ class MessageIsViewedByUserTest extends TestCase
 
 	public function testFalseForRecepient()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_not_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 		$recepient = $message->getFirstRecepientParticipation()->user;
@@ -45,9 +39,7 @@ class MessageIsViewedByUserTest extends TestCase
 
 	public function testTrueForSenderIfCreator()
 	{
-		$conversation = factory(Conversation::class)
-			->states('with_not_viewed_message')
-			->create();
+		$conversation = Conversation::factory()->with_not_viewed_message()->create();
 
 		$message = $conversation->messages()->first();
 		$sender = $message->create_user;

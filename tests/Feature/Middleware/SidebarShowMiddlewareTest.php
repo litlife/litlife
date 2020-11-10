@@ -84,7 +84,7 @@ class SidebarShowMiddlewareTest extends TestCase
 
 	public function testTrueIfAuthUserAndReadStyleShowSidebarTrueAndCookieSidebarFalseAndRouteIsBookPage()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->readStyle->show_sidebar = true;
 		$user->push();
 
@@ -117,7 +117,7 @@ class SidebarShowMiddlewareTest extends TestCase
 
 	public function testFalseIfAuthUserAndReadStyleShowSidebarFalseAndCookieSidebarTrue()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->readStyle->show_sidebar = false;
 		$user->push();
 
@@ -150,7 +150,7 @@ class SidebarShowMiddlewareTest extends TestCase
 
 	public function testTrueIfHasErrorsBag()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->readStyle->show_sidebar = false;
 		$user->push();
 

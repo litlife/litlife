@@ -9,9 +9,7 @@ class BookSellPolicyTest extends TestCase
 {
 	public function testSellPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -22,9 +20,7 @@ class BookSellPolicyTest extends TestCase
 
 		$this->assertTrue($user->can('sell', $book));
 
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -38,9 +34,7 @@ class BookSellPolicyTest extends TestCase
 
 	public function testAuthorCantSellIfNotCreatorOfTheBookPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -50,9 +44,7 @@ class BookSellPolicyTest extends TestCase
 
 	public function testAuthorCanSellIfUserCreatorOfTheBookPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();
@@ -66,9 +58,7 @@ class BookSellPolicyTest extends TestCase
 
 	public function testAuthorCanTSellIfBookDeletedPolicy()
 	{
-		$author = factory(Author::class)
-			->states('with_author_manager_can_sell', 'with_book')
-			->create();
+		$author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
 		$user = $author->managers->first()->user;
 		$book = $author->books->first();

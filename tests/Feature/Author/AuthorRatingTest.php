@@ -12,10 +12,10 @@ class AuthorRatingTest extends TestCase
 {
 	public function testUpdate()
 	{
-		$author = factory(Author::class)->create();
+		$author = Author::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['vote' => 6]);
-		$vote2 = factory(BookVote::class)->create(['vote' => 4]);
+		$vote = BookVote::factory()->create(['vote' => 6]);
+		$vote2 = BookVote::factory()->create(['vote' => 4]);
 
 		$book = $vote->book;
 		$book2 = $vote2->book;

@@ -10,9 +10,9 @@ class CommentUpdateTest extends TestCase
 {
 	public function testEditHttp()
 	{
-		$user = factory(User::class)->states('with_user_group')->create();
+		$user = User::factory()->with_user_group()->create();
 
-		$comment = factory(Comment::class)->create();
+		$comment = Comment::factory()->create();
 		$comment->create_user()->associate($user);
 		$comment->save();
 
@@ -31,8 +31,7 @@ class CommentUpdateTest extends TestCase
 
 	public function testEditHttpIfBookDeleted()
 	{
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$user = $comment->create_user;
 		$user->group->comment_edit_my = true;
@@ -54,12 +53,9 @@ class CommentUpdateTest extends TestCase
 
 	public function testUpdateHttp()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$text = $this->faker->realText(100);
 
@@ -77,9 +73,7 @@ class CommentUpdateTest extends TestCase
 
 	public function testUpdatePrivateCommentHttpAndDontAutoPublishFix()
 	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+		$comment = Comment::factory()->private()->create();
 
 		$user = $comment->create_user;
 

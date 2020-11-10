@@ -23,8 +23,7 @@ class BookReadStatusDateUpdateTest extends TestCase
 	 */
 	public function testUpdateIsOk()
 	{
-		$user_read_status = factory(BookStatus::class)
-			->create();
+		$user_read_status = BookStatus::factory()->create();
 
 		$user = $user_read_status->user;
 		$book = $user_read_status->book;
@@ -53,8 +52,7 @@ class BookReadStatusDateUpdateTest extends TestCase
 	 */
 	public function testUpdateIfWrongDate()
 	{
-		$user_read_status = factory(BookStatus::class)
-			->create();
+		$user_read_status = BookStatus::factory()->create();
 
 		$user = $user_read_status->user;
 		$book = $user_read_status->book;

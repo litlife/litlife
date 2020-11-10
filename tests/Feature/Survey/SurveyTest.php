@@ -12,9 +12,7 @@ class SurveyTest extends TestCase
 {
 	public function testIndexRoute()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
 		$this->actingAs($user)
 			->get(route('surveys.index'))
@@ -23,8 +21,7 @@ class SurveyTest extends TestCase
 
 	public function testCreateRouteIsOk()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(now()->addWeek()->addMinute());
 
@@ -35,8 +32,7 @@ class SurveyTest extends TestCase
 
 	public function testStoreRouteIsOk()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		Carbon::setTestNow(now()->addWeek()->addMinute());
 
@@ -66,8 +62,7 @@ class SurveyTest extends TestCase
 
 	public function testCreateGuest()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
 
@@ -78,8 +73,7 @@ class SurveyTest extends TestCase
 
 	public function testStoreGuest()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
 
@@ -109,8 +103,7 @@ class SurveyTest extends TestCase
 
 	public function testCreateGuestRedirectIfAuth()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
 
@@ -121,8 +114,7 @@ class SurveyTest extends TestCase
 
 	public function testStoreGuestRedirectIfAuth()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
 
@@ -134,8 +126,7 @@ class SurveyTest extends TestCase
 
 	public function testSurveyGuestCreateRouteSeeSurveySavedIfExists()
 	{
-		$survey = factory(UserSurvey::class)
-			->create();
+		$survey = UserSurvey::factory()->create();
 
 		$user = $survey->create_user;
 
@@ -154,8 +145,7 @@ class SurveyTest extends TestCase
 
 	public function testSurveyCreateShowSurveySaved()
 	{
-		$survey = factory(UserSurvey::class)
-			->create();
+		$survey = UserSurvey::factory()->create();
 
 		$user = $survey->create_user;
 

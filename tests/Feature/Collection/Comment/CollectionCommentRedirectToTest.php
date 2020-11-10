@@ -9,9 +9,7 @@ class CollectionCommentRedirectToTest extends TestCase
 {
 	public function testRedirectToComment()
 	{
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create();
+		$comment = Comment::factory()->collection()->create();
 
 		$this->assertTrue($comment->isCollectionType());
 

@@ -14,8 +14,7 @@ class MessageCreatePolicyTest extends TestCase
 	{
 		// if blacklist
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'status' => UserRelationType::Blacklist
 			]);
 
@@ -51,8 +50,7 @@ class MessageCreatePolicyTest extends TestCase
 
 	public function testCreatePolicyIfUserIsNobody()
 	{
-		$relation = factory(UserRelation::class)
-			->create(['status' => UserRelationType::Null]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Null]);
 
 		$first_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -83,8 +81,7 @@ class MessageCreatePolicyTest extends TestCase
 
 	public function testCreateIfUserIsSubscriber()
 	{
-		$relation = factory(UserRelation::class)
-			->create(['status' => UserRelationType::Subscriber]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Subscriber]);
 
 		$first_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -115,8 +112,7 @@ class MessageCreatePolicyTest extends TestCase
 
 	public function testCreateIfUserIsSubscription()
 	{
-		$relation = factory(UserRelation::class)
-			->create(['status' => UserRelationType::Subscriber]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Subscriber]);
 
 		$me = $relation->first_user;
 		$user = $relation->second_user;
@@ -146,7 +142,7 @@ class MessageCreatePolicyTest extends TestCase
 
 	public function testCreateIfUserIsFriend()
 	{
-		$relation = factory(UserRelation::class)->create(['status' => UserRelationType::Friend]);
+		$relation = UserRelation::factory()->create(['status' => UserRelationType::Friend]);
 
 		$first_user = $relation->first_user;
 		$second_user = $relation->second_user;
@@ -179,16 +175,15 @@ class MessageCreatePolicyTest extends TestCase
 
 	public function testCreatePolicyIfAcessSendPrivateMessagesAvoidEnable()
 	{
-		$admin = factory(User::class)->create();
+		$admin = User::factory()->create();
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->account_permissions->write_private_messages = UserAccountPermissionValues::friends;
 		$user->account_permissions->save();
 
 		$this->assertFalse($admin->can('write_private_messages', $user->fresh()));
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'status' => UserRelationType::Blacklist,
 				'user_id' => $user->id,
 				'user_id2' => $admin->id

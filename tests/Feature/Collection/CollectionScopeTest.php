@@ -11,9 +11,8 @@ class CollectionScopeTest extends TestCase
 {
 	public function testScopeSeeEveryone()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create()
+		$collection = Collection::factory()->accepted()->create(
+			)
 			->fresh();
 
 		$this->assertEquals(1, Collection::where('id', $collection->id)
@@ -31,9 +30,8 @@ class CollectionScopeTest extends TestCase
 
 	public function testUserSeesScopeOnlyMe()
 	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create()
+		$collection = Collection::factory()->private()->create(
+			)
 			->fresh();
 
 		$creator = $collection->create_user;
@@ -42,7 +40,7 @@ class CollectionScopeTest extends TestCase
 			->userSees($creator)
 			->count());
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertEquals(0, Collection::where('id', $collection->id)
 			->userSees($user)
@@ -51,9 +49,8 @@ class CollectionScopeTest extends TestCase
 
 	public function testUserSeesScopeEveryone()
 	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create()
+		$collection = Collection::factory()->accepted()->create(
+			)
 			->fresh();
 
 		$creator = $collection->create_user;
@@ -62,7 +59,7 @@ class CollectionScopeTest extends TestCase
 			->userSees($creator)
 			->count());
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertEquals(1, Collection::where('id', $collection->id)
 			->userSees($user)
@@ -72,8 +69,7 @@ class CollectionScopeTest extends TestCase
 	/*
 	public function testScopeUserSeesFriend()
 	{
-		$collection = factory(Collection::class)
-			->create(['who_can_see' => 'friends'])
+		$collection = Collection::factory()->create(['who_can_see' => 'friends'])
 			->fresh();
 
 		$creator = $collection->create_user;
@@ -82,14 +78,13 @@ class CollectionScopeTest extends TestCase
 			->userSees($creator)
 			->count());
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
 		$this->assertEquals(0, Collection::where('id', $collection->id)
 			->userSees($user)
 			->count());
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id' => $creator->id,
 				'status' => \App\Enums\UserRelationType::Friend
 			]);
@@ -102,8 +97,7 @@ class CollectionScopeTest extends TestCase
 			->userSees($user)
 			->count());
 
-		$relation = factory(UserRelation::class)
-			->create([
+		$relation = UserRelation::factory()->create([
 				'user_id2' => $creator->id,
 				'status' => \App\Enums\UserRelationType::Subscriber
 			]);
@@ -120,8 +114,7 @@ class CollectionScopeTest extends TestCase
 	/*
 		public function testScopeUserSeesSubscriberAndFriends()
 		{
-			$collection = factory(Collection::class)
-				->create(['who_can_see' => 'friends_and_subscribers'])
+			$collection = Collection::factory()->create(['who_can_see' => 'friends_and_subscribers'])
 				->fresh();
 
 			$creator = $collection->create_user;
@@ -130,14 +123,13 @@ class CollectionScopeTest extends TestCase
 				->userSees($creator)
 				->count());
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 
 			$this->assertEquals(0, Collection::where('id', $collection->id)
 				->userSees($user)
 				->count());
 
-			$relation = factory(UserRelation::class)
-				->create([
+			$relation = UserRelation::factory()->create([
 					'user_id' => $creator->id,
 					'status' => \App\Enums\UserRelationType::Friend
 				]);
@@ -150,8 +142,7 @@ class CollectionScopeTest extends TestCase
 				->userSees($user)
 				->count());
 
-			$relation = factory(UserRelation::class)
-				->create([
+			$relation = UserRelation::factory()->create([
 					'user_id2' => $creator->id,
 					'status' => \App\Enums\UserRelationType::Subscriber
 				]);

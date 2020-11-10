@@ -9,8 +9,7 @@ class CollectionEditBookDescriptionTest extends TestCase
 {
 	public function testCollectionUserCanEditBookDescriptionWithPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_edit_books_description' => true]);
+		$collectionUser = CollectionUser::factory()->create(['can_edit_books_description' => true]);
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;
@@ -20,9 +19,7 @@ class CollectionEditBookDescriptionTest extends TestCase
 
 	public function testCollectionUserCanEditBookDescriptionWithoutPermission()
 	{
-		$collectionUser = factory(CollectionUser::class)
-			->states('collection_who_can_add_me')
-			->create(['can_edit_books_description' => false]);
+		$collectionUser = CollectionUser::factory()->collection_who_can_add_me()->create();
 
 		$user = $collectionUser->user;
 		$collection = $collectionUser->collection;

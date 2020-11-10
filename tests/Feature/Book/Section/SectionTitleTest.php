@@ -10,8 +10,7 @@ class SectionTitleTest extends TestCase
 {
 	public function testSetNameUntitledIfEmptyContent()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$section = new Section;
 		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
@@ -27,8 +26,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<p>' . $this->faker->realText(200) . '</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => $title,
 				'content' => '<h1 class="u-title">' . $title . '</h1>' . $content
 			])->fresh();
@@ -42,8 +40,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<p>' . $this->faker->realText(200) . '</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => $title,
 				'content' => '<h1>' . $title . '</h1>' . $content
 			])->fresh();
@@ -57,8 +54,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<p>текст</p><p>текст</p><p>текст</p><p>текст</p>' . '<h1>' . $title . '</h1>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => $title,
 				'content' => '<h1>' . $title . '</h1>' . $content
 			])->fresh();
@@ -68,8 +64,7 @@ class SectionTitleTest extends TestCase
 
 	public function testAutoTitleIfTagStrongInsideTagP()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<p><b>Название   главы</b></p>
@@ -94,8 +89,7 @@ class SectionTitleTest extends TestCase
 
 	public function testAutoTitleForHeaderTags()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<h6>Название   главы</h6>
@@ -120,8 +114,7 @@ class SectionTitleTest extends TestCase
 
 	public function testDontCreateTitleIfParagraph()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<p>Название главы</p>
@@ -138,7 +131,7 @@ class SectionTitleTest extends TestCase
 
 	public function testTitleId()
 	{
-		$section = factory(Section::class)->create();
+		$section = Section::factory()->create();
 		$section->setTitleId('title2');
 		$section->content = 'текст';
 		$section->save();
@@ -153,8 +146,7 @@ class SectionTitleTest extends TestCase
 
 	public function testRemoveH6TagIfItMatchesTheChapterTitle()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<h6 id="title"> Название    главы</h6>
@@ -178,8 +170,7 @@ class SectionTitleTest extends TestCase
 
 	public function testRemoveH1TagIfItMatchesTheChapterTitle()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<h1 id="title">  Название главы  </h1>
@@ -203,8 +194,7 @@ class SectionTitleTest extends TestCase
 
 	public function testRemovePTagIfItMatchesTheChapterTitle()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<p>  Название главы  </p>
@@ -228,8 +218,7 @@ class SectionTitleTest extends TestCase
 
 	public function testDontRemovePTagIfItMatchesTheChapterTitleWithId()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '<p id="title">Название главы</p>';
 
@@ -252,8 +241,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<div id="test"><h4>Глава первая</h4><h4>Имя главы</h4></div><p>текст</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => $title,
 				'content' => $content
 			]);
@@ -269,8 +257,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<div><h4 id="test">Глава первая</h4><h4>Имя главы</h4></div><p>текст</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => $title,
 				'content' => $content
 			]);
@@ -284,8 +271,7 @@ class SectionTitleTest extends TestCase
 	{
 		$content = '<p><b>Эпилог</b></p><p>Текст эпилога</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => 'Эпилог',
 				'content' => $content
 			]);
@@ -298,8 +284,7 @@ class SectionTitleTest extends TestCase
 	{
 		$content = '<p><b>текст</b></p><p>текст</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => 'Название главы',
 				'content' => $content
 			]);
@@ -312,8 +297,7 @@ class SectionTitleTest extends TestCase
 	{
 		$content = '<p><i>Текст первой главы</i></p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => 'Текст первой главы'
 			]);
 		$section->content = $content;
@@ -325,8 +309,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<p><b>Текст второй</b></p><p><b>главы</b></p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => 'Текст второй',
 			]);
 		$section->content = $content;
@@ -338,8 +321,7 @@ class SectionTitleTest extends TestCase
 
 		$content = '<p>Текст четвертой</p><p>главы</p>';
 
-		$section = factory(Section::class)
-			->create([
+		$section = Section::factory()->create([
 				'title' => 'Текст четвертой'
 			]);
 		$section->content = $content;
@@ -366,8 +348,7 @@ class SectionTitleTest extends TestCase
 
 	public function testDontRemoveImageWithStrongTag()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$content = '
 		<p><b><img src="image.png" /></b></p>

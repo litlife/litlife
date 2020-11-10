@@ -16,9 +16,7 @@ class CreateNewBookFilesTest extends TestCase
 {
 	public function testCreateNewBookFileIfBookAccepted()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections', 'accepted')
-			->create();
+		$book = Book::factory()->with_three_sections()->accepted()->create();
 
 		$book->needCreateNewBookFiles();
 		$book->save();
@@ -32,9 +30,7 @@ class CreateNewBookFilesTest extends TestCase
 
 	public function testCreateNewBookFileIfBookPrivate()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections', 'private')
-			->create();
+		$book = Book::factory()->with_three_sections()->private()->create();
 
 		$book->needCreateNewBookFiles();
 		$book->save();
@@ -48,9 +44,7 @@ class CreateNewBookFilesTest extends TestCase
 
 	public function testCreateNewBookFileIfBookSentForReview()
 	{
-		$book = factory(Book::class)
-			->states('with_three_sections', 'sent_for_review')
-			->create();
+		$book = Book::factory()->with_three_sections()->sent_for_review()->create();
 
 		$book->needCreateNewBookFiles();
 		$book->save();
@@ -66,8 +60,7 @@ class CreateNewBookFilesTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private')->create();
+		$book = Book::factory()->private()->create();
 
 		$this->assertTrue($book->isPagesNewFormat());
 
@@ -111,12 +104,9 @@ class CreateNewBookFilesTest extends TestCase
 	{
 		Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->states('private', 'with_create_user', 'with_section')
-			->create();
+		$book = Book::factory()->private()->with_create_user()->with_section()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+		$section = Section::factory()->create(['book_id' => $book->id]);
 
 		$this->actingAs($book->create_user)
 			->patch(route('books.sections.update', ['book' => $book, 'section' => $book->sections()->first()->inner_id]),
@@ -156,12 +146,9 @@ class CreateNewBookFilesTest extends TestCase
 
 	public function testDontCreateFileIfBookIsWithoutChapters()
 	{
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
-		$note = factory(Section::class)
-			->states('note')
-			->create(['book_id' => $book->id]);
+		$note = Section::factory()->note()->create();
 
 		$this->assertEquals(1, $book->fresh()->notes_count);
 		$this->assertEquals(0, $book->characters_count);

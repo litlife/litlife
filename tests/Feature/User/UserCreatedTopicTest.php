@@ -12,8 +12,7 @@ class UserCreatedTopicTest extends TestCase
 {
 	public function testViewPrivateTopicOnUserTopicsList()
 	{
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
 		$forum = $post->forum;
 		$forum->private = true;
@@ -29,8 +28,7 @@ class UserCreatedTopicTest extends TestCase
 			->get(route('users.topics', $topic->create_user))
 			->assertSeeText($topic->name);
 
-		$other_user = factory(User::class)
-			->create();
+		$other_user = User::factory()->create();
 
 		Topic::refreshLatestTopics();
 

@@ -12,15 +12,13 @@ class BookGroupCommentsTest extends TestCase
 {
 	public function testAddComment()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 
@@ -43,23 +41,17 @@ class BookGroupCommentsTest extends TestCase
 
 	public function testChildCommentHasSameCommentableTypeAndId()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $mainBook->id]);
+		$comment = Comment::factory()->book()->create();
 
-		$comment2 = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $minorBook->id]);
+		$comment2 = Comment::factory()->book()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->add_comment = true;
 		$user->push();
 

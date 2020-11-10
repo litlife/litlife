@@ -21,11 +21,11 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->author_editor_request = true;
 			$user->push();
 
-			$author = factory(Author::class)->create();
+			$author = Author::factory()->create();
 
 			$user_browser->resize(1000, 1000)
 				->loginAs($user)
@@ -48,9 +48,7 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($user_browser) {
 
-			$manager = factory(Manager::class)
-				->states('on_review')
-				->create();
+			$manager = Manager::factory()->on_review()->create();
 
 			$user = $manager->user;
 			$author = $manager->manageable;
@@ -75,18 +73,16 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($admin_browser) {
 
-			$admin_user = factory(User::class)->create();
+			$admin_user = User::factory()->create();
 			$admin_user->group->author_editor_check = true;
 			$admin_user->group->moderator_add_remove = true;
 			$admin_user->push();
 
-			$manager = factory(Manager::class)
-				->states('on_review')
-				->create();
+			$manager = Manager::factory()->on_review()->create();
 
 			$user = $manager->user;
 
-			$author = factory(Author::class)->create();
+			$author = Author::factory()->create();
 
 			$admin_browser->resize(1000, 1000)
 				->loginAs($admin_user)
@@ -113,14 +109,12 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($admin_browser) {
 
-			$admin_user = factory(User::class)->create();
+			$admin_user = User::factory()->create();
 			$admin_user->group->author_editor_check = true;
 			$admin_user->group->moderator_add_remove = true;
 			$admin_user->push();
 
-			$manager = factory(Manager::class)
-				->states('accepted')
-				->create();
+			$manager = Manager::factory()->accepted()->create();
 
 			$user = $manager->user;
 			$author = $manager->manageable;
@@ -146,9 +140,7 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$manager = factory(Manager::class)
-				->states('accepted')
-				->create();
+			$manager = Manager::factory()->accepted()->create();
 
 			$user = $manager->user;
 			$author = $manager->manageable;
@@ -164,9 +156,7 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$manager = factory(Manager::class)
-				->states('on_review')
-				->create();
+			$manager = Manager::factory()->on_review()->create();
 
 			$user = $manager->user;
 			$author = $manager->manageable;
@@ -182,12 +172,9 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$book = factory(Book::class)
-				->states('with_writer')
-				->create();
+			$book = Book::factory()->with_writer()->create();
 
 			$author = $book->writers()->get()->first();
 
@@ -211,12 +198,9 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)
-				->create();
+			$user = User::factory()->create();
 
-			$book = factory(Book::class)
-				->states('with_writer')
-				->create();
+			$book = Book::factory()->with_writer()->create();
 
 			$book_vote = factory(BookVote::class)
 				->make();
@@ -243,12 +227,11 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->add_forum_topic = true;
 			$user->push();
 
-			$author = factory(Author::class)
-				->create();
+			$author = Author::factory()->create();
 
 			$title = $this->faker->realText(100);
 			$description = $this->faker->realText(100);
@@ -280,13 +263,11 @@ class AuthorTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$user = factory(User::class)->create();
+			$user = User::factory()->create();
 			$user->group->add_comment = true;
 			$user->push();
 
-			$book = factory(Book::class)
-				->states('with_writer')
-				->create();
+			$book = Book::factory()->with_writer()->create();
 
 			$comments = factory(Comment::class, 16)
 				->create([

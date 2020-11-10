@@ -10,7 +10,7 @@ class RemoveAutoCreatedBookFilesIfOldReadFormatTest extends TestCase
 {
 	public function testFileDeleted()
 	{
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->format = 'epub';
 		$file->auto_created = true;
 		$file->save();
@@ -33,7 +33,7 @@ class RemoveAutoCreatedBookFilesIfOldReadFormatTest extends TestCase
 
 	public function testDontRemoveIfFileNotAutoCreated()
 	{
-		$file = factory(BookFile::class)->states('txt')->create();
+		$file = BookFile::factory()->txt()->create();
 		$file->format = 'epub';
 		$file->auto_created = false;
 		$file->save();

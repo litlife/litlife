@@ -12,12 +12,9 @@ class TopicArchiveTest extends TestCase
 	{
 		Topic::archived()->delete();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$topic = factory(Topic::class)
-			->states('archived')
-			->create();
+		$topic = Topic::factory()->archived()->create();
 
 		$this->actingAs($user)
 			->get(route('topics.archived'))
@@ -28,12 +25,11 @@ class TopicArchiveTest extends TestCase
 
 	public function testArchive()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = true;
 		$user->push();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('topics.archive', ['topic' => $topic]))
@@ -46,13 +42,11 @@ class TopicArchiveTest extends TestCase
 
 	public function testUnarchive()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->manipulate_topic = true;
 		$user->push();
 
-		$topic = factory(Topic::class)
-			->states('archived')
-			->create();
+		$topic = Topic::factory()->archived()->create();
 
 		$this->actingAs($user)
 			->get(route('topics.unarchive', ['topic' => $topic]))

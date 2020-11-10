@@ -11,24 +11,20 @@ class PostMoveTest extends TestCase
 {
 	public function testTransfer()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_move_post = true;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create()
+		$post = Post::factory()->create()
 			->fresh();
 
-		$post2 = factory(Post::class)
-			->create(['topic_id' => $post->topic_id])
+		$post2 = Post::factory()->create(['topic_id' => $post->topic_id])
 			->fresh();
 
-		$post3 = factory(Post::class)
-			->create()
+		$post3 = Post::factory()->create()
 			->fresh();
 
-		$post4 = factory(Post::class)
-			->create(['topic_id' => $post3->topic_id])
+		$post4 = Post::factory()->create(['topic_id' => $post3->topic_id])
 			->fresh();
 
 		$topic = $post->topic;
@@ -78,26 +74,22 @@ class PostMoveTest extends TestCase
 
 	public function testMovePostsHttp()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->forum_move_post = true;
 		$user->push();
 
-		$post = factory(Post::class)
-			->create();
+		$post = Post::factory()->create();
 
-		$post2 = factory(Post::class)
-			->create();
+		$post2 = Post::factory()->create();
 
-		$post3 = factory(Post::class)
-			->create();
+		$post3 = Post::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('posts.move',
 				['ids' => implode(',', [$post->id, $post2->id, $post3->id])]))
 			->assertOk();
 
-		$topic = factory(Topic::class)
-			->create();
+		$topic = Topic::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('posts.transfer',
@@ -121,15 +113,13 @@ class PostMoveTest extends TestCase
 
 	public function testTransferIfPostsFixed()
 	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+		$admin = User::factory()->admin()->create();
 
-		$post = factory(Post::class)->create();
+		$post = Post::factory()->create();
 		$topic = $post->topic;
 		$post->fix();
 
-		$post2 = factory(Post::class)->create();
+		$post2 = Post::factory()->create();
 		$topic2 = $post2->topic;
 		$post2->fix();
 

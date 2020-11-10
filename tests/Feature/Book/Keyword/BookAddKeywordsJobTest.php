@@ -12,12 +12,9 @@ class BookAddKeywordsJobTest extends TestCase
 {
 	public function testAddNew()
 	{
-		$book = factory(Book::class)
-			->states('with_writer')
-			->create();
+		$book = Book::factory()->with_writer()->create();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		BookAddKeywordsJob::dispatch($book, [$keyword->text]);
 
@@ -31,12 +28,9 @@ class BookAddKeywordsJobTest extends TestCase
 
 	public function testAddNewIfOtherExists()
 	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+		$book = Book::factory()->with_writer()->with_keyword()->create();
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$book_keyword = $book->book_keywords()->first();
 

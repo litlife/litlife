@@ -17,11 +17,11 @@ class BookGroupTest extends TestCase
 {
 	public function testIndex()
 	{
-		$user = factory(User::class)->create()->fresh();
+		$user = User::factory()->create()->fresh();
 		$user->group->connect_books = true;
 		$user->push();
 
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->statusAccepted();
 		$book->push();
 
@@ -33,28 +33,23 @@ class BookGroupTest extends TestCase
 
 	public function testNotDeleteMainBookVoteFromSameGroup()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $mainBook->id,
 				'create_user_id' => $user->id,
 				'vote' => 3
 			]);
 
-		$other_user_vote = factory(BookVote::class)
-			->create(['book_id' => $mainBook->id, 'vote' => 6]);
+		$other_user_vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 6]);
 
-		$vote2 = factory(BookVote::class)
-			->create([
+		$vote2 = BookVote::factory()->create([
 				'book_id' => $minorBook->id,
 				'create_user_id' => $user->id,
 				'vote' => 5
@@ -81,28 +76,23 @@ class BookGroupTest extends TestCase
 
 	public function testDeleteMinorBookVoteFromSameGroup()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'book_id' => $mainBook->id,
 				'create_user_id' => $user->id,
 				'vote' => 3
 			]);
 
-		$other_user_vote = factory(BookVote::class)
-			->create(['book_id' => $mainBook->id, 'vote' => 6]);
+		$other_user_vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 6]);
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$vote2 = factory(BookVote::class)
-			->create([
+		$vote2 = BookVote::factory()->create([
 				'book_id' => $minorBook->id,
 				'create_user_id' => $user->id,
 				'vote' => 5
@@ -127,14 +117,12 @@ class BookGroupTest extends TestCase
 
 	public function testUpdateBookRating()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['book_id' => $mainBook->id, 'vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['book_id' => $minorBook->id, 'vote' => 3]);
+		$vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 7]);
+		$vote2 = BookVote::factory()->create(['book_id' => $minorBook->id, 'vote' => 3]);
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -192,14 +180,12 @@ class BookGroupTest extends TestCase
 
 	public function testUpdateBookRatingIfMainBookAverageRatingForPeriodNotExists()
 	{
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['book_id' => $mainBook->id, 'vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['book_id' => $minorBook->id, 'vote' => 3]);
+		$vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 7]);
+		$vote2 = BookVote::factory()->create(['book_id' => $minorBook->id, 'vote' => 3]);
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -260,10 +246,10 @@ class BookGroupTest extends TestCase
 
 	public function testSeeUserVoted()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['vote' => 3]);
+		$vote = BookVote::factory()->create(['vote' => 7]);
+		$vote2 = BookVote::factory()->create(['vote' => 3]);
 
 		$book = $vote->book;
 		$book2 = $vote2->book;
@@ -285,12 +271,12 @@ class BookGroupTest extends TestCase
 
 	public function testBookVotesRelation()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 
-		$group = factory(BookGroup::class)->create();
+		$group = BookGroup::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['vote' => 3]);
+		$vote = BookVote::factory()->create(['vote' => 7]);
+		$vote2 = BookVote::factory()->create(['vote' => 3]);
 
 		$book = $vote->book;
 		$book2 = $vote2->book;
@@ -309,27 +295,23 @@ class BookGroupTest extends TestCase
 
 	public function testNotDeleteAllOtherReadStatusForBooksFromSameGroup()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'book_id' => $mainBook->id,
 				'user_id' => $user->id,
 				'status' => 'readed'
 			]);
 
-		//$other_user_status = factory(BookStatus::class)->create(['book_id' => $mainBook->id, 'status' => 'read_later']);
+		//$other_user_status = BookStatus::factory()->create(['book_id' => $mainBook->id, 'status' => 'read_later']);
 
-		$status2 = factory(BookStatus::class)
-			->create([
+		$status2 = BookStatus::factory()->create([
 				'book_id' => $minorBook->id,
 				'user_id' => $user->id,
 				'status' => 'not_read'
@@ -356,9 +338,7 @@ class BookGroupTest extends TestCase
 
 	public function testIsInGroup()
 	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -368,13 +348,11 @@ class BookGroupTest extends TestCase
 
 	public function testVoteForMinorBook()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -396,18 +374,15 @@ class BookGroupTest extends TestCase
 
 	public function testUpdateVoteForMinorBook()
 	{
-		$user = factory(User::class)->create();
+		$user = User::factory()->create();
 		$user->group->vote_for_book = true;
 		$user->push();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$vote = factory(BookVote::class)
-			->create([
+		$vote = BookVote::factory()->create([
 				'create_user_id' => $user->id,
 				'book_id' => $mainBook->id,
 				'vote' => 2
@@ -429,12 +404,9 @@ class BookGroupTest extends TestCase
 
 	public function testBookStatusForMinorBook()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
@@ -458,18 +430,14 @@ class BookGroupTest extends TestCase
 
 	public function testUpdateBookStatusForMinorBook()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()
 			->first();
 
-		$status = factory(BookStatus::class)
-			->create([
+		$status = BookStatus::factory()->create([
 				'user_id' => $user->id,
 				'book_id' => $mainBook->id,
 				'status' => 'read_now'
@@ -491,18 +459,13 @@ class BookGroupTest extends TestCase
 
 	public function testGroupTwoBooks()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->create();
+		$minorBook = Book::factory()->create();
 
-		$minorBook2 = factory(Book::class)
-			->create();
+		$minorBook2 = Book::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('books.group.attach', ['book' => $mainBook]),
@@ -537,18 +500,13 @@ class BookGroupTest extends TestCase
 
 	public function testBookThatIsAttachedToMustBeTheMainOne()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+		$mainBook = Book::factory()->with_minor_book()->create();
 
 		$minorBook = $mainBook->groupedBooks()->first();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('books.group.attach', ['book' => $minorBook]),
@@ -561,9 +519,9 @@ class BookGroupTest extends TestCase
 
 	public function testIsAttachedToBook()
 	{
-		$mainBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)->create();
+		$minorBook = Book::factory()->create();
 
 		$this->assertFalse($mainBook->isAttachedToBook($minorBook));
 		$this->assertFalse($minorBook->isAttachedToBook($mainBook));
@@ -579,7 +537,7 @@ class BookGroupTest extends TestCase
 
 	public function testSetGetEditionsCount()
 	{
-		$book = factory(Book::class)->create();
+		$book = Book::factory()->create();
 		$book->editions_count = 1;
 		$book->save();
 
@@ -597,12 +555,10 @@ class BookGroupTest extends TestCase
 
 	public function testCantDeleteMainBookInGroup()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -615,16 +571,11 @@ class BookGroupTest extends TestCase
 
 	public function testDeleteMinorBookAndRestoreInGroup()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$minorBook = Book::factory()->with_create_user()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -655,8 +606,8 @@ class BookGroupTest extends TestCase
 
 	public function testBookShowIsOkIfMainBookIsDeleted()
 	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -669,11 +620,10 @@ class BookGroupTest extends TestCase
 
 	public function testUngroupMinorBookOnRestoreIfMainBookIsDeleted()
 	{
-		$user = factory(User::class)
-			->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -693,15 +643,11 @@ class BookGroupTest extends TestCase
 
 	public function testDeleteOkIfMainBookIsDeleted()
 	{
-		$user = factory(User::class)
-			->states('admin')->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)
-			->create();
+		$mainBook = Book::factory()->create();
 
-		$minorBook = factory(Book::class)
-			->states('with_create_user')
-			->create();
+		$minorBook = Book::factory()->with_create_user()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -719,35 +665,29 @@ class BookGroupTest extends TestCase
 
 	public function testOriginAdded()
 	{
-		$status = factory(BookStatus::class)
-			->create(['status' => 'readed']);
+		$status = BookStatus::factory()->create(['status' => 'readed']);
 
 		$this->assertEquals($status->book_id, $status->origin_book_id);
 
-		$vote = factory(BookVote::class)
-			->create();
+		$vote = BookVote::factory()->create();
 
 		$this->assertEquals($vote->book_id, $vote->origin_book_id);
 
-		$keyword = factory(Keyword::class)
-			->create();
+		$keyword = Keyword::factory()->create();
 
 		$this->assertEquals($keyword->book_id, $keyword->origin_book_id);
 
-		$comment = factory(Comment::class)
-			->create();
+		$comment = Comment::factory()->create();
 
 		$this->assertEquals($comment->commentable_id, $comment->origin_commentable_id);
 	}
 
 	public function testBookListRedirectToMainEdition()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 
@@ -758,12 +698,10 @@ class BookGroupTest extends TestCase
 
 	public function testSeeMinorBookInEditionsIndex()
 	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+		$user = User::factory()->admin()->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+		$mainBook = Book::factory()->create();
+		$minorBook = Book::factory()->create();
 
 		BookGroupJob::dispatch($mainBook, $minorBook);
 

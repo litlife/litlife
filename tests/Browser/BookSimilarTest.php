@@ -11,8 +11,7 @@ class BookSimilarTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$bookSimilarVote = factory(BookSimilarVote::class)
-				->create(['vote' => 1]);
+			$bookSimilarVote = BookSimilarVote::factory()->create(['vote' => 1]);
 
 			$book = $bookSimilarVote->book;
 			$user = $bookSimilarVote->create_user;
@@ -52,8 +51,7 @@ class BookSimilarTest extends DuskTestCase
 	{
 		$this->browse(function ($browser) {
 
-			$bookSimilarVote = factory(BookSimilarVote::class)
-				->create(['vote' => 1]);
+			$bookSimilarVote = BookSimilarVote::factory()->create(['vote' => 1]);
 
 			$book = $bookSimilarVote->book;
 			$user = $bookSimilarVote->create_user;

@@ -27,8 +27,7 @@ class UserPaymentDetailTest extends TestCase
 	 */
 	public function testStoreNumbers()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$creditCardNumber = $this->faker->creditCardNumber;
 		$phoneNumber = '+79876543' . rand(100, 999);
@@ -93,14 +92,11 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testDelete()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$card = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id, 'type' => 'card', 'number' => '4024007151327698']);
+		$card = UserPaymentDetail::factory()->create(['user_id' => $user->id, 'type' => 'card', 'number' => '4024007151327698']);
 
-		$qiwi = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id, 'type' => 'qiwi', 'number' => '+79876543' . rand(100, 500)]);
+		$qiwi = UserPaymentDetail::factory()->create(['user_id' => $user->id, 'type' => 'qiwi', 'number' => '+79876543' . rand(100, 500)]);
 
 		$this->assertEquals(2, $user->wallets()->count());
 
@@ -125,13 +121,11 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testDeleteAndAddAgain()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$number = '4024007151327698';
 
-		$card = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id, 'type' => 'card', 'number' => $number])->fresh();
+		$card = UserPaymentDetail::factory()->create(['user_id' => $user->id, 'type' => 'card', 'number' => $number])->fresh();
 
 		$card->delete();
 
@@ -171,11 +165,9 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testChange()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$card = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id, 'type' => 'card', 'number' => '4024007151327698'])->fresh();
+		$card = UserPaymentDetail::factory()->create(['user_id' => $user->id, 'type' => 'card', 'number' => '4024007151327698'])->fresh();
 
 		$number = '5218415558066285';
 
@@ -216,11 +208,9 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testNothingChange()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$card = factory(UserPaymentDetail::class)
-			->create(['user_id' => $user->id, 'type' => 'card', 'number' => '4024007151327698'])->fresh();
+		$card = UserPaymentDetail::factory()->create(['user_id' => $user->id, 'type' => 'card', 'number' => '4024007151327698'])->fresh();
 
 		$this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -245,8 +235,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testWrongCardNumber()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -260,8 +249,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testWrongWMRPurse()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -275,8 +263,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testWrongYandexMoney()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -290,8 +277,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testWrongQiwi()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -305,8 +291,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testCardInfoDetails()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$json = [
 			'result' => [
@@ -342,9 +327,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testIsRuCard()
 	{
-		$card = factory(UserPaymentDetail::class)
-			->states('card')
-			->create();
+		$card = UserPaymentDetail::factory()->card()->create();
 
 		$this->assertFalse($card->isRuCard());
 
@@ -381,9 +364,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testCardBrand()
 	{
-		$card = factory(UserPaymentDetail::class)
-			->states('card')
-			->create();
+		$card = UserPaymentDetail::factory()->card()->create();
 
 		$this->assertEquals('', $card->getCardBrand());
 
@@ -400,9 +381,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testCountryCode()
 	{
-		$card = factory(UserPaymentDetail::class)
-			->states('card')
-			->create();
+		$card = UserPaymentDetail::factory()->card()->create();
 
 		$this->assertEquals('', $card->getCountryCode());
 
@@ -419,8 +398,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testStorePhoneNumberWithOtherSymbols()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -441,7 +419,7 @@ class UserPaymentDetailTest extends TestCase
 	{
 		$number = 'P123456789123';
 
-		$user = factory(User::class)->states('with_thousand_earned_money_on_balance')->create();
+		$user = User::factory()->with_thousand_earned_money_on_balance()->create();
 		$user->group->withdrawal = true;
 		$user->push();
 
@@ -474,8 +452,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testCardChecksumInvalid()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),
@@ -488,8 +465,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testSantizeCardNumber()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$json = [
 			'result' => [
@@ -520,8 +496,7 @@ class UserPaymentDetailTest extends TestCase
 
 	public function testSantizeQiwiPhoneNumber()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$response = $this->actingAs($user)
 			->post(route('users.wallet.payment_details.save', $user),

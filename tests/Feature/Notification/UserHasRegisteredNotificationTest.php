@@ -10,8 +10,7 @@ class UserHasRegisteredNotificationTest extends TestCase
 {
 	public function testVia()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$notification = new UserHasRegisteredNotification($user);
 
@@ -20,9 +19,7 @@ class UserHasRegisteredNotificationTest extends TestCase
 
 	public function testMail()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$email = $user->emails()->first();
 
@@ -52,9 +49,7 @@ class UserHasRegisteredNotificationTest extends TestCase
 
 	public function testPreviewRoute()
 	{
-		$user = factory(User::class)
-			->states('with_confirmed_email')
-			->create();
+		$user = User::factory()->with_confirmed_email()->create();
 
 		$this->actingAs($user)
 			->get(route('preview.welcome_notification'))

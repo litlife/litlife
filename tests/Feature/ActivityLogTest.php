@@ -14,25 +14,21 @@ class ActivityLogTest extends TestCase
 
 	public function testShowHttp()
 	{
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+		$book = Book::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('books.activity_logs', ['book' => $book]))
 			->assertOk();
 
-		$user = factory(User::class)
-			->create();
+		$user = User::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('users.activity_logs', ['user' => $user]))
 			->assertOk();
 
-		$author = factory(Author::class)
-			->create();
+		$author = Author::factory()->create();
 
 		$this->actingAs($user)
 			->get(route('authors.activity_logs', ['author' => $author]))
@@ -41,9 +37,9 @@ class ActivityLogTest extends TestCase
 
 	public function testShowBookDeleted()
 	{
-		$admin = factory(User::class)->states('admin')->create();
+		$admin = User::factory()->admin()->create();
 
-		$activity = factory(Activity::class)->create();
+		$activity = Activity::factory()->create();
 
 		$subject = $activity->subject;
 

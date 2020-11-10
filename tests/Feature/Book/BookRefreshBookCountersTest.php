@@ -12,8 +12,7 @@ class BookRefreshBookCountersTest extends TestCase
 	{
 		$updated_at = now();
 
-		$book = factory(Book::class)
-			->create(['updated_at' => $updated_at]);
+		$book = Book::factory()->create(['updated_at' => $updated_at]);
 
 		Artisan::call('refresh:book_counters', ['id' => $book->id]);
 
