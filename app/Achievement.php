@@ -20,9 +20,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property int $create_user_id
- * @property-read \App\User $create_user
- * @property-read \App\Image $image
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @property-read User $create_user
+ * @property-read Image $image
+ * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement newQuery()
  * @method static Builder|Achievement onlyTrashed()
@@ -33,7 +33,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement void()
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement whereId($value)
@@ -46,34 +46,34 @@ use Illuminate\Support\Carbon;
  */
 class Achievement extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description'];
 
-	public function scopeVoid($query)
-	{
-		return $query;
-	}
+    public function scopeVoid($query)
+    {
+        return $query;
+    }
 
-	public function image()
-	{
-		return $this->belongsTo('App\Image');
-	}
+    public function image()
+    {
+        return $this->belongsTo('App\Image');
+    }
 
-	public function users()
-	{
-		return $this->belongsToMany('App\User');
-	}
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
 
-	public function scopeSimilaritySearch($query, $searchText)
-	{
-		$query->selectRaw("*, similarity(title, ?) AS rank", [$searchText]);
+    public function scopeSimilaritySearch($query, $searchText)
+    {
+        $query->selectRaw("*, similarity(title, ?) AS rank", [$searchText]);
 
-		$query->whereRaw("title % ?", [$searchText]);
+        $query->whereRaw("title % ?", [$searchText]);
 
-		$query->orderBy("rank", 'desc');
+        $query->orderBy("rank", 'desc');
 
-		return $query;
-	}
+        return $query;
+    }
 }

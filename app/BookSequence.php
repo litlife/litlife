@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class BookSequence extends Pivot
 {
-	public $table = 'book_sequences';
+    public $table = 'book_sequences';
 
 }
 

@@ -28,8 +28,8 @@ use Illuminate\Support\Carbon;
  * @property string $storage
  * @property string|null $dirname
  * @property int|null $create_user_id
- * @property-read \App\Author $author
- * @property-read \App\User|null $create_user
+ * @property-read Author $author
+ * @property-read User|null $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -49,7 +49,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereHeight($value)
@@ -67,25 +67,25 @@ use Illuminate\Support\Carbon;
  */
 class AuthorPhoto extends Model
 {
-	use SoftDeletes;
-	use ImageResizable;
-	use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
+    use UserCreate;
 
-	public $folder = '_author';
-	public $source;
+    public $folder = '_author';
+    public $source;
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author');
+    }
 
-	public function getWidth()
-	{
-		return $this->width;
-	}
+    public function getWidth()
+    {
+        return $this->width;
+    }
 
-	public function getHeight()
-	{
-		return $this->height;
-	}
+    public function getHeight()
+    {
+        return $this->height;
+    }
 }

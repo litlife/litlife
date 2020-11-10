@@ -4,6 +4,7 @@ namespace App;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Support\Carbon;
 
 /**
@@ -17,9 +18,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $read_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $notifiable
- * @method static \Illuminate\Notifications\DatabaseNotificationCollection|static[] all($columns = ['*'])
- * @method static \Illuminate\Notifications\DatabaseNotificationCollection|static[] get($columns = ['*'])
+ * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $notifiable
+ * @method static DatabaseNotificationCollection|static[] all($columns = ['*'])
+ * @method static DatabaseNotificationCollection|static[] get($columns = ['*'])
  * @method static Builder|DatabaseNotification newModelQuery()
  * @method static Builder|DatabaseNotification newQuery()
  * @method static Builder|DatabaseNotification query()

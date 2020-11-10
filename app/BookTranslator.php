@@ -16,5 +16,5 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class BookTranslator extends Pivot
 {
-	public $table = 'book_translators';
+    public $table = 'book_translators';
 }

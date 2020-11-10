@@ -19,14 +19,14 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string|null $font_color
  * @property string|null $card_color
  * @property bool $show_sidebar Показать сайдбар
- * @property-read \App\User $user
+ * @property-read User $user
  * @method static Builder|UserReadStyle disableCache()
  * @method static CachedBuilder|UserReadStyle newModelQuery()
  * @method static CachedBuilder|UserReadStyle newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static CachedBuilder|UserReadStyle query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserReadStyle whereAlign($value)
  * @method static Builder|UserReadStyle whereBackgroundColor($value)
  * @method static Builder|UserReadStyle whereCardColor($value)
@@ -40,136 +40,140 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class UserReadStyle extends Model
 {
-	use Cachable;
+    use Cachable;
 
-	public $timestamps = false;
-	public $primaryKey = 'user_id';
-	public $incrementing = false;
+    public $timestamps = false;
+    public $primaryKey = 'user_id';
+    public $incrementing = false;
 
-	protected $attributes = [
-		'font' => 1,
-		'align' => 4,
-		'size' => 18,
-		'background_color' => 'eeeeee',
-		'card_color' => 'ffffff',
-		'font_color' => '000000',
-		'show_sidebar' => true
-	];
+    protected $attributes = [
+        'font' => 1,
+        'align' => 4,
+        'size' => 18,
+        'background_color' => 'eeeeee',
+        'card_color' => 'ffffff',
+        'font_color' => '000000',
+        'show_sidebar' => true
+    ];
 
-	protected $fillable = [
-		'font',
-		'align',
-		'size',
-		'background_color',
-		'card_color',
-		'font_color',
-		'user_id',
-		'show_sidebar'
-	];
+    protected $fillable = [
+        'font',
+        'align',
+        'size',
+        'background_color',
+        'card_color',
+        'font_color',
+        'user_id',
+        'show_sidebar'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function setFontAttribute($value)
-	{
-		foreach (config('litlife.read_allowed_fonts') as $index => $font) {
-			if ($value == $font) {
-				$this->attributes['font'] = $index;
-			}
-		}
-	}
+    public function setFontAttribute($value)
+    {
+        foreach (config('litlife.read_allowed_fonts') as $index => $font) {
+            if ($value == $font) {
+                $this->attributes['font'] = $index;
+            }
+        }
+    }
 
-	public function getFontAttribute($value)
-	{
-		foreach (config('litlife.read_allowed_fonts') as $index => $font) {
-			if ($value == $index) {
-				return $font;
-			}
-		}
-	}
+    public function getFontAttribute($value)
+    {
+        foreach (config('litlife.read_allowed_fonts') as $index => $font) {
+            if ($value == $index) {
+                return $font;
+            }
+        }
+    }
 
-	public function setAlignAttribute($value)
-	{
-		foreach (config('litlife.read_text_align') as $index => $align) {
-			if ($value == $align) {
-				$this->attributes['align'] = $index;
-			}
-		}
-	}
+    public function setAlignAttribute($value)
+    {
+        foreach (config('litlife.read_text_align') as $index => $align) {
+            if ($value == $align) {
+                $this->attributes['align'] = $index;
+            }
+        }
+    }
 
-	public function getAlignAttribute($value)
-	{
-		foreach (config('litlife.read_text_align') as $index => $align) {
-			if ($value == $index) {
-				return $align;
-			}
-		}
-	}
+    public function getAlignAttribute($value)
+    {
+        foreach (config('litlife.read_text_align') as $index => $align) {
+            if ($value == $index) {
+                return $align;
+            }
+        }
+    }
 
-	public function getSizeAttribute($value)
-	{
-		if (!empty($value))
-			return $value;
-	}
+    public function getSizeAttribute($value)
+    {
+        if (!empty($value)) {
+            return $value;
+        }
+    }
 
-	public function setBackgroundColorAttribute($value)
-	{
-		$this->attributes['background_color'] = ltrim($value, '#');
-	}
+    public function setBackgroundColorAttribute($value)
+    {
+        $this->attributes['background_color'] = ltrim($value, '#');
+    }
 
-	public function setFontColorAttribute($value)
-	{
-		$this->attributes['font_color'] = ltrim($value, '#');
-	}
+    public function setFontColorAttribute($value)
+    {
+        $this->attributes['font_color'] = ltrim($value, '#');
+    }
 
-	public function getBackgroundColorAttribute($value)
-	{
-		$value = $this->sanitizeHexColor($value);
+    public function getBackgroundColorAttribute($value)
+    {
+        $value = $this->sanitizeHexColor($value);
 
-		if (!empty($value))
-			return mb_strtolower('#' . $value);
-		else
-			return '#eeeeee';
-	}
+        if (!empty($value)) {
+            return mb_strtolower('#' . $value);
+        } else {
+            return '#eeeeee';
+        }
+    }
 
-	private function sanitizeHexColor($color)
-	{
-		if ('' === $color) {
-			return '';
-		}
+    private function sanitizeHexColor($color)
+    {
+        if ('' === $color) {
+            return '';
+        }
 
-		// 3 or 6 hex digits, or the empty string.
-		if (preg_match('/^([A-Fa-f0-9]{3}){1,2}$/iu', $color)) {
-			return $color;
-		}
+        // 3 or 6 hex digits, or the empty string.
+        if (preg_match('/^([A-Fa-f0-9]{3}){1,2}$/iu', $color)) {
+            return $color;
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	public function getFontColorAttribute($value)
-	{
-		$value = $this->sanitizeHexColor($value);
+    public function getFontColorAttribute($value)
+    {
+        $value = $this->sanitizeHexColor($value);
 
-		if (!empty($value))
-			return mb_strtolower('#' . $value);
-		else
-			return '#000000';
-	}
+        if (!empty($value)) {
+            return mb_strtolower('#' . $value);
+        } else {
+            return '#000000';
+        }
+    }
 
-	public function setCardColorAttribute($value)
-	{
-		$this->attributes['card_color'] = ltrim($value, '#');
-	}
+    public function setCardColorAttribute($value)
+    {
+        $this->attributes['card_color'] = ltrim($value, '#');
+    }
 
-	public function getCardColorAttribute($value)
-	{
-		$value = $this->sanitizeHexColor($value);
+    public function getCardColorAttribute($value)
+    {
+        $value = $this->sanitizeHexColor($value);
 
-		if (!empty($value))
-			return mb_strtolower('#' . $value);
-		else
-			return '#ffffff';
-	}
+        if (!empty($value)) {
+            return mb_strtolower('#' . $value);
+        } else {
+            return '#ffffff';
+        }
+    }
 }

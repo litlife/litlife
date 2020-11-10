@@ -27,8 +27,8 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property string $uniqid Уникальный номер транзакции
- * @property-read \App\UserPaymentTransaction|null $transaction
- * @property-read \App\User $user
+ * @property-read UserPaymentTransaction|null $transaction
+ * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment newQuery()
  * @method static Builder|UserOutgoingPayment onlyTrashed()
@@ -57,63 +57,64 @@ use Illuminate\Support\Str;
  */
 class UserOutgoingPayment extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	public $casts = [
-		'params' => 'object'
-	];
+    public $casts = [
+        'params' => 'object'
+    ];
 
-	protected static function boot()
-	{
-		parent::boot();
+    protected static function boot()
+    {
+        parent::boot();
 
-		static::creating(function ($model) {
-			$model->uniqid = Str::uuid()->toString();
-		});
-	}
+        static::creating(function ($model) {
+            $model->uniqid = Str::uuid()->toString();
+        });
+    }
 
-	public function transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable');
-	}
+    public function transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable');
+    }
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function getErrorCode()
-	{
-		return $this->params->error->code;
-	}
+    public function getErrorCode()
+    {
+        return $this->params->error->code;
+    }
 
-	public function getParamsArray()
-	{
-		return json_decode(json_encode($this->params), true);
-	}
+    public function getParamsArray()
+    {
+        return json_decode(json_encode($this->params), true);
+    }
 
-	public function getPaymentError()
-	{
-		return $this->params->error->message;
-	}
+    public function getPaymentError()
+    {
+        return $this->params->error->message;
+    }
 
-	public function setPaymentTypeAttribute($value)
-	{
-		$value = mb_strtolower($value);
+    public function setPaymentTypeAttribute($value)
+    {
+        $value = mb_strtolower($value);
 
-		if ($value == 'wmr')
-			$value = 'webmoney';
+        if ($value == 'wmr') {
+            $value = 'webmoney';
+        }
 
-		$this->attributes['payment_type'] = $value;
-	}
+        $this->attributes['payment_type'] = $value;
+    }
 
-	public function getPayoutComission()
-	{
-		return floatval(optional(optional($this->params)->result)->payoutCommission);
-	}
+    public function getPayoutComission()
+    {
+        return floatval(optional(optional($this->params)->result)->payoutCommission);
+    }
 
-	public function getPartnerComission()
-	{
-		return floatval(optional(optional($this->params)->result)->partnerCommission);
-	}
+    public function getPartnerComission()
+    {
+        return floatval(optional(optional($this->params)->result)->partnerCommission);
+    }
 }

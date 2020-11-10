@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 /**
  * App\GenreGroup
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Genre[] $genres
+ * @property-read \Illuminate\Database\Eloquent\Collection|Genre[] $genres
  * @property-write mixed $name
  * @method static \Illuminate\Database\Eloquent\Builder|GenreGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|GenreGroup newQuery()
@@ -27,43 +27,44 @@ use Illuminate\Support\Str;
  */
 class GenreGroup extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $table = 'genres_groups';
+    protected $table = 'genres_groups';
 
-	public function genres()
-	{
-		return $this->hasMany('App\Genre')
-			->orderBy('name', 'asc');
-	}
+    public function genres()
+    {
+        return $this->hasMany('App\Genre')
+            ->orderBy('name', 'asc');
+    }
 
-	public function getGenreArrayIds()
-	{
-		return $this->genres
-			->sortByDesc('book_count')
-			->pluck('id')
-			->toArray();
-	}
+    public function getGenreArrayIds()
+    {
+        return $this->genres
+            ->sortByDesc('book_count')
+            ->pluck('id')
+            ->toArray();
+    }
 
-	public function setNameAttribute($s)
-	{
-		$this->attributes['name'] = trim($s);
-		$this->attributes['slug'] = Str::slug($this->name, '-');
-	}
+    public function setNameAttribute($s)
+    {
+        $this->attributes['name'] = trim($s);
+        $this->attributes['slug'] = Str::slug($this->name, '-');
+    }
 
-	public function scopeWhereIdWithSlug($query, $id)
-	{
-		preg_match('/^([0-9]+)/iu', $id, $matches);
+    public function scopeWhereIdWithSlug($query, $id)
+    {
+        preg_match('/^([0-9]+)/iu', $id, $matches);
 
-		if (!empty($matches[1]))
-			return $query->where('id', $matches[1]);
-		else
-			return $query->whereNull('id');
-	}
+        if (!empty($matches[1])) {
+            return $query->where('id', $matches[1]);
+        } else {
+            return $query->whereNull('id');
+        }
+    }
 
-	public function getIdWithSlug()
-	{
-		return trim($this->id . '-' . $this->slug, '-');
-	}
+    public function getIdWithSlug()
+    {
+        return trim($this->id . '-' . $this->slug, '-');
+    }
 
 }

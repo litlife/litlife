@@ -36,19 +36,20 @@ use Illuminate\Support\Carbon;
  */
 class Invitation extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $fillable = [
-		'email', 'token',
-	];
+    protected $fillable = [
+        'email',
+        'token',
+    ];
 
-	public function scopeWhereToken($query, $token)
-	{
-		return $query->where('token', $token);
-	}
+    public function scopeWhereToken($query, $token)
+    {
+        return $query->where('token', $token);
+    }
 
-	public function scopeWhereEmail($query, $email)
-	{
-		return $query->where('email', 'ilike', mb_strtolower($email));
-	}
+    public function scopeWhereEmail($query, $email)
+    {
+        return $query->where('email', 'ilike', mb_strtolower($email));
+    }
 }

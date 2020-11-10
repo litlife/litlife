@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
+ * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
  * @method static \Illuminate\Database\Eloquent\Builder|Language disableCache()
  * @method static CachedBuilder|Language newModelQuery()
  * @method static CachedBuilder|Language newQuery()
@@ -44,11 +44,11 @@ use Illuminate\Support\Carbon;
  */
 class Language extends Model
 {
-	use SoftDeletes;
-	use Cachable;
+    use SoftDeletes;
+    use Cachable;
 
-	public function books()
-	{
-		return $this->hasMany('App\Book', 'ti_lb', 'code');
-	}
+    public function books()
+    {
+        return $this->hasMany('App\Book', 'ti_lb', 'code');
+    }
 }

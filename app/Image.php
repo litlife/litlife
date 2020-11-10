@@ -30,7 +30,7 @@ use Litlife\Url\Url;
  * @property string|null $dirname
  * @property string|null $sha256_hash
  * @property string|null $phash
- * @property-read \App\User $create_user
+ * @property-read User $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -54,7 +54,7 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereId($value)
@@ -72,59 +72,60 @@ use Litlife\Url\Url;
  */
 class Image extends Model
 {
-	use UserCreate;
-	use SoftDeletes;
-	use ImageResizable;
+    use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
 
-	public $folder = '_i';
-	public $img;
-	public $source;
+    public $folder = '_i';
+    public $img;
+    public $source;
 
-	protected $appends = ['fullUrlSized', 'url'];
+    protected $appends = ['fullUrlSized', 'url'];
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	public function scopeSetSize($width, $height)
-	{
-		$this->maxWidth = $width;
-		$this->maxHeight = $height;
-	}
+    public function scopeSetSize($width, $height)
+    {
+        $this->maxWidth = $width;
+        $this->maxHeight = $height;
+    }
 
-	public function scopeSha256Hash($query, $hash)
-	{
-		return $query->where('sha256_hash', $hash);
-	}
+    public function scopeSha256Hash($query, $hash)
+    {
+        return $query->where('sha256_hash', $hash);
+    }
 
-	public function scopeMd5Hash($query, $hash)
-	{
-		return $query->where('md5', $hash);
-	}
+    public function scopeMd5Hash($query, $hash)
+    {
+        return $query->where('md5', $hash);
+    }
 
-	public function scopePHash($query, $hash)
-	{
-		return $query->where('phash', $hash);
-	}
-	/*
-	public function getWidthAttribute($query)
-	{
+    public function scopePHash($query, $hash)
+    {
+        return $query->where('phash', $hash);
+    }
 
-	}
+    /*
+    public function getWidthAttribute($query)
+    {
 
-	public function getHeightAttribute($query)
-	{
+    }
 
-	}
-	*/
+    public function getHeightAttribute($query)
+    {
 
-	public function getDirname()
-	{
-		$idDirname = new IdDirname($this->id);
+    }
+    */
 
-		$url = (new Url)->withDirname('images/' . implode('/', $idDirname->getDirnameArrayEncoded()));
+    public function getDirname()
+    {
+        $idDirname = new IdDirname($this->id);
 
-		return $url->getPath();
-	}
+        $url = (new Url)->withDirname('images/' . implode('/', $idDirname->getDirnameArrayEncoded()));
+
+        return $url->getPath();
+    }
 }

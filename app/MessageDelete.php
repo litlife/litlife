@@ -12,14 +12,14 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $message_id
  * @property int $user_id
  * @property string $deleted_at
- * @property-read \App\Message $message
- * @property-read \App\User $user
+ * @property-read Message $message
+ * @property-read User $user
  * @method static Builder|MessageDelete newModelQuery()
  * @method static Builder|MessageDelete newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|MessageDelete query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|MessageDelete whereDeletedAt($value)
  * @method static Builder|MessageDelete whereMessageId($value)
  * @method static Builder|MessageDelete whereUserId($value)
@@ -27,30 +27,30 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class MessageDelete extends Model
 {
-	const UPDATED_AT = null;
-	const CREATED_AT = null;
+    const UPDATED_AT = null;
+    const CREATED_AT = null;
 
-	public $table = 'message_deletions';
-	public $fillable = [
-		'user_id',
-		'message_id',
-		'deleted_at'
-	];
-	public $incrementing = false;
-	protected $primaryKey = [
-		'user_id',
-		'message_id'
-	];
+    public $table = 'message_deletions';
+    public $fillable = [
+        'user_id',
+        'message_id',
+        'deleted_at'
+    ];
+    public $incrementing = false;
+    protected $primaryKey = [
+        'user_id',
+        'message_id'
+    ];
 
-	function message()
-	{
-		return $this->belongsTo('App\Message');
-	}
+    function message()
+    {
+        return $this->belongsTo('App\Message');
+    }
 
-	public function user()
-	{
-		return $this->belongsTo('App\User');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
 
 }

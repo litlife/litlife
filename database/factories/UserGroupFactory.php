@@ -5,13 +5,13 @@ use Faker\Generator as Faker;
 
 $factory->define(App\UserGroup::class, function (Faker $faker) {
 
-	//dd(UserGroup);
+    //dd(UserGroup);
 
-	return [
-		'name' => $faker->realText(30),
-		'created_at' => now(),
-		'updated_at' => now(),
-	];
+    return [
+        'name' => $faker->realText(30),
+        'created_at' => now(),
+        'updated_at' => now(),
+    ];
 });
 /*
 $factory->state(App\UserGroup::class, 'administrators', function ($faker) {
@@ -29,24 +29,24 @@ $factory->afterMakingState(App\UserGroup::class, 'administrators', function ($gr
 */
 
 $factory->afterMakingState(App\UserGroup::class, 'administrator', function ($group, $faker) {
-	foreach ($group->permissions as $name => $value) {
-		$group->{$name} = true;
-	}
-	$group->save();
+    foreach ($group->permissions as $name => $value) {
+        $group->{$name} = true;
+    }
+    $group->save();
 });
 
 $factory->afterMakingState(App\UserGroup::class, 'user', function ($group, $faker) {
-	$group->send_message = true;
-	$group->blog = true;
-	$group->add_forum_post = true;
-	$group->shop_enable = true;
-	$group->manage_collections = true;
+    $group->send_message = true;
+    $group->blog = true;
+    $group->add_forum_post = true;
+    $group->shop_enable = true;
+    $group->manage_collections = true;
 });
 
 $factory->afterMakingState(App\UserGroup::class, 'notify_assignment', function (UserGroup $group, $faker) {
-	$group->notify_assignment = true;
+    $group->notify_assignment = true;
 });
 
 $factory->afterMakingState(App\UserGroup::class, 'notify_assignment_disable', function (UserGroup $group, $faker) {
-	$group->notify_assignment = false;
+    $group->notify_assignment = false;
 });

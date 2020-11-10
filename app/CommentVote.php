@@ -18,18 +18,18 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read \App\Comment $comment
- * @property-read \App\User $create_user
+ * @property-read Comment $comment
+ * @property-read User $create_user
  * @method static Builder|CommentVote newModelQuery()
  * @method static Builder|CommentVote newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|CommentVote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|CommentVote whereCommentId($value)
  * @method static Builder|CommentVote whereCreateUserId($value)
  * @method static Builder|CommentVote whereCreatedAt($value)
- * @method static Builder|CommentVote whereCreator(\App\User $user)
+ * @method static Builder|CommentVote whereCreator(User $user)
  * @method static Builder|CommentVote whereId($value)
  * @method static Builder|CommentVote whereIp($value)
  * @method static Builder|CommentVote whereUpdatedAt($value)
@@ -38,10 +38,10 @@ use Illuminate\Support\Carbon;
  */
 class CommentVote extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	function comment()
-	{
-		return $this->belongsTo('App\Comment');
-	}
+    function comment()
+    {
+        return $this->belongsTo('App\Comment');
+    }
 }

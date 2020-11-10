@@ -16,17 +16,17 @@ use Illuminate\Support\Carbon;
  * @property int $recepient_user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\User $recepient
- * @property-read \App\UserPaymentTransaction|null $recepient_transaction
- * @property-read \App\User $sender
- * @property-read \App\UserPaymentTransaction|null $sender_transaction
- * @property-read \App\UserPaymentTransaction|null $transaction
+ * @property-read User $recepient
+ * @property-read UserPaymentTransaction|null $recepient_transaction
+ * @property-read User $sender
+ * @property-read UserPaymentTransaction|null $sender_transaction
+ * @property-read UserPaymentTransaction|null $transaction
  * @method static Builder|UserMoneyTransfer newModelQuery()
  * @method static Builder|UserMoneyTransfer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserMoneyTransfer query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserMoneyTransfer whereCreatedAt($value)
  * @method static Builder|UserMoneyTransfer whereId($value)
  * @method static Builder|UserMoneyTransfer whereRecepientUserId($value)
@@ -36,30 +36,30 @@ use Illuminate\Support\Carbon;
  */
 class UserMoneyTransfer extends Model
 {
-	public function sender()
-	{
-		return $this->belongsTo('App\User', 'sender_user_id');
-	}
+    public function sender()
+    {
+        return $this->belongsTo('App\User', 'sender_user_id');
+    }
 
-	public function recepient()
-	{
-		return $this->belongsTo('App\User', 'recepient_user_id');
-	}
+    public function recepient()
+    {
+        return $this->belongsTo('App\User', 'recepient_user_id');
+    }
 
-	public function transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable');
-	}
+    public function transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable');
+    }
 
-	public function sender_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::transfer);
-	}
+    public function sender_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::transfer);
+    }
 
-	public function recepient_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::receipt);
-	}
+    public function recepient_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::receipt);
+    }
 }

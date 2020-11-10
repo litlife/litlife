@@ -25,14 +25,14 @@ use Illuminate\Support\Carbon;
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookKeyword[] $book_keywords
- * @property-read \App\User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|BookKeyword[] $book_keywords
+ * @property-read User|null $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \App\User|null $status_changed_user
+ * @property-read User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -64,7 +64,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereStatus($value)
@@ -82,98 +82,98 @@ use Illuminate\Support\Carbon;
  */
 class Keyword extends Model
 {
-	use SoftDeletes;
-	use CheckedItems;
-	use UserCreate;
+    use SoftDeletes;
+    use CheckedItems;
+    use UserCreate;
 
-	protected $attributes =
-		[
-			'status' => StatusEnum::Accepted
-		];
+    protected $attributes =
+        [
+            'status' => StatusEnum::Accepted
+        ];
 
-	protected $fillable = [
-		'text'
-	];
+    protected $fillable = [
+        'text'
+    ];
 
-	protected $visible = [
-		'id',
-		'text',
-		'count',
-		'create_user_id',
-		'status',
-		'status_changed_at',
-		'status_changed_user_id'
-	];
+    protected $visible = [
+        'id',
+        'text',
+        'count',
+        'create_user_id',
+        'status',
+        'status_changed_at',
+        'status_changed_user_id'
+    ];
 
-	/**
-	 * The "booting" method of the model.
-	 *
-	 * @return void
-	 */
-	public static function boot()
-	{
-		parent::boot();
-	}
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+    }
 
-	public function scopeAny($query)
-	{
-		return $query->withoutGlobalScope(CheckedScope::class)->withTrashed();
-	}
+    public function scopeAny($query)
+    {
+        return $query->withoutGlobalScope(CheckedScope::class)->withTrashed();
+    }
 
-	public function scopeSearchFullWord($query, $textOrArray)
-	{
-		if (is_array($textOrArray)) {
-			foreach ($textOrArray as $keyword) {
-				$keywords[] = preg_quote(trim($keyword));
-			}
-			return $query->whereRaw('"text" ~* ?', ['^(' . implode('|', $keywords) . ')$']);
-		} else {
-			return $query->whereRaw('"text" ~* ?', ['^' . preg_quote($textOrArray) . '$']);
-		}
-	}
+    public function scopeSearchFullWord($query, $textOrArray)
+    {
+        if (is_array($textOrArray)) {
+            foreach ($textOrArray as $keyword) {
+                $keywords[] = preg_quote(trim($keyword));
+            }
+            return $query->whereRaw('"text" ~* ?', ['^(' . implode('|', $keywords) . ')$']);
+        } else {
+            return $query->whereRaw('"text" ~* ?', ['^' . preg_quote($textOrArray) . '$']);
+        }
+    }
 
-	public function scopeSearchPartWord($query, $textOrArray)
-	{
-		if (is_array($textOrArray)) {
-			foreach ($textOrArray as $keyword) {
-				$keywords[] = preg_quote(trim($keyword));
-			}
-			return $query->whereRaw('"text" ~* ?', ['(' . implode('|', $keywords) . ')']);
-		} else {
-			return $query->whereRaw('"text" ~* ?', ['' . preg_quote($textOrArray) . '']);
-		}
-	}
+    public function scopeSearchPartWord($query, $textOrArray)
+    {
+        if (is_array($textOrArray)) {
+            foreach ($textOrArray as $keyword) {
+                $keywords[] = preg_quote(trim($keyword));
+            }
+            return $query->whereRaw('"text" ~* ?', ['(' . implode('|', $keywords) . ')']);
+        } else {
+            return $query->whereRaw('"text" ~* ?', ['' . preg_quote($textOrArray) . '']);
+        }
+    }
 
-	public function scopeSearch($query, $text)
-	{
-		$text = trim($text);
+    public function scopeSearch($query, $text)
+    {
+        $text = trim($text);
 
-		return $query->where('text', 'ilike', $text . '%');
-	}
+        return $query->where('text', 'ilike', $text . '%');
+    }
 
-	public function setTextAttribute($value)
-	{
-		$value = trim($value);
-		$value = replaceAsc194toAsc32($value);
-		$value = preg_replace('/([[:space:]]+)/iu', ' ', $value);
-		$value = preg_replace('/\.+$/iu', '', $value);
-		$value = mb_ucfirst($value);
+    public function setTextAttribute($value)
+    {
+        $value = trim($value);
+        $value = replaceAsc194toAsc32($value);
+        $value = preg_replace('/([[:space:]]+)/iu', ' ', $value);
+        $value = preg_replace('/\.+$/iu', '', $value);
+        $value = mb_ucfirst($value);
 
-		$this->attributes['text'] = $value;
-	}
+        $this->attributes['text'] = $value;
+    }
 
-	public function scopeWithUnchecked($query)
-	{
-		return $query->withoutGlobalScope(CheckedScope::class);
-	}
+    public function scopeWithUnchecked($query)
+    {
+        return $query->withoutGlobalScope(CheckedScope::class);
+    }
 
-	public function book_keywords()
-	{
-		return $this->hasMany('App\BookKeyword', 'keyword_id', 'id');
-	}
+    public function updateBooksCount()
+    {
+        $this->count = $this->book_keywords()->accepted()->count();
+    }
 
-	public function updateBooksCount()
-	{
-		$this->count = $this->book_keywords()->accepted()->count();
-	}
+    public function book_keywords()
+    {
+        return $this->hasMany('App\BookKeyword', 'keyword_id', 'id');
+    }
 }

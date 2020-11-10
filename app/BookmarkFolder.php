@@ -19,8 +19,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Bookmark[] $bookmarks
- * @property-read \App\User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|Bookmark[] $bookmarks
+ * @property-read User $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder newQuery()
  * @method static Builder|BookmarkFolder onlyTrashed()
@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereBookmarkCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereTitle($value)
@@ -42,35 +42,35 @@ use Illuminate\Support\Carbon;
  */
 class BookmarkFolder extends Model
 {
-	use UserCreate;
-	use SoftDeletes;
+    use UserCreate;
+    use SoftDeletes;
 
-	protected $fillable = [
-		'title',
-		'folder_id'
-	];
+    protected $fillable = [
+        'title',
+        'folder_id'
+    ];
 
-	protected $visible = [
-		'id',
-		'title',
-		'created_at',
-		'updated_at',
-		'deleted_at'
-	];
+    protected $visible = [
+        'id',
+        'title',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($bookmarkFolder) {
+    public static function boot()
+    {
+        static::Creating(function ($bookmarkFolder) {
 
-			$bookmarkFolder->autoAssociateAuthUser();
+            $bookmarkFolder->autoAssociateAuthUser();
 
-		});
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	public function bookmarks()
-	{
-		return $this->hasMany('App\Bookmark', 'folder_id', 'id');
-	}
+    public function bookmarks()
+    {
+        return $this->hasMany('App\Bookmark', 'folder_id', 'id');
+    }
 }

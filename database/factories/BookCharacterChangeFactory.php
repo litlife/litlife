@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 
 $factory->define(BookCharacterChange::class, function (Faker $faker) {
-	return [
-		//
-	];
+    return [
+        //
+    ];
 });

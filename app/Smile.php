@@ -62,84 +62,90 @@ use Illuminate\Support\Carbon;
  */
 class Smile extends Model
 {
-	use SoftDeletes;
-	use ImageResizable;
-	use Cachable;
+    use SoftDeletes;
+    use ImageResizable;
+    use Cachable;
 
-	protected $casts = [
-		'parameters' => 'object'
-	];
+    protected $casts = [
+        'parameters' => 'object'
+    ];
 
-	public function scopeRegular($query)
-	{
-		return $query->whereNull("for");
-	}
+    public function scopeRegular($query)
+    {
+        return $query->whereNull("for");
+    }
 
-	public function scopeNewYear($query)
-	{
-		return $query->orderByField("for", ['NewYear']);
-	}
+    public function scopeNewYear($query)
+    {
+        return $query->orderByField("for", ['NewYear']);
+    }
 
-	/*
-		public function scopeRemember($query, $minutes)
-		{
-			return Cache::remember($query->toSql(), $minutes, function () use ($query) {
-				return $query->get();
-			});
-		}
-		*/
-	/*
-	public function getUrlAttribute()
-	{
-		return '/images/smiles/' . $this->name;
-	}
+    /*
+        public function scopeRemember($query, $minutes)
+        {
+            return Cache::remember($query->toSql(), $minutes, function () use ($query) {
+                return $query->get();
+            });
+        }
+        */
+    /*
+    public function getUrlAttribute()
+    {
+        return '/images/smiles/' . $this->name;
+    }
  */
 
-	public function getSimpleFormAttribute($value)
-	{
-		if (empty($value))
-			return ':' . $this->description . ':';
-		else
-			return $value;
-	}
+    public function getSimpleFormAttribute($value)
+    {
+        if (empty($value)) {
+            return ':' . $this->description . ':';
+        } else {
+            return $value;
+        }
+    }
 
-	public function getWidth()
-	{
-		return $this->parameters->width;
-	}
+    public function getWidth()
+    {
+        return $this->parameters->width;
+    }
 
-	public function getHeight()
-	{
-		return $this->parameters->height;
-	}
+    public function getHeight()
+    {
+        return $this->parameters->height;
+    }
 
-	public function freshImageSize()
-	{
-		$object = (object)$this->parameters;
-		$object->width = $this->getRealWidth();
-		$object->height = $this->getRealHeight();
-		$this->parameters = $object;
-		$this->save();
-	}
+    public function freshImageSize()
+    {
+        $object = (object)$this->parameters;
+        $object->width = $this->getRealWidth();
+        $object->height = $this->getRealHeight();
+        $this->parameters = $object;
+        $this->save();
+    }
 
-	public function scopeConsiderTime($query)
-	{
-		if ($this->isIncludeSmilesForNewYear())
-			return $query->newYear();
-		else
-			return $query->regular();
-	}
+    public function scopeConsiderTime($query)
+    {
+        if ($this->isIncludeSmilesForNewYear()) {
+            return $query->newYear();
+        } else {
+            return $query->regular();
+        }
+    }
 
-	public function isIncludeSmilesForNewYear()
-	{
-		if (now()->month == 12)
-			if (now()->day >= 10)
-				return true;
+    public function isIncludeSmilesForNewYear()
+    {
+        if (now()->month == 12) {
+            if (now()->day >= 10) {
+                return true;
+            }
+        }
 
-		if (now()->month == 1)
-			if (now()->day <= 15)
-				return true;
+        if (now()->month == 1) {
+            if (now()->day <= 15) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

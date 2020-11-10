@@ -15,14 +15,14 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $updated_at
  * @property int|null $inner_section_id
  * @property int|null $characters_count Количество символов в тексте книги на момент последнего прочтения
- * @property-read \App\Book $book
- * @property-read \App\User $user
+ * @property-read Book $book
+ * @property-read User $user
  * @method static Builder|BookReadRememberPage newModelQuery()
  * @method static Builder|BookReadRememberPage newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookReadRememberPage query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|BookReadRememberPage whereBookId($value)
  * @method static Builder|BookReadRememberPage whereCharactersCount($value)
  * @method static Builder|BookReadRememberPage whereInnerSectionId($value)
@@ -33,33 +33,33 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class BookReadRememberPage extends Model
 {
-	public $incrementing = false;
-	public $timestamps = false;
-	protected $primaryKey = ['book_id', 'user_id'];
-	protected $fillable = [
-		'book_id',
-		'user_id',
-		'page',
-		'inner_section_id',
-		'characters_count'
-	];
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $primaryKey = ['book_id', 'user_id'];
+    protected $fillable = [
+        'book_id',
+        'user_id',
+        'page',
+        'inner_section_id',
+        'characters_count'
+    ];
 
-	public static function boot()
-	{
-		parent::boot();
+    public static function boot()
+    {
+        parent::boot();
 
-		static::creating(function ($model) {
-			$model->updated_at = $model->freshTimestamp();
-		});
-	}
+        static::creating(function ($model) {
+            $model->updated_at = $model->freshTimestamp();
+        });
+    }
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book');
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book');
+    }
 
-	public function user()
-	{
-		return $this->belongsTo('App\User');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

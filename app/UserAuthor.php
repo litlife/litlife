@@ -16,14 +16,14 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read \App\Author|null $author
- * @property-read \App\User|null $user
+ * @property-read Author|null $author
+ * @property-read User|null $user
  * @method static Builder|UserAuthor newModelQuery()
  * @method static Builder|UserAuthor newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserAuthor query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserAuthor whereAuthorId($value)
  * @method static Builder|UserAuthor whereCreatedAt($value)
  * @method static Builder|UserAuthor whereId($value)
@@ -33,43 +33,46 @@ use Illuminate\Support\Carbon;
  */
 class UserAuthor extends Model
 {
-	protected $fillable = [
-		'author_id'
-	];
+    protected $fillable = [
+        'author_id'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			if (empty($model->user_id))
-				$model->user_id = auth()->id();
-		});
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            if (empty($model->user_id)) {
+                $model->user_id = auth()->id();
+            }
+        });
 
-		static::Deleted(function ($model) {
-			UpdateUserFavoriteAuthorsCount::dispatch($model->user);
+        static::Deleted(function ($model) {
+            UpdateUserFavoriteAuthorsCount::dispatch($model->user);
 
-			if (!empty($model->author))
-				$model->author->addedToFavoritesUsersCountRefresh();
-		});
+            if (!empty($model->author)) {
+                $model->author->addedToFavoritesUsersCountRefresh();
+            }
+        });
 
-		static::Saved(function ($model) {
-			UpdateUserFavoriteAuthorsCount::dispatch($model->user);
+        static::Saved(function ($model) {
+            UpdateUserFavoriteAuthorsCount::dispatch($model->user);
 
-			if (!empty($model->author))
-				$model->author->addedToFavoritesUsersCountRefresh();
-		});
+            if (!empty($model->author)) {
+                $model->author->addedToFavoritesUsersCountRefresh();
+            }
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	public function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id')
-			->any();
-	}
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id')
+            ->any();
+    }
 
-	public function author()
-	{
-		return $this->hasOne('App\Author', 'id', 'author_id')
-			->any();
-	}
+    public function author()
+    {
+        return $this->hasOne('App\Author', 'id', 'author_id')
+            ->any();
+    }
 }

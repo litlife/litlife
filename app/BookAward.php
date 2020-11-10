@@ -18,20 +18,20 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $create_user_id
- * @property-read \App\Award $award
- * @property-read \App\Book $book
- * @property-read \App\User $create_user
+ * @property-read Award $award
+ * @property-read Book $book
+ * @property-read User $create_user
  * @method static Builder|BookAward newModelQuery()
  * @method static Builder|BookAward newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookAward query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|BookAward whereAwardId($value)
  * @method static Builder|BookAward whereBookId($value)
  * @method static Builder|BookAward whereCreateUserId($value)
  * @method static Builder|BookAward whereCreatedAt($value)
- * @method static Builder|BookAward whereCreator(\App\User $user)
+ * @method static Builder|BookAward whereCreator(User $user)
  * @method static Builder|BookAward whereId($value)
  * @method static Builder|BookAward whereUpdatedAt($value)
  * @method static Builder|BookAward whereYear($value)
@@ -39,28 +39,28 @@ use Illuminate\Support\Carbon;
  */
 class BookAward extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	public $incrementing = false;
-	protected $fillable = [
-		'year',
-		'award_id',
-		'book_id'
-	];
-	protected $primaryKey = [
-		'book_id',
-		'award_id'
-	];
+    public $incrementing = false;
+    protected $fillable = [
+        'year',
+        'award_id',
+        'book_id'
+    ];
+    protected $primaryKey = [
+        'book_id',
+        'award_id'
+    ];
 
-	public function award()
-	{
-		return $this->belongsTo('App\Award');
-	}
+    public function award()
+    {
+        return $this->belongsTo('App\Award');
+    }
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book')->any();
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book')->any();
+    }
 
 
 }

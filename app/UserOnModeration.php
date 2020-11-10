@@ -18,14 +18,14 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read \App\User|null $user
- * @property-read \App\User|null $user_adds
+ * @property-read User|null $user
+ * @property-read User|null $user_adds
  * @method static Builder|UserOnModeration newModelQuery()
  * @method static Builder|UserOnModeration newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserOnModeration query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserOnModeration whereCreatedAt($value)
  * @method static Builder|UserOnModeration whereId($value)
  * @method static Builder|UserOnModeration whereUpdatedAt($value)
@@ -36,27 +36,27 @@ use Illuminate\Support\Facades\Cache;
 class UserOnModeration extends Model
 {
 
-	protected $table = 'users_on_moderation';
+    protected $table = 'users_on_moderation';
 
-	static function getCachedCount()
-	{
-		return Cache::tags([CacheTags::UsersOnModerationCount])->remember('count', 3600, function () {
-			return self::count();
-		});
-	}
+    static function getCachedCount()
+    {
+        return Cache::tags([CacheTags::UsersOnModerationCount])->remember('count', 3600, function () {
+            return self::count();
+        });
+    }
 
-	static function flushCachedCount()
-	{
-		Cache::tags([CacheTags::UsersOnModerationCount])->pull('count');
-	}
+    static function flushCachedCount()
+    {
+        Cache::tags([CacheTags::UsersOnModerationCount])->pull('count');
+    }
 
-	function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id');
-	}
+    function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
 
-	function user_adds()
-	{
-		return $this->hasOne('App\User', 'id', 'user_adds_id');
-	}
+    function user_adds()
+    {
+        return $this->hasOne('App\User', 'id', 'user_adds_id');
+    }
 }

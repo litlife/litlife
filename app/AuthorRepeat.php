@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $authors
- * @property-read \App\User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $authors
+ * @property-read User $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat newQuery()
  * @method static Builder|AuthorRepeat onlyTrashed()
@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereTime($value)
@@ -43,28 +43,28 @@ use Illuminate\Support\Facades\Cache;
  */
 class AuthorRepeat extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'comment'
-	];
+    protected $fillable = [
+        'comment'
+    ];
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags(['author_repeat_on_moderation_count'])->remember('count', 3600, function () {
-			return self::count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags(['author_repeat_on_moderation_count'])->remember('count', 3600, function () {
+            return self::count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags(['author_repeat_on_moderation_count'])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags(['author_repeat_on_moderation_count'])->pull('count');
+    }
 
-	public function authors()
-	{
-		return $this->belongsToMany('App\Author', 'author_repeat_pivots')
-			->notMerged();
-	}
+    public function authors()
+    {
+        return $this->belongsToMany('App\Author', 'author_repeat_pivots')
+            ->notMerged();
+    }
 }

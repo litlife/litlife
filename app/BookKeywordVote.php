@@ -17,18 +17,18 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read \App\BookKeyword $book_keyword
- * @property-read \App\User $create_user
+ * @property-read BookKeyword $book_keyword
+ * @property-read User $create_user
  * @method static Builder|BookKeywordVote newModelQuery()
  * @method static Builder|BookKeywordVote newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookKeywordVote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|BookKeywordVote whereBookKeywordId($value)
  * @method static Builder|BookKeywordVote whereCreateUserId($value)
  * @method static Builder|BookKeywordVote whereCreatedAt($value)
- * @method static Builder|BookKeywordVote whereCreator(\App\User $user)
+ * @method static Builder|BookKeywordVote whereCreator(User $user)
  * @method static Builder|BookKeywordVote whereId($value)
  * @method static Builder|BookKeywordVote whereUpdatedAt($value)
  * @method static Builder|BookKeywordVote whereVote($value)
@@ -36,24 +36,24 @@ use Illuminate\Support\Carbon;
  */
 class BookKeywordVote extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	protected $fillable = [
-		'book_keyword_id',
-		'vote'
-	];
+    protected $fillable = [
+        'book_keyword_id',
+        'vote'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			$model->autoAssociateAuthUser();
-		});
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            $model->autoAssociateAuthUser();
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	public function book_keyword()
-	{
-		return $this->belongsTo('App\BookKeyword');
-	}
+    public function book_keyword()
+    {
+        return $this->belongsTo('App\BookKeyword');
+    }
 }

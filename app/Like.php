@@ -20,8 +20,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \App\User $create_user
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $likeable
+ * @property-read User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $likeable
  * @method static \Illuminate\Database\Eloquent\Builder|Like newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Like newQuery()
  * @method static Builder|Like onlyTrashed()
@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereIp($value)
@@ -44,35 +44,36 @@ use Illuminate\Support\Carbon;
  */
 class Like extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'user_id'
-	];
+    protected $fillable = [
+        'user_id'
+    ];
 
-	protected $visible = [
-		'id',
-		'likeable_type',
-		'likeable_id',
-		'create_user_id',
-		'created_at',
-		'deleted_at'
-	];
+    protected $visible = [
+        'id',
+        'likeable_type',
+        'likeable_id',
+        'create_user_id',
+        'created_at',
+        'deleted_at'
+    ];
 
-	/**
-	 * Get all of the owning commentable models.
-	 */
-	public function likeable()
-	{
-		return $this->morphTo()->any();
-	}
+    /**
+     * Get all of the owning commentable models.
+     */
+    public function likeable()
+    {
+        return $this->morphTo()->any();
+    }
 
-	public function getLikeableTypeAttribute($value)
-	{
-		if (is_numeric($value))
-			return intval($value);
-		else
-			return $value;
-	}
+    public function getLikeableTypeAttribute($value)
+    {
+        if (is_numeric($value)) {
+            return intval($value);
+        } else {
+            return $value;
+        }
+    }
 }

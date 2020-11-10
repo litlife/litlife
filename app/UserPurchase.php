@@ -23,15 +23,15 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $canceled_at Время отмены покупки
- * @property-read \App\User $buyer
- * @property-read \App\UserPaymentTransaction|null $buyer_transaction
- * @property-read \App\UserPaymentTransaction|null $commission_transaction
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $purchasable
- * @property-read \App\UserPaymentTransaction|null $referer_buyer_transaction
- * @property-read \App\UserPaymentTransaction|null $referer_seller_transaction
- * @property-read \App\User $seller
- * @property-read \App\UserPaymentTransaction|null $seller_transaction
- * @property-read \App\UserPaymentTransaction|null $transaction
+ * @property-read User $buyer
+ * @property-read UserPaymentTransaction|null $buyer_transaction
+ * @property-read UserPaymentTransaction|null $commission_transaction
+ * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $purchasable
+ * @property-read UserPaymentTransaction|null $referer_buyer_transaction
+ * @property-read UserPaymentTransaction|null $referer_seller_transaction
+ * @property-read User $seller
+ * @property-read UserPaymentTransaction|null $seller_transaction
+ * @property-read UserPaymentTransaction|null $transaction
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase notCanceled()
@@ -57,85 +57,86 @@ use Illuminate\Support\Carbon;
  */
 class UserPurchase extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $dates = [
-		'created_at',
-		'updated_at',
-		'deleted_at',
-		'canceled_at'
-	];
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'canceled_at'
+    ];
 
-	public function buyer()
-	{
-		return $this->belongsTo('App\User', 'buyer_user_id');
-	}
+    public function buyer()
+    {
+        return $this->belongsTo('App\User', 'buyer_user_id');
+    }
 
-	public function seller()
-	{
-		return $this->belongsTo('App\User', 'seller_user_id');
-	}
+    public function seller()
+    {
+        return $this->belongsTo('App\User', 'seller_user_id');
+    }
 
-	public function purchasable()
-	{
-		return $this->morphTo();
-	}
+    public function purchasable()
+    {
+        return $this->morphTo();
+    }
 
-	public function transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable');
-	}
+    public function transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable');
+    }
 
-	public function buyer_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::buy);
-	}
+    public function buyer_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::buy);
+    }
 
-	public function seller_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::sell);
-	}
+    public function seller_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::sell);
+    }
 
-	public function commission_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::comission);
-	}
+    public function commission_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::comission);
+    }
 
-	public function referer_buyer_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::comission_referer_buyer);
-	}
+    public function referer_buyer_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::comission_referer_buyer);
+    }
 
-	public function referer_seller_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::comission_referer_seller);
-	}
+    public function referer_seller_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::comission_referer_seller);
+    }
 
-	public function isBook()
-	{
-		if ($this->purchasable_type == 'book')
-			return true;
-		else
-			return false;
-	}
+    public function isBook()
+    {
+        if ($this->purchasable_type == 'book') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function cancel()
-	{
-		$this->canceled_at = now();
-	}
+    public function cancel()
+    {
+        $this->canceled_at = now();
+    }
 
-	public function isCanceled(): bool
-	{
-		return (bool)$this->canceled_at;
-	}
+    public function isCanceled(): bool
+    {
+        return (bool)$this->canceled_at;
+    }
 
-	public function scopeNotCanceled($query)
-	{
-		return $query->whereNull('canceled_at');
-	}
+    public function scopeNotCanceled($query)
+    {
+        return $query->whereNull('canceled_at');
+    }
 }

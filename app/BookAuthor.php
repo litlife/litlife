@@ -17,8 +17,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $type Автор или переводчик или редактор и тп
- * @property-read \App\Author $author
- * @property-read \App\Book $book
+ * @property-read Author $author
+ * @property-read Book $book
  * @method static Builder|BookAuthor newModelQuery()
  * @method static Builder|BookAuthor newQuery()
  * @method static Builder|BookAuthor query()
@@ -32,22 +32,22 @@ use Illuminate\Support\Carbon;
  */
 class BookAuthor extends Pivot
 {
-	public $table = 'book_authors';
+    public $table = 'book_authors';
 
-	public $timestamps = true;
+    public $timestamps = true;
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book')->any();
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book')->any();
+    }
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author')->any();
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author')->any();
+    }
 
-	public function getTypeKey()
-	{
-		return AuthorEnum::getKey($this->type);
-	}
+    public function getTypeKey()
+    {
+        return AuthorEnum::getKey($this->type);
+    }
 }

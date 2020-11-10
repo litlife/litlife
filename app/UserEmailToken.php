@@ -17,7 +17,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read \App\UserEmail $email
+ * @property-read UserEmail $email
  * @method static \Illuminate\Database\Eloquent\Builder|UserEmailToken newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserEmailToken newQuery()
  * @method static Builder|UserEmailToken onlyTrashed()
@@ -37,13 +37,13 @@ use Illuminate\Support\Carbon;
  */
 class UserEmailToken extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	public $incrementing = true;
-	protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $primaryKey = 'id';
 
-	function email()
-	{
-		return $this->belongsTo('App\UserEmail', 'user_email_id');
-	}
+    function email()
+    {
+        return $this->belongsTo('App\UserEmail', 'user_email_id');
+    }
 }

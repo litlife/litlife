@@ -5,8 +5,8 @@ use Illuminate\Support\Str;
 
 $factory->define(App\Invitation::class, function (Faker $faker) {
 
-	return [
-		'email' => $faker->email,
-		'token' => Str::random(32)
-	];
+    return [
+        'email' => $faker->email,
+        'token' => Str::random(32)
+    ];
 });

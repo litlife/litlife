@@ -12,13 +12,13 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $ip
  * @property int $book_id
  * @property int $count
- * @property-read \App\Book $book
+ * @property-read Book $book
  * @method static Builder|BookViewIp newModelQuery()
  * @method static Builder|BookViewIp newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookViewIp query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|BookViewIp whereBookId($value)
  * @method static Builder|BookViewIp whereCount($value)
  * @method static Builder|BookViewIp whereIp($value)
@@ -26,15 +26,16 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class BookViewIp extends Model
 {
-	public $timestamps = false;
-	public $incrementing = false;
-	protected $fillable = [
-		'ip', 'book_id'
-	];
-	protected $primaryKey = null;
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $fillable = [
+        'ip',
+        'book_id'
+    ];
+    protected $primaryKey = null;
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book', 'book_id', 'id');
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book', 'book_id', 'id');
+    }
 }

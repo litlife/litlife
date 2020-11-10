@@ -22,8 +22,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \App\UserPaymentTransaction|null $transaction
- * @property-read \App\User $user
+ * @property-read UserPaymentTransaction|null $transaction
+ * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment newQuery()
  * @method static Builder|UserIncomingPayment onlyTrashed()
@@ -50,75 +50,78 @@ use Illuminate\Support\Carbon;
  */
 class UserIncomingPayment extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	public $casts = [
-		'params' => 'object'
-	];
+    public $casts = [
+        'params' => 'object'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable');
-	}
+    public function transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable');
+    }
 
-	public function scopeUnitPayPayment($query, $id)
-	{
-		return $query->where('payment_aggregator', 'unitpay')
-			->where('payment_id', $id);
-	}
+    public function scopeUnitPayPayment($query, $id)
+    {
+        return $query->where('payment_aggregator', 'unitpay')
+            ->where('payment_id', $id);
+    }
 
-	public function scopeUnitPay($query)
-	{
-		return $query->where('payment_aggregator', 'unitpay');
-	}
+    public function scopeUnitPay($query)
+    {
+        return $query->where('payment_aggregator', 'unitpay');
+    }
 
-	public function getPaymentError()
-	{
-		return optional($this->params->result)->errorMessage;
-	}
+    public function getPaymentError()
+    {
+        return optional($this->params->result)->errorMessage;
+    }
 
-	public function getErrorCode()
-	{
-		return $this->params->error->code;
-	}
+    public function getErrorCode()
+    {
+        return $this->params->error->code;
+    }
 
-	public function getParamsArray()
-	{
-		return json_decode(json_encode($this->params), true);
-	}
+    public function getParamsArray()
+    {
+        return json_decode(json_encode($this->params), true);
+    }
 
-	public function setPaymentTypeAttribute($value)
-	{
-		$value = mb_strtolower($value);
+    public function setPaymentTypeAttribute($value)
+    {
+        $value = mb_strtolower($value);
 
-		if ($value == 'wmr')
-			$value = 'webmoney';
+        if ($value == 'wmr') {
+            $value = 'webmoney';
+        }
 
-		$this->attributes['payment_type'] = $value;
-	}
+        $this->attributes['payment_type'] = $value;
+    }
 
-	public function getPaymentType()
-	{
-		$type = '';
+    public function getPaymentType()
+    {
+        $type = '';
 
-		if (isset($this->params->result->paymentType))
-			$type = $this->params->result->paymentType;
+        if (isset($this->params->result->paymentType)) {
+            $type = $this->params->result->paymentType;
+        }
 
-		return $type;
-	}
+        return $type;
+    }
 
-	public function getPurse()
-	{
-		$purse = '';
+    public function getPurse()
+    {
+        $purse = '';
 
-		if (isset($this->params->result->purse))
-			$purse = $this->params->result->purse;
+        if (isset($this->params->result->purse)) {
+            $purse = $this->params->result->purse;
+        }
 
-		return $purse;
-	}
+        return $purse;
+    }
 }

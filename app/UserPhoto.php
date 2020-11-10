@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $storage
  * @property string|null $dirname
  * @property string|null $md5
- * @property-read \App\User $create_user
+ * @property-read User $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -34,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property-write mixed $max_width
  * @property-write mixed $path_to_file
  * @property-write mixed $quality
- * @property-read \App\User $user
+ * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto newQuery()
  * @method static Builder|UserPhoto onlyTrashed()
@@ -43,7 +43,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto query()
  * @method static \Illuminate\Database\Eloquent\Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereId($value)
@@ -60,35 +60,35 @@ use Illuminate\Support\Carbon;
  */
 class UserPhoto extends Model
 {
-	use SoftDeletes;
-	use ImageResizable;
-	use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
+    use UserCreate;
 
 
-	const CREATE_USER_ID = 'user_id';
-	public $folder = '_user';
-	public $source;
-	protected $casts = [
-		'parameters' => 'object'
-	];
+    const CREATE_USER_ID = 'user_id';
+    public $folder = '_user';
+    public $source;
+    protected $casts = [
+        'parameters' => 'object'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function setPathToFileAttribute($path_to_file)
-	{
-		$this->path_to_file = $path_to_file;
-	}
+    public function setPathToFileAttribute($path_to_file)
+    {
+        $this->path_to_file = $path_to_file;
+    }
 
-	public function getWidth()
-	{
-		return empty($this->parameters->w) ? null : $this->parameters->w;
-	}
+    public function getWidth()
+    {
+        return empty($this->parameters->w) ? null : $this->parameters->w;
+    }
 
-	public function getHeight()
-	{
-		return empty($this->parameters->h) ? null : $this->parameters->h;
-	}
+    public function getHeight()
+    {
+        return empty($this->parameters->h) ? null : $this->parameters->h;
+    }
 }

@@ -27,15 +27,15 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \App\Author $author
- * @property-read \App\User $create_user
+ * @property-read Author $author
+ * @property-read User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \App\Manager $manager
- * @property-read \App\User|null $status_changed_user
+ * @property-read Manager $manager
+ * @property-read User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -63,7 +63,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereManagerId($value)
@@ -83,34 +83,34 @@ use Illuminate\Support\Facades\Cache;
  */
 class AuthorSaleRequest extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
 
-	public $dates = ['status_changed_at'];
-	protected $fillable = [
-		'text'
-	];
+    public $dates = ['status_changed_at'];
+    protected $fillable = [
+        'text'
+    ];
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::AuthorSaleRequestCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::AuthorSaleRequestCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::AuthorSaleRequestCount])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::AuthorSaleRequestCount])->pull('count');
+    }
 
-	public function manager()
-	{
-		return $this->belongsTo('App\Manager', 'manager_id');
-	}
+    public function manager()
+    {
+        return $this->belongsTo('App\Manager', 'manager_id');
+    }
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author');
+    }
 }

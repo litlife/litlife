@@ -19,10 +19,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string|null $updated_at
  * @method static Builder|AuthorParsedData newModelQuery()
  * @method static Builder|AuthorParsedData newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorParsedData query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|AuthorParsedData whereCity($value)
  * @method static Builder|AuthorParsedData whereCreatedAt($value)
  * @method static Builder|AuthorParsedData whereEmail($value)
@@ -35,68 +35,69 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class AuthorParsedData extends Model
 {
-	public $timestamps = false;
+    public $timestamps = false;
 
-	public function setUrlAttribute($s)
-	{
-		$this->attributes['url'] = mb_substr(trim(mb_strtolower($s)), 0, 255);
-	}
+    public function setUrlAttribute($s)
+    {
+        $this->attributes['url'] = mb_substr(trim(mb_strtolower($s)), 0, 255);
+    }
 
-	public function setNameAttribute($s)
-	{
-		$this->attributes['name'] = mb_substr(trim($s), 0, 255);
-	}
+    public function setNameAttribute($s)
+    {
+        $this->attributes['name'] = mb_substr(trim($s), 0, 255);
+    }
 
-	public function setEmailAttribute($s)
-	{
-		$this->attributes['email'] = mb_substr(trim(mb_strtolower($s)), 0, 100);
-	}
+    public function setEmailAttribute($s)
+    {
+        $this->attributes['email'] = mb_substr(trim(mb_strtolower($s)), 0, 100);
+    }
 
-	public function setCityAttribute($s)
-	{
-		$this->attributes['city'] = mb_substr(trim($s), 0, 30);
-	}
+    public function setCityAttribute($s)
+    {
+        $this->attributes['city'] = mb_substr(trim($s), 0, 30);
+    }
 
-	public function setRatingAttribute($s)
-	{
-		$this->attributes['rating'] = mb_substr(trim($s), 0, 10);
-	}
+    public function setRatingAttribute($s)
+    {
+        $this->attributes['rating'] = mb_substr(trim($s), 0, 10);
+    }
 
-	public function getEmailAttribute($s)
-	{
-		$s = str_replace(' ', '', $s);
-		$s = str_replace('[at]', '@', $s);
-		$s = str_replace('[dot]', '.', $s);
-		$s = str_replace('[sobaka]', '@', $s);
-		$s = str_replace('[co6aka]', '@', $s);
-		$s = str_replace('[@]', '.', $s);
-		$s = str_replace('[]', '@', $s);
-		$s = str_replace('[', '', $s);
-		$s = str_replace(']', '', $s);
+    public function getEmailAttribute($s)
+    {
+        $s = str_replace(' ', '', $s);
+        $s = str_replace('[at]', '@', $s);
+        $s = str_replace('[dot]', '.', $s);
+        $s = str_replace('[sobaka]', '@', $s);
+        $s = str_replace('[co6aka]', '@', $s);
+        $s = str_replace('[@]', '.', $s);
+        $s = str_replace('[]', '@', $s);
+        $s = str_replace('[', '', $s);
+        $s = str_replace(']', '', $s);
 
-		return $s;
-	}
+        return $s;
+    }
 
-	public function getAbsoluteRating()
-	{
-		$rating = $this->attributes['rating'];
+    public function getAbsoluteRating()
+    {
+        $rating = $this->attributes['rating'];
 
-		if (preg_match('/\*/iu', $rating)) {
-			$array = explode('*', $rating);
+        if (preg_match('/\*/iu', $rating)) {
+            $array = explode('*', $rating);
 
-			list($vote, $count) = $array;
+            list($vote, $count) = $array;
 
-			$rating = $vote * $count;
-		}
+            $rating = $vote * $count;
+        }
 
-		return intval($rating);
-	}
+        return intval($rating);
+    }
 
-	public function isEmailVaild()
-	{
-		if (filter_var($this->email, FILTER_VALIDATE_EMAIL))
-			return true;
-		else
-			return false;
-	}
+    public function isEmailVaild()
+    {
+        if (filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

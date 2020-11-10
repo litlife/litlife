@@ -21,8 +21,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $admin_noteable
- * @property-read \App\User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $admin_noteable
+ * @property-read User|null $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newQuery()
  * @method static Builder|AdminNote onlyTrashed()
@@ -34,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereText($value)
@@ -46,19 +46,19 @@ use Illuminate\Support\Carbon;
  */
 class AdminNote extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'text'
-	];
+    protected $fillable = [
+        'text'
+    ];
 
-	protected $dates = [
-		'user_edited_at'
-	];
+    protected $dates = [
+        'user_edited_at'
+    ];
 
-	public function admin_noteable()
-	{
-		return $this->morphTo();
-	}
+    public function admin_noteable()
+    {
+        return $this->morphTo();
+    }
 }

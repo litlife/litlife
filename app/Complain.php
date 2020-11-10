@@ -27,15 +27,15 @@ use Illuminate\Support\Facades\Cache;
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $complainable
- * @property-read \App\User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $complainable
+ * @property-read User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \App\User|null $status_changed_user
- * @property-read \App\User|null $user
+ * @property-read User|null $status_changed_user
+ * @property-read User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Complain accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -64,7 +64,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatus($value)
@@ -82,57 +82,59 @@ use Illuminate\Support\Facades\Cache;
  */
 class Complain extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
 
-	public $dates = ['status_changed_at'];
-	protected $attributes =
-		[
-			'status' => StatusEnum::OnReview
-		];
-	protected $table = 'complaints';
-	protected $fillable = [
-		'text'
-	];
+    public $dates = ['status_changed_at'];
+    protected $attributes =
+        [
+            'status' => StatusEnum::OnReview
+        ];
+    protected $table = 'complaints';
+    protected $fillable = [
+        'text'
+    ];
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::ComplainsOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::ComplainsOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::ComplainsOnModerationCount])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::ComplainsOnModerationCount])->pull('count');
+    }
 
-	public function complainable()
-	{
-		return $this->morphTo()->any();
-	}
+    public function complainable()
+    {
+        return $this->morphTo()->any();
+    }
 
-	function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id');
-	}
+    function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
 
-	public function setTextAttribute($text)
-	{
-		$this->attributes['text'] = $text;
-	}
+    public function setTextAttribute($text)
+    {
+        $this->attributes['text'] = $text;
+    }
 
-	public function getComplainableName()
-	{
-		if (empty($this->complainable))
-			return null;
+    public function getComplainableName()
+    {
+        if (empty($this->complainable)) {
+            return null;
+        }
 
-		$name = get_class($this->complainable);
+        $name = get_class($this->complainable);
 
-		if (preg_match('/^App\\\(.+)/iu', $name, $matches))
-			return mb_strtolower($matches[1]);
-		else
-			return $name;
-	}
+        if (preg_match('/^App\\\(.+)/iu', $name, $matches)) {
+            return mb_strtolower($matches[1]);
+        } else {
+            return $name;
+        }
+    }
 }

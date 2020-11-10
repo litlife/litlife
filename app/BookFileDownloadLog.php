@@ -16,13 +16,13 @@ use Illuminate\Support\Carbon;
  * @property string $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\BookFile $book_file
+ * @property-read BookFile $book_file
  * @method static Builder|BookFileDownloadLog newModelQuery()
  * @method static Builder|BookFileDownloadLog newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookFileDownloadLog query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|BookFileDownloadLog whereBookFileId($value)
  * @method static Builder|BookFileDownloadLog whereCreatedAt($value)
  * @method static Builder|BookFileDownloadLog whereId($value)
@@ -33,8 +33,8 @@ use Illuminate\Support\Carbon;
  */
 class BookFileDownloadLog extends Model
 {
-	function book_file()
-	{
-		return $this->belongsTo('App\BookFile')->any();
-	}
+    function book_file()
+    {
+        return $this->belongsTo('App\BookFile')->any();
+    }
 }

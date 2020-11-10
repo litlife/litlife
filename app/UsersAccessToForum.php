@@ -13,17 +13,17 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $forum_id
  * @method static Builder|UsersAccessToForum newModelQuery()
  * @method static Builder|UsersAccessToForum newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UsersAccessToForum query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UsersAccessToForum whereForumId($value)
  * @method static Builder|UsersAccessToForum whereUserId($value)
  * @mixin Eloquent
  */
 class UsersAccessToForum extends Model
 {
-	public $timestamps = false;
-	public $incrementing = false;
-	protected $primaryKey = null;
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $primaryKey = null;
 }

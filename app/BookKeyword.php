@@ -30,17 +30,17 @@ use Illuminate\Support\Facades\Cache;
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property int|null $origin_book_id
- * @property-read \App\Book $book
- * @property-read \App\User $create_user
+ * @property-read Book $book
+ * @property-read User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \App\Keyword|null $keyword
- * @property-read \App\User|null $status_changed_user
- * @property-read \App\BookKeywordVote|null $user_vote
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookKeywordVote[] $votes
+ * @property-read Keyword|null $keyword
+ * @property-read User|null $status_changed_user
+ * @property-read BookKeywordVote|null $user_vote
+ * @property-read \Illuminate\Database\Eloquent\Collection|BookKeywordVote[] $votes
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -72,7 +72,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreator(\App\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreator(User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereKeywordId($value)
@@ -92,93 +92,93 @@ use Illuminate\Support\Facades\Cache;
  */
 class BookKeyword extends Model
 {
-	use SoftDeletes;
-	use CheckedItems;
-	use UserCreate;
+    use SoftDeletes;
+    use CheckedItems;
+    use UserCreate;
 
-	protected $fillable = [
-		'keyword_id',
-		'book_id'
-	];
+    protected $fillable = [
+        'keyword_id',
+        'book_id'
+    ];
 
-	protected $attributes =
-		[
-			'status' => StatusEnum::Private
-		];
+    protected $attributes =
+        [
+            'status' => StatusEnum::Private
+        ];
 
-	public static function boot()
-	{
-		parent::boot();
+    public static function boot()
+    {
+        parent::boot();
 
-		static::addGlobalScope(new CheckedScope);
-	}
+        static::addGlobalScope(new CheckedScope);
+    }
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::BookKeywordsOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::BookKeywordsOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::BookKeywordsOnModerationCount])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::BookKeywordsOnModerationCount])->pull('count');
+    }
 
-	public function keyword()
-	{
-		return $this->hasOne('App\Keyword', 'id', 'keyword_id');
-	}
+    public function keyword()
+    {
+        return $this->hasOne('App\Keyword', 'id', 'keyword_id');
+    }
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book', 'book_id', 'id');
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book', 'book_id', 'id');
+    }
 
-	public function votes()
-	{
-		return $this->hasMany('App\BookKeywordVote', 'book_keyword_id', 'id');
-	}
+    public function votes()
+    {
+        return $this->hasMany('App\BookKeywordVote', 'book_keyword_id', 'id');
+    }
 
-	public function user_vote()
-	{
-		return $this->hasOne('App\BookKeywordVote')
-			->where("create_user_id", Auth::id());
-	}
+    public function user_vote()
+    {
+        return $this->hasOne('App\BookKeywordVote')
+            ->where("create_user_id", Auth::id());
+    }
 
-	public function scopeSearchFullWord($query, $textOrArray)
-	{
-		if (is_array($textOrArray)) {
-			foreach ($textOrArray as $keyword) {
-				$keywords[] = preg_quote(trim($keyword));
-			}
-			return $query->whereRaw('"text" ~* \'^(' . implode('|', $keywords) . ')$\'');
-		} else {
-			return $query->whereRaw('"text" ~* \'^' . preg_quote($textOrArray) . '$\'');
-		}
-	}
+    public function scopeSearchFullWord($query, $textOrArray)
+    {
+        if (is_array($textOrArray)) {
+            foreach ($textOrArray as $keyword) {
+                $keywords[] = preg_quote(trim($keyword));
+            }
+            return $query->whereRaw('"text" ~* \'^(' . implode('|', $keywords) . ')$\'');
+        } else {
+            return $query->whereRaw('"text" ~* \'^' . preg_quote($textOrArray) . '$\'');
+        }
+    }
 
-	public function scopeSearchPartWord($query, $textOrArray)
-	{
-		if (is_array($textOrArray)) {
-			foreach ($textOrArray as $keyword) {
-				$keywords[] = preg_quote(trim($keyword));
-			}
-			return $query->whereRaw('"text" ~* \'(' . implode('|', $keywords) . ')\'');
-		} else {
-			return $query->whereRaw('"text" ~* \'' . preg_quote($textOrArray) . '\'');
-		}
-	}
+    public function scopeSearchPartWord($query, $textOrArray)
+    {
+        if (is_array($textOrArray)) {
+            foreach ($textOrArray as $keyword) {
+                $keywords[] = preg_quote(trim($keyword));
+            }
+            return $query->whereRaw('"text" ~* \'(' . implode('|', $keywords) . ')\'');
+        } else {
+            return $query->whereRaw('"text" ~* \'' . preg_quote($textOrArray) . '\'');
+        }
+    }
 
-	public function scopeSearch($query, $text)
-	{
-		$text = trim($text);
+    public function scopeSearch($query, $text)
+    {
+        $text = trim($text);
 
-		return $query->where('text', 'ilike', $text . '%');
-	}
+        return $query->where('text', 'ilike', $text . '%');
+    }
 
-	public function scopeJoinKeywords($query)
-	{
-		return $query->join('keywords', 'book_keywords.keyword_id', '=', 'keywords.id');
-	}
+    public function scopeJoinKeywords($query)
+    {
+        return $query->join('keywords', 'book_keywords.keyword_id', '=', 'keywords.id');
+    }
 }
