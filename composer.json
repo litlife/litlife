@@ -40,6 +40,7 @@
         "awobaz/compoships": "^2.0",
         "babenkoivan/scout-elasticsearch-driver": "^4.2",
         "bensampo/laravel-enum": "^3.1",
+        "bugsnag/bugsnag-laravel": "^2.0",
         "coderello/laravel-shared-data": "^3.0",
         "davejamesmiller/laravel-breadcrumbs": "^5.3",
         "doctrine/dbal": "^2.10",
