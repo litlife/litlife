@@ -2504,16 +2504,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.12.12",
+            "version": "8.12.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "f3802f572c5fff322a2ccd8d2d792c147ed9e3c4"
+                "reference": "571bbbabdab5b1cf16550cb257005bb527fa0899"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/f3802f572c5fff322a2ccd8d2d792c147ed9e3c4",
-                "reference": "f3802f572c5fff322a2ccd8d2d792c147ed9e3c4",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/571bbbabdab5b1cf16550cb257005bb527fa0899",
+                "reference": "571bbbabdab5b1cf16550cb257005bb527fa0899",
                 "shasum": ""
             },
             "require": {
@@ -2573,7 +2573,7 @@
                 "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
                 "source": "https://github.com/giggsey/libphonenumber-for-php"
             },
-            "time": "2020-10-29T09:27:40+00:00"
+            "time": "2020-11-12T14:42:30+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -3553,48 +3553,41 @@
         },
         {
             "name": "laminas/laminas-code",
-            "version": "3.4.1",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-code.git",
-                "reference": "1cb8f203389ab1482bf89c0e70a04849bacd7766"
+                "reference": "cb90ef428da9260c2deaa827b037c20695f968ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-code/zipball/1cb8f203389ab1482bf89c0e70a04849bacd7766",
-                "reference": "1cb8f203389ab1482bf89c0e70a04849bacd7766",
+                "url": "https://api.github.com/repos/laminas/laminas-code/zipball/cb90ef428da9260c2deaa827b037c20695f968ae",
+                "reference": "cb90ef428da9260c2deaa827b037c20695f968ae",
                 "shasum": ""
             },
             "require": {
-                "laminas/laminas-eventmanager": "^2.6 || ^3.0",
-                "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^7.1"
+                "laminas/laminas-eventmanager": "^3.3",
+                "laminas/laminas-zendframework-bridge": "^1.1",
+                "php": "^7.3 || ~8.0.0"
             },
             "conflict": {
                 "phpspec/prophecy": "<1.9.0"
             },
             "replace": {
-                "zendframework/zend-code": "self.version"
+                "zendframework/zend-code": "^3.4.1"
             },
             "require-dev": {
-                "doctrine/annotations": "^1.7",
+                "doctrine/annotations": "^1.10.4",
                 "ext-phar": "*",
-                "laminas/laminas-coding-standard": "^1.0",
-                "laminas/laminas-stdlib": "^2.7 || ^3.0",
-                "phpunit/phpunit": "^7.5.16 || ^8.4"
+                "laminas/laminas-coding-standard": "^1.0.0",
+                "laminas/laminas-stdlib": "^3.3.0",
+                "phpunit/phpunit": "^9.4.2"
             },
             "suggest": {
                 "doctrine/annotations": "Doctrine\\Common\\Annotations >=1.0 for annotation features",
                 "laminas/laminas-stdlib": "Laminas\\Stdlib component"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.4.x-dev",
-                    "dev-develop": "3.5.x-dev",
-                    "dev-dev-4.0": "4.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Laminas\\Code\\": "src/"
@@ -3618,7 +3611,13 @@
                 "rss": "https://github.com/laminas/laminas-code/releases.atom",
                 "source": "https://github.com/laminas/laminas-code"
             },
-            "time": "2019-12-31T16:28:24+00:00"
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2020-11-11T22:11:27+00:00"
         },
         {
             "name": "laminas/laminas-eventmanager",
@@ -5381,16 +5380,16 @@
         },
         {
             "name": "matomo/device-detector",
-            "version": "4.0.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/matomo-org/device-detector.git",
-                "reference": "7ced8fa471d4d136e31e37c8ae49af3ea4567b5f"
+                "reference": "3799f71f4211346158a1e96f3b0bef615c873923"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/matomo-org/device-detector/zipball/7ced8fa471d4d136e31e37c8ae49af3ea4567b5f",
-                "reference": "7ced8fa471d4d136e31e37c8ae49af3ea4567b5f",
+                "url": "https://api.github.com/repos/matomo-org/device-detector/zipball/3799f71f4211346158a1e96f3b0bef615c873923",
+                "reference": "3799f71f4211346158a1e96f3b0bef615c873923",
                 "shasum": ""
             },
             "require": {
@@ -5398,7 +5397,7 @@
                 "php": ">=7.2"
             },
             "replace": {
-                "piwik/device-detector": "*"
+                "piwik/device-detector": "self.version"
             },
             "require-dev": {
                 "matthiasmullie/scrapbook": "@stable",
@@ -5446,7 +5445,7 @@
                 "source": "https://github.com/matomo-org/piwik",
                 "wiki": "https://dev.matomo.org/"
             },
-            "time": "2020-10-30T14:37:50+00:00"
+            "time": "2020-11-12T17:19:41+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -10237,16 +10236,16 @@
         },
         {
             "name": "voku/portable-ascii",
-            "version": "1.5.4",
+            "version": "1.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voku/portable-ascii.git",
-                "reference": "87dc337d4200b32717dd3849fea846319e897658"
+                "reference": "80953678b19901e5165c56752d087fc11526017c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/87dc337d4200b32717dd3849fea846319e897658",
-                "reference": "87dc337d4200b32717dd3849fea846319e897658",
+                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/80953678b19901e5165c56752d087fc11526017c",
+                "reference": "80953678b19901e5165c56752d087fc11526017c",
                 "shasum": ""
             },
             "require": {
@@ -10283,7 +10282,7 @@
             ],
             "support": {
                 "issues": "https://github.com/voku/portable-ascii/issues",
-                "source": "https://github.com/voku/portable-ascii/tree/1.5.4"
+                "source": "https://github.com/voku/portable-ascii/tree/1.5.6"
             },
             "funding": [
                 {
@@ -10307,7 +10306,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-11-08T21:15:15+00:00"
+            "time": "2020-11-12T00:07:28+00:00"
         },
         {
             "name": "watson/active",
@@ -10798,23 +10797,23 @@
         },
         {
             "name": "composer/semver",
-            "version": "3.2.2",
+            "version": "3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/semver.git",
-                "reference": "4089fddb67bcf6bf860d91b979e95be303835002"
+                "reference": "a02fdf930a3c1c3ed3a49b5f63859c0c20e10464"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/semver/zipball/4089fddb67bcf6bf860d91b979e95be303835002",
-                "reference": "4089fddb67bcf6bf860d91b979e95be303835002",
+                "url": "https://api.github.com/repos/composer/semver/zipball/a02fdf930a3c1c3ed3a49b5f63859c0c20e10464",
+                "reference": "a02fdf930a3c1c3ed3a49b5f63859c0c20e10464",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.3.2 || ^7.0 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12.19",
+                "phpstan/phpstan": "^0.12.54",
                 "symfony/phpunit-bridge": "^4.2 || ^5"
             },
             "type": "library",
@@ -10859,7 +10858,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/semver/issues",
-                "source": "https://github.com/composer/semver/tree/3.2.2"
+                "source": "https://github.com/composer/semver/tree/3.2.4"
             },
             "funding": [
                 {
@@ -10875,7 +10874,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-14T08:51:15+00:00"
+            "time": "2020-11-13T08:59:24+00:00"
         },
         {
             "name": "composer/spdx-licenses",
@@ -10958,16 +10957,16 @@
         },
         {
             "name": "composer/xdebug-handler",
-            "version": "1.4.4",
+            "version": "1.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/xdebug-handler.git",
-                "reference": "6e076a124f7ee146f2487554a94b6a19a74887ba"
+                "reference": "f28d44c286812c714741478d968104c5e604a1d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/6e076a124f7ee146f2487554a94b6a19a74887ba",
-                "reference": "6e076a124f7ee146f2487554a94b6a19a74887ba",
+                "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/f28d44c286812c714741478d968104c5e604a1d4",
+                "reference": "f28d44c286812c714741478d968104c5e604a1d4",
                 "shasum": ""
             },
             "require": {
@@ -11001,7 +11000,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/xdebug-handler/issues",
-                "source": "https://github.com/composer/xdebug-handler/tree/1.4.4"
+                "source": "https://github.com/composer/xdebug-handler/tree/1.4.5"
             },
             "funding": [
                 {
@@ -11017,7 +11016,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-24T12:39:10+00:00"
+            "time": "2020-11-13T08:04:11+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -11155,16 +11154,16 @@
         },
         {
             "name": "facade/ignition",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "81698c5e32837c74abf9bb764ff0c1b3e001afb3"
+                "reference": "3b3403f18bbdc0aeadf1ffaddf11a1588b12ec7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/81698c5e32837c74abf9bb764ff0c1b3e001afb3",
-                "reference": "81698c5e32837c74abf9bb764ff0c1b3e001afb3",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/3b3403f18bbdc0aeadf1ffaddf11a1588b12ec7a",
+                "reference": "3b3403f18bbdc0aeadf1ffaddf11a1588b12ec7a",
                 "shasum": ""
             },
             "require": {
@@ -11228,7 +11227,7 @@
                 "issues": "https://github.com/facade/ignition/issues",
                 "source": "https://github.com/facade/ignition"
             },
-            "time": "2020-10-27T13:02:22+00:00"
+            "time": "2020-11-13T13:36:24+00:00"
         },
         {
             "name": "fakerphp/faker",
@@ -11408,16 +11407,16 @@
         },
         {
             "name": "google/apiclient",
-            "version": "v2.8.1",
+            "version": "v2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-api-php-client.git",
-                "reference": "c8f6d09f50f859fa9457104bb0fb72c893804ede"
+                "reference": "24f3ec0c79567a08c31f8271b61d79b050b25b0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/c8f6d09f50f859fa9457104bb0fb72c893804ede",
-                "reference": "c8f6d09f50f859fa9457104bb0fb72c893804ede",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/24f3ec0c79567a08c31f8271b61d79b050b25b0a",
+                "reference": "24f3ec0c79567a08c31f8271b61d79b050b25b0a",
                 "shasum": ""
             },
             "require": {
@@ -11471,9 +11470,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/google-api-php-client/issues",
-                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.8.1"
+                "source": "https://github.com/googleapis/google-api-php-client/tree/v2.8.2"
             },
-            "time": "2020-10-27T23:20:13+00:00"
+            "time": "2020-11-11T17:07:53+00:00"
         },
         {
             "name": "google/apiclient-services",
@@ -11954,16 +11953,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.10.1",
+            "version": "1.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5"
+                "reference": "776f831124e9c62e1a2c601ecc52e776d8bb7220"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
-                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/776f831124e9c62e1a2c601ecc52e776d8bb7220",
+                "reference": "776f831124e9c62e1a2c601ecc52e776d8bb7220",
                 "shasum": ""
             },
             "require": {
@@ -12000,7 +11999,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.x"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.10.2"
             },
             "funding": [
                 {
@@ -12008,7 +12007,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-29T13:22:24+00:00"
+            "time": "2020-11-13T09:40:50+00:00"
         },
         {
             "name": "nikaia/translation-sheet",
