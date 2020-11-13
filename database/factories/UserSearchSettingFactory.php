@@ -1,17 +1,30 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
+use App\User;
 use App\UserSearchSetting;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserSearchSetting::class, function (Faker $faker) {
-    return [
-        'user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'name' => 'read_access',
-        'value' => 'any'
-    ];
-});
+class UserSearchSettingFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserSearchSetting::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'name' => 'read_access',
+            'value' => 'any'
+        ];
+    }
+}

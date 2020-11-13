@@ -133,78 +133,78 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  *                         Если книга не вычитана в названии книги это не указывается, а вместо этого необходимо добавить в аннотацию
  *                         предупреждение: "Предупреждение: Не вычитано".<br/>
  *                         Редакторы, составители, иллюстраторы, художники указываются в полях ниже
- * @property-read \Illuminate\Database\Eloquent\Collection|Activity[] $activities
- * @property-read User|null $add_user
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $addedToFavoritesUsers
- * @property-read AdminNote|null $admin_note
- * @property-read \Illuminate\Database\Eloquent\Collection|AdminNote[] $admin_notes
- * @property-read Section|null $annotation
- * @property-read \Illuminate\Database\Eloquent\Collection|Attachment[] $attachments
- * @property-read Like|null $authUserLike
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $authors
- * @property-read BookAverageRatingForPeriod $average_rating_for_period
- * @property-read \Illuminate\Database\Eloquent\Collection|BookAward[] $awards
- * @property-read \Illuminate\Database\Eloquent\Collection|BookKeyword[] $book_keywords
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $boughtUsers
- * @property-read \Illuminate\Database\Eloquent\Collection|BookCharacterChange[] $character_change_history
- * @property-read User|null $check_user
- * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $comments
- * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $commentsOrigin
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $compilers
- * @property-read \Illuminate\Database\Eloquent\Collection|Complain[] $complaints
- * @property-read User|null $connect_user
- * @property-read Attachment|null $cover
- * @property-read User $create_user
- * @property-read User|null $deletedByUser
- * @property-read User|null $edit_user
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $editors
- * @property-read \Illuminate\Database\Eloquent\Collection|BookFile[] $files
- * @property-read \Illuminate\Database\Eloquent\Collection|Genre[] $genres
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
+ * @property-read \App\User|null $add_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
+ * @property-read \App\AdminNote|null $admin_note
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AdminNote[] $admin_notes
+ * @property-read \App\Section|null $annotation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Attachment[] $attachments
+ * @property-read \App\Like|null $authUserLike
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $authors
+ * @property-read \App\BookAverageRatingForPeriod $average_rating_for_period
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookAward[] $awards
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookKeyword[] $book_keywords
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $boughtUsers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookCharacterChange[] $character_change_history
+ * @property-read \App\User|null $check_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $commentsOrigin
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $compilers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
+ * @property-read \App\User|null $connect_user
+ * @property-read \App\Attachment|null $cover
+ * @property-read \App\User $create_user
+ * @property-read \App\User|null $deletedByUser
+ * @property-read \App\User|null $edit_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $editors
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookFile[] $files
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Genre[] $genres
  * @property mixed $comments_count
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read BookGroup|null $group
+ * @property-read \App\BookGroup|null $group
  * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $groupedBooks
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $illustrators
- * @property-read \Illuminate\Database\Eloquent\Collection|Keyword[] $keywords
- * @property-read Language|null $language
- * @property-read \Illuminate\Database\Eloquent\Collection|Activity[] $latestActivitiesItemDeleted
- * @property-read \Illuminate\Database\Eloquent\Collection|AdminNote[] $latest_admin_notes
- * @property-read \Illuminate\Database\Eloquent\Collection|UserBook[] $library_users
- * @property-read \Illuminate\Database\Eloquent\Collection|Like[] $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $illustrators
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Keyword[] $keywords
+ * @property-read \App\Language|null $language
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $latestActivitiesItemDeleted
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AdminNote[] $latest_admin_notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserBook[] $library_users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
  * @property-read Book|null $mainBook
- * @property-read \Illuminate\Database\Eloquent\Collection|BookCover[] $old_covers
- * @property-read \Illuminate\Database\Eloquent\Collection|BookStatus[] $origin_statuses
- * @property-read Language|null $originalLang
- * @property-read \Illuminate\Database\Eloquent\Collection|Page[] $pages
- * @property-read BookParse $parse
- * @property-read \Illuminate\Database\Eloquent\Collection|BookParse[] $parses
- * @property-read \Illuminate\Database\Eloquent\Collection|PriceChangeLog[] $priceChangeLogs
- * @property-read \Illuminate\Database\Eloquent\Collection|UserPurchase[] $purchases
- * @property-read \Illuminate\Database\Eloquent\Collection|BookReadRememberPage[] $remembered_pages
- * @property-read User|null $secret_hide_user
- * @property-read \Kalnoy\Nestedset\Collection|Section[] $sections
- * @property-read \Illuminate\Database\Eloquent\Collection|Sequence[] $sequences
- * @property-read Section|null $short_annotation
- * @property-read \Illuminate\Database\Eloquent\Collection|BookSimilarVote[] $similar_vote
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookCover[] $old_covers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookStatus[] $origin_statuses
+ * @property-read \App\Language|null $originalLang
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Page[] $pages
+ * @property-read \App\BookParse $parse
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookParse[] $parses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\PriceChangeLog[] $priceChangeLogs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserPurchase[] $purchases
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookReadRememberPage[] $remembered_pages
+ * @property-read \App\User|null $secret_hide_user
+ * @property-read \Kalnoy\Nestedset\Collection|\App\Section[] $sections
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Sequence[] $sequences
+ * @property-read \App\Section|null $short_annotation
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookSimilarVote[] $similar_vote
  * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $similars
- * @property-read BookFile|null $source
- * @property-read User|null $status_changed_user
- * @property-read \Illuminate\Database\Eloquent\Collection|BookStatus[] $statuses
- * @property-read \Illuminate\Database\Eloquent\Collection|BookTextProcessing[] $textProcessings
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $translators
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $userStatuses
- * @property-read BookVote|null $userVote
- * @property-read \Illuminate\Database\Eloquent\Collection|BookViewIp[] $user_view_ips
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $usersAddedToFavorites
- * @property-read \Illuminate\Database\Eloquent\Collection|BookStatus[] $users_read_statuses
- * @property-read ViewCount $view_count
- * @property-read \Illuminate\Database\Eloquent\Collection|BookVote[] $votes
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $votesUsers
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $writers
+ * @property-read \App\BookFile|null $source
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookStatus[] $statuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookTextProcessing[] $textProcessings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $translators
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $userStatuses
+ * @property-read \App\BookVote|null $userVote
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookViewIp[] $user_view_ips
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $usersAddedToFavorites
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookStatus[] $users_read_statuses
+ * @property-read \App\ViewCount $view_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookVote[] $votes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $votesUsers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $writers
  * @method static Builder|Book accepted()
  * @method static Builder|Book acceptedAndSentForReview()
  * @method static Builder|Book acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -244,7 +244,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Book orderStatusChangedAsc()
  * @method static Builder|Book orderStatusChangedDesc()
  * @method static Builder|Book paid()
- * @method static Builder|Book private ()
+ * @method static Builder|Book private()
  * @method static Builder|Book publishCityILike($value)
  * @method static Builder|Book query()
  * @method static Builder|Book readAndDownloadAccess()
@@ -275,7 +275,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Book whereCoverId($value)
  * @method static Builder|Book whereCreateUserId($value)
  * @method static Builder|Book whereCreatedAt($value)
- * @method static Builder|Book whereCreator(User $user)
+ * @method static Builder|Book whereCreator(\App\User $user)
  * @method static Builder|Book whereDeleteUserId($value)
  * @method static Builder|Book whereDeletedAt($value)
  * @method static Builder|Book whereDownloadAccess($value)

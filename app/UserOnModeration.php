@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read User|null $user
- * @property-read User|null $user_adds
+ * @property-read \App\User|null $user
+ * @property-read \App\User|null $user_adds
  * @method static Builder|UserOnModeration newModelQuery()
  * @method static Builder|UserOnModeration newQuery()
  * @method static Builder|Model orderByField($column, $ids)

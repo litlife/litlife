@@ -23,10 +23,10 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property Carbon $user_updated_at
  * @property int|null $origin_book_id
- * @property-read Book $book
- * @property-read User $create_user
- * @property-read Book|null $originBook
- * @property-read User|null $user
+ * @property-read \App\Book $book
+ * @property-read \App\User $create_user
+ * @property-read \App\Book|null $originBook
+ * @property-read \App\User|null $user
  * @method static Builder|BookVote newModelQuery()
  * @method static Builder|BookVote newQuery()
  * @method static \Illuminate\Database\Query\Builder|BookVote onlyTrashed()
@@ -37,7 +37,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookVote whereBookId($value)
  * @method static Builder|BookVote whereCreateUserId($value)
  * @method static Builder|BookVote whereCreatedAt($value)
- * @method static Builder|BookVote whereCreator(User $user)
+ * @method static Builder|BookVote whereCreator(\App\User $user)
  * @method static Builder|BookVote whereDeletedAt($value)
  * @method static Builder|BookVote whereId($value)
  * @method static Builder|BookVote whereIp($value)

@@ -8,77 +8,77 @@ use Tests\TestCase;
 
 class CollectionIndexTest extends TestCase
 {
-	public function testIndexHttp()
-	{
-		$collection = Collection::factory()->create();
+    public function testIndexHttp()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($user)
-			->get(route('collections.index'))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('collections.index'))
+            ->assertOk();
+    }
 
-	public function testSearchTitle()
-	{
-		$title = Str::random(5);
-		$description = Str::random(5);
+    public function testSearchTitle()
+    {
+        $title = Str::random(5);
+        $description = Str::random(5);
 
-		$collection = Collection::factory()->create([
-				'title' => $title,
-				'description' => $description
-			]);
+        $collection = Collection::factory()->create([
+            'title' => $title,
+            'description' => $description
+        ]);
 
-		$this->actingAs($collection->create_user)
-			->get(route('collections.index', [
-				'search' => $title
-			]))
-			->assertOk()
-			->assertDontSeeText(__('collection.nothing_found'))
-			->assertSeeText($title)
-			->assertSeeText($description);
-	}
+        $this->actingAs($collection->create_user)
+            ->get(route('collections.index', [
+                'search' => $title
+            ]))
+            ->assertOk()
+            ->assertDontSeeText(__('collection.nothing_found'))
+            ->assertSeeText($title)
+            ->assertSeeText($description);
+    }
 
-	public function testPerPage()
-	{
-		$response = $this->get(route('collections.index', ['per_page' => 5]))
-			->assertOk();
+    public function testPerPage()
+    {
+        $response = $this->get(route('collections.index', ['per_page' => 5]))
+            ->assertOk();
 
-		$this->assertEquals(10, $response->original->gatherData()['collections']->perPage());
+        $this->assertEquals(10, $response->original->gatherData()['collections']->perPage());
 
-		$response = $this->get(route('collections.index', ['per_page' => 200]))
-			->assertOk();
+        $response = $this->get(route('collections.index', ['per_page' => 200]))
+            ->assertOk();
 
-		$this->assertEquals(100, $response->original->gatherData()['collections']->perPage());
-	}
+        $this->assertEquals(100, $response->original->gatherData()['collections']->perPage());
+    }
 
-	public function testSeeCollectionForEveryoneInList()
-	{
-		$title = Str::random(8);
+    public function testSeeCollectionForEveryoneInList()
+    {
+        $title = Str::random(8);
 
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create([
-				'title' => $title
-			]);
+        $collection = Collection::factory()
+            ->accepted()
+            ->create([
+                'title' => $title
+            ]);
 
-		$this->get(route('collections.index', ['title' => $title]))
-			->assertOk()
-			->assertSeeText($title);
-	}
+        $this->get(route('collections.index', ['title' => $title]))
+            ->assertOk()
+            ->assertSeeText($title);
+    }
 
-	public function testDontSeePrivateCollectionInList()
-	{
-		$title = Str::random(8);
+    public function testDontSeePrivateCollectionInList()
+    {
+        $title = Str::random(8);
 
-		$collection = factory(Collection::class)
-			->states('private')
-			->create([
-				'title' => $title
-			]);
+        $collection = Collection::factory()
+            ->private()
+            ->create([
+                'title' => $title
+            ]);
 
-		$this->get(route('collections.index', ['title' => $title]))
-			->assertOk()
-			->assertDontSeeText($title);
-	}
+        $this->get(route('collections.index', ['title' => $title]))
+            ->assertOk()
+            ->assertDontSeeText($title);
+    }
 }

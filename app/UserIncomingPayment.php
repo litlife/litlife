@@ -22,17 +22,17 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read UserPaymentTransaction|null $transaction
- * @property-read User $user
+ * @property-read \App\UserPaymentTransaction|null $transaction
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment newQuery()
  * @method static Builder|UserIncomingPayment onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment query()
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment unitPay()
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment unitPayPayment($id)
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment whereCurrency($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserIncomingPayment whereDeletedAt($value)

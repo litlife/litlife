@@ -12,8 +12,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $message_id
  * @property int $user_id
  * @property string $deleted_at
- * @property-read Message $message
- * @property-read User $user
+ * @property-read \App\Message $message
+ * @property-read \App\User $user
  * @method static Builder|MessageDelete newModelQuery()
  * @method static Builder|MessageDelete newQuery()
  * @method static Builder|Model orderByField($column, $ids)

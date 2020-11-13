@@ -29,10 +29,10 @@ use Illuminate\Support\Facades\DB;
  * @property int|null $conversation_id
  * @property string|null $deleted_at_for_created_user
  * @property Carbon|null $user_updated_at
- * @property-read Conversation|null $conversation
- * @property-read User $create_user
+ * @property-read \App\Conversation|null $conversation
+ * @property-read \App\User $create_user
  * @property-write mixed $b_b_text
- * @property-read \Illuminate\Database\Eloquent\Collection|MessageDelete[] $user_deletetions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\MessageDelete[] $user_deletetions
  * @method static Builder|Message joinUserDeletions($user)
  * @method static Builder|Message latestWithId($column = 'created_at')
  * @method static Builder|Message newModelQuery()
@@ -48,7 +48,7 @@ use Illuminate\Support\Facades\DB;
  * @method static Builder|Message whereConversationId($value)
  * @method static Builder|Message whereCreateUserId($value)
  * @method static Builder|Message whereCreatedAt($value)
- * @method static Builder|Message whereCreator(User $user)
+ * @method static Builder|Message whereCreator(\App\User $user)
  * @method static Builder|Message whereDeletedAt($value)
  * @method static Builder|Message whereDeletedAtForCreatedUser($value)
  * @method static Builder|Message whereExternalImagesDownloaded($value)

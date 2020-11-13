@@ -25,744 +25,745 @@ use Tests\TestCase;
 
 class UserSocialAccountsTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testIfNotRegistered()
-	{
-		Notification::fake();
-
-		Event::fake(Registered::class);
-
-		$email = $this->faker->email;
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
-
-		UserEmail::email($email)
-			->delete();
-
-		$this->assertNull(UserEmail::email($email)->first());
-
-		$this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id, 'http://dev.litlife.club/img/nocover4.jpeg');
-
-		$this->get('/auth/facebook/callback')
-			->assertRedirect(route('welcome'));
-
-		$email = UserEmail::email($email)->first();
-		$user = $email->user;
-		$social_account = $user->social_accounts()->first();
-
-		$this->assertNotNull($email);
-		$this->assertNotNull($user);
-		$this->assertNotNull($social_account);
-		$this->assertEquals($provider_user_id, $social_account->provider_user_id);
-		$this->assertEquals($token, $social_account->access_token);
-		$this->assertNotNull($user->avatar()->first());
-
-		$this->assertAuthenticatedAs($user);
-
-		Event::assertDispatched(Registered::class, 1);
-
-		Notification::assertSentTo(
-			$user,
-			UserHasRegisteredNotification::class,
-			function ($notification, $channels) use ($user, $email) {
-
-				$result = Auth::guard()->attempt([
-					'login' => $email->email,
-					'password' => $notification->password
-				]);
-
-				$this->assertTrue($result);
-
-				return $notification->user->id == $user->id;
-			}
-		);
-	}
-
-	/**
-	 * Mock the Socialite Factory, so we can hijack the OAuth Request.
-	 * @param string $email
-	 * @param string $token
-	 * @param int $id
-	 */
-	public function mockSocialiteFacade($email = null, $token = 'foo', $provider_name = 'google', $provider_user_id = 1, $avatar_url = '/img/nocover4.jpeg')
-	{
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('redirect')->andReturn('Redirected');
-		$providerName = class_basename($provider);
-
-		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
-		$abstractUser->token = $token;
-
-		if (is_null($email)) {
-			$abstractUser->shouldReceive('getId')
-				->andReturn($provider_user_id)
-				->shouldReceive('getName')
-				->andReturn('Laztopaz')
-				->shouldReceive('getAvatar')
-				->andReturn($avatar_url);
-		} else {
-			$abstractUser->shouldReceive('getId')
-				->andReturn($provider_user_id)
-				->shouldReceive('getEmail')
-				->andReturn($email)
-				->shouldReceive('getName')
-				->andReturn('Laztopaz')
-				->shouldReceive('getAvatar')
-				->andReturn($avatar_url);
-		}
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testIfNotRegistered()
+    {
+        Notification::fake();
+
+        Event::fake(Registered::class);
+
+        $email = $this->faker->email;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
+
+        UserEmail::email($email)
+            ->delete();
+
+        $this->assertNull(UserEmail::email($email)->first());
+
+        $this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id, 'http://dev.litlife.club/img/nocover4.jpeg');
+
+        $this->get('/auth/facebook/callback')
+            ->assertRedirect(route('welcome'));
+
+        $email = UserEmail::email($email)->first();
+        $user = $email->user;
+        $social_account = $user->social_accounts()->first();
+
+        $this->assertNotNull($email);
+        $this->assertNotNull($user);
+        $this->assertNotNull($social_account);
+        $this->assertEquals($provider_user_id, $social_account->provider_user_id);
+        $this->assertEquals($token, $social_account->access_token);
+        $this->assertNotNull($user->avatar()->first());
+
+        $this->assertAuthenticatedAs($user);
+
+        Event::assertDispatched(Registered::class, 1);
+
+        Notification::assertSentTo(
+            $user,
+            UserHasRegisteredNotification::class,
+            function ($notification, $channels) use ($user, $email) {
+
+                $result = Auth::guard()->attempt([
+                    'login' => $email->email,
+                    'password' => $notification->password
+                ]);
+
+                $this->assertTrue($result);
+
+                return $notification->user->id == $user->id;
+            }
+        );
+    }
+
+    /**
+     * Mock the Socialite Factory, so we can hijack the OAuth Request.
+     * @param  string  $email
+     * @param  string  $token
+     * @param  int  $id
+     */
+    public function mockSocialiteFacade($email = null, $token = 'foo', $provider_name = 'google', $provider_user_id = 1, $avatar_url = '/img/nocover4.jpeg')
+    {
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('redirect')->andReturn('Redirected');
+        $providerName = class_basename($provider);
+
+        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
+        $abstractUser->token = $token;
+
+        if (is_null($email)) {
+            $abstractUser->shouldReceive('getId')
+                ->andReturn($provider_user_id)
+                ->shouldReceive('getName')
+                ->andReturn('Laztopaz')
+                ->shouldReceive('getAvatar')
+                ->andReturn($avatar_url);
+        } else {
+            $abstractUser->shouldReceive('getId')
+                ->andReturn($provider_user_id)
+                ->shouldReceive('getEmail')
+                ->andReturn($email)
+                ->shouldReceive('getName')
+                ->andReturn('Laztopaz')
+                ->shouldReceive('getAvatar')
+                ->andReturn($avatar_url);
+        }
 
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('user')->andReturn($abstractUser);
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')->andReturn($abstractUser);
 
-		Socialite::shouldReceive('driver')->with($provider_name)->andReturn($provider);
-	}
+        Socialite::shouldReceive('driver')->with($provider_name)->andReturn($provider);
+    }
 
-	public function testIfEmailFromProviderEmpty()
-	{
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
+    public function testIfEmailFromProviderEmpty()
+    {
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
 
-		$this->mockSocialiteFacade('', $token, 'facebook', $provider_user_id);
+        $this->mockSocialiteFacade('', $token, 'facebook', $provider_user_id);
 
-		$this->followingRedirects()
-			->get('/auth/facebook/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.email_not_found'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/facebook/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.email_not_found'));
+    }
 
-	public function testIfRegistered()
-	{
-		Notification::fake();
+    public function testIfRegistered()
+    {
+        Notification::fake();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
+        $social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
-		$this->mockSocialiteFacade('',
-			$social_account->access_token,
-			$social_account->provider,
-			$social_account->provider_user_id);
+        $this->mockSocialiteFacade('',
+            $social_account->access_token,
+            $social_account->provider,
+            $social_account->provider_user_id);
 
-		$response = $this->get('/auth/' . $social_account->provider . '/callback')
-			->assertRedirect(route('profile', $user->id));
+        $response = $this->get('/auth/'.$social_account->provider.'/callback')
+            ->assertRedirect(route('profile', $user->id));
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		Notification::assertNothingSent();
-	}
+        Notification::assertNothingSent();
+    }
 
-	public function testIfRegisteredTokenMismatch()
-	{
-		Notification::fake();
+    public function testIfRegisteredTokenMismatch()
+    {
+        Notification::fake();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
+        $social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
-		$this->mockSocialiteFacade('',
-			$this->faker->linuxPlatformToken,
-			$social_account->provider,
-			$social_account->provider_user_id);
+        $this->mockSocialiteFacade('',
+            $this->faker->linuxPlatformToken,
+            $social_account->provider,
+            $social_account->provider_user_id);
 
-		$response = $this->get('/auth/' . $social_account->provider . '/callback')
-			->assertRedirect(route('profile', $user->id));
+        $response = $this->get('/auth/'.$social_account->provider.'/callback')
+            ->assertRedirect(route('profile', $user->id));
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		Notification::assertNothingSent();
-	}
+        Notification::assertNothingSent();
+    }
 
-	public function testIfAuthTryAttach()
-	{
-		Notification::fake();
+    public function testIfAuthTryAttach()
+    {
+        Notification::fake();
 
-		$provider_user_id = $this->faker->uuid;
+        $provider_user_id = $this->faker->uuid;
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->mockSocialiteFacade('',
-			$this->faker->linuxPlatformToken,
-			'google',
-			$provider_user_id,
-			'http://dev.litlife.club/img/nocover4.jpeg');
+        $this->mockSocialiteFacade('',
+            $this->faker->linuxPlatformToken,
+            'google',
+            $provider_user_id,
+            'http://dev.litlife.club/img/nocover4.jpeg');
 
-		$response = $this->followingRedirects()
-			->actingAs($user)
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.attached', ['provider' => 'google']));
+        $response = $this->followingRedirects()
+            ->actingAs($user)
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.attached', ['provider' => 'google']));
 
-		$this->assertTrue(url()->current() === route('users.social_accounts.index', $user->id));
+        $this->assertTrue(url()->current() === route('users.social_accounts.index', $user->id));
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		$this->assertNotNull($user->avatar()->first());
+        $this->assertNotNull($user->avatar()->first());
 
-		Notification::assertNothingSent();
-	}
+        Notification::assertNothingSent();
+    }
 
-	public function testIfAuthTryAttachIfAvatarNotFound()
-	{
-		Notification::fake();
+    public function testIfAuthTryAttachIfAvatarNotFound()
+    {
+        Notification::fake();
 
-		$provider_user_id = $this->faker->uuid;
+        $provider_user_id = $this->faker->uuid;
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->mockSocialiteFacade('',
-			$this->faker->linuxPlatformToken,
-			'google',
-			$provider_user_id,
-			'http://test.test/test.test');
+        $this->mockSocialiteFacade('',
+            $this->faker->linuxPlatformToken,
+            'google',
+            $provider_user_id,
+            'http://test.test/test.test');
 
-		$response = $this->followingRedirects()
-			->actingAs($user)
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.attached', ['provider' => 'google']));
+        $response = $this->followingRedirects()
+            ->actingAs($user)
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.attached', ['provider' => 'google']));
 
-		$this->assertTrue(url()->current() === route('users.social_accounts.index', $user->id));
+        $this->assertTrue(url()->current() === route('users.social_accounts.index', $user->id));
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		$this->assertNull($user->avatar()->first());
+        $this->assertNull($user->avatar()->first());
 
-		Notification::assertNothingSent();
-	}
+        Notification::assertNothingSent();
+    }
 
-	public function testIfNotConfirmedEmailExists()
-	{
-		Notification::fake();
+    public function testIfNotConfirmedEmailExists()
+    {
+        Notification::fake();
 
-		$user_email = UserEmail::factory()->not_confirmed()->create();
+        $user_email = UserEmail::factory()->not_confirmed()->create();
 
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
-		$email = $user_email->email;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
+        $email = $user_email->email;
 
-		$this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id);
+        $this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id);
 
-		$this->get('/auth/facebook/callback')
-			->assertRedirect(route('welcome'));
+        $this->get('/auth/facebook/callback')
+            ->assertRedirect(route('welcome'));
 
-		$this->assertEquals($email, $user_email->email);
+        $this->assertEquals($email, $user_email->email);
 
-		$email_confirmed = UserEmail::email($email)->confirmed()->first();
-		$user = $email_confirmed->user;
-		$social_account = $user->social_accounts()->first();
+        $email_confirmed = UserEmail::email($email)->confirmed()->first();
+        $user = $email_confirmed->user;
+        $social_account = $user->social_accounts()->first();
 
-		$this->assertNotNull($user_email->user);
-		$this->assertNotEquals($user_email->user->id, $user->id);
-		$this->assertNotNull($email_confirmed);
-		$this->assertNotNull($user);
-		$this->assertNotNull($social_account);
-		$this->assertEquals($provider_user_id, $social_account->provider_user_id);
-		$this->assertEquals($token, $social_account->access_token);
+        $this->assertNotNull($user_email->user);
+        $this->assertNotEquals($user_email->user->id, $user->id);
+        $this->assertNotNull($email_confirmed);
+        $this->assertNotNull($user);
+        $this->assertNotNull($social_account);
+        $this->assertEquals($provider_user_id, $social_account->provider_user_id);
+        $this->assertEquals($token, $social_account->access_token);
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		Notification::assertSentTo(
-			$user,
-			UserHasRegisteredNotification::class
-		);
-	}
+        Notification::assertSentTo(
+            $user,
+            UserHasRegisteredNotification::class
+        );
+    }
 
-	public function testIfNotRegisteredCantDownloadAvatar()
-	{
-		Notification::fake();
+    public function testIfNotRegisteredCantDownloadAvatar()
+    {
+        Notification::fake();
 
-		$email = $this->faker->email;
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
+        $email = $this->faker->email;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
 
-		UserEmail::email($email)
-			->delete();
+        UserEmail::email($email)
+            ->delete();
 
-		$this->assertNull(UserEmail::email($email)->first());
+        $this->assertNull(UserEmail::email($email)->first());
 
-		$this->mockSocialiteFacade($email, $token, 'facebook',
-			$provider_user_id, 'http://test.test/test.test');
+        $this->mockSocialiteFacade($email, $token, 'facebook',
+            $provider_user_id, 'http://test.test/test.test');
 
-		$this->get('/auth/facebook/callback')
-			->assertRedirect(route('welcome'));
+        $this->get('/auth/facebook/callback')
+            ->assertRedirect(route('welcome'));
 
-		$email = UserEmail::email($email)->first();
-		$user = $email->user;
-		$social_account = $user->social_accounts()->first();
+        $email = UserEmail::email($email)->first();
+        $user = $email->user;
+        $social_account = $user->social_accounts()->first();
 
-		$this->assertNotNull($email);
-		$this->assertNotNull($user);
-		$this->assertNotNull($social_account);
-		$this->assertEquals($provider_user_id, $social_account->provider_user_id);
-		$this->assertEquals($token, $social_account->access_token);
-		$this->assertNull($user->avatar()->first());
+        $this->assertNotNull($email);
+        $this->assertNotNull($user);
+        $this->assertNotNull($social_account);
+        $this->assertEquals($provider_user_id, $social_account->provider_user_id);
+        $this->assertEquals($token, $social_account->access_token);
+        $this->assertNull($user->avatar()->first());
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		Notification::assertSentTo(
-			$user,
-			UserHasRegisteredNotification::class
-		);
-	}
+        Notification::assertSentTo(
+            $user,
+            UserHasRegisteredNotification::class
+        );
+    }
 
-	public function testIfUserNotFound()
-	{
-		Notification::fake();
+    public function testIfUserNotFound()
+    {
+        Notification::fake();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
+        $social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
-		$user->forceDelete();
+        $user->forceDelete();
 
-		$this->mockSocialiteFacade('',
-			$social_account->access_token,
-			$social_account->provider,
-			$social_account->provider_user_id);
+        $this->mockSocialiteFacade('',
+            $social_account->access_token,
+            $social_account->provider,
+            $social_account->provider_user_id);
 
-		$response = $this->followingRedirects()
-			->get('/auth/' . $social_account->provider . '/callback')
-			->assertSeeText(__('user.not_found'));
+        $response = $this->followingRedirects()
+            ->get('/auth/'.$social_account->provider.'/callback')
+            ->assertSeeText(__('user.not_found'));
 
-		Notification::assertNothingSent();
-	}
+        Notification::assertNothingSent();
+    }
 
-	public function testUserReference()
-	{
-		Notification::fake();
+    public function testUserReference()
+    {
+        Notification::fake();
 
-		$name = config('litlife.name_user_refrence_get_param');
+        $name = config('litlife.name_user_refrence_get_param');
 
-		$this->disableCookiesEncryption($name);
+        $this->disableCookiesEncryption($name);
 
-		$refer_user = User::factory()->create();
+        $refer_user = User::factory()->create();
 
-		$email = $this->faker->email;
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
+        $email = $this->faker->email;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
 
-		UserEmail::email($email)
-			->delete();
+        UserEmail::email($email)
+            ->delete();
 
-		$this->assertNull(UserEmail::email($email)->first());
+        $this->assertNull(UserEmail::email($email)->first());
 
-		$this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id, config('app.url') . '/img/nocover4.jpeg');
+        $this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id, config('app.url').'/img/nocover4.jpeg');
 
-		$this->call('get', '/auth/facebook/callback', [], [$name => $refer_user->id])
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('welcome'));
+        $this->call('get', '/auth/facebook/callback', [], [$name => $refer_user->id])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('welcome'));
 
-		$email = UserEmail::email($email)->first();
-		$user = $email->user;
-		$social_account = $user->social_accounts()->first();
+        $email = UserEmail::email($email)->first();
+        $user = $email->user;
+        $social_account = $user->social_accounts()->first();
 
-		$this->assertEquals(1, $refer_user->fresh()->data->refer_users_count);
-		$this->assertEquals($user->id, $refer_user->refered_users->first()->id);
+        $this->assertEquals(1, $refer_user->fresh()->data->refer_users_count);
+        $this->assertEquals($user->id, $refer_user->refered_users->first()->id);
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		Notification::assertSentTo(
-			$refer_user,
-			NewReferredUserNotification::class,
-			function ($notification, $channels) use ($user) {
-				$this->assertContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $refer_user,
+            NewReferredUserNotification::class,
+            function ($notification, $channels) use ($user) {
+                $this->assertContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$mail = $notification->toMail($user);
+                $mail = $notification->toMail($user);
 
-				$this->assertEquals(__('notification.new_refferd_user.subject'), $mail->subject);
+                $this->assertEquals(__('notification.new_refferd_user.subject'), $mail->subject);
 
-				$this->assertEquals(__('notification.new_refferd_user.line', [
-					'user_name' => $user->user_name
-				]), $mail->introLines[0]);
+                $this->assertEquals(__('notification.new_refferd_user.line', [
+                    'user_name' => $user->user_name
+                ]), $mail->introLines[0]);
 
-				$this->assertEquals(__('notification.new_refferd_user.action'), $mail->actionText);
+                $this->assertEquals(__('notification.new_refferd_user.action'), $mail->actionText);
 
-				$this->assertEquals(route('profile', $user), $mail->actionUrl);
+                $this->assertEquals(route('profile', $user), $mail->actionUrl);
 
-				return $notification->user->id == $user->id;
-			}
-		);
-	}
+                return $notification->user->id == $user->id;
+            }
+        );
+    }
 
-	public function testGoogleUndefinedIndexEmails()
-	{
-		$user = User::factory()->create();
+    public function testGoogleUndefinedIndexEmails()
+    {
+        $user = User::factory()->create();
 
-		$social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
+        $social_account = UserSocialAccount::factory()->create(['user_id' => $user->id]);
 
-		$this->mockSocialiteFacade('',
-			$social_account->access_token,
-			$social_account->provider,
-			$social_account->provider_user_id);
+        $this->mockSocialiteFacade('',
+            $social_account->access_token,
+            $social_account->provider,
+            $social_account->provider_user_id);
 
-		$response = $this->get('/auth/' . $social_account->provider . '/callback')
-			->assertRedirect(route('profile', $user->id));
+        $response = $this->get('/auth/'.$social_account->provider.'/callback')
+            ->assertRedirect(route('profile', $user->id));
 
-		$this->assertAuthenticatedAs($user);
-	}
+        $this->assertAuthenticatedAs($user);
+    }
 
-	public function testIfUserSuspendedExists()
-	{
-		Notification::fake();
+    public function testIfUserSuspendedExists()
+    {
+        Notification::fake();
 
-		$user = User::factory()->suspended()->with_confirmed_email()->create();
+        $user = User::factory()->suspended()->with_confirmed_email()->create();
 
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
-		$email = $user->emails()->first();
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
+        $email = $user->emails()->first();
 
-		$this->mockSocialiteFacade($email->email, $token, 'facebook', $provider_user_id);
+        $this->mockSocialiteFacade($email->email, $token, 'facebook', $provider_user_id);
 
-		$this->get('/auth/facebook/callback')
-			->assertRedirect(route('profile', $user->id));
+        $this->get('/auth/facebook/callback')
+            ->assertRedirect(route('profile', $user->id));
 
-		$user->refresh();
+        $user->refresh();
 
-		$this->assertEquals(1, UserEmail::email($email->email)->count());
+        $this->assertEquals(1, UserEmail::email($email->email)->count());
 
-		$this->assertFalse($user->isSuspended());
+        $this->assertFalse($user->isSuspended());
 
-		$social_account = $user->social_accounts()->first();
+        $social_account = $user->social_accounts()->first();
 
-		$this->assertNotNull($social_account);
-		$this->assertEquals($provider_user_id, $social_account->provider_user_id);
-		$this->assertEquals($token, $social_account->access_token);
+        $this->assertNotNull($social_account);
+        $this->assertEquals($provider_user_id, $social_account->provider_user_id);
+        $this->assertEquals($token, $social_account->access_token);
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		Notification::assertNothingSent();
-	}
+        Notification::assertNothingSent();
+    }
 
-	public function testIfNotConfirmedEmailAndUserSuspendedExists()
-	{
-		Notification::fake();
+    public function testIfNotConfirmedEmailAndUserSuspendedExists()
+    {
+        Notification::fake();
 
-		$user_with_not_confirmed_email = User::factory()->suspended()->with_not_confirmed_email()->create();
+        $user_with_not_confirmed_email = User::factory()->suspended()->with_not_confirmed_email()->create();
 
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
-		$user_email = $user_with_not_confirmed_email->emails()->first();
-		$email = $user_email->email;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
+        $user_email = $user_with_not_confirmed_email->emails()->first();
+        $email = $user_email->email;
 
-		$this->assertTrue($user_with_not_confirmed_email->isSuspended());
-		$this->assertFalse($user_email->isConfirmed());
+        $this->assertTrue($user_with_not_confirmed_email->isSuspended());
+        $this->assertFalse($user_email->isConfirmed());
 
-		$this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id);
+        $this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id);
 
-		$this->get('/auth/facebook/callback')
-			->assertRedirect(route('welcome'));
+        $this->get('/auth/facebook/callback')
+            ->assertRedirect(route('welcome'));
 
-		$user_with_not_confirmed_email->refresh();
+        $user_with_not_confirmed_email->refresh();
 
-		$this->assertEquals($email, $user_email->email);
+        $this->assertEquals($email, $user_email->email);
 
-		$email_confirmed = UserEmail::email($email)->confirmed()->first();
-		$user_with_confirmed_email = $email_confirmed->user;
-		$social_account = $user_with_confirmed_email->social_accounts()->first();
+        $email_confirmed = UserEmail::email($email)->confirmed()->first();
+        $user_with_confirmed_email = $email_confirmed->user;
+        $social_account = $user_with_confirmed_email->social_accounts()->first();
 
-		$this->assertTrue($user_with_not_confirmed_email->isSuspended());
-		$this->assertFalse($user_with_confirmed_email->isSuspended());
-		$this->assertNotNull($user_email->user);
-		$this->assertNotEquals($user_email->user->id, $user_with_confirmed_email->id);
-		$this->assertNotNull($email_confirmed);
-		$this->assertNotNull($user_with_confirmed_email);
-		$this->assertNotNull($social_account);
-		$this->assertEquals($provider_user_id, $social_account->provider_user_id);
-		$this->assertEquals($token, $social_account->access_token);
+        $this->assertTrue($user_with_not_confirmed_email->isSuspended());
+        $this->assertFalse($user_with_confirmed_email->isSuspended());
+        $this->assertNotNull($user_email->user);
+        $this->assertNotEquals($user_email->user->id, $user_with_confirmed_email->id);
+        $this->assertNotNull($email_confirmed);
+        $this->assertNotNull($user_with_confirmed_email);
+        $this->assertNotNull($social_account);
+        $this->assertEquals($provider_user_id, $social_account->provider_user_id);
+        $this->assertEquals($token, $social_account->access_token);
 
-		$this->assertAuthenticatedAs($user_with_confirmed_email);
+        $this->assertAuthenticatedAs($user_with_confirmed_email);
 
-		Notification::assertSentTo(
-			$user_with_confirmed_email,
-			UserHasRegisteredNotification::class
-		);
-	}
+        Notification::assertSentTo(
+            $user_with_confirmed_email,
+            UserHasRegisteredNotification::class
+        );
+    }
 
-	public function testEmailCreatedBefore()
-	{
-		$date = Carbon::parse('2019-03-10 00:00:00');
+    public function testEmailCreatedBefore()
+    {
+        $date = Carbon::parse('2019-03-10 00:00:00');
 
-		$user_email = UserEmail::factory()->not_confirmed()->create();
+        $user_email = UserEmail::factory()->not_confirmed()->create(['created_at' => $date]);
 
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
-		$email = $user_email->email;
-		$user = $user_email->user;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
+        $email = $user_email->email;
+        $user = $user_email->user;
 
-		$this->assertFalse($user_email->isConfirmed());
-		$this->assertTrue($user_email->isCreatedBeforeMoveToNewEngine());
+        $this->assertFalse($user_email->isConfirmed());
+        $this->assertTrue($user_email->isCreatedBeforeMoveToNewEngine());
 
-		$this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id);
+        $this->mockSocialiteFacade($email, $token, 'facebook', $provider_user_id);
 
-		$this->get('/auth/facebook/callback')
-			->assertRedirect(route('profile', $user));
+        $this->get('/auth/facebook/callback')
+            ->assertRedirect(route('profile', $user));
 
-		$user->refresh();
-		$user_email->refresh();
+        $user->refresh();
+        $user_email->refresh();
 
-		$this->assertTrue($user_email->isConfirmed());
+        $this->assertTrue($user_email->isConfirmed());
 
-		$social_account = $user->social_accounts()->first();
+        $social_account = $user->social_accounts()->first();
 
-		$this->assertNotNull($social_account);
-		$this->assertEquals($provider_user_id, $social_account->provider_user_id);
-		$this->assertEquals($token, $social_account->access_token);
+        $this->assertNotNull($social_account);
+        $this->assertEquals($provider_user_id, $social_account->provider_user_id);
+        $this->assertEquals($token, $social_account->access_token);
 
-		$this->assertAuthenticatedAs($user);
-	}
+        $this->assertAuthenticatedAs($user);
+    }
 
-	public function testDontChangeAvatarIfAlreadyExists()
-	{
-		$provider_user_id = $this->faker->uuid;
+    public function testDontChangeAvatarIfAlreadyExists()
+    {
+        $provider_user_id = $this->faker->uuid;
 
-		$user = User::factory()->with_avatar()->create();
+        $user = User::factory()->with_avatar()->create();
 
-		$avatar = $user->avatar()->first();
+        $avatar = $user->avatar()->first();
 
-		$this->assertNotNull($avatar);
+        $this->assertNotNull($avatar);
 
-		$this->mockSocialiteFacade('',
-			$this->faker->linuxPlatformToken,
-			'google',
-			$provider_user_id,
-			config('app.url') . '/img/nocover4.jpeg');
+        $this->mockSocialiteFacade('',
+            $this->faker->linuxPlatformToken,
+            'google',
+            $provider_user_id,
+            config('app.url').'/img/nocover4.jpeg');
 
-		$response = $this->followingRedirects()
-			->actingAs($user)
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.attached', ['provider' => 'google']));
+        $response = $this->followingRedirects()
+            ->actingAs($user)
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.attached', ['provider' => 'google']));
 
-		$this->assertTrue(url()->current() === route('users.social_accounts.index', $user->id));
+        $this->assertTrue(url()->current() === route('users.social_accounts.index', $user->id));
 
-		$this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($user);
 
-		$this->assertEquals($avatar, $user->avatar()->first());
-	}
+        $this->assertEquals($avatar, $user->avatar()->first());
+    }
 
-	public function testFacebook400BadRequestError()
-	{
-		$json = <<<EOT
+    public function testFacebook400BadRequestError()
+    {
+        $json = <<<EOT
 {
   "error": "invalid_request",
   "error_description": "Missing required parameter: code"
 }
 EOT;
 
-		$request = new Request('POST', 'https://accounts.google.com/o/oauth2/token');
-		$response = new Response(400, ['header' => 'value'], $json, '1.1', 'Bad Request');
+        $request = new Request('POST', 'https://accounts.google.com/o/oauth2/token');
+        $response = new Response(400, ['header' => 'value'], $json, '1.1', 'Bad Request');
 
-		$exception = RequestException::create($request, $response);
+        $exception = RequestException::create($request, $response);
 
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('user')
-			->andThrow($exception, 'message');
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')
+            ->andThrow($exception, 'message');
 
-		Socialite::shouldReceive('driver')->with('facebook')->andReturn($provider);
+        Socialite::shouldReceive('driver')->with('facebook')->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/facebook/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.enter_error'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/facebook/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.enter_error'));
+    }
 
-	public function testVkontakte401UnauthorizedError()
-	{
-		$json = <<<EOT
+    public function testVkontakte401UnauthorizedError()
+    {
+        $json = <<<EOT
 {"error":"invalid_grant","error_description":"Code is invalid or expired."}
 EOT;
 
-		$request = new Request('POST', 'https://oauth.vk.com/access_token');
-		$response = new Response(401, ['header' => 'value'], $json, '1.1', 'Unauthorized');
+        $request = new Request('POST', 'https://oauth.vk.com/access_token');
+        $response = new Response(401, ['header' => 'value'], $json, '1.1', 'Unauthorized');
 
-		$exception = RequestException::create($request, $response);
+        $exception = RequestException::create($request, $response);
 
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('user')
-			->andThrow($exception, 'message');
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')
+            ->andThrow($exception, 'message');
 
-		Socialite::shouldReceive('driver')->with('vkontakte')->andReturn($provider);
+        Socialite::shouldReceive('driver')->with('vkontakte')->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/vkontakte/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.enter_error'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/vkontakte/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.enter_error'));
+    }
 
-	public function testGoogle400BadRequestError()
-	{
-		$json = <<<EOT
+    public function testGoogle400BadRequestError()
+    {
+        $json = <<<EOT
 {
   "error": "invalid_request",
   "error_description": "Missing required parameter: code"
 }
 EOT;
 
-		$request = new Request('POST', 'https://accounts.google.com/o/oauth2/token');
-		$response = new Response(400, ['header' => 'value'], $json, '1.1', 'Bad Request');
+        $request = new Request('POST', 'https://accounts.google.com/o/oauth2/token');
+        $response = new Response(400, ['header' => 'value'], $json, '1.1', 'Bad Request');
 
-		$exception = RequestException::create($request, $response);
+        $exception = RequestException::create($request, $response);
 
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('user')
-			->andThrow($exception, 'message');
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')
+            ->andThrow($exception, 'message');
 
-		Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
+        Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.enter_error'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.enter_error'));
+    }
 
-	public function testUndefinedIndexEmails()
-	{
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('user')
-			->andThrow(Exception::class, 'Undefined index: emails');
+    public function testUndefinedIndexEmails()
+    {
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')
+            ->andThrow(Exception::class, 'Undefined index: emails');
 
-		Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
+        Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.email_not_found_allow_use_or_attach_the_mailbox_to_the_social_network'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.email_not_found_allow_use_or_attach_the_mailbox_to_the_social_network'));
+    }
 
-	public function testOtherException()
-	{
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+    public function testOtherException()
+    {
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 
-		$provider->shouldReceive('user')
-			->andThrow(Exception::class, 'test');
+        $provider->shouldReceive('user')
+            ->andThrow(Exception::class, 'test');
 
-		Socialite::shouldReceive('driver')
-			->with('google')
-			->andReturn($provider);
+        Socialite::shouldReceive('driver')
+            ->with('google')
+            ->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.enter_error'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.enter_error'));
+    }
 
-	public function testUndefinedIndexDisplayNameException()
-	{
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+    public function testUndefinedIndexDisplayNameException()
+    {
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 
-		$provider->shouldReceive('user')
-			->andThrow(ErrorException::class, 'Undefined index: displayName');
+        $provider->shouldReceive('user')
+            ->andThrow(ErrorException::class, 'Undefined index: displayName');
 
-		Socialite::shouldReceive('driver')
-			->with('google')
-			->andReturn($provider);
+        Socialite::shouldReceive('driver')
+            ->with('google')
+            ->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/google/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.google_did_not_report_the_display_name_of_the_user'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/google/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.google_did_not_report_the_display_name_of_the_user'));
+    }
 
-	public function testInvalidJSONResponseFromVK()
-	{
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+    public function testInvalidJSONResponseFromVK()
+    {
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 
-		$provider->shouldReceive('user')
-			->andThrow(RuntimeException::class, 'Invalid JSON response from VK: {"error":{"error_code":5,"error_msg":"User authorization failed: user revoke access for this token.","request_params":[{"key":"fields","value":"id,email,first_name,last_name,screen_name,photo"},{"key":"language","value":"en"},{"key":"v","value":"5.78"},{"key":"method","value":"users.get"},{"key":"oauth","value":"1"}]}}');
+        $provider->shouldReceive('user')
+            ->andThrow(RuntimeException::class,
+                'Invalid JSON response from VK: {"error":{"error_code":5,"error_msg":"User authorization failed: user revoke access for this token.","request_params":[{"key":"fields","value":"id,email,first_name,last_name,screen_name,photo"},{"key":"language","value":"en"},{"key":"v","value":"5.78"},{"key":"method","value":"users.get"},{"key":"oauth","value":"1"}]}}');
 
-		Socialite::shouldReceive('driver')
-			->with('vkontakte')
-			->andReturn($provider);
+        Socialite::shouldReceive('driver')
+            ->with('vkontakte')
+            ->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/vkontakte/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.an_error_occurred', ['error_msg' => 'User authorization failed: user revoke access for this token.']));
-	}
+        $this->followingRedirects()
+            ->get('/auth/vkontakte/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.an_error_occurred', ['error_msg' => 'User authorization failed: user revoke access for this token.']));
+    }
 
-	public function testInvalidJSONResponseFromVKWithoutError()
-	{
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+    public function testInvalidJSONResponseFromVKWithoutError()
+    {
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 
-		$provider->shouldReceive('user')
-			->andThrow(RuntimeException::class, 'Invalid JSON response from VK: {"test":{"test": ""}}');
+        $provider->shouldReceive('user')
+            ->andThrow(RuntimeException::class, 'Invalid JSON response from VK: {"test":{"test": ""}}');
 
-		Socialite::shouldReceive('driver')
-			->with('vkontakte')
-			->andReturn($provider);
+        Socialite::shouldReceive('driver')
+            ->with('vkontakte')
+            ->andReturn($provider);
 
-		$this->followingRedirects()
-			->get('/auth/vkontakte/callback')
-			->assertOk()
-			->assertSeeText(__('user_social_account.enter_error'));
-	}
+        $this->followingRedirects()
+            ->get('/auth/vkontakte/callback')
+            ->assertOk()
+            ->assertSeeText(__('user_social_account.enter_error'));
+    }
 
-	public function testDuplicateAccountException()
-	{
-		$email = uniqid() . '@' . uniqid() . '.com';
-		$provider_user_id = $this->faker->uuid;
-		$token = $this->faker->linuxPlatformToken;
+    public function testDuplicateAccountException()
+    {
+        $email = uniqid().'@'.uniqid().'.com';
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
 
-		$this->assertNull(UserEmail::email($email)->first());
+        $this->assertNull(UserEmail::email($email)->first());
 
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('redirect')->andReturn('Redirected');
-		$providerName = class_basename($provider);
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('redirect')->andReturn('Redirected');
+        $providerName = class_basename($provider);
 
-		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
-		$abstractUser->token = $token;
+        $abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
+        $abstractUser->token = $token;
 
-		$abstractUser->shouldReceive('getId')
-			->andReturn($provider_user_id)
-			->shouldReceive('getEmail')
-			->andReturn($email)
-			->shouldReceive('getName')
-			->andReturn('Laztopaz')
-			->shouldReceive('getAvatar');
+        $abstractUser->shouldReceive('getId')
+            ->andReturn($provider_user_id)
+            ->shouldReceive('getEmail')
+            ->andReturn($email)
+            ->shouldReceive('getName')
+            ->andReturn('Laztopaz')
+            ->shouldReceive('getAvatar');
 
-		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-		$provider->shouldReceive('user')->andReturn($abstractUser);
+        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+        $provider->shouldReceive('user')->andReturn($abstractUser);
 
-		Socialite::shouldReceive('driver')
-			->with('google')
-			->andReturn($provider);
+        Socialite::shouldReceive('driver')
+            ->with('google')
+            ->andReturn($provider);
 
-		$this->get('/auth/google/callback')
-			->assertRedirect(route('welcome'));
+        $this->get('/auth/google/callback')
+            ->assertRedirect(route('welcome'));
 
-		$email = UserEmail::email($email)->first();
-		$user = $email->user;
-		$social_account = $user->social_accounts()->first();
+        $email = UserEmail::email($email)->first();
+        $user = $email->user;
+        $social_account = $user->social_accounts()->first();
 
-		$controller = new UserSocialAccountController();
-		$response = $controller->createSocialAccount('google', $abstractUser, $user, true);
+        $controller = new UserSocialAccountController();
+        $response = $controller->createSocialAccount('google', $abstractUser, $user, true);
 
-		$this->assertEquals(route('home'), $response->getTargetUrl());
-		$this->assertEquals(302, $response->status());
-	}
+        $this->assertEquals(route('home'), $response->getTargetUrl());
+        $this->assertEquals(302, $response->status());
+    }
 
-	public function testProviderNotFound()
-	{
-		$this->get('/auth/' . uniqid())
-			->assertNotFound();
-	}
+    public function testProviderNotFound()
+    {
+        $this->get('/auth/'.uniqid())
+            ->assertNotFound();
+    }
 
-	public function testProviders()
-	{
-		$this->get('/auth/google')
-			->assertRedirect();
+    public function testProviders()
+    {
+        $this->get('/auth/google')
+            ->assertRedirect();
 
-		$this->get('/auth/facebook')
-			->assertRedirect();
+        $this->get('/auth/facebook')
+            ->assertRedirect();
 
-		$this->get('/auth/vkontakte')
-			->assertRedirect();
-	}
+        $this->get('/auth/vkontakte')
+            ->assertRedirect();
+    }
 
 
 }

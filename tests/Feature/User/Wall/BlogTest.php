@@ -14,641 +14,644 @@ use Tests\TestCase;
 
 class BlogTest extends TestCase
 {
-	public function testStoreHttp()
-	{
-		Notification::fake();
+    public function testStoreHttp()
+    {
+        Notification::fake();
 
-		$user = User::factory()->with_user_permissions()->create();
+        $user = User::factory()->with_user_permissions()->create();
 
-		$text = $this->faker->realText(100);
+        $text = $this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('users.blogs.store', ['user' => $user]),
-				['bb_text' => $text])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('users.blogs.store', ['user' => $user]),
+                ['bb_text' => $text])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$blog = $user->blog()->first();
+        $blog = $user->blog()->first();
 
-		$this->assertNotNull($blog);
-		$this->assertEquals($blog->getCharacterCountInText($text), $blog->characters_count);
-		$this->assertEquals($user->id, $blog->blog_user_id);
-		$this->assertEquals($user->id, $blog->create_user_id);
-		$this->assertEquals($text, $blog->bb_text);
+        $this->assertNotNull($blog);
+        $this->assertEquals($blog->getCharacterCountInText($text), $blog->characters_count);
+        $this->assertEquals($user->id, $blog->blog_user_id);
+        $this->assertEquals($user->id, $blog->create_user_id);
+        $this->assertEquals($text, $blog->bb_text);
 
-		Notification::assertNotSentTo(
-			[$user], NewWallMessageNotification::class
-		);
+        Notification::assertNotSentTo(
+            [$user], NewWallMessageNotification::class
+        );
 
-		Notification::assertNotSentTo(
-			[$user], NewWallReplyNotification::class
-		);
-	}
+        Notification::assertNotSentTo(
+            [$user], NewWallReplyNotification::class
+        );
+    }
 
-	public function testDeleteRestoreHttp()
-	{
-		$blog = Blog::factory()->create();
+    public function testDeleteRestoreHttp()
+    {
+        $blog = Blog::factory()->create();
 
-		$user = $blog->create_user;
-		$owner = $blog->owner;
+        $user = $blog->create_user;
+        $owner = $blog->owner;
 
-		$this->actingAs($user)
-			->delete(route('users.blogs.destroy', ['user' => $owner, 'blog' => $blog]))
-			->assertOk();
+        $this->actingAs($user)
+            ->delete(route('users.blogs.destroy', ['user' => $owner, 'blog' => $blog]))
+            ->assertOk();
 
-		$blog->refresh();
+        $blog->refresh();
 
-		$this->assertTrue($blog->trashed());
+        $this->assertTrue($blog->trashed());
 
-		$this->actingAs($user)
-			->delete(route('users.blogs.destroy', ['user' => $owner, 'blog' => $blog]))
-			->assertOk();
+        $this->actingAs($user)
+            ->delete(route('users.blogs.destroy', ['user' => $owner, 'blog' => $blog]))
+            ->assertOk();
 
-		$blog->refresh();
+        $blog->refresh();
 
-		$this->assertFalse($blog->trashed());
-	}
+        $this->assertFalse($blog->trashed());
+    }
 
-	public function testEditHttp()
-	{
-		$blog = Blog::factory()->create();
+    public function testEditHttp()
+    {
+        $blog = Blog::factory()->create();
 
-		$user = $blog->create_user;
-		$owner = $blog->owner;
+        $user = $blog->create_user;
+        $owner = $blog->owner;
 
-		$this->actingAs($user)
-			->get(route('users.blogs.edit', ['user' => $owner, 'blog' => $blog]))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('users.blogs.edit', ['user' => $owner, 'blog' => $blog]))
+            ->assertOk();
+    }
 
-	public function testUpdateHttp()
-	{
-		$blog = Blog::factory()->create();
+    public function testUpdateHttp()
+    {
+        $blog = Blog::factory()->create();
 
-		$user = $blog->create_user;
-		$owner = $blog->owner;
-		$text = $this->faker->realText(100);
+        $user = $blog->create_user;
+        $owner = $blog->owner;
+        $text = $this->faker->realText(100);
 
-		$this->actingAs($user)
-			->patch(route('users.blogs.update', ['user' => $owner, 'blog' => $blog]),
-				['bb_text' => $text])
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('users.blogs.go', ['user' => $owner, 'blog' => $blog]));
+        $this->actingAs($user)
+            ->patch(route('users.blogs.update', ['user' => $owner, 'blog' => $blog]),
+                ['bb_text' => $text])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('users.blogs.go', ['user' => $owner, 'blog' => $blog]));
 
-		$blog->refresh();
+        $blog->refresh();
 
-		$this->assertEquals($text, $blog->bb_text);
-	}
+        $this->assertEquals($text, $blog->bb_text);
+    }
 
-	public function testCreate()
-	{
-		$blog = Blog::factory()->create([
-				'bb_text' => 'text https://domain.com/away?=test text'
-			]);
+    public function testCreate()
+    {
+        $blog = Blog::factory()->create([
+            'bb_text' => 'text https://domain.com/away?=test text'
+        ]);
 
-		$this->assertEquals('text <a class="bb" href="/away?url=https%3A%2F%2Fdomain.com%2Faway%3F%3Dtest" target="_blank">https://domain.com/away?=test</a> text', $blog->text);
-	}
+        $this->assertEquals('text <a class="bb" href="/away?url=https%3A%2F%2Fdomain.com%2Faway%3F%3Dtest" target="_blank">https://domain.com/away?=test</a> text',
+            $blog->text);
+    }
 
-	public function testFixUnfixPermissions()
-	{
-		$user = User::factory()->create();
+    public function testFixUnfixPermissions()
+    {
+        $user = User::factory()->create();
 
-		$user->group->blog = true;
-		$user->push();
-
-		$blog = Blog::factory()->create([
-				'blog_user_id' => $user->id,
-				'create_user_id' => $user->id,
-			]);
-
-		$this->assertTrue($user->can('fix', $blog));
-		$this->assertFalse($user->can('unfix', $blog));
-
-		$blog->fix();
-		$blog->fresh();
-		$user->fresh();
-
-		$this->assertTrue($blog->isFixed());
-		$this->assertFalse($user->can('fix', $blog));
-		$this->assertTrue($user->can('unfix', $blog));
-
-		$blog->unfix();
-		$blog->fresh();
-		$user->fresh();
-
-		$this->assertFalse($blog->isFixed());
-		$this->assertTrue($user->can('fix', $blog));
-		$this->assertFalse($user->can('unfix', $blog));
-
-	}
+        $user->group->blog = true;
+        $user->push();
+
+        $blog = Blog::factory()->create([
+            'blog_user_id' => $user->id,
+            'create_user_id' => $user->id,
+        ]);
+
+        $this->assertTrue($user->can('fix', $blog));
+        $this->assertFalse($user->can('unfix', $blog));
+
+        $blog->fix();
+        $blog->fresh();
+        $user->fresh();
+
+        $this->assertTrue($blog->isFixed());
+        $this->assertFalse($user->can('fix', $blog));
+        $this->assertTrue($user->can('unfix', $blog));
+
+        $blog->unfix();
+        $blog->fresh();
+        $user->fresh();
+
+        $this->assertFalse($blog->isFixed());
+        $this->assertTrue($user->can('fix', $blog));
+        $this->assertFalse($user->can('unfix', $blog));
+
+    }
 
-	public function testAdminCanFixOrUnfix()
-	{
-		$user = User::factory()->create();
+    public function testAdminCanFixOrUnfix()
+    {
+        $user = User::factory()->create();
 
-		$blog = Blog::factory()->create([
-				'blog_user_id' => $user->id,
-				'create_user_id' => $user->id,
-			]);
+        $blog = Blog::factory()->create([
+            'blog_user_id' => $user->id,
+            'create_user_id' => $user->id,
+        ]);
 
-		$admin = User::factory()->create();
-		$admin->group->blog_other_user = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->blog_other_user = true;
+        $admin->push();
 
-		$this->assertFalse($blog->isFixed());
-		$this->assertTrue($admin->can('fix', $blog));
-		$this->assertFalse($admin->can('unfix', $blog));
+        $this->assertFalse($blog->isFixed());
+        $this->assertTrue($admin->can('fix', $blog));
+        $this->assertFalse($admin->can('unfix', $blog));
 
-		$blog->fix();
-		$blog->fresh();
+        $blog->fix();
+        $blog->fresh();
 
-		$this->assertTrue($blog->isFixed());
-		$this->assertFalse($admin->can('fix', $blog));
-		$this->assertTrue($admin->can('unfix', $blog));
-	}
+        $this->assertTrue($blog->isFixed());
+        $this->assertFalse($admin->can('fix', $blog));
+        $this->assertTrue($admin->can('unfix', $blog));
+    }
 
-	public function testFixReply()
-	{
-		$user = User::factory()->create();
+    public function testFixReply()
+    {
+        $user = User::factory()->create();
 
-		$blog = Blog::factory()->create([
-				'blog_user_id' => $user->id
-			]);
+        $blog = Blog::factory()->create([
+            'blog_user_id' => $user->id
+        ]);
 
-		$this->assertFalse($blog->isFixed());
-		$this->assertFalse($user->can('fix', $blog));
-		$this->assertFalse($user->can('unfix', $blog));
+        $this->assertFalse($blog->isFixed());
+        $this->assertFalse($user->can('fix', $blog));
+        $this->assertFalse($user->can('unfix', $blog));
 
-		$reply = Blog::factory()->create([
-				'parent' => $blog->id,
-				'create_user_id' => $user->id,
-			]);
+        $reply = Blog::factory()->create([
+            'parent' => $blog->id,
+            'create_user_id' => $user->id,
+        ]);
 
-		$this->assertFalse($reply->isFixed());
-		$this->assertFalse($user->can('fix', $reply));
-		$this->assertFalse($user->can('unfix', $reply));
-	}
+        $this->assertFalse($reply->isFixed());
+        $this->assertFalse($user->can('fix', $reply));
+        $this->assertFalse($user->can('unfix', $reply));
+    }
 
-	public function testDeleteOrRestorePermissions()
-	{
-		$user = User::factory()->create();
+    public function testDeleteOrRestorePermissions()
+    {
+        $user = User::factory()->create();
 
-		$user->group->blog = true;
-		$user->push();
+        $user->group->blog = true;
+        $user->push();
 
-		$blog = Blog::factory()->create([
-				'blog_user_id' => $user->id,
-				'create_user_id' => $user->id,
-			]);
+        $blog = Blog::factory()->create([
+            'blog_user_id' => $user->id,
+            'create_user_id' => $user->id,
+        ]);
 
-		$this->assertTrue($user->can('delete', $blog));
-		$this->assertFalse($user->can('restore', $blog));
+        $this->assertTrue($user->can('delete', $blog));
+        $this->assertFalse($user->can('restore', $blog));
 
-		$blog->delete();
-		$blog->fresh();
-		$user->fresh();
+        $blog->delete();
+        $blog->fresh();
+        $user->fresh();
 
-		$this->assertTrue($blog->trashed());
-		$this->assertFalse($user->can('delete', $blog));
-		$this->assertTrue($user->can('restore', $blog));
+        $this->assertTrue($blog->trashed());
+        $this->assertFalse($user->can('delete', $blog));
+        $this->assertTrue($user->can('restore', $blog));
 
-		$blog->restore();
-		$blog->fresh();
-		$user->fresh();
+        $blog->restore();
+        $blog->fresh();
+        $user->fresh();
 
-		$this->assertFalse($blog->trashed());
-		$this->assertTrue($user->can('delete', $blog));
-		$this->assertFalse($user->can('restore', $blog));
-	}
+        $this->assertFalse($blog->trashed());
+        $this->assertTrue($user->can('delete', $blog));
+        $this->assertFalse($user->can('restore', $blog));
+    }
 
-	public function testShowWhoLikes()
-	{
-		$blog = Blog::factory()->create();
+    public function testShowWhoLikes()
+    {
+        $blog = Blog::factory()->create();
 
-		$like = Like::factory()->create([
-			'likeable_type' => 'blog',
-			'likeable_id' => $blog->id
-		]);
+        $like = Like::factory()->create([
+            'likeable_type' => 'blog',
+            'likeable_id' => $blog->id
+        ]);
 
-		$response = $this->actingAs($blog->create_user)
-			->get(route('likes.users', ['type' => 'blog', 'id' => $blog->id]))
-			->assertOk();
-	}
+        $response = $this->actingAs($blog->create_user)
+            ->get(route('likes.users', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertOk();
+    }
 
-	public function testDeleteAndRestoreRecursive()
-	{
-		$user = User::factory()->create();
+    public function testDeleteAndRestoreRecursive()
+    {
+        $user = User::factory()->create();
 
-		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
+        $blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
-		$blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
+        $blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
 
-		$blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
+        $blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
 
-		$blog4 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
+        $blog4 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
 
-		$blog->delete();
+        $blog->delete();
 
-		$this->assertSoftDeleted($blog);
-		$this->assertSoftDeleted($blog2);
-		$this->assertSoftDeleted($blog3);
-		$this->assertSoftDeleted($blog4);
+        $this->assertSoftDeleted($blog);
+        $this->assertSoftDeleted($blog2);
+        $this->assertSoftDeleted($blog3);
+        $this->assertSoftDeleted($blog4);
 
-		$blog->fresh()->restore();
+        $blog->fresh()->restore();
 
-		$this->assertFalse($blog->fresh()->trashed());
-		$this->assertFalse($blog2->fresh()->trashed());
-		$this->assertFalse($blog3->fresh()->trashed());
-		$this->assertFalse($blog4->fresh()->trashed());
-	}
+        $this->assertFalse($blog->fresh()->trashed());
+        $this->assertFalse($blog2->fresh()->trashed());
+        $this->assertFalse($blog3->fresh()->trashed());
+        $this->assertFalse($blog4->fresh()->trashed());
+    }
 
-	public function testDeleteAndRestoreRecursiveExceptMessagesDeletedBefore()
-	{
-		$user = User::factory()->create();
+    public function testDeleteAndRestoreRecursiveExceptMessagesDeletedBefore()
+    {
+        $user = User::factory()->create();
 
-		$blog = Blog::factory()->create(['blog_user_id' => $user->id]);
+        $blog = Blog::factory()->create(['blog_user_id' => $user->id]);
 
-		$blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
+        $blog2 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog->id]);
 
-		$blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
+        $blog3 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog2->id]);
 
-		$blog4 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
+        $blog4 = Blog::factory()->create(['blog_user_id' => $user->id, 'parent' => $blog3->id]);
 
-		$blog3->delete();
+        $blog3->delete();
 
-		sleep(1);
+        sleep(1);
 
-		$blog->delete();
+        $blog->delete();
 
-		$this->assertSoftDeleted($blog);
-		$this->assertSoftDeleted($blog2);
-		$this->assertSoftDeleted($blog3);
-		$this->assertSoftDeleted($blog4);
+        $this->assertSoftDeleted($blog);
+        $this->assertSoftDeleted($blog2);
+        $this->assertSoftDeleted($blog3);
+        $this->assertSoftDeleted($blog4);
 
-		$blog->fresh()->restore();
+        $blog->fresh()->restore();
 
-		$this->assertFalse($blog->fresh()->trashed());
-		$this->assertFalse($blog2->fresh()->trashed());
-		$this->assertSoftDeleted($blog3);
-		$this->assertSoftDeleted($blog4);
-	}
+        $this->assertFalse($blog->fresh()->trashed());
+        $this->assertFalse($blog2->fresh()->trashed());
+        $this->assertSoftDeleted($blog3);
+        $this->assertSoftDeleted($blog4);
+    }
 
-	public function testReplyNotificationEmailSended()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testReplyNotificationEmailSended()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$notifiable = User::factory()->with_confirmed_email()->create();
-		$notifiable->email_notification_setting->wall_reply = true;
-		$notifiable->email_notification_setting->db_wall_reply = false;
-		$notifiable->push();
+        $notifiable = User::factory()->with_confirmed_email()->create();
+        $notifiable->email_notification_setting->wall_reply = true;
+        $notifiable->email_notification_setting->db_wall_reply = false;
+        $notifiable->push();
 
-		$parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
+        $parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$blog = Blog::factory()->create(['parent' => $parent->id]);
+        $blog = Blog::factory()->create(['parent' => $parent->id]);
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewWallReplyNotification::class,
-			function ($notification, $channels) use ($blog, $notifiable) {
-				$this->assertContains('mail', $channels);
-				$this->assertNotContains('database', $channels);
+        Notification::assertSentTo(
+            $notifiable,
+            NewWallReplyNotification::class,
+            function ($notification, $channels) use ($blog, $notifiable) {
+                $this->assertContains('mail', $channels);
+                $this->assertNotContains('database', $channels);
 
-				return $notification->blog->id == $blog->id;
-			}
-		);
-	}
+                return $notification->blog->id == $blog->id;
+            }
+        );
+    }
 
-	public function testReplyNotificationDatabaseSended()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testReplyNotificationDatabaseSended()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$notifiable = User::factory()->create();
-		$notifiable->email_notification_setting->wall_reply = false;
-		$notifiable->email_notification_setting->db_wall_reply = true;
-		$notifiable->push();
+        $notifiable = User::factory()->create();
+        $notifiable->email_notification_setting->wall_reply = false;
+        $notifiable->email_notification_setting->db_wall_reply = true;
+        $notifiable->push();
 
-		$parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
+        $parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$blog = Blog::factory()->create(['parent' => $parent->id]);
+        $blog = Blog::factory()->create(['parent' => $parent->id]);
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewWallReplyNotification::class,
-			function ($notification, $channels) use ($blog, $notifiable) {
-				$this->assertNotContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $notifiable,
+            NewWallReplyNotification::class,
+            function ($notification, $channels) use ($blog, $notifiable) {
+                $this->assertNotContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$data = $notification->toArray($notifiable);
+                $data = $notification->toArray($notifiable);
 
-				$this->assertEquals(__('notification.wall_reply.subject'), $data['title']);
-				$this->assertEquals(__('notification.wall_reply.line', ['userName' => $blog->create_user->userName]), $data['description']);
-				$this->assertEquals(route('users.blogs.go', ['user' => $blog->owner, 'blog' => $blog]), $data['url']);
+                $this->assertEquals(__('notification.wall_reply.subject'), $data['title']);
+                $this->assertEquals(__('notification.wall_reply.line', ['userName' => $blog->create_user->userName]), $data['description']);
+                $this->assertEquals(route('users.blogs.go', ['user' => $blog->owner, 'blog' => $blog]), $data['url']);
 
-				return $notification->blog->id == $blog->id;
-			}
-		);
-	}
+                return $notification->blog->id == $blog->id;
+            }
+        );
+    }
 
-	public function testReplyUnreadDatabaseNotificationCount()
-	{
-		$notifiable = User::factory()->create();
-		$notifiable->email_notification_setting->wall_reply = false;
-		$notifiable->email_notification_setting->db_wall_reply = true;
-		$notifiable->push();
+    public function testReplyUnreadDatabaseNotificationCount()
+    {
+        $notifiable = User::factory()->create();
+        $notifiable->email_notification_setting->wall_reply = false;
+        $notifiable->email_notification_setting->db_wall_reply = true;
+        $notifiable->push();
 
-		$parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
+        $parent = Blog::factory()->create(['create_user_id' => $notifiable->id]);
 
-		$blog = Blog::factory()->create(['parent' => $parent->id]);
+        $blog = Blog::factory()->create(['parent' => $parent->id]);
 
-		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
-	}
+        $this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
+    }
 
-	public function testCreateNotificationEmailSended()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testCreateNotificationEmailSended()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$notifiable = User::factory()->with_confirmed_email()->create();
-		$notifiable->email_notification_setting->wall_message = true;
-		$notifiable->email_notification_setting->db_wall_message = false;
-		$notifiable->push();
+        $notifiable = User::factory()->with_confirmed_email()->create();
+        $notifiable->email_notification_setting->wall_message = true;
+        $notifiable->email_notification_setting->db_wall_message = false;
+        $notifiable->push();
 
-		$blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
+        $blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewWallMessageNotification::class,
-			function ($notification, $channels) use ($blog, $notifiable) {
-				$this->assertContains('mail', $channels);
-				$this->assertNotContains('database', $channels);
+        Notification::assertSentTo(
+            $notifiable,
+            NewWallMessageNotification::class,
+            function ($notification, $channels) use ($blog, $notifiable) {
+                $this->assertContains('mail', $channels);
+                $this->assertNotContains('database', $channels);
 
-				return $notification->blog->id == $blog->id;
-			}
-		);
-	}
+                return $notification->blog->id == $blog->id;
+            }
+        );
+    }
 
-	public function testCreateNotificationDatabaseSended()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testCreateNotificationDatabaseSended()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$notifiable = User::factory()->create();
-		$notifiable->email_notification_setting->wall_message = false;
-		$notifiable->email_notification_setting->db_wall_message = true;
-		$notifiable->push();
+        $notifiable = User::factory()->create();
+        $notifiable->email_notification_setting->wall_message = false;
+        $notifiable->email_notification_setting->db_wall_message = true;
+        $notifiable->push();
 
-		$blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
+        $blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewWallMessageNotification::class,
-			function ($notification, $channels) use ($blog, $notifiable) {
-				$this->assertNotContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $notifiable,
+            NewWallMessageNotification::class,
+            function ($notification, $channels) use ($blog, $notifiable) {
+                $this->assertNotContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$data = $notification->toArray($notifiable);
+                $data = $notification->toArray($notifiable);
 
-				$this->assertEquals(__('notification.new_wall_message.subject'), $data['title']);
-				$this->assertEquals(__('notification.new_wall_message.line', ['userName' => $blog->create_user->userName]), $data['description']);
-				$this->assertEquals(route('users.blogs.go', ['user' => $blog->owner, 'blog' => $blog]), $data['url']);
+                $this->assertEquals(__('notification.new_wall_message.subject'), $data['title']);
+                $this->assertEquals(__('notification.new_wall_message.line', ['userName' => $blog->create_user->userName]), $data['description']);
+                $this->assertEquals(route('users.blogs.go', ['user' => $blog->owner, 'blog' => $blog]), $data['url']);
 
-				return $notification->blog->id == $blog->id;
-			}
-		);
-	}
+                return $notification->blog->id == $blog->id;
+            }
+        );
+    }
 
-	public function testCreateUnreadDatabaseNotificationCount()
-	{
-		$notifiable = User::factory()->create();
-		$notifiable->email_notification_setting->wall_message = false;
-		$notifiable->email_notification_setting->db_wall_message = true;
-		$notifiable->push();
+    public function testCreateUnreadDatabaseNotificationCount()
+    {
+        $notifiable = User::factory()->create();
+        $notifiable->email_notification_setting->wall_message = false;
+        $notifiable->email_notification_setting->db_wall_message = true;
+        $notifiable->push();
 
-		$blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
+        $blog = Blog::factory()->create(['blog_user_id' => $notifiable->id]);
 
-		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
-	}
+        $this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
+    }
 
-	public function testNotificationSended()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testNotificationSended()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$owner = User::factory()->create();
-		$create_user = User::factory()->create();
+        $owner = User::factory()->create();
+        $create_user = User::factory()->create();
 
-		$owner->email_notification_setting->wall_message = true;
-		$owner->email_notification_setting->save();
+        $owner->email_notification_setting->wall_message = true;
+        $owner->email_notification_setting->save();
 
-		$blog = Blog::factory()->create([
-				'blog_user_id' => $owner->id,
-				'create_user_id' => $create_user->id
-			]);
+        $blog = Blog::factory()->create([
+            'blog_user_id' => $owner->id,
+            'create_user_id' => $create_user->id
+        ]);
 
-		Notification::assertSentTo([$owner], NewWallMessageNotification::class);
-		Notification::assertNotSentTo([$owner], NewWallReplyNotification::class);
+        Notification::assertSentTo([$owner], NewWallMessageNotification::class);
+        Notification::assertNotSentTo([$owner], NewWallReplyNotification::class);
 
 
-		Notification::fake();
-		Notification::assertNothingSent();
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$create_user->email_notification_setting->wall_reply = true;
-		$create_user->email_notification_setting->save();
+        $create_user->email_notification_setting->wall_reply = true;
+        $create_user->email_notification_setting->save();
 
-		$reply = factory(Blog::class)->make();
-		$reply->parent = $blog;
-		$reply->save();
+        $reply = Blog::factory()->make();
+        $reply->parent = $blog;
+        $reply->save();
 
-		Notification::assertNotSentTo([$create_user], NewWallMessageNotification::class);
-		Notification::assertSentTo([$create_user], NewWallReplyNotification::class);
-	}
+        Notification::assertNotSentTo([$create_user], NewWallMessageNotification::class);
+        Notification::assertSentTo([$create_user], NewWallReplyNotification::class);
+    }
 
-	public function testBBEmpty()
-	{
-		$blog = Blog::factory()->create();
+    public function testBBEmpty()
+    {
+        $blog = Blog::factory()->create();
 
-		$this->expectException(QueryException::class);
+        $this->expectException(QueryException::class);
 
-		$blog->bb_text = '';
-		$blog->save();
-	}
+        $blog->bb_text = '';
+        $blog->save();
+    }
 
-	public function testSeeWallPostOnReview()
-	{
-		$text = Str::random(32);
+    public function testSeeWallPostOnReview()
+    {
+        $text = Str::random(32);
 
-		$blog = Blog::factory()->create(['bb_text' => $text]);
-		$blog->statusSentForReview();
-		$blog->save();
+        $blog = Blog::factory()->create(['bb_text' => $text]);
+        $blog->statusSentForReview();
+        $blog->save();
 
-		$user = $blog->owner;
+        $user = $blog->owner;
 
-		$this->get(route('profile', $user))
-			->assertOk()
-			->assertSeeText(__('blog.message_on_check'));
+        $this->get(route('profile', $user))
+            ->assertOk()
+            ->assertSeeText(__('blog.message_on_check'));
 
-		$create_user = $blog->create_user;
+        $create_user = $blog->create_user;
 
-		$this->actingAs($create_user)
-			->get(route('profile', $user))
-			->assertOk()
-			->assertSeeText($text);
-	}
+        $this->actingAs($create_user)
+            ->get(route('profile', $user))
+            ->assertOk()
+            ->assertSeeText($text);
+    }
 
-	public function testApprove()
-	{
-		$user = User::factory()->admin()->create();
+    public function testApprove()
+    {
+        $user = User::factory()->admin()->create();
 
-		$blog = Blog::factory()->create();
-		$blog->statusSentForReview();
-		$blog->save();
+        $blog = Blog::factory()->create();
+        $blog->statusSentForReview();
+        $blog->save();
 
-		$count = Blog::getCachedOnModerationCount();
+        $count = Blog::getCachedOnModerationCount();
 
-		$this->actingAs($user)
-			->get(route('blogs.approve', $blog))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('blogs.approve', $blog))
+            ->assertOk();
 
-		$blog->refresh();
+        $blog->refresh();
 
-		$this->assertTrue($blog->isAccepted());
-		$this->assertEquals($count - 1, Blog::getCachedOnModerationCount());
-	}
+        $this->assertTrue($blog->isAccepted());
+        $this->assertEquals($count - 1, Blog::getCachedOnModerationCount());
+    }
 
-	public function testSeeWallPostOnCheck()
-	{
-		$user = User::factory()->admin()->create();
+    public function testSeeWallPostOnCheck()
+    {
+        $user = User::factory()->admin()->create();
 
-		$text = Str::random(32);
+        $text = Str::random(32);
 
-		$blog = Blog::factory()->create(['bb_text' => $text]);
-		$blog->statusSentForReview();
-		$blog->save();
+        $blog = Blog::factory()->create(['bb_text' => $text]);
+        $blog->statusSentForReview();
+        $blog->save();
 
-		$this->actingAs($user)
-			->get(route('wall_posts.on_review'))
-			->assertOk()
-			->assertSeeText($text);
-	}
+        $this->actingAs($user)
+            ->get(route('wall_posts.on_review'))
+            ->assertOk()
+            ->assertSeeText($text);
+    }
 
-	public function testGetExternalLinksCount()
-	{
-		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
+    public function testGetExternalLinksCount()
+    {
+        $text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$blog = Blog::factory()->create(['bb_text' => $text]);
+        $blog = Blog::factory()->create(['bb_text' => $text]);
 
-		$this->assertEquals(2, $blog->getExternalLinksCount($blog->getContent()));
+        $this->assertEquals(2, $blog->getExternalLinksCount($blog->getContent()));
 
-		$text = 'текст [url]' . route('home') . '[/url] текст ';
+        $text = 'текст [url]'.route('home').'[/url] текст ';
 
-		$blog = Blog::factory()->create(['bb_text' => $text]);
+        $blog = Blog::factory()->create(['bb_text' => $text]);
 
-		$this->assertEquals(0, $blog->getExternalLinksCount($blog->getContent()));
+        $this->assertEquals(0, $blog->getExternalLinksCount($blog->getContent()));
 
-		$text = 'текст текст';
+        $text = 'текст текст';
 
-		$blog = Blog::factory()->create(['bb_text' => $text]);
+        $blog = Blog::factory()->create(['bb_text' => $text]);
 
-		$this->assertEquals(0, $blog->getExternalLinksCount($blog->getContent()));
-	}
+        $this->assertEquals(0, $blog->getExternalLinksCount($blog->getContent()));
+    }
 
-	public function testAcceptedIfExternalUrlOnSelfWall()
-	{
-		$user = User::factory()->create();
+    public function testAcceptedIfExternalUrlOnSelfWall()
+    {
+        $user = User::factory()->create();
 
-		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
+        $text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$blog = Blog::factory()->create([
-				'create_user_id' => $user->id,
-				'blog_user_id' => $user->id,
-				'bb_text' => $text
-			]);
+        $blog = Blog::factory()->create([
+            'create_user_id' => $user->id,
+            'blog_user_id' => $user->id,
+            'bb_text' => $text
+        ]);
 
-		$this->assertTrue($blog->fresh()->isAccepted());
-	}
+        $this->assertTrue($blog->fresh()->isAccepted());
+    }
 
-	public function testSentForReviewIfExternalUrlOnOtherUserWall()
-	{
-		$user = User::factory()->create();
-		$owner = User::factory()->create();
+    public function testSentForReviewIfExternalUrlOnOtherUserWall()
+    {
+        $user = User::factory()->create();
+        $owner = User::factory()->create();
 
-		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
+        $text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$blog = Blog::factory()->create([
-				'create_user_id' => $user->id,
-				'blog_user_id' => $owner->id,
-				'bb_text' => $text
-			]);
+        $blog = Blog::factory()->create([
+            'create_user_id' => $user->id,
+            'blog_user_id' => $owner->id,
+            'bb_text' => $text
+        ]);
 
-		$this->assertTrue($blog->fresh()->isSentForReview());
-	}
+        $this->assertTrue($blog->fresh()->isSentForReview());
+    }
 
-	public function testPerPage()
-	{
-		$user = User::factory()->create();
+    public function testPerPage()
+    {
+        $user = User::factory()->create();
 
-		$response = $this->get(route('profile', ['user' => $user, 'per_page' => 5]))
-			->assertOk();
+        $response = $this->get(route('profile', ['user' => $user, 'per_page' => 5]))
+            ->assertOk();
 
-		$this->assertEquals(10, $response->original->gatherData()['blogs']->perPage());
+        $this->assertEquals(10, $response->original->gatherData()['blogs']->perPage());
 
-		$response = $this->get(route('profile', ['user' => $user, 'per_page' => 200]))
-			->assertOk();
+        $response = $this->get(route('profile', ['user' => $user, 'per_page' => 200]))
+            ->assertOk();
 
-		$this->assertEquals(100, $response->original->gatherData()['blogs']->perPage());
-	}
+        $this->assertEquals(100, $response->original->gatherData()['blogs']->perPage());
+    }
 
-	public function testCachedOnModerationCount()
-	{
-		$count = Blog::getCachedOnModerationCount();
+    public function testCachedOnModerationCount()
+    {
+        $count = Blog::getCachedOnModerationCount();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$blog = Blog::factory()->create([
-				'blog_user_id' => $user->id,
-				'bb_text' => '[url=https://example.com]https://example.com[/url]'
-			]);
+        $blog = Blog::factory()->create([
+            'blog_user_id' => $user->id,
+            'bb_text' => '[url=https://example.com]https://example.com[/url]'
+        ]);
 
-		$this->assertEquals($count + 1, Blog::getCachedOnModerationCount());
+        $this->assertEquals($count + 1, Blog::getCachedOnModerationCount());
 
-		$blog->delete();
+        $blog->delete();
 
-		$this->assertEquals($count, Blog::getCachedOnModerationCount());
+        $this->assertEquals($count, Blog::getCachedOnModerationCount());
 
-		$blog->restore();
+        $blog->restore();
 
-		$this->assertEquals($count + 1, Blog::getCachedOnModerationCount());
-	}
+        $this->assertEquals($count + 1, Blog::getCachedOnModerationCount());
+    }
 
-	public function testCantReplyIfWallPostOnReview()
-	{
-		$user = User::factory()->admin()->create();
+    public function testCantReplyIfWallPostOnReview()
+    {
+        $user = User::factory()->admin()->create();
 
-		$blog = Blog::factory()->sent_for_review()->create();
+        $blog = Blog::factory()->sent_for_review()->create();
 
-		$this->assertFalse($user->can('reply', $blog));
-	}
+        $this->assertTrue($blog->isSentForReview());
 
-	public function testDontDownloadExternalOnLike()
-	{
-		$user = User::factory()->create();
-		$user->group->like_click = true;
-		$user->push();
+        $this->assertFalse($user->can('reply', $blog));
+    }
 
-		$blog = Blog::factory()->create()
-			->fresh();
-		$blog->external_images_downloaded = false;
-		$blog->save();
+    public function testDontDownloadExternalOnLike()
+    {
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $blog = Blog::factory()->create()
+            ->fresh();
+        $blog->external_images_downloaded = false;
+        $blog->save();
 
-		$blog->refresh();
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$this->assertFalse($blog->external_images_downloaded);
-	}
+        $blog->refresh();
+
+        $this->assertFalse($blog->external_images_downloaded);
+    }
 }

@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * App\ModeratorRequest
  *
- * @property-read Author $author
- * @property-read User $user
+ * @property-read \App\Author $author
+ * @property-read \App\User $user
  * @method static Builder|ModeratorRequest checked()
  * @method static Builder|ModeratorRequest newModelQuery()
  * @method static Builder|ModeratorRequest newQuery()

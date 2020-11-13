@@ -23,23 +23,23 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $canceled_at Время отмены покупки
- * @property-read User $buyer
- * @property-read UserPaymentTransaction|null $buyer_transaction
- * @property-read UserPaymentTransaction|null $commission_transaction
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $purchasable
- * @property-read UserPaymentTransaction|null $referer_buyer_transaction
- * @property-read UserPaymentTransaction|null $referer_seller_transaction
- * @property-read User $seller
- * @property-read UserPaymentTransaction|null $seller_transaction
- * @property-read UserPaymentTransaction|null $transaction
+ * @property-read \App\User $buyer
+ * @property-read \App\UserPaymentTransaction|null $buyer_transaction
+ * @property-read \App\UserPaymentTransaction|null $commission_transaction
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $purchasable
+ * @property-read \App\UserPaymentTransaction|null $referer_buyer_transaction
+ * @property-read \App\UserPaymentTransaction|null $referer_seller_transaction
+ * @property-read \App\User $seller
+ * @property-read \App\UserPaymentTransaction|null $seller_transaction
+ * @property-read \App\UserPaymentTransaction|null $transaction
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase notCanceled()
  * @method static Builder|UserPurchase onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase whereBuyerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase whereCanceledAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase whereCreatedAt($value)

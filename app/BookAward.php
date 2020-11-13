@@ -18,9 +18,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $create_user_id
- * @property-read Award $award
- * @property-read Book $book
- * @property-read User $create_user
+ * @property-read \App\Award $award
+ * @property-read \App\Book $book
+ * @property-read \App\User $create_user
  * @method static Builder|BookAward newModelQuery()
  * @method static Builder|BookAward newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookAward whereBookId($value)
  * @method static Builder|BookAward whereCreateUserId($value)
  * @method static Builder|BookAward whereCreatedAt($value)
- * @method static Builder|BookAward whereCreator(User $user)
+ * @method static Builder|BookAward whereCreator(\App\User $user)
  * @method static Builder|BookAward whereId($value)
  * @method static Builder|BookAward whereUpdatedAt($value)
  * @method static Builder|BookAward whereYear($value)

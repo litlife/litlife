@@ -16,10 +16,10 @@ use Illuminate\Support\Carbon;
  * @property int|null $latest_seen_message_id
  * @property int|null $latest_message_id
  * @property Carbon|null $created_at
- * @property-read Conversation $conversation
- * @property-read Message|null $latest_message
- * @property-read Message|null $latest_seen_message
- * @property-read User $user
+ * @property-read \App\Conversation $conversation
+ * @property-read \App\Message|null $latest_message
+ * @property-read \App\Message|null $latest_seen_message
+ * @property-read \App\User $user
  * @method static Builder|Participation hasMessages()
  * @method static Builder|Participation newModelQuery()
  * @method static Builder|Participation newQuery()

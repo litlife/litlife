@@ -12,43 +12,43 @@ class ActivityLogTest extends TestCase
 {
 
 
-	public function testShowHttp()
-	{
-		$user = User::factory()->create();
+    public function testShowHttp()
+    {
+        $user = User::factory()->create();
 
-		$book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.activity_logs', ['book' => $book]))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('books.activity_logs', ['book' => $book]))
+            ->assertOk();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('users.activity_logs', ['user' => $user]))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('users.activity_logs', ['user' => $user]))
+            ->assertOk();
 
-		$author = Author::factory()->create();
+        $author = Author::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('authors.activity_logs', ['author' => $author]))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('authors.activity_logs', ['author' => $author]))
+            ->assertOk();
+    }
 
-	public function testShowBookDeleted()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testShowBookDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$activity = Activity::factory()->create();
+        $activity = Activity::factory()->create();
 
-		$subject = $activity->subject;
+        $subject = $activity->subject;
 
-		$subject->forceDelete();
+        $subject->forceDelete();
 
-		$this->actingAs($admin)
-			->get(route('users.activity_logs', ['user' => $activity->causer]))
-			->assertOk();
-	}
+        $this->actingAs($admin)
+            ->get(route('users.activity_logs', ['user' => $activity->causer]))
+            ->assertOk();
+    }
 
 
 }

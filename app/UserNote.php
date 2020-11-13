@@ -22,20 +22,20 @@ use Stevebauman\Purify\Facades\Purify;
  * @property Carbon|null $deleted_at
  * @property string $bb_text
  * @property bool $external_images_downloaded
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @property-write mixed $b_b_text
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote any()
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote newQuery()
  * @method static Builder|UserNote onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereExternalImagesDownloaded($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereId($value)

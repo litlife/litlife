@@ -18,9 +18,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $comment Комментарий
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Book $book
- * @property-read Collection $collection
- * @property-read User $create_user
+ * @property-read \App\Book $book
+ * @property-read \App\Collection $collection
+ * @property-read \App\User $create_user
  * @method static Builder|CollectedBook newModelQuery()
  * @method static Builder|CollectedBook newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -32,7 +32,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|CollectedBook whereComment($value)
  * @method static Builder|CollectedBook whereCreateUserId($value)
  * @method static Builder|CollectedBook whereCreatedAt($value)
- * @method static Builder|CollectedBook whereCreator(User $user)
+ * @method static Builder|CollectedBook whereCreator(\App\User $user)
  * @method static Builder|CollectedBook whereId($value)
  * @method static Builder|CollectedBook whereNumber($value)
  * @method static Builder|CollectedBook whereUpdatedAt($value)

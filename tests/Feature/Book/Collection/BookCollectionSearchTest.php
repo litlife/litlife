@@ -9,29 +9,29 @@ use Tests\TestCase;
 
 class BookCollectionSearchTest extends TestCase
 {
-	public function testEmptyQuery()
-	{
-		$collection = Collection::factory()->create();
+    public function testEmptyQuery()
+    {
+        $collection = Collection::factory()->create();
 
-		$book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($user)
-			->get(route('books.collections.search', ['book' => $book, 'search' => '']))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('books.collections.search', ['book' => $book, 'search' => '']))
+            ->assertOk();
+    }
 
-	public function testQuery()
-	{
-		$collection = Collection::factory()->create();
+    public function testQuery()
+    {
+        $collection = Collection::factory()->create();
 
-		$book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($user)
-			->get(route('books.collections.search', ['book' => $book, 'search' => Str::random(8)]))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('books.collections.search', ['book' => $book, 'search' => Str::random(8)]))
+            ->assertOk();
+    }
 }

@@ -6,7 +6,7 @@ use Eloquent;
 use GeneaLabs\LaravelModelCaching\CachedBuilder;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Carbon;
 
 /**
@@ -25,7 +25,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AdBlock name($name)
  * @method static CachedBuilder|AdBlock newModelQuery()
  * @method static CachedBuilder|AdBlock newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static CachedBuilder|AdBlock query()
+ * @method static Builder|Model void()
  * @method static Builder|AdBlock whereCode($value)
  * @method static Builder|AdBlock whereCreatedAt($value)
  * @method static Builder|AdBlock whereDescription($value)

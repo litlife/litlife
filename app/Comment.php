@@ -52,9 +52,9 @@ use Illuminate\Support\Facades\Cache;
  * @property int|null $user_agent_id
  * @property int|null $characters_count
  * @property int|null $origin_commentable_id
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $commentable
- * @property-read \Illuminate\Database\Eloquent\Collection|Complain[] $complaints
- * @property-read User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $commentable
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
+ * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
@@ -63,13 +63,13 @@ use Illuminate\Support\Facades\Cache;
  * @property-read mixed $level_with_limit
  * @property mixed $parent
  * @property-read mixed $root
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $originCommentable
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $originCommentable
  * @property-write mixed $b_b_text
- * @property-read User|null $status_changed_user
- * @property-read User $user
- * @property-read BookVote|null $userBookVote
- * @property-read UserAgent|null $user_agent
- * @property-read \Illuminate\Database\Eloquent\Collection|CommentVote[] $votes
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \App\User $user
+ * @property-read \App\BookVote|null $userBookVote
+ * @property-read \App\UserAgent|null $user_agent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\CommentVote[] $votes
  * @method static \Illuminate\Database\Eloquent\Builder|Comment accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -92,12 +92,12 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment onlyChecked()
  * @method static Builder|Comment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orDescendants($ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderByOriginFirstAndLatest($commentable)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Comment private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment private()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment query()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment roots()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment sentOnReview()
@@ -114,7 +114,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereEditUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereExternalImagesDownloaded($value)

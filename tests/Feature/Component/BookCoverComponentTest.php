@@ -8,171 +8,171 @@ use Tests\TestCase;
 
 class BookCoverComponentTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testNotFound()
-	{
-		$book = null;
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testNotFound()
+    {
+        $book = null;
 
-		$component = new BookCover($book, 200, 200);
+        $component = new BookCover($book, 200, 200);
 
-		$expected = <<<'blade'
+        $expected = <<<'blade'
 <img class="{{ $class }}" alt="{{ $alt }}"
 data-srcset="{{ $url2x }} 2x, {{ $url3x }} 3x"
 style="{{ $style }}" data-src="{{ $url }}"/>
 blade;
 
-		$this->assertFalse($component->isShowCover());
+        $this->assertFalse($component->isShowCover());
 
-		$this->assertEquals($expected, $component->render());
+        $this->assertEquals($expected, $component->render());
 
-		$data = $component->data();
+        $data = $component->data();
 
-		$this->assertEquals(0, $data['href']);
-		$this->assertEquals(null, $data['alt']);
-		$this->assertStringContainsString('no_book_cover.jpeg', $data['url']);
-		$this->assertEquals(200, $data['width']);
-		$this->assertEquals(200, $data['height']);
-	}
+        $this->assertEquals(0, $data['href']);
+        $this->assertEquals(null, $data['alt']);
+        $this->assertStringContainsString('no_book_cover.jpeg', $data['url']);
+        $this->assertEquals(200, $data['width']);
+        $this->assertEquals(200, $data['height']);
+    }
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testBookCoverDeleted()
-	{
-		$book = Book::factory()->with_cover()->create();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testBookCoverDeleted()
+    {
+        $book = Book::factory()->with_cover()->create();
 
-		$book->cover->delete();
+        $book->cover->delete();
 
-		$component = new BookCover($book, 200, 200);
+        $component = new BookCover($book, 200, 200);
 
-		$expected = <<<'blade'
+        $expected = <<<'blade'
 <a title="{{ $alt }}" href="{{ $href }}" class="text-decoration-none d-block mx-auto"><img class="{{ $class }}" alt="{{ $alt }}"
 data-srcset="{{ $url2x }} 2x, {{ $url3x }} 3x"
 style="{{ $style }}" data-src="{{ $url }}"/></a>
 blade;
 
-		$this->assertFalse($component->isShowCover());
+        $this->assertFalse($component->isShowCover());
 
-		$this->assertEquals($expected, $component->render());
+        $this->assertEquals($expected, $component->render());
 
-		$data = $component->data();
+        $data = $component->data();
 
-		$this->assertEquals(route('books.show', ['book' => $book]), $data['href']);
-		$this->assertEquals($book->title, $data['alt']);
-		$this->assertStringContainsString('no_book_cover.jpeg', $data['url']);
-		$this->assertEquals(200, $data['width']);
-		$this->assertEquals(200, $data['height']);
-	}
+        $this->assertEquals(route('books.show', ['book' => $book]), $data['href']);
+        $this->assertEquals($book->title, $data['alt']);
+        $this->assertStringContainsString('no_book_cover.jpeg', $data['url']);
+        $this->assertEquals(200, $data['width']);
+        $this->assertEquals(200, $data['height']);
+    }
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testBookDeleted()
-	{
-		$book = Book::factory()->create();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testBookDeleted()
+    {
+        $book = Book::factory()->create();
 
-		$book->delete();
+        $book->delete();
 
-		$component = new BookCover($book, 200, 200);
+        $component = new BookCover($book, 200, 200);
 
-		$expected = <<<'blade'
+        $expected = <<<'blade'
 <a title="{{ $alt }}" href="{{ $href }}" class="text-decoration-none d-block mx-auto"><img class="{{ $class }}" alt="{{ $alt }}"
 data-srcset="{{ $url2x }} 2x, {{ $url3x }} 3x"
 style="{{ $style }}" data-src="{{ $url }}"/></a>
 blade;
 
-		$this->assertFalse($component->isShowCover());
+        $this->assertFalse($component->isShowCover());
 
-		$this->assertEquals($expected, $component->render());
+        $this->assertEquals($expected, $component->render());
 
-		$data = $component->data();
+        $data = $component->data();
 
-		$this->assertEquals(route('books.show', ['book' => $book]), $data['href']);
-		$this->assertEquals(null, $data['alt']);
-		$this->assertStringContainsString('no_book_cover.jpeg', $data['url']);
-		$this->assertEquals(200, $data['width']);
-		$this->assertEquals(200, $data['height']);
-	}
+        $this->assertEquals(route('books.show', ['book' => $book]), $data['href']);
+        $this->assertEquals(null, $data['alt']);
+        $this->assertStringContainsString('no_book_cover.jpeg', $data['url']);
+        $this->assertEquals(200, $data['width']);
+        $this->assertEquals(200, $data['height']);
+    }
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testBookCoverExists()
-	{
-		$book = Book::factory()->with_cover()->create();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testBookCoverExists()
+    {
+        $book = Book::factory()->with_cover()->create();
 
-		$component = new BookCover($book, 200, 200);
+        $component = new BookCover($book, 200, 200);
 
-		$expected = <<<'blade'
+        $expected = <<<'blade'
 <a title="{{ $alt }}" href="{{ $href }}" class="text-decoration-none d-block mx-auto"><img class="{{ $class }}" alt="{{ $alt }}"
 data-srcset="{{ $url2x }} 2x, {{ $url3x }} 3x"
 style="{{ $style }}" data-src="{{ $url }}"/></a>
 blade;
 
-		$this->assertTrue($component->isShowCover());
+        $this->assertTrue($component->isShowCover());
 
-		$this->assertEquals($expected, $component->render());
+        $this->assertEquals($expected, $component->render());
 
-		$data = $component->data();
+        $data = $component->data();
 
-		$this->assertEquals(route('books.show', ['book' => $book]), $data['href']);
-		$this->assertEquals($book->title, $data['alt']);
-		$this->assertStringContainsString($book->cover->url, $data['url']);
-		$this->assertEquals(200, $data['width']);
-		$this->assertEquals(200, $data['height']);
-	}
+        $this->assertEquals(route('books.show', ['book' => $book]), $data['href']);
+        $this->assertEquals($book->title, $data['alt']);
+        $this->assertStringContainsString($book->cover->url, $data['url']);
+        $this->assertEquals(200, $data['width']);
+        $this->assertEquals(200, $data['height']);
+    }
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testShowEvenIfTrashed()
-	{
-		$book = Book::factory()->with_cover()->create();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testShowEvenIfTrashed()
+    {
+        $book = Book::factory()->with_cover()->create();
 
-		$book->delete();
+        $book->delete();
 
-		$component = new BookCover($book, 200, 200, 90, 1, '', '', 1);
+        $component = new BookCover($book, 200, 200, 90, 1, '', '', 1);
 
-		$this->assertTrue($component->isShowCover());
-	}
+        $this->assertTrue($component->isShowCover());
+    }
 
-	public function testDontShowIfDontHaveAccess()
-	{
-		$book = Book::factory()->with_cover()->private()->with_create_user()->create();
+    public function testDontShowIfDontHaveAccess()
+    {
+        $book = Book::factory()->with_cover()->private()->with_create_user()->create();
 
-		$component = new BookCover($book, 200, 200);
+        $component = new BookCover($book, 200, 200);
 
-		$this->assertFalse($component->isShowCover());
+        $this->assertFalse($component->isShowCover());
 
-		$data = $component->data();
+        $data = $component->data();
 
-		$this->assertNull($data['alt']);
-	}
+        $this->assertNull($data['alt']);
+    }
 
-	public function testShowIfHaveAccess()
-	{
-		$book = Book::factory()->with_cover()->private()->with_create_user()->create();
+    public function testShowIfHaveAccess()
+    {
+        $book = Book::factory()->with_cover()->private()->with_create_user()->create();
 
-		$this->be($book->create_user);
+        $this->be($book->create_user);
 
-		$component = new BookCover($book, 200, 200);
+        $component = new BookCover($book, 200, 200);
 
-		$this->assertTrue($component->isShowCover());
+        $this->assertTrue($component->isShowCover());
 
-		$data = $component->data();
+        $data = $component->data();
 
-		$this->assertEquals($book->title, $data['alt']);
-	}
+        $this->assertEquals($book->title, $data['alt']);
+    }
 }

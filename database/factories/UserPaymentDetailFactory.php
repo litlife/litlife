@@ -1,46 +1,93 @@
 <?php
 
-/* @var $factory Factory */
+namespace Database\Factories;
 
 use App\User;
 use App\UserPaymentDetail;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserPaymentDetail::class, function (Faker $faker) {
-    return [
-        'user_id' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'type' => 'card',
-        'number' => '4024007161972749'
-    ];
-});
+class UserPaymentDetailFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserPaymentDetail::class;
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'card', function (UserPaymentDetail $detail, $faker) {
-    $detail->type = 'card';
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'type' => 'card',
+            'number' => '4024007161972749'
+        ];
+    }
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'ru_card', function (UserPaymentDetail $detail, $faker) {
-    $detail->params = ["countryCode" => "RU"];
-});
+    public function card()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->type = 'card';
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'mastercard', function (UserPaymentDetail $detail, $faker) {
-    $detail->params = ["brand" => "MASTERCARD"];
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'visa', function (UserPaymentDetail $detail, $faker) {
-    $detail->params = ["brand" => "VISA"];
-});
+    public function ru_card()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->params = ["countryCode" => "RU"];
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'webmoney', function (UserPaymentDetail $detail, $faker) {
-    $detail->type = 'webmoney';
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'qiwi', function (UserPaymentDetail $detail, $faker) {
-    $detail->type = 'qiwi';
-});
+    public function mastercard()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->params = ["brand" => "MASTERCARD"];
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserPaymentDetail::class, 'yandex', function (UserPaymentDetail $detail, $faker) {
-    $detail->type = 'yandex';
-});
+        });
+    }
+
+    public function visa()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->params = ["brand" => "VISA"];
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function webmoney()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->type = 'webmoney';
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function qiwi()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->type = 'qiwi';
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function yandex()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->type = 'yandex';
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

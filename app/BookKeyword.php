@@ -30,17 +30,17 @@ use Illuminate\Support\Facades\Cache;
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property int|null $origin_book_id
- * @property-read Book $book
- * @property-read User $create_user
+ * @property-read \App\Book $book
+ * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read Keyword|null $keyword
- * @property-read User|null $status_changed_user
- * @property-read BookKeywordVote|null $user_vote
- * @property-read \Illuminate\Database\Eloquent\Collection|BookKeywordVote[] $votes
+ * @property-read \App\Keyword|null $keyword
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \App\BookKeywordVote|null $user_vote
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookKeywordVote[] $votes
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -56,11 +56,11 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword onlyChecked()
  * @method static Builder|BookKeyword onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword private()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword query()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword search($text)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword searchFullWord($textOrArray)
@@ -68,11 +68,11 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookKeyword whereKeywordId($value)

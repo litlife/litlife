@@ -19,8 +19,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property int|null $user_agent_id
  * @property bool|null $is_remember_me_enabled
- * @property-read User $user
- * @property-read UserAgent|null $user_agent
+ * @property-read \App\User $user
+ * @property-read \App\UserAgent|null $user_agent
  * @method static Builder|UserAuthLog newModelQuery()
  * @method static Builder|UserAuthLog newQuery()
  * @method static Builder|Model orderByField($column, $ids)

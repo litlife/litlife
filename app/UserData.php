@@ -35,14 +35,14 @@ use Illuminate\Database\Query\Builder;
  * @property int|null $favorite_collections_count Количество избранных подборок
  * @property int|null $created_collections_count Количество созданных подборок
  * @property bool $invitation_to_take_survey_has_been_sent
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
  * @method static Builder|UserData onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereAboutSelf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBlogRecordCommentCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBooksPurchasedCount($value)

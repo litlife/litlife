@@ -17,11 +17,11 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int $books_count
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
- * @property-read User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
+ * @property-read \App\User|null $create_user
  * @property mixed $rate_info
- * @property-read Book|null $main_book
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $not_main_books
+ * @property-read \App\Book|null $main_book
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $not_main_books
  * @method static Builder|BookGroup newModelQuery()
  * @method static Builder|BookGroup newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -31,7 +31,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|BookGroup whereBooksCount($value)
  * @method static Builder|BookGroup whereCreateUserId($value)
  * @method static Builder|BookGroup whereCreatedAt($value)
- * @method static Builder|BookGroup whereCreator(User $user)
+ * @method static Builder|BookGroup whereCreator(\App\User $user)
  * @method static Builder|BookGroup whereId($value)
  * @method static Builder|BookGroup whereUpdatedAt($value)
  * @mixin Eloquent

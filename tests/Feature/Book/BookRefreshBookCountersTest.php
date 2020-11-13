@@ -8,16 +8,16 @@ use Tests\TestCase;
 
 class BookRefreshBookCountersTest extends TestCase
 {
-	public function test()
-	{
-		$updated_at = now();
+    public function test()
+    {
+        $updated_at = now();
 
-		$book = Book::factory()->create(['updated_at' => $updated_at]);
+        $book = Book::factory()->create(['updated_at' => $updated_at]);
 
-		Artisan::call('refresh:book_counters', ['id' => $book->id]);
+        Artisan::call('refresh:book_counters', ['id' => $book->id]);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertGreaterThanOrEqual($updated_at->timestamp, $book->updated_at->timestamp);
-	}
+        $this->assertGreaterThanOrEqual($updated_at->timestamp, $book->updated_at->timestamp);
+    }
 }

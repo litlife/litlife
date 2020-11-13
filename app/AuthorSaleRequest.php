@@ -27,15 +27,15 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read Author $author
- * @property-read User $create_user
+ * @property-read \App\Author $author
+ * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read Manager $manager
- * @property-read User|null $status_changed_user
+ * @property-read \App\Manager $manager
+ * @property-read \App\User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -50,20 +50,20 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest onlyChecked()
  * @method static Builder|AuthorSaleRequest onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest private()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest query()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereManagerId($value)

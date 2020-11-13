@@ -7,26 +7,26 @@ use PHPUnit\Framework\TestCase;
 
 class BookPrivateChaptersCountTest extends TestCase
 {
-	public function testDefault()
-	{
-		$book = new Book();
+    public function testDefault()
+    {
+        $book = new Book();
 
-		$this->assertEquals(0, $book->private_chapters_count);
-	}
+        $this->assertEquals(0, $book->private_chapters_count);
+    }
 
-	public function testSet()
-	{
-		$book = new Book();
-		$book->private_chapters_count = 1.0;
+    public function testSet()
+    {
+        $book = new Book();
+        $book->private_chapters_count = 1.0;
 
-		$this->assertEquals(1, $book->private_chapters_count);
-	}
+        $this->assertEquals(1, $book->private_chapters_count);
+    }
 
-	public function testSetNull()
-	{
-		$book = new Book();
-		$book->private_chapters_count = null;
+    public function testSetNull()
+    {
+        $book = new Book();
+        $book->private_chapters_count = null;
 
-		$this->assertEquals(0, $book->private_chapters_count);
-	}
+        $this->assertEquals(0, $book->private_chapters_count);
+    }
 }

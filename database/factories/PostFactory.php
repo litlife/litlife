@@ -1,81 +1,115 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Enums\StatusEnum;
 use App\Enums\VariablesEnum;
 use App\Forum;
 use App\ForumGroup;
 use App\Post;
+use App\Topic;
+use App\User;
 use App\Variable;
-use Faker\Generator as Faker;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(App\Post::class, function (Faker $faker) {
+class PostFactory extends Factory
+{
+    use CheckedItems;
 
-    $text = $faker->realText(200);
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Post::class;
 
-    return [
-        'create_user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'html_text' => $text,
-        'bb_text' => $text,
-        'topic_id' => function () {
-            return factory(App\Topic::class)->create()->id;
-        },
-        'status' => StatusEnum::Accepted,
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $text = $this->faker->realText(200);
 
-$factory->afterMakingState(App\Post::class, 'with_forum_group', function (Post $post, $faker) {
+        return [
+            'create_user_id' => User::factory(),
+            'html_text' => $text,
+            'bb_text' => $text,
+            'topic_id' => Topic::factory(),
+            'status' => StatusEnum::Accepted,
+        ];
+    }
 
-    $group = factory(ForumGroup::class)
-        ->create();
+    public function with_forum_group()
+    {
+        return $this->afterMaking(function ($item) {
+            $group = ForumGroup::factory()->create();
 
-    $topic = $post->topic;
-    $forum = $topic->forum;
+            $topic = $item->topic;
+            $forum = $topic->forum;
 
-    $forum->group()->associate($group);
-    $forum->save();
-});
+            $forum->group()->associate($group);
+            $forum->save();
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\Post::class, 'create_user_with_achievement', function (Post $post, $faker) {
+        });
+    }
 
-    $post->create_user_id = factory(App\User::class)
-        ->states('with_achievement')
-        ->create()->id;
-});
+    public function create_user_with_achievement()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->create_user_id = User::factory()->with_achievement()->create()->id;
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\Post::class, 'sent_for_review', function (Post $post, $faker) {
-    $post->statusSentForReview();
-    $post->save();
-});
+        });
+    }
 
-$factory->state(App\Post::class, 'idea_forum_posts', function ($faker) {
+    public function sent_for_review()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $value = Variable::where('name', VariablesEnum::IdeaForum)->firstOrFail()->value;
+        })->afterCreating(function ($item) {
+            $item->statusSentForReview();
+            $item->save();
+        });
+    }
 
-    $forum = Forum::findOrFail($value);
+    public function idea_forum_posts()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $topic = factory(App\Topic::class)
-        ->states('idea_on_review')
-        ->create([
-            'forum_id' => $forum->id
-        ]);
+        })->afterCreating(function ($item) {
+            $item->fix();
+        })->state(function (array $attributes) {
+            $value = Variable::where('name', VariablesEnum::IdeaForum)->firstOrFail()->value;
 
-    return [
-        'forum_id' => function () use ($forum) {
-            return $forum->id;
-        },
-        'topic_id' => function () use ($topic) {
-            return $topic->id;
-        },
-    ];
-});
+            $forum = Forum::findOrFail($value);
 
-$factory->afterCreatingState(App\Post::class, 'idea_forum_posts', function (Post $post, $faker) {
-    $post->fix();
-});
+            $topic = Topic::factory()
+                ->idea_on_review()
+                ->create([
+                    'forum_id' => $forum->id
+                ]);
 
-$factory->afterCreatingState(App\Post::class, 'fixed', function (Post $post, $faker) {
-    $post->fix();
-    $post->refresh();
-});
+            return [
+                'forum_id' => function () use ($forum) {
+                    return $forum->id;
+                },
+                'topic_id' => function () use ($topic) {
+                    return $topic->id;
+                },
+            ];
+        });
+    }
+
+    public function fixed()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+            $item->fix();
+            $item->refresh();
+        });
+    }
+}

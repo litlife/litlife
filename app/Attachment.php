@@ -28,8 +28,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $dirname
  * @property int|null $create_user_id
  * @property string|null $sha256_hash
- * @property-read Book $book
- * @property-read User|null $create_user
+ * @property-read \App\Book $book
+ * @property-read \App\User|null $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -44,16 +44,16 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment newQuery()
  * @method static Builder|Attachment onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment parametersIn($var, $array)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereContentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereId($value)

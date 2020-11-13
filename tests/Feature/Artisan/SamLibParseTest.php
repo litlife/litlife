@@ -8,39 +8,39 @@ use Tests\TestCase;
 
 class SamLibParseTest extends TestCase
 {
-	public function testGetUrlsFromHtml()
-	{
-		$html = '<a href="/x/index_x.shtml">X</a> 
+    public function testGetUrlsFromHtml()
+    {
+        $html = '<a href="/x/index_x.shtml">X</a> 
 <a href="/y/index_y.shtml">Y</a>';
 
-		$parse = new SamLibParse;
+        $parse = new SamLibParse;
 
-		$this->assertEquals(['http://samlib.ru/x/index_x.shtml', 'http://samlib.ru/y/index_y.shtml'],
-			$parse->getUrlsFromHtml($html));
-	}
+        $this->assertEquals(['http://samlib.ru/x/index_x.shtml', 'http://samlib.ru/y/index_y.shtml'],
+            $parse->getUrlsFromHtml($html));
+    }
 
-	public function testGetAuthorsUrls()
-	{
-		$html = 'test <a href="http://samlib.ru/a/amelin_a_w/">X</a> 
+    public function testGetAuthorsUrls()
+    {
+        $html = 'test <a href="http://samlib.ru/a/amelin_a_w/">X</a> 
 dfgdf <a href="/k/kirena_s/">X</a> 
 <a href="/y/index_y.shtml">Y</a>
 <a href="/y/">Y</a>
 <a href="/kr/kirena_s/">X</a> 
 <a href="/2/27rus27/">X</a>';
 
-		$parse = new SamLibParse;
+        $parse = new SamLibParse;
 
-		$this->assertEquals([
-			'http://samlib.ru/a/amelin_a_w/',
-			'http://samlib.ru/k/kirena_s/',
-			'http://samlib.ru/2/27rus27/'
-		],
-			$parse->getAuthorsUrls($html));
-	}
+        $this->assertEquals([
+            'http://samlib.ru/a/amelin_a_w/',
+            'http://samlib.ru/k/kirena_s/',
+            'http://samlib.ru/2/27rus27/'
+        ],
+            $parse->getAuthorsUrls($html));
+    }
 
-	public function testGetAuthorData()
-	{
-		$html = '<html>
+    public function testGetAuthorData()
+    {
+        $html = '<html>
 <head>
 		<title>Журнал "Самиздат".Иванов Василий Павлович. Книги </title>
 	<link rel="openid.server" href="http://samlib.ru/cgi-bin/oid_login" />
@@ -69,18 +69,18 @@ dfgdf <a href="/k/kirena_s/">X</a>
 </html>
 ';
 
-		$parse = new SamLibParse;
-		$data = $parse->parseAuthorData(mb_convert_encoding($html, 'windows-1251', 'utf-8'));
+        $parse = new SamLibParse;
+        $data = $parse->parseAuthorData(mb_convert_encoding($html, 'windows-1251', 'utf-8'));
 
-		$this->assertEquals('Иванов Василий Павлович', $data['name']);
-		$this->assertEquals('donmail@mail.ua', $data['email']);
-		$this->assertEquals('Россия, Москва', $data['city']);
-		$this->assertEquals('8.55*5', $data['rating']);
-	}
+        $this->assertEquals('Иванов Василий Павлович', $data['name']);
+        $this->assertEquals('donmail@mail.ua', $data['email']);
+        $this->assertEquals('Россия, Москва', $data['city']);
+        $this->assertEquals('8.55*5', $data['rating']);
+    }
 
-	public function testGetAuthorDataNotExistsH3()
-	{
-		$html = '<html>
+    public function testGetAuthorDataNotExistsH3()
+    {
+        $html = '<html>
 <head>
 		<title>Журнал "Самиздат".Иванов Василий Павлович. Книги </title>
 	<link rel="openid.server" href="http://samlib.ru/cgi-bin/oid_login" />
@@ -106,79 +106,79 @@ dfgdf <a href="/k/kirena_s/">X</a>
 </html>
 ';
 
-		$parse = new SamLibParse;
-		$data = $parse->parseAuthorData(mb_convert_encoding($html, 'windows-1251', 'utf-8'));
+        $parse = new SamLibParse;
+        $data = $parse->parseAuthorData(mb_convert_encoding($html, 'windows-1251', 'utf-8'));
 
-		$this->assertEquals('', $data['name']);
-		$this->assertEquals('', $data['email']);
-		$this->assertEquals('Россия, Москва', $data['city']);
-		$this->assertEquals('8.55*5', $data['rating']);
-	}
-	/*
-		public function testInsertToDB()
-		{
-			$url = 'http://example.com/test?sfd';
+        $this->assertEquals('', $data['name']);
+        $this->assertEquals('', $data['email']);
+        $this->assertEquals('Россия, Москва', $data['city']);
+        $this->assertEquals('8.55*5', $data['rating']);
+    }
+    /*
+        public function testInsertToDB()
+        {
+            $url = 'http://example.com/test?sfd';
 
-			$data = [
-				'name' => 'Иванов Василий Павлович',
-				'email' => $this->faker->email,
-				'city' => $this->faker->city,
-				'rating' => rand(1, 1000),
-			];
+            $data = [
+                'name' => 'Иванов Василий Павлович',
+                'email' => $this->faker->email,
+                'city' => $this->faker->city,
+                'rating' => rand(1, 1000),
+            ];
 
-			$parse = new SamLibParse;
-			$parse->insertOrUpdate($url, $data);
+            $parse = new SamLibParse;
+            $parse->insertOrUpdate($url, $data);
 
-			$parsedData = AuthorParsedData::where('url', $url)->first();
+            $parsedData = AuthorParsedData::where('url', $url)->first();
 
-			$this->assertNotNull($parsedData);
+            $this->assertNotNull($parsedData);
 
-			$this->assertEquals($url, $parsedData->url);
-			$this->assertEquals($data['name'], $parsedData->name);
-			$this->assertEquals($data['email'], $parsedData->email);
-			$this->assertEquals($data['city'], $parsedData->city);
-			$this->assertEquals($data['rating'], $parsedData->rating);
-		}
-	*/
-	/*
-		public function testUpdateDataToDB()
-		{
-			$url = 'http://example.com/test?sfd';
+            $this->assertEquals($url, $parsedData->url);
+            $this->assertEquals($data['name'], $parsedData->name);
+            $this->assertEquals($data['email'], $parsedData->email);
+            $this->assertEquals($data['city'], $parsedData->city);
+            $this->assertEquals($data['rating'], $parsedData->rating);
+        }
+    */
+    /*
+        public function testUpdateDataToDB()
+        {
+            $url = 'http://example.com/test?sfd';
 
-			$data = [
-				'name' => 'Иванов Василий Павлович',
-				'email' => $this->faker->email,
-				'city' => $this->faker->city,
-				'rating' => rand(1, 1000),
-			];
+            $data = [
+                'name' => 'Иванов Василий Павлович',
+                'email' => $this->faker->email,
+                'city' => $this->faker->city,
+                'rating' => rand(1, 1000),
+            ];
 
-			$parse = new SamLibParse;
-			$parse->insertOrUpdate($url, $data);
+            $parse = new SamLibParse;
+            $parse->insertOrUpdate($url, $data);
 
-			$parsedData = AuthorParsedData::where('url', $url)->first();
+            $parsedData = AuthorParsedData::where('url', $url)->first();
 
-			$this->assertNotNull($parsedData);
+            $this->assertNotNull($parsedData);
 
-			$data = [
-				'name' => 'Василий Иванов Павлович',
-				'email' => $this->faker->email,
-				'city' => $this->faker->city,
-				'rating' => rand(1, 1000),
-			];
+            $data = [
+                'name' => 'Василий Иванов Павлович',
+                'email' => $this->faker->email,
+                'city' => $this->faker->city,
+                'rating' => rand(1, 1000),
+            ];
 
-			$parse->insertOrUpdate($url, $data);
+            $parse->insertOrUpdate($url, $data);
 
-			$parsedData->refresh();
+            $parsedData->refresh();
 
-			$this->assertEquals($data['name'], $parsedData->name);
-			$this->assertEquals($data['email'], $parsedData->email);
-			$this->assertEquals($data['city'], $parsedData->city);
-			$this->assertEquals($data['rating'], $parsedData->rating);
-		}
-	*/
-	public function testGetAuthorDataH3Empty()
-	{
-		$html = '<html>
+            $this->assertEquals($data['name'], $parsedData->name);
+            $this->assertEquals($data['email'], $parsedData->email);
+            $this->assertEquals($data['city'], $parsedData->city);
+            $this->assertEquals($data['rating'], $parsedData->rating);
+        }
+    */
+    public function testGetAuthorDataH3Empty()
+    {
+        $html = '<html>
 <head>
 		<title>/title>
 </head>
@@ -189,18 +189,18 @@ dfgdf <a href="/k/kirena_s/">X</a>
 </html>
 ';
 
-		$parse = new SamLibParse;
-		$data = $parse->parseAuthorData($html);
+        $parse = new SamLibParse;
+        $data = $parse->parseAuthorData($html);
 
-		$this->assertEquals('', $data['name']);
-		$this->assertEquals('', $data['email']);
-		$this->assertEquals('', $data['city']);
-		$this->assertEquals('', $data['rating']);
-	}
+        $this->assertEquals('', $data['name']);
+        $this->assertEquals('', $data['email']);
+        $this->assertEquals('', $data['city']);
+        $this->assertEquals('', $data['rating']);
+    }
 
-	public function testGetAuthorDataCharset()
-	{
-		$html = '<html>
+    public function testGetAuthorDataCharset()
+    {
+        $html = '<html>
 <head>
 		<title>Журнал "Самиздат".Иванов Василий Павлович. Книги </title>
 	<link rel="openid.server" href="http://samlib.ru/cgi-bin/oid_login" />
@@ -229,106 +229,106 @@ dfgdf <a href="/k/kirena_s/">X</a>
 </html>
 ';
 
-		$parse = new SamLibParse;
-		$data = $parse->parseAuthorData(mb_convert_encoding($html, 'windows-1251', 'utf-8'));
+        $parse = new SamLibParse;
+        $data = $parse->parseAuthorData(mb_convert_encoding($html, 'windows-1251', 'utf-8'));
 
-		$this->assertEquals('Иванов Василий Павлович', $data['name']);
-		$this->assertEquals('donmail@mail.ua', $data['email']);
-		$this->assertEquals('Россия, Москва', $data['city']);
-		$this->assertEquals('8.55*5', $data['rating']);
-	}
+        $this->assertEquals('Иванов Василий Павлович', $data['name']);
+        $this->assertEquals('donmail@mail.ua', $data['email']);
+        $this->assertEquals('Россия, Москва', $data['city']);
+        $this->assertEquals('8.55*5', $data['rating']);
+    }
 
-	/*
-		public function testIsPageParsed()
-		{
-			$url = 'http://example.com/test?sfd';
+    /*
+        public function testIsPageParsed()
+        {
+            $url = 'http://example.com/test?sfd';
 
-			$data = [
-				'name' => 'Иванов Василий Павлович',
-				'email' => $this->faker->email,
-				'city' => $this->faker->city,
-				'rating' => rand(1, 1000),
-			];
+            $data = [
+                'name' => 'Иванов Василий Павлович',
+                'email' => $this->faker->email,
+                'city' => $this->faker->city,
+                'rating' => rand(1, 1000),
+            ];
 
-			$parse = new SamLibParse;
+            $parse = new SamLibParse;
 
-			$this->assertFalse($parse->isUrlParsed($url));
+            $this->assertFalse($parse->isUrlParsed($url));
 
-			$parse->insertOrUpdate($url, $data);
+            $parse->insertOrUpdate($url, $data);
 
-			$this->assertTrue($parse->isUrlParsed($url));
-		}
-		*/
+            $this->assertTrue($parse->isUrlParsed($url));
+        }
+        */
 
-	public function testGetUrlsFromHtmlWithNoUrls()
-	{
-		$html = 'esdfsd fsd fsd';
+    public function testGetUrlsFromHtmlWithNoUrls()
+    {
+        $html = 'esdfsd fsd fsd';
 
-		$parse = new SamLibParse;
+        $parse = new SamLibParse;
 
-		$this->assertEquals([], $parse->getUrlsFromHtml($html));
-	}
+        $this->assertEquals([], $parse->getUrlsFromHtml($html));
+    }
 
-	public function testGetAbsoluteRating()
-	{
-		$parsedData = new AuthorParsedData;
+    public function testGetAbsoluteRating()
+    {
+        $parsedData = new AuthorParsedData;
 
-		$parsedData->rating = '3.70*13';
+        $parsedData->rating = '3.70*13';
 
-		$this->assertEquals('48', $parsedData->getAbsoluteRating());
+        $this->assertEquals('48', $parsedData->getAbsoluteRating());
 
-		$parsedData->rating = '0';
+        $parsedData->rating = '0';
 
-		$this->assertEquals('0', $parsedData->getAbsoluteRating());
+        $this->assertEquals('0', $parsedData->getAbsoluteRating());
 
-		$parsedData->rating = null;
+        $parsedData->rating = null;
 
-		$this->assertEquals('0', $parsedData->getAbsoluteRating());
-	}
+        $this->assertEquals('0', $parsedData->getAbsoluteRating());
+    }
 
-	public function testIsEmailVaild()
-	{
-		$parsedData = new AuthorParsedData;
+    public function testIsEmailVaild()
+    {
+        $parsedData = new AuthorParsedData;
 
-		$parsedData->email = '3.70*13';
+        $parsedData->email = '3.70*13';
 
-		$this->assertFalse($parsedData->IsEmailVaild());
+        $this->assertFalse($parsedData->IsEmailVaild());
 
-		$parsedData->email = '0';
+        $parsedData->email = '0';
 
-		$this->assertFalse($parsedData->IsEmailVaild());
+        $this->assertFalse($parsedData->IsEmailVaild());
 
-		$parsedData->email = null;
+        $parsedData->email = null;
 
-		$this->assertFalse($parsedData->IsEmailVaild());
+        $this->assertFalse($parsedData->IsEmailVaild());
 
-		$parsedData->email = 'sdfsfd@sdfsdf.sdf';
+        $parsedData->email = 'sdfsfd@sdfsdf.sdf';
 
-		$this->assertTrue($parsedData->IsEmailVaild());
+        $this->assertTrue($parsedData->IsEmailVaild());
 
-		$parsedData->email = 'sdfsfd@вапвап.ыва';
+        $parsedData->email = 'sdfsfd@вапвап.ыва';
 
-		$this->assertFalse($parsedData->isEmailVaild());
-	}
+        $this->assertFalse($parsedData->isEmailVaild());
+    }
 
-	public function testGetEmail()
-	{
-		$parsedData = new AuthorParsedData;
+    public function testGetEmail()
+    {
+        $parsedData = new AuthorParsedData;
 
-		$parsedData->email = 'test [at] gmail [dot] com';
+        $parsedData->email = 'test [at] gmail [dot] com';
 
-		$this->assertEquals('test@gmail.com', $parsedData->email);
+        $this->assertEquals('test@gmail.com', $parsedData->email);
 
-		$parsedData->email = 'test[]gmail.com';
+        $parsedData->email = 'test[]gmail.com';
 
-		$this->assertEquals('test@gmail.com', $parsedData->email);
+        $this->assertEquals('test@gmail.com', $parsedData->email);
 
-		$parsedData->email = 'test[]gmail[.com';
+        $parsedData->email = 'test[]gmail[.com';
 
-		$this->assertEquals('test@gmail.com', $parsedData->email);
+        $this->assertEquals('test@gmail.com', $parsedData->email);
 
-		$parsedData->email = 'test [sobaka] gmail [dot] com';
+        $parsedData->email = 'test [sobaka] gmail [dot] com';
 
-		$this->assertEquals('test@gmail.com', $parsedData->email);
-	}
+        $this->assertEquals('test@gmail.com', $parsedData->email);
+    }
 }

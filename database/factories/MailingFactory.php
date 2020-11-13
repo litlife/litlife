@@ -1,11 +1,28 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Mailing::class, function (Faker $faker) {
+use App\Mailing;
 
-    return [
-        'email' => $faker->email,
-        'priority' => rand(0, 10000)
-    ];
-});
+class MailingFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Mailing::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'email' => $this->faker->email,
+            'priority' => rand(0, 10000)
+        ];
+    }
+}

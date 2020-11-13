@@ -21,14 +21,14 @@ use Propaganistas\LaravelPhone\PhoneNumber;
  * @property Carbon|null $deleted_at
  * @property object|null $params Дополнительная информация о платежных данных
  * @property mixed $qiwi
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentDetail newQuery()
  * @method static Builder|UserPaymentDetail onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentDetail query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentDetail whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentDetail whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentDetail whereId($value)

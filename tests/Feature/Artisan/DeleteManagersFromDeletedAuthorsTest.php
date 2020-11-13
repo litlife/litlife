@@ -9,52 +9,54 @@ use Tests\TestCase;
 
 class DeleteManagersFromDeletedAuthorsTest extends TestCase
 {
-	public function testNotDeleteIfAuthorNotDeleted()
-	{
-		$manager = Manager::factory()->create();
+    public function testNotDeleteIfAuthorNotDeleted()
+    {
+        $manager = Manager::factory()->create();
 
-		Artisan::call('managers:delete_if_author_deleted', [
-			'latest_manager_id' => $manager->id
-		]);
+        Artisan::call('managers:delete_if_author_deleted', [
+            'latest_manager_id' => $manager->id
+        ]);
 
-		$manager->refresh();
+        $manager->refresh();
 
-		$this->assertFalse($manager->trashed());
-	}
+        $this->assertFalse($manager->trashed());
+    }
 
-	public function testNotDeleteIfDaysNotPassedSinceDeleted()
-	{
-		$manager = Manager::factory()->create();
-		$manager->manageable->delete();
-		$manager->refresh();
-		$manager->load(['manageable' => function ($query) {
-			$query->any();
-		}]);
+    public function testNotDeleteIfDaysNotPassedSinceDeleted()
+    {
+        $manager = Manager::factory()->create();
+        $manager->manageable->delete();
+        $manager->refresh();
+        $manager->load([
+            'manageable' => function ($query) {
+                $query->any();
+            }
+        ]);
 
-		Artisan::call('managers:delete_if_author_deleted', [
-			'latest_manager_id' => $manager->id,
-			'days_have_passed' => 31
-		]);
+        Artisan::call('managers:delete_if_author_deleted', [
+            'latest_manager_id' => $manager->id,
+            'days_have_passed' => 31
+        ]);
 
-		$manager->refresh();
+        $manager->refresh();
 
-		$this->assertFalse($manager->trashed());
-	}
+        $this->assertFalse($manager->trashed());
+    }
 
-	public function testDeleteIfDaysNotPassedSinceDeleted()
-	{
-		$manager = Manager::factory()->create();
-		$manager->manageable->delete();
+    public function testDeleteIfDaysNotPassedSinceDeleted()
+    {
+        $manager = Manager::factory()->create();
+        $manager->manageable->delete();
 
-		Carbon::setTestNow(now()->addDays(32));
+        Carbon::setTestNow(now()->addDays(32));
 
-		Artisan::call('managers:delete_if_author_deleted', [
-			'latest_manager_id' => $manager->id,
-			'days_have_passed' => 31
-		]);
+        Artisan::call('managers:delete_if_author_deleted', [
+            'latest_manager_id' => $manager->id,
+            'days_have_passed' => 31
+        ]);
 
-		$manager->refresh();
+        $manager->refresh();
 
-		$this->assertTrue($manager->trashed());
-	}
+        $this->assertTrue($manager->trashed());
+    }
 }

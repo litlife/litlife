@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $user_id
  * @property string $name Название настройки
  * @property string $value Значение настройки
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static Builder|UserSearchSetting newModelQuery()
  * @method static Builder|UserSearchSetting newQuery()
  * @method static Builder|Model orderByField($column, $ids)

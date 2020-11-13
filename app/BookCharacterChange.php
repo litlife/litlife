@@ -16,8 +16,8 @@ use Illuminate\Support\Carbon;
  * @property int $section_id ID главы
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Book $book
- * @property-read Section $section
+ * @property-read \App\Book $book
+ * @property-read \App\Section $section
  * @method static Builder|BookCharacterChange newModelQuery()
  * @method static Builder|BookCharacterChange newQuery()
  * @method static Builder|Model orderByField($column, $ids)

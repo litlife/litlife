@@ -9,47 +9,47 @@ use Tests\TestCase;
 
 class BookFileAcceptTest extends TestCase
 {
-	public function testAcceptHttp()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testAcceptHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		BookFile::sentOnReview()
-			->update(['status' => StatusEnum::Accepted]);
+        BookFile::sentOnReview()
+            ->update(['status' => StatusEnum::Accepted]);
 
-		BookFile::flushCachedOnModerationCount();
+        BookFile::flushCachedOnModerationCount();
 
-		$admin = User::factory()->create();
-		$admin->group->book_file_add_check = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->book_file_add_check = true;
+        $admin->push();
 
-		$file = BookFile::factory()->txt()->create();
-		$file->statusSentForReview();
-		$file->save();
+        $file = BookFile::factory()->txt()->create();
+        $file->statusSentForReview();
+        $file->save();
 
-		BookFile::flushCachedOnModerationCount();
-		$this->assertEquals(1, BookFile::getCachedOnModerationCount());
+        BookFile::flushCachedOnModerationCount();
+        $this->assertEquals(1, BookFile::getCachedOnModerationCount());
 
-		$this->followingRedirects()
-			->actingAs($admin)
-			->get(route('book_files.approve', ['file' => $file]))
-			->assertOk()
-			->assertSeeText(__('book_file.approved'))
-			->assertDontSeeText($file->book->title)
-			->assertDontSeeText($file->extension);
+        $this->followingRedirects()
+            ->actingAs($admin)
+            ->get(route('book_files.approve', ['file' => $file]))
+            ->assertOk()
+            ->assertSeeText(__('book_file.approved'))
+            ->assertDontSeeText($file->book->title)
+            ->assertDontSeeText($file->extension);
 
-		$this->assertEquals(0, BookFile::getCachedOnModerationCount());
+        $this->assertEquals(0, BookFile::getCachedOnModerationCount());
 
-		$file->refresh();
+        $file->refresh();
 
-		$this->assertTrue($file->isAccepted());
+        $this->assertTrue($file->isAccepted());
 
-		$this->get(route('books.show', $file->book))
-			->assertSeeText($file->extension);
+        $this->get(route('books.show', $file->book))
+            ->assertSeeText($file->extension);
 
-		$this->assertEquals(1, $file->activities()->count());
-		$activity = $file->activities()->first();
-		$this->assertEquals('approved', $activity->description);
-		$this->assertEquals($admin->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $this->assertEquals(1, $file->activities()->count());
+        $activity = $file->activities()->first();
+        $this->assertEquals('approved', $activity->description);
+        $this->assertEquals($admin->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 }

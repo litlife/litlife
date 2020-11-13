@@ -8,19 +8,19 @@ use PHPUnit\Framework\TestCase;
 
 class MessageIsUpdatedByUserTest extends TestCase
 {
-	public function testTrue()
-	{
-		$message = new Message();
-		$message->user_updated_at = Carbon::now();
+    public function testTrue()
+    {
+        $message = new Message();
+        $message->user_updated_at = Carbon::now();
 
-		$this->assertTrue($message->isUpdatedByUser());
-	}
+        $this->assertTrue($message->isUpdatedByUser());
+    }
 
-	public function testFalse()
-	{
-		$message = new Message();
-		$message->user_updated_at = null;
+    public function testFalse()
+    {
+        $message = new Message();
+        $message->user_updated_at = null;
 
-		$this->assertFalse($message->isUpdatedByUser());
-	}
+        $this->assertFalse($message->isUpdatedByUser());
+    }
 }

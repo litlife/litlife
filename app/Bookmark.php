@@ -22,19 +22,19 @@ use Litlife\Url\Url;
  * @property Carbon|null $deleted_at
  * @property string $url
  * @property bool $new
- * @property-read BookmarkFolder $bookmark_folder
- * @property-read User $create_user
- * @property-read BookmarkFolder|null $folder
+ * @property-read \App\BookmarkFolder $bookmark_folder
+ * @property-read \App\User $create_user
+ * @property-read \App\BookmarkFolder|null $folder
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark newQuery()
  * @method static Builder|Bookmark onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereFolderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bookmark whereId($value)

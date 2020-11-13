@@ -9,39 +9,39 @@ use Tests\TestCase;
 
 class CollectionUserDeletePolicyTest extends TestCase
 {
-	public function testCollectionCreatorCanDeleteUser()
-	{
-		$collection = Collection::factory()->create();
+    public function testCollectionCreatorCanDeleteUser()
+    {
+        $collection = Collection::factory()->create();
 
-		$this->assertTrue($collection->create_user->can('deleteUser', $collection));
-	}
+        $this->assertTrue($collection->create_user->can('deleteUser', $collection));
+    }
 
-	public function testOtherUserCantDeleteUser()
-	{
-		$collection = Collection::factory()->create();
+    public function testOtherUserCantDeleteUser()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('deleteUser', $collection));
-	}
+        $this->assertFalse($user->can('deleteUser', $collection));
+    }
 
-	public function testCollectionUserCanDeleteUserWithPermission()
-	{
-		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
+    public function testCollectionUserCanDeleteUserWithPermission()
+    {
+        $collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
-		$user = $collectionUser->user;
-		$collection = $collectionUser->collection;
+        $user = $collectionUser->user;
+        $collection = $collectionUser->collection;
 
-		$this->assertTrue($user->can('deleteUser', $collection));
-	}
+        $this->assertTrue($user->can('deleteUser', $collection));
+    }
 
-	public function testCollectionUserCantDeleteUserWithoutPermission()
-	{
-		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
+    public function testCollectionUserCantDeleteUserWithoutPermission()
+    {
+        $collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
 
-		$user = $collectionUser->user;
-		$collection = $collectionUser->collection;
+        $user = $collectionUser->user;
+        $collection = $collectionUser->collection;
 
-		$this->assertFalse($user->can('deleteUser', $collection));
-	}
+        $this->assertFalse($user->can('deleteUser', $collection));
+    }
 }

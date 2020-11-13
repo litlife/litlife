@@ -14,734 +14,741 @@ use Tests\TestCase;
 
 class AuthorSaleRequestTest extends TestCase
 {
-	public function setUp(): void
-	{
-		parent::setUp();
-
-		config(['litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books' => 0]);
-
-		AuthorSaleRequest::truncate();
-		AuthorSaleRequest::flushCachedOnModerationCount();
-	}
-
-	public function testRequestFormHttp()
-	{
-		$admin = User::factory()->create();
-		$admin->group->author_editor_request = true;
-		$admin->push();
-
-		$author = Author::factory()->with_author_manager()->create();
-
-		$manager = $author->managers()->first();
-
-		$response = $this->actingAs($manager->user)
-			->get(route('authors.sales.request', ['author' => $author->id]))
-			->assertOk();
-	}
-
-	public function testRequestStoreHttp()
-	{
-		$admin = User::factory()->create();
-		$admin->group->author_editor_request = true;
-		$admin->push();
-
-		$author = Author::factory()->with_author_manager()->with_complete_book()->create();
-
-		$manager = $author->managers()->first();
-		$book = $author->any_books()->first();
-		$book->create_user()->associate($manager->user);
-		$book->push();
-
-		$text = $this->faker->realText(500) . ' ' . Str::random(11);
-
-		$this->actingAs($manager->user)
-			->get(route('authors.sales.request', ['author' => $author->id]))
-			->assertOk()
-			->assertViewHas('completeBooksCount', 1)
-			->assertViewHas('isEnoughBooksTextCharacters', true)
-			->assertViewHas('authorHasBooksAddedByAuthUser', true)
-			->assertDontSeeText(__('author_sale_request.to_send_a_request_the_author_must_have_at_least_one_finished_book'))
-			->assertDontSeeText(__('author_sale_request.your_author_page_must_have_at_least_one_book_added_by_you'))
-			->assertDontSeeText(__('author_sale_request.to_submit_a_request_your_added_books_must_have_at_least_two_characters_of_text_in_total',
-				['characters_count' => config('litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books')]));
-
-		$response = $this->actingAs($manager->user)
-			->post(route('authors.sales.store', ['author' => $author->id]), [
-				'text' => $text,
-				'rules_accepted' => true
-			])
-			->assertSessionHasNoErrors();
-
-		$sales_request = $author->sales_request()
-			->first();
-
-		$response->assertRedirect(route('authors.sales_requests.show', ['request' => $sales_request]));
-
-		$this->assertEquals($author->id, $sales_request->author_id);
-		$this->assertEquals($manager->id, $sales_request->manager_id);
-		$this->assertEquals($manager->user_id, $sales_request->create_user_id);
-		$this->assertEquals($text, $sales_request->text);
-		$this->assertTrue($sales_request->isSentForReview());
-
-		$response = $this->actingAs($manager->user)
-			->get(route('authors.sales.request', ['author' => $author->id]))
-			->assertRedirect(route('authors.sales_requests.show', ['request' => $sales_request]));
-
-		$response = $this->actingAs($manager->user)
-			->followingRedirects()
-			->get(route('authors.sales.request', ['author' => $author->id]))
-			->assertOk()
-			->assertSeeText(__('author_sale_request.wait_for_review'))
-			->assertSeeText($text);
-
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
-	}
-
-	public function testUserCanSaleRequestPolicy()
-	{
-		$author = Author::factory()->with_author_manager()->create();
-
-		$manager = $author->managers()->first();
-		$user = $manager->user;
-
-		//$this->assertTrue($user->can('view_sales_request', $author));
-		$this->assertTrue($user->can('sales_request', $author));
-	}
-
-	public function testUserCantSaleRequestIfManagerIsNotAcceptedPolicy()
-	{
-		$author = Author::factory()->with_author_manager()->create();
-
-		$manager = $author->managers()->first();
-		$manager->statusSentForReview();
-		$manager->save();
-		$author->refresh();
-
-		$user = $manager->user;
-
-		//$this->assertFalse($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
-
-		$manager->statusReject();
-		$manager->save();
-		$author->refresh();
-
-		//$this->assertFalse($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
-	}
-
-	public function testUserCantSaleRequestIfManagerIsEditorPolicy()
-	{
-		$author = Author::factory()->with_author_manager()->create();
-
-		$manager = $author->managers()->first();
-		$manager->character = 'editor';
-		$manager->save();
-		$author->refresh();
-
-		$user = $manager->user;
-
-		//$this->assertFalse($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
-	}
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        config(['litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books' => 0]);
+
+        AuthorSaleRequest::truncate();
+        AuthorSaleRequest::flushCachedOnModerationCount();
+    }
+
+    public function testRequestFormHttp()
+    {
+        $admin = User::factory()->create();
+        $admin->group->author_editor_request = true;
+        $admin->push();
+
+        $author = Author::factory()->with_author_manager()->create();
+
+        $manager = $author->managers()->first();
+
+        $response = $this->actingAs($manager->user)
+            ->get(route('authors.sales.request', ['author' => $author->id]))
+            ->assertOk();
+    }
+
+    public function testRequestStoreHttp()
+    {
+        $admin = User::factory()->create();
+        $admin->group->author_editor_request = true;
+        $admin->push();
+
+        $author = Author::factory()->with_author_manager()->with_complete_book()->create();
+
+        $manager = $author->managers()->first();
+        $book = $author->any_books()->first();
+        $book->create_user()->associate($manager->user);
+        $book->push();
+
+        $text = $this->faker->realText(500).' '.Str::random(11);
+
+        $this->actingAs($manager->user)
+            ->get(route('authors.sales.request', ['author' => $author->id]))
+            ->assertOk()
+            ->assertViewHas('completeBooksCount', 1)
+            ->assertViewHas('isEnoughBooksTextCharacters', true)
+            ->assertViewHas('authorHasBooksAddedByAuthUser', true)
+            ->assertDontSeeText(__('author_sale_request.to_send_a_request_the_author_must_have_at_least_one_finished_book'))
+            ->assertDontSeeText(__('author_sale_request.your_author_page_must_have_at_least_one_book_added_by_you'))
+            ->assertDontSeeText(__('author_sale_request.to_submit_a_request_your_added_books_must_have_at_least_two_characters_of_text_in_total',
+                ['characters_count' => config('litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books')]));
+
+        $response = $this->actingAs($manager->user)
+            ->post(route('authors.sales.store', ['author' => $author->id]), [
+                'text' => $text,
+                'rules_accepted' => true
+            ])
+            ->assertSessionHasNoErrors();
+
+        $sales_request = $author->sales_request()
+            ->first();
+
+        $response->assertRedirect(route('authors.sales_requests.show', ['request' => $sales_request]));
+
+        $this->assertEquals($author->id, $sales_request->author_id);
+        $this->assertEquals($manager->id, $sales_request->manager_id);
+        $this->assertEquals($manager->user_id, $sales_request->create_user_id);
+        $this->assertEquals($text, $sales_request->text);
+        $this->assertTrue($sales_request->isSentForReview());
+
+        $response = $this->actingAs($manager->user)
+            ->get(route('authors.sales.request', ['author' => $author->id]))
+            ->assertRedirect(route('authors.sales_requests.show', ['request' => $sales_request]));
+
+        $response = $this->actingAs($manager->user)
+            ->followingRedirects()
+            ->get(route('authors.sales.request', ['author' => $author->id]))
+            ->assertOk()
+            ->assertSeeText(__('author_sale_request.wait_for_review'))
+            ->assertSeeText($text);
+
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+    }
+
+    public function testUserCanSaleRequestPolicy()
+    {
+        $author = Author::factory()->with_author_manager()->create();
+
+        $manager = $author->managers()->first();
+        $user = $manager->user;
+
+        //$this->assertTrue($user->can('view_sales_request', $author));
+        $this->assertTrue($user->can('sales_request', $author));
+    }
+
+    public function testUserCantSaleRequestIfManagerIsNotAcceptedPolicy()
+    {
+        $author = Author::factory()->with_author_manager()->create();
+
+        $manager = $author->managers()->first();
+        $manager->statusSentForReview();
+        $manager->save();
+        $author->refresh();
+
+        $user = $manager->user;
+
+        //$this->assertFalse($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
+
+        $manager->statusReject();
+        $manager->save();
+        $author->refresh();
+
+        //$this->assertFalse($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
+    }
+
+    public function testUserCantSaleRequestIfManagerIsEditorPolicy()
+    {
+        $author = Author::factory()->with_author_manager()->create();
+
+        $manager = $author->managers()->first();
+        $manager->character = 'editor';
+        $manager->save();
+        $author->refresh();
+
+        $user = $manager->user;
+
+        //$this->assertFalse($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
+    }
 
-	public function testUserCantRequestIfRequestAlreadyExistsPolicy()
-	{
-		$author = Author::factory()->with_author_manager()->create();
+    public function testUserCantRequestIfRequestAlreadyExistsPolicy()
+    {
+        $author = Author::factory()->with_author_manager()->create();
 
-		$manager = $author->managers()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $user = $manager->user;
 
-		$saleRequest = AuthorSaleRequest::factory()->create(
-				[
-					'author_id' => $author->id,
-					'create_user_id' => $user->id
-				]
-			);
+        $saleRequest = AuthorSaleRequest::factory()->create(
+            [
+                'author_id' => $author->id,
+                'create_user_id' => $user->id
+            ]
+        );
 
-		$saleRequest->statusSentForReview();
-		$saleRequest->save();
-		$author->refresh();
+        $saleRequest->statusSentForReview();
+        $saleRequest->save();
+        $author->refresh();
 
-		//$this->assertTrue($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
+        //$this->assertTrue($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
 
-		$saleRequest->statusReviewStarts();
-		$saleRequest->save();
-		$author->refresh();
+        $saleRequest->statusReviewStarts();
+        $saleRequest->save();
+        $author->refresh();
 
-		//$this->assertTrue($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
+        //$this->assertTrue($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
 
-		$saleRequest->statusReject();
-		$saleRequest->save();
-		$author->refresh();
+        $saleRequest->statusReject();
+        $saleRequest->save();
+        $author->refresh();
 
-		//$this->assertTrue($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
-	}
+        //$this->assertTrue($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
+    }
 
-	public function testUserCanRequestIfRequestAlreadyExistsAndAuthorCantSalePolicy()
-	{
-		$author = Author::factory()->with_author_manager()->create();
+    public function testUserCanRequestIfRequestAlreadyExistsAndAuthorCantSalePolicy()
+    {
+        $author = Author::factory()->with_author_manager()->create();
 
-		$manager = $author->managers()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $user = $manager->user;
 
-		$saleRequest = AuthorSaleRequest::factory()->create(
-				[
-					'author_id' => $author->id,
-					'create_user_id' => $user->id
-				]
-			);
+        $saleRequest = AuthorSaleRequest::factory()->create(
+            [
+                'author_id' => $author->id,
+                'create_user_id' => $user->id
+            ]
+        );
 
-		$saleRequest->statusAccepted();
-		$saleRequest->save();
-		$manager->statusAccepted();
-		$manager->can_sale = false;
-		$manager->save();
-		$author->refresh();
+        $saleRequest->statusAccepted();
+        $saleRequest->save();
+        $manager->statusAccepted();
+        $manager->can_sale = false;
+        $manager->save();
+        $author->refresh();
 
-		//$this->assertTrue($user->can('view_sales_request', $author));
-		$this->assertTrue($user->can('sales_request', $author));
-	}
+        //$this->assertTrue($user->can('view_sales_request', $author));
+        $this->assertTrue($user->can('sales_request', $author));
+    }
 
-	public function testUserCantRequestIfRequestAlreadyExistsAndAuthorCanSalePolicy()
-	{
-		$author = Author::factory()->with_author_manager()->create();
+    public function testUserCantRequestIfRequestAlreadyExistsAndAuthorCanSalePolicy()
+    {
+        $author = Author::factory()->with_author_manager()->create();
 
-		$manager = $author->managers()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $user = $manager->user;
 
-		$saleRequest = AuthorSaleRequest::factory()->create(
-				[
-					'author_id' => $author->id,
-					'create_user_id' => $user->id
-				]
-			);
+        $saleRequest = AuthorSaleRequest::factory()->create(
+            [
+                'author_id' => $author->id,
+                'create_user_id' => $user->id
+            ]
+        );
 
-		$saleRequest->statusAccepted();
-		$saleRequest->save();
-		$manager->statusAccepted();
-		$manager->can_sale = true;
-		$manager->save();
-		$author->refresh();
+        $saleRequest->statusAccepted();
+        $saleRequest->save();
+        $manager->statusAccepted();
+        $manager->can_sale = true;
+        $manager->save();
+        $author->refresh();
 
-		//$this->assertFalse($user->can('view_sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author));
-	}
+        //$this->assertFalse($user->can('view_sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author));
+    }
 
-	public function testCounter()
-	{
-		AuthorSaleRequest::truncate();
+    public function testCounter()
+    {
+        AuthorSaleRequest::truncate();
 
-		AuthorSaleRequest::flushCachedOnModerationCount();
+        AuthorSaleRequest::flushCachedOnModerationCount();
 
-		$this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$saleRequest = AuthorSaleRequest::factory()->accepted()->create();
+        $saleRequest = AuthorSaleRequest::factory()->accepted()->create();
 
-		AuthorSaleRequest::flushCachedOnModerationCount();
+        AuthorSaleRequest::flushCachedOnModerationCount();
 
-		$this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
+        $saleRequest = AuthorSaleRequest::factory()->sent_for_review()->create();
 
-		AuthorSaleRequest::flushCachedOnModerationCount();
+        AuthorSaleRequest::flushCachedOnModerationCount();
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
-	}
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+    }
 
-	public function testRelation()
-	{
-		$saleRequest = AuthorSaleRequest::factory()->accepted()->create();
+    public function testRelation()
+    {
+        $saleRequest = AuthorSaleRequest::factory()->accepted()->create();
 
-		$this->assertEquals($saleRequest->manager_id, $saleRequest->manager->id);
-		$this->assertEquals($saleRequest->author_id, $saleRequest->author->id);
-	}
+        $this->assertEquals($saleRequest->manager_id, $saleRequest->manager->id);
+        $this->assertEquals($saleRequest->author_id, $saleRequest->author->id);
+    }
 
-	public function testAcceptHttp()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testAcceptHttp()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$admin = User::factory()->create();
-		$admin->group->author_sale_request_review = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->author_sale_request_review = true;
+        $admin->push();
 
-		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
+        $saleRequest = AuthorSaleRequest::factory()->review_starts()->create();
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$this->assertTrue($admin->can('accept', $saleRequest));
+        $this->assertTrue($admin->can('accept', $saleRequest));
 
-		$this->actingAs($admin)
-			->get(route('authors.sales_requests.accept', ['request' => $saleRequest->id]))
-			->assertRedirect(route('authors.sales_requests.show', ['request' => $saleRequest->id]))
-			->assertSessionHas(['success' => __('author_sale_request.you_accept_review')]);
+        $this->actingAs($admin)
+            ->get(route('authors.sales_requests.accept', ['request' => $saleRequest->id]))
+            ->assertRedirect(route('authors.sales_requests.show', ['request' => $saleRequest->id]))
+            ->assertSessionHas(['success' => __('author_sale_request.you_accept_review')]);
 
-		$saleRequest->refresh();
+        $saleRequest->refresh();
 
-		$this->assertTrue($saleRequest->isAccepted());
-		$this->assertTrue($saleRequest->manager->can_sale);
-		$this->assertEquals($admin->id, $saleRequest->status_changed_user_id);
+        $this->assertTrue($saleRequest->isAccepted());
+        $this->assertTrue($saleRequest->manager->can_sale);
+        $this->assertEquals($admin->id, $saleRequest->status_changed_user_id);
 
-		$this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
 
-		Notification::assertSentTo(
-			$saleRequest->create_user,
-			AuthorSaleRequestAcceptedNotification::class,
-			function ($notification, $channels) use ($saleRequest) {
-				$this->assertContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $saleRequest->create_user,
+            AuthorSaleRequestAcceptedNotification::class,
+            function ($notification, $channels) use ($saleRequest) {
+                $this->assertContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$mail = $notification->toMail($saleRequest->create_user);
+                $mail = $notification->toMail($saleRequest->create_user);
 
-				$this->assertEquals(__('notification.author_sale_request_accepted.subject'), $mail->subject);
-				$this->assertEquals(__('notification.author_sale_request_accepted.line', ['author_name' => $saleRequest->author->name]), $mail->introLines[0]);
-				$this->assertEquals(__('notification.author_sale_request_accepted.action'), $mail->actionText);
-				$this->assertEquals(route('authors.show', ['author' => $saleRequest->author]), $mail->actionUrl);
+                $this->assertEquals(__('notification.author_sale_request_accepted.subject'), $mail->subject);
+                $this->assertEquals(__('notification.author_sale_request_accepted.line', ['author_name' => $saleRequest->author->name]), $mail->introLines[0]);
+                $this->assertEquals(__('notification.author_sale_request_accepted.action'), $mail->actionText);
+                $this->assertEquals(route('authors.show', ['author' => $saleRequest->author]), $mail->actionUrl);
 
-				$array = $notification->toArray($saleRequest->create_user);
+                $array = $notification->toArray($saleRequest->create_user);
 
-				$this->assertEquals(__('notification.author_sale_request_accepted.subject'), $array['title']);
-				$this->assertEquals(__('notification.author_sale_request_accepted.line', ['author_name' => $saleRequest->author->name]), $array['description']);
-				$this->assertEquals(route('authors.show', ['author' => $saleRequest->author]), $array['url']);
+                $this->assertEquals(__('notification.author_sale_request_accepted.subject'), $array['title']);
+                $this->assertEquals(__('notification.author_sale_request_accepted.line', ['author_name' => $saleRequest->author->name]), $array['description']);
+                $this->assertEquals(route('authors.show', ['author' => $saleRequest->author]), $array['url']);
 
-				return $notification->author_sale_request->id == $saleRequest->id;
-			}
-		);
-	}
+                return $notification->author_sale_request->id == $saleRequest->id;
+            }
+        );
+    }
 
-	public function testRejectHttp()
-	{
-		Notification::fake();
-		Notification::assertNothingSent();
+    public function testRejectHttp()
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
 
-		$admin = User::factory()->create();
-		$admin->group->author_sale_request_review = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->author_sale_request_review = true;
+        $admin->push();
 
-		$review_comment = $this->faker->realText(100);
+        $review_comment = $this->faker->realText(100);
 
-		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
+        $saleRequest = AuthorSaleRequest::factory()->review_starts()->create();
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$this->actingAs($admin)
-			->post(route('authors.sales_requests.reject', ['request' => $saleRequest->id]),
-				['review_comment' => $review_comment])
-			->assertRedirect(route('authors.sales_requests.show', ['request' => $saleRequest->id]))
-			->assertSessionHas(['success' => __('author_sale_request.you_reject_review')]);
+        $this->actingAs($admin)
+            ->post(route('authors.sales_requests.reject', ['request' => $saleRequest->id]),
+                ['review_comment' => $review_comment])
+            ->assertRedirect(route('authors.sales_requests.show', ['request' => $saleRequest->id]))
+            ->assertSessionHas(['success' => __('author_sale_request.you_reject_review')]);
 
-		$saleRequest->refresh();
+        $saleRequest->refresh();
 
-		$this->assertTrue($saleRequest->isRejected());
-		$this->assertFalse($saleRequest->manager->can_sale);
-		$this->assertEquals($admin->id, $saleRequest->status_changed_user_id);
+        $this->assertTrue($saleRequest->isRejected());
+        $this->assertFalse($saleRequest->manager->can_sale);
+        $this->assertEquals($admin->id, $saleRequest->status_changed_user_id);
 
-		$this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(0, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$this->actingAs($admin)
-			->get(route('authors.sales_requests.show', ['request' => $saleRequest->id]))
-			->assertOk()
-			->assertSeeText(__('author_sale_request.you_can_submit_a_new_application_in_days', ['days' => config('litlife.minimum_days_to_submit_a_new_request_for_author_sale')]))
-			->assertSeeText($review_comment);
+        $this->actingAs($admin)
+            ->get(route('authors.sales_requests.show', ['request' => $saleRequest->id]))
+            ->assertOk()
+            ->assertSeeText(__('author_sale_request.you_can_submit_a_new_application_in_days',
+                ['days' => config('litlife.minimum_days_to_submit_a_new_request_for_author_sale')]))
+            ->assertSeeText($review_comment);
 
-		Notification::assertSentTo(
-			$saleRequest->create_user,
-			AuthorSaleRequestRejectedNotification::class,
-			function ($notification, $channels) use ($saleRequest) {
-				$this->assertContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $saleRequest->create_user,
+            AuthorSaleRequestRejectedNotification::class,
+            function ($notification, $channels) use ($saleRequest) {
+                $this->assertContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$mail = $notification->toMail($saleRequest->create_user);
+                $mail = $notification->toMail($saleRequest->create_user);
 
-				$this->assertEquals(__('notification.author_sale_request_rejected.subject'), $mail->subject);
-				$this->assertEquals(__('notification.author_sale_request_rejected.line', ['author_name' => $saleRequest->author->name]), $mail->introLines[0]);
-				$this->assertEquals(__('notification.author_sale_request_rejected.action'), $mail->actionText);
-				$this->assertEquals(route('authors.sales_requests.show', ['request' => $saleRequest]), $mail->actionUrl);
+                $this->assertEquals(__('notification.author_sale_request_rejected.subject'), $mail->subject);
+                $this->assertEquals(__('notification.author_sale_request_rejected.line', ['author_name' => $saleRequest->author->name]), $mail->introLines[0]);
+                $this->assertEquals(__('notification.author_sale_request_rejected.action'), $mail->actionText);
+                $this->assertEquals(route('authors.sales_requests.show', ['request' => $saleRequest]), $mail->actionUrl);
 
-				$array = $notification->toArray($saleRequest->create_user);
+                $array = $notification->toArray($saleRequest->create_user);
 
-				$this->assertEquals(__('notification.author_sale_request_rejected.subject'), $array['title']);
-				$this->assertEquals(__('notification.author_sale_request_rejected.line', ['author_name' => $saleRequest->author->name]), $array['description']);
-				$this->assertEquals(route('authors.sales_requests.show', ['request' => $saleRequest]), $array['url']);
+                $this->assertEquals(__('notification.author_sale_request_rejected.subject'), $array['title']);
+                $this->assertEquals(__('notification.author_sale_request_rejected.line', ['author_name' => $saleRequest->author->name]), $array['description']);
+                $this->assertEquals(route('authors.sales_requests.show', ['request' => $saleRequest]), $array['url']);
 
-				return $notification->author_sale_request->id == $saleRequest->id;
-			}
-		);
-	}
+                return $notification->author_sale_request->id == $saleRequest->id;
+            }
+        );
+    }
 
-	public function testStartReviewHttp()
-	{
-		$admin = User::factory()->create();
-		$admin->group->author_sale_request_review = true;
-		$admin->push();
+    public function testStartReviewHttp()
+    {
+        $admin = User::factory()->create();
+        $admin->group->author_sale_request_review = true;
+        $admin->push();
 
-		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
+        $saleRequest = AuthorSaleRequest::factory()->sent_for_review()->create();
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$this->actingAs($admin)
-			->get(route('authors.sales_requests.start_review', ['request' => $saleRequest->id]))
-			->assertRedirect(route('authors.sales_requests.show', ['request' => $saleRequest->id]));
+        $this->actingAs($admin)
+            ->get(route('authors.sales_requests.start_review', ['request' => $saleRequest->id]))
+            ->assertRedirect(route('authors.sales_requests.show', ['request' => $saleRequest->id]));
 
-		$saleRequest->refresh();
+        $saleRequest->refresh();
 
-		$this->assertTrue($saleRequest->isReviewStarts());
-		$this->assertFalse($saleRequest->manager->can_sale);
-		$this->assertEquals($admin->id, $saleRequest->status_changed_user_id);
+        $this->assertTrue($saleRequest->isReviewStarts());
+        $this->assertFalse($saleRequest->manager->can_sale);
+        $this->assertEquals($admin->id, $saleRequest->status_changed_user_id);
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
-	}
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+    }
 
-	public function testStopReviewHttp()
-	{
-		$admin = User::factory()->create();
-		$admin->group->author_sale_request_review = true;
-		$admin->push();
+    public function testStopReviewHttp()
+    {
+        $admin = User::factory()->create();
+        $admin->group->author_sale_request_review = true;
+        $admin->push();
 
-		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
-		$saleRequest->statusReviewStarts();
-		$saleRequest->status_changed_user_id = $admin->id;
-		$saleRequest->save();
+        $saleRequest = AuthorSaleRequest::factory()->review_starts()->create();
+        $saleRequest->statusReviewStarts();
+        $saleRequest->status_changed_user_id = $admin->id;
+        $saleRequest->save();
 
-		$this->assertTrue($saleRequest->isReviewStarts());
+        $this->assertTrue($saleRequest->isReviewStarts());
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$this->actingAs($admin)
-			->get(route('authors.sales_requests.stop_review', ['request' => $saleRequest->id]))
-			->assertRedirect(route('authors.sales_requests.index'))
-			->assertSessionHas(['success' => __('author_sale_request.you_stop_review')]);
+        $this->actingAs($admin)
+            ->get(route('authors.sales_requests.stop_review', ['request' => $saleRequest->id]))
+            ->assertRedirect(route('authors.sales_requests.index'))
+            ->assertSessionHas(['success' => __('author_sale_request.you_stop_review')]);
 
-		$saleRequest->refresh();
+        $saleRequest->refresh();
 
-		$this->assertTrue($saleRequest->isSentForReview());
-		$this->assertFalse($saleRequest->manager->can_sale);
+        $this->assertTrue($saleRequest->isSentForReview());
+        $this->assertFalse($saleRequest->manager->can_sale);
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
-	}
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+    }
 
-	public function testCantSaleRequestIfAnotherAuthorWithSaleRequestExists()
-	{
-		$author = Author::factory()->with_two_managers_and_one_can_sell()->create();
+    public function testCantSaleRequestIfAnotherAuthorWithSaleRequestExists()
+    {
+        $author = Author::factory()->with_two_managers_and_one_can_sell()->create();
 
-		$user = $author->managers->where('can_sale', false)->first()->user;
+        $user = $author->managers->where('can_sale', false)->first()->user;
 
-		$this->assertFalse($user->can('sales_request', $author));
-	}
+        $this->assertFalse($user->can('sales_request', $author));
+    }
 
-	public function testViewForUserThatCreateRequest()
-	{
-		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
+    public function testViewForUserThatCreateRequest()
+    {
+        $saleRequest = AuthorSaleRequest::factory()->sent_for_review()->create();
 
-		$this->assertTrue($saleRequest->create_user->can('show', $saleRequest));
-	}
+        $this->assertTrue($saleRequest->create_user->can('show', $saleRequest));
+    }
 
-	public function testSendNewRequestAgain()
-	{
-		config(['litlife.minimum_days_to_submit_a_new_request_for_author_sale' => 6]);
+    public function testSendNewRequestAgain()
+    {
+        config(['litlife.minimum_days_to_submit_a_new_request_for_author_sale' => 6]);
 
-		$author = Author::factory()->with_complete_book()->create();
+        $author = Author::factory()
+            ->with_complete_book()
+            ->create();
 
-		$saleRequest = AuthorSaleRequest::factory()->rejected()->create();
+        $saleRequest = AuthorSaleRequest::factory()
+            ->rejected()
+            ->create(['author_id' => $author->id]);
 
-		$user = $saleRequest->manager->user;
-		$manager = $saleRequest->manager;
-		$book = $author->any_books()->first();
-		$book->create_user()->associate($manager->user);
-		$book->push();
+        $user = $saleRequest->manager->user;
+        $manager = $saleRequest->manager;
+        $book = $author->any_books()->first();
+        $book->create_user()->associate($manager->user);
+        $book->push();
 
-		$this->assertNotNull($user);
-		$this->assertNotNull($manager);
-		$this->assertNotNull($author);
-		$this->assertEquals($manager->user_id, $user->id);
+        $this->assertNotNull($user);
+        $this->assertNotNull($manager);
+        $this->assertNotNull($author);
+        $this->assertEquals($manager->user_id, $user->id);
 
-		$this->assertFalse($user->can('sales_request', $saleRequest->author));
+        $this->assertFalse($user->can('sales_request', $saleRequest->author));
 
-		Carbon::setTestNow(now()->addDays(config('litlife.minimum_days_to_submit_a_new_request_for_author_sale') - 1));
+        Carbon::setTestNow(now()->addDays(config('litlife.minimum_days_to_submit_a_new_request_for_author_sale') - 1));
 
-		$this->assertFalse($user->can('sales_request', $saleRequest->author));
+        $this->assertFalse($user->can('sales_request', $saleRequest->author));
 
-		Carbon::setTestNow(now()->addDays(config('litlife.minimum_days_to_submit_a_new_request_for_author_sale') + 1));
+        Carbon::setTestNow(now()->addDays(config('litlife.minimum_days_to_submit_a_new_request_for_author_sale') + 1));
 
-		$this->assertTrue($user->can('sales_request', $saleRequest->author));
+        $this->assertTrue($user->can('sales_request', $saleRequest->author));
 
-		$text = $this->faker->realText(100);
+        $text = $this->faker->realText(100);
 
-		$response = $this->actingAs($user)
-			->post(route('authors.sales.store', ['author' => $author->id]), [
-				'text' => $text,
-				'rules_accepted' => true
-			])
-			->assertSessionHasNoErrors();
+        $response = $this->actingAs($user)
+            ->post(route('authors.sales.store', ['author' => $author->id]), [
+                'text' => $text,
+                'rules_accepted' => true
+            ])
+            ->assertSessionHasNoErrors();
 
-		$sales_request = $author->sales_request()
-			->latest()
-			->first();
+        $sales_request = $author->sales_request()
+            ->latest()
+            ->first();
 
-		$response->assertRedirect(route('authors.sales_requests.show', ['request' => $sales_request]));
+        $response->assertRedirect(route('authors.sales_requests.show', ['request' => $sales_request]));
 
-		$this->assertEquals($author->id, $sales_request->author_id);
-		$this->assertEquals($manager->id, $sales_request->manager_id);
-		$this->assertEquals($manager->user_id, $sales_request->create_user_id);
-		$this->assertEquals($text, $sales_request->text);
-		$this->assertTrue($sales_request->isSentForReview());
+        $this->assertEquals($author->id, $sales_request->author_id);
+        $this->assertEquals($manager->id, $sales_request->manager_id);
+        $this->assertEquals($manager->user_id, $sales_request->create_user_id);
+        $this->assertEquals($text, $sales_request->text);
+        $this->assertTrue($sales_request->isSentForReview());
 
-		$response = $this->actingAs($user)
-			->get(route('authors.sales_requests.show', ['request' => $sales_request->id]))
-			->assertOk()
-			->assertSeeText(__('author_sale_request.wait_for_review'))
-			->assertSeeText($text);
+        $response = $this->actingAs($user)
+            ->get(route('authors.sales_requests.show', ['request' => $sales_request->id]))
+            ->assertOk()
+            ->assertSeeText(__('author_sale_request.wait_for_review'))
+            ->assertSeeText($text);
 
-		$this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
+        $this->assertEquals(1, AuthorSaleRequest::getCachedOnModerationCount());
 
-		$this->assertEquals(2, $author->sales_request()->count());
-	}
+        $this->assertEquals(2, $author->sales_request()->count());
+    }
 
-	public function testSentAnotherRequestIfOnReview()
-	{
-		$saleRequest = AuthorSaleRequest::factory()->on_review()->create();
+    public function testSentAnotherRequestIfOnReview()
+    {
+        $saleRequest = AuthorSaleRequest::factory()->sent_for_review()->create();
 
-		$user = $saleRequest->manager->user;
-		$manager = $saleRequest->manager;
-		$author = $manager->manageable;
+        $user = $saleRequest->manager->user;
+        $manager = $saleRequest->manager;
+        $author = $manager->manageable;
 
-		$this->assertFalse($user->can('sales_request', $saleRequest->author));
-	}
+        $this->assertFalse($user->can('sales_request', $saleRequest->author));
+    }
 
-	public function testSentAnotherRequestIfStartsReview()
-	{
-		$saleRequest = AuthorSaleRequest::factory()->starts_review()->create();
+    public function testSentAnotherRequestIfStartsReview()
+    {
+        $saleRequest = AuthorSaleRequest::factory()->review_starts()->create();
 
-		$user = $saleRequest->manager->user;
-		$manager = $saleRequest->manager;
-		$author = $manager->manageable;
+        $user = $saleRequest->manager->user;
+        $manager = $saleRequest->manager;
+        $author = $manager->manageable;
 
-		$this->assertFalse($user->can('sales_request', $saleRequest->author));
-	}
+        $this->assertFalse($user->can('sales_request', $saleRequest->author));
+    }
 
-	public function testCantSentRequestIfNoCompleteBookExists()
-	{
-		$admin = User::factory()->create();
-		$admin->group->author_editor_request = true;
-		$admin->push();
+    public function testCantSentRequestIfNoCompleteBookExists()
+    {
+        $admin = User::factory()->create();
+        $admin->group->author_editor_request = true;
+        $admin->push();
 
-		$author = Author::factory()->with_author_manager()->create();
+        $author = Author::factory()->with_author_manager()->create();
 
-		$manager = $author->managers()->first();
-		$text = $this->faker->realText(100);
+        $manager = $author->managers()->first();
+        $text = $this->faker->realText(100);
 
-		$response = $this->actingAs($manager->user)
-			->get(route('authors.sales.request', ['author' => $author->id]))
-			->assertOk()
-			->assertViewHas('completeBooksCount', 0)
-			->assertSeeText(__('author_sale_request.to_send_a_request_the_author_must_have_at_least_one_finished_book'));
+        $response = $this->actingAs($manager->user)
+            ->get(route('authors.sales.request', ['author' => $author->id]))
+            ->assertOk()
+            ->assertViewHas('completeBooksCount', 0)
+            ->assertSeeText(__('author_sale_request.to_send_a_request_the_author_must_have_at_least_one_finished_book'));
 
-		$response = $this->actingAs($manager->user)
-			->post(route('authors.sales.store', ['author' => $author->id]), [
-				'text' => $text,
-				'rules_accepted' => true
-			])
-			->assertRedirect(route('authors.sales.request', ['author' => $author->id]));
+        $response = $this->actingAs($manager->user)
+            ->post(route('authors.sales.store', ['author' => $author->id]), [
+                'text' => $text,
+                'rules_accepted' => true
+            ])
+            ->assertRedirect(route('authors.sales.request', ['author' => $author->id]));
 
-		$this->assertSessionHasErrors(__('author_sale_request.to_send_a_request_the_author_must_have_at_least_one_finished_book'));
+        $this->assertSessionHasErrors(__('author_sale_request.to_send_a_request_the_author_must_have_at_least_one_finished_book'));
 
-		$sales_request = $author->sales_request()
-			->first();
+        $sales_request = $author->sales_request()
+            ->first();
 
-		$this->assertNull($sales_request);
-	}
+        $this->assertNull($sales_request);
+    }
 
-	public function testCanSendRequestIfBookClosedHttp()
-	{
-		$admin = User::factory()->create();
-		$admin->group->author_editor_request = true;
-		$admin->push();
+    public function testCanSendRequestIfBookClosedHttp()
+    {
+        $admin = User::factory()->create();
+        $admin->group->author_editor_request = true;
+        $admin->push();
 
-		$author = Author::factory()->with_author_manager()->with_complete_book()->create();
+        $author = Author::factory()->with_author_manager()->with_complete_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$book->readAccessDisable();
-		$book->create_user()->associate($manager->user);
-		$book->save();
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $book->readAccessDisable();
+        $book->create_user()->associate($manager->user);
+        $book->save();
 
-		$text = $this->faker->realText(100);
+        $text = $this->faker->realText(100);
 
-		$response = $this->actingAs($manager->user)
-			->post(route('authors.sales.store', ['author' => $author->id]), [
-				'text' => $text,
-				'rules_accepted' => true
-			])
-			->assertSessionHasNoErrors();
+        $response = $this->actingAs($manager->user)
+            ->post(route('authors.sales.store', ['author' => $author->id]), [
+                'text' => $text,
+                'rules_accepted' => true
+            ])
+            ->assertSessionHasNoErrors();
 
-		$sales_request = $author->sales_request()
-			->first();
+        $sales_request = $author->sales_request()
+            ->first();
 
-		$this->assertNotNull($sales_request);
-	}
+        $this->assertNotNull($sales_request);
+    }
 
-	public function testCantSendRequestOtherUser()
-	{
-		$author = Author::factory()->with_author_manager()->with_complete_book()->create();
+    public function testCantSendRequestOtherUser()
+    {
+        $author = Author::factory()->with_author_manager()->with_complete_book()->create();
 
-		$author2 = Author::factory()->with_author_manager()->with_complete_book()->create();
+        $author2 = Author::factory()->with_author_manager()->with_complete_book()->create();
 
-		$manager = $author2->managers->first();
-		$book = $author2->books->first();
-		$user = $manager->user;
+        $manager = $author2->managers->first();
+        $book = $author2->books->first();
+        $user = $manager->user;
 
-		$this->assertFalse($user->can('sales_request', $author));
-		$this->assertTrue($user->can('sales_request', $author2));
+        $this->assertFalse($user->can('sales_request', $author));
+        $this->assertTrue($user->can('sales_request', $author2));
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('sales_request', $author));
-		$this->assertFalse($user->can('sales_request', $author2));
-	}
+        $this->assertFalse($user->can('sales_request', $author));
+        $this->assertFalse($user->can('sales_request', $author2));
+    }
 
-	public function testViewSaleRequestsHttp()
-	{
-		$admin = User::factory()->administrator()->create();
+    public function testViewSaleRequestsHttp()
+    {
+        $admin = User::factory()->administrator()->create();
 
-		$sale_request = AuthorSaleRequest::factory()->create();
+        $sale_request = AuthorSaleRequest::factory()->create();
 
-		$this->actingAs($admin)
-			->get(route('authors.sales_requests.index'))
-			->assertOk();
+        $this->actingAs($admin)
+            ->get(route('authors.sales_requests.index'))
+            ->assertOk();
 
-		$sale_request->manager->delete();
+        $sale_request->manager->delete();
 
-		$this->actingAs($admin)
-			->get(route('authors.sales_requests.index'))
-			->assertOk();
-	}
+        $this->actingAs($admin)
+            ->get(route('authors.sales_requests.index'))
+            ->assertOk();
+    }
 
-	public function testCantDeleteAuthorIfAuthorCanSale()
-	{
-		$author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
+    public function testCantDeleteAuthorIfAuthorCanSale()
+    {
+        $author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$seller = $manager->user;
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $seller = $manager->user;
 
-		$admin = User::factory()->admin()->create();
+        $admin = User::factory()->admin()->create();
 
-		$this->assertFalse($admin->can('delete', $author));
-	}
+        $this->assertFalse($admin->can('delete', $author));
+    }
 
-	public function testSentNewSaleRequestIfOtherAcceptedExists()
-	{
-		$author = Author::factory()->with_author_manager()->with_book()->create();
+    public function testSentNewSaleRequestIfOtherAcceptedExists()
+    {
+        $author = Author::factory()->with_author_manager()->with_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $user = $manager->user;
 
-		$saleRequest = factory(AuthorSaleRequest::class)
-			->states('accepted')
-			->create([
-				'create_user_id' => $user,
-				'manager_id' => $manager->id,
-				'author_id' => $author->id
-			]);
+        $saleRequest = AuthorSaleRequest::factory()
+            ->accepted()
+            ->create([
+                'create_user_id' => $user,
+                'manager_id' => $manager->id,
+                'author_id' => $author->id
+            ]);
 
-		$this->assertTrue($user->can('sales_request', $author));
+        $this->assertTrue($user->can('sales_request', $author));
 
-		$this->actingAs($user)
-			->get(route('authors.sales.request', $author))
-			->assertOk()
-			->assertDontSeeText(__('author_sale_request.accepted'))
-			->assertSeeText(__('author_sale_request.text'));
-	}
+        $this->actingAs($user)
+            ->get(route('authors.sales.request', $author))
+            ->assertOk()
+            ->assertDontSeeText(__('author_sale_request.accepted'))
+            ->assertSeeText(__('author_sale_request.text'));
+    }
 
-	public function testCantSentRequestIfNotEnoughBooksCharactersCount()
-	{
-		$author = Author::factory()->with_author_manager()->with_book()->create();
+    public function testCantSentRequestIfNotEnoughBooksCharactersCount()
+    {
+        $author = Author::factory()->with_author_manager()->with_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $user = $manager->user;
 
-		config(['litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books' => 1000]);
+        config(['litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books' => 1000]);
 
-		$book->create_user()->associate($manager->user);
-		$book->characters_count = 999;
-		$book->save();
+        $book->create_user()->associate($manager->user);
+        $book->characters_count = 999;
+        $book->save();
 
-		$response = $this->actingAs($user)
-			->get(route('authors.sales.request', $author))
-			->assertOk()
-			->assertViewHas(['isEnoughBooksTextCharacters' => false])
-			->assertSeeText(__('author_sale_request.to_submit_a_request_your_added_books_must_have_at_least_two_characters_of_text_in_total', ['characters_count' => config('litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books')]));
+        $response = $this->actingAs($user)
+            ->get(route('authors.sales.request', $author))
+            ->assertOk()
+            ->assertViewHas(['isEnoughBooksTextCharacters' => false])
+            ->assertSeeText(__('author_sale_request.to_submit_a_request_your_added_books_must_have_at_least_two_characters_of_text_in_total',
+                ['characters_count' => config('litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books')]));
 
-		$response = $this->actingAs($user)
-			->post(route('authors.sales.store', $author))
-			->assertRedirect();
+        $response = $this->actingAs($user)
+            ->post(route('authors.sales.store', $author))
+            ->assertRedirect();
 
-		$this->assertSessionHasErrors(__('author_sale_request.please_add_another_book_to_reach_the_required_number_of_characters'));
-	}
+        $this->assertSessionHasErrors(__('author_sale_request.please_add_another_book_to_reach_the_required_number_of_characters'));
+    }
 
-	public function testCanSentRequestIfEnoughBooksCharactersCount()
-	{
-		$author = Author::factory()->with_author_manager()->with_book()->create();
+    public function testCanSentRequestIfEnoughBooksCharactersCount()
+    {
+        $author = Author::factory()->with_author_manager()->with_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $user = $manager->user;
 
-		config(['litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books' => 1000]);
+        config(['litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books' => 1000]);
 
-		$book->characters_count = 1001;
-		$book->create_user()->associate($manager->user);
-		$book->save();
+        $book->characters_count = 1001;
+        $book->create_user()->associate($manager->user);
+        $book->save();
 
-		$response = $this->actingAs($user)
-			->get(route('authors.sales.request', $author))
-			->assertOk()
-			->assertViewHas(['isEnoughBooksTextCharacters' => true])
-			->assertDontSeeText(__('author_sale_request.to_submit_a_request_your_added_books_must_have_at_least_two_characters_of_text_in_total', ['characters_count' => config('litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books')]));
+        $response = $this->actingAs($user)
+            ->get(route('authors.sales.request', $author))
+            ->assertOk()
+            ->assertViewHas(['isEnoughBooksTextCharacters' => true])
+            ->assertDontSeeText(__('author_sale_request.to_submit_a_request_your_added_books_must_have_at_least_two_characters_of_text_in_total',
+                ['characters_count' => config('litlife.the_total_number_of_characters_of_the_authors_books_in_order_to_be_allowed_to_send_a_request_for_permission_to_sell_books')]));
 
-		$response = $this->actingAs($user)
-			->post(route('authors.sales.store', $author), [
-				'text' => $this->faker->realText(10000),
-				'rules_accepted' => true
-			])
-			->assertRedirect()
-			->assertSessionHasNoErrors();
+        $response = $this->actingAs($user)
+            ->post(route('authors.sales.store', $author), [
+                'text' => $this->faker->realText(10000),
+                'rules_accepted' => true
+            ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
 
-		$sales_request = $author->sales_request()
-			->first();
+        $sales_request = $author->sales_request()
+            ->first();
 
-		$this->assertNotNull($sales_request);
-	}
+        $this->assertNotNull($sales_request);
+    }
 
-	public function testSeeYourAuthorPageMustHaveAtLeastOneBookAddedByYouError()
-	{
-		$author = Author::factory()->with_author_manager()->with_book()->create();
+    public function testSeeYourAuthorPageMustHaveAtLeastOneBookAddedByYouError()
+    {
+        $author = Author::factory()->with_author_manager()->with_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$user = $manager->user;
-		$book->ready_status = 'complete';
-		$book->save();
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $user = $manager->user;
+        $book->ready_status = 'complete';
+        $book->save();
 
-		$response = $this->actingAs($user)
-			->get(route('authors.sales.request', $author))
-			->assertOk()
-			->assertViewHas(['authorHasBooksAddedByAuthUser' => false])
-			->assertSeeText(__('author_sale_request.your_author_page_must_have_at_least_one_book_added_by_you'));
+        $response = $this->actingAs($user)
+            ->get(route('authors.sales.request', $author))
+            ->assertOk()
+            ->assertViewHas(['authorHasBooksAddedByAuthUser' => false])
+            ->assertSeeText(__('author_sale_request.your_author_page_must_have_at_least_one_book_added_by_you'));
 
-		$response = $this->actingAs($user)
-			->post(route('authors.sales.store', $author), [
-				'text' => $this->faker->realText(10000),
-				'rules_accepted' => true
-			])
-			->assertRedirect();
+        $response = $this->actingAs($user)
+            ->post(route('authors.sales.store', $author), [
+                'text' => $this->faker->realText(10000),
+                'rules_accepted' => true
+            ])
+            ->assertRedirect();
 
-		$this->assertSessionHasErrors(__('author_sale_request.your_author_page_must_have_at_least_one_book_added_by_you'));
-	}
+        $this->assertSessionHasErrors(__('author_sale_request.your_author_page_must_have_at_least_one_book_added_by_you'));
+    }
 }

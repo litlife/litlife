@@ -20,19 +20,19 @@ use Illuminate\Support\Facades\Cache;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $authors
- * @property-read User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $authors
+ * @property-read \App\User $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat newQuery()
  * @method static Builder|AuthorRepeat onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereTime($value)

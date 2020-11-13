@@ -1,16 +1,32 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\UserNote::class, function (Faker $faker) {
+use App\User;
+use App\UserNote;
 
-    $text = $faker->realText(300);
+class UserNoteFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserNote::class;
 
-    return [
-        'create_user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'text' => $text,
-        'bb_text' => $text
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $text = $this->faker->realText(300);
+
+        return [
+            'create_user_id' => User::factory(),
+            'text' => $text,
+            'bb_text' => $text
+        ];
+    }
+}

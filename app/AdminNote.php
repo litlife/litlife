@@ -21,20 +21,20 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $admin_noteable
- * @property-read User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $admin_noteable
+ * @property-read \App\User|null $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newQuery()
  * @method static Builder|AdminNote onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereText($value)

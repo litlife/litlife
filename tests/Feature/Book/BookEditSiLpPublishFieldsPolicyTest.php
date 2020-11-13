@@ -7,33 +7,33 @@ use Tests\TestCase;
 
 class BookEditSiLpPublishFieldsPolicyTest extends TestCase
 {
-	public function testCantIfSiBook()
-	{
-		$author = Author::factory()->with_author_manager()->with_si_book()->create();
+    public function testCantIfSiBook()
+    {
+        $author = Author::factory()->with_author_manager()->with_si_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$user = $manager->user;
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $user = $manager->user;
 
-		$this->assertFalse($user->can('editSiLpPublishFields', $book));
-	}
+        $this->assertFalse($user->can('editSiLpPublishFields', $book));
+    }
 
-	public function testCanIfNotSiNotLpNotPublished()
-	{
-		$author = Author::factory()->with_author_manager()->with_book()->create();
+    public function testCanIfNotSiNotLpNotPublished()
+    {
+        $author = Author::factory()->with_author_manager()->with_book()->create();
 
-		$manager = $author->managers()->first();
-		$book = $author->books()->first();
-		$book->is_si = false;
-		$book->is_lp = false;
-		$book->pi_pub = null;
-		$book->pi_city = null;
-		$book->pi_year = null;
-		$book->pi_isbn = null;
-		$book->save();
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $book->is_si = false;
+        $book->is_lp = false;
+        $book->pi_pub = null;
+        $book->pi_city = null;
+        $book->pi_year = null;
+        $book->pi_isbn = null;
+        $book->save();
 
-		$user = $manager->user;
+        $user = $manager->user;
 
-		$this->assertTrue($user->can('editSiLpPublishFields', $book));
-	}
+        $this->assertTrue($user->can('editSiLpPublishFields', $book));
+    }
 }

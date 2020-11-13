@@ -19,8 +19,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property int $id
  * @property string $user_updated_at
- * @property-read User|null $first_user
- * @property-read User|null $second_user
+ * @property-read \App\User|null $first_user
+ * @property-read \App\User|null $second_user
  * @method static Builder|UserRelation friends()
  * @method static Builder|UserRelation friendsAndSubscribers()
  * @method static Builder|UserRelation newModelQuery()

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $month
  * @property int $week
  * @property int $day
- * @property-read Book $book
+ * @property-read \App\Book $book
  * @method static Builder|ViewCount newModelQuery()
  * @method static Builder|ViewCount newQuery()
  * @method static Builder|Model orderByField($column, $ids)

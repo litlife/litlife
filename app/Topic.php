@@ -36,15 +36,15 @@ use Illuminate\Support\Carbon;
  * @property string|null $last_post_created_at
  * @property bool $archived
  * @property int|null $label
- * @property-read UserTopicSubscription|null $auth_user_subscription
- * @property-read User $create_user
- * @property-read Forum $forum
- * @property-read Post|null $last_post
- * @property-read \Illuminate\Database\Eloquent\Collection|Post[] $posts
- * @property-read \Illuminate\Database\Eloquent\Collection|Post[] $postsOrderedBySetting
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $subscribed_users
- * @property-read Post|null $top_post
- * @property-read UserTopicSubscription|null $user_subscriptions
+ * @property-read \App\UserTopicSubscription|null $auth_user_subscription
+ * @property-read \App\User $create_user
+ * @property-read \App\Forum $forum
+ * @property-read \App\Post|null $last_post
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Post[] $posts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Post[] $postsOrderedBySetting
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $subscribed_users
+ * @property-read \App\Post|null $top_post
+ * @property-read \App\UserTopicSubscription|null $user_subscriptions
  * @method static \Illuminate\Database\Eloquent\Builder|Topic any()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic archived()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic closed()
@@ -54,13 +54,13 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newQuery()
  * @method static Builder|Topic onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic opened()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostAscNullsFirst()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostDescNullsLast()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostNullsLast()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderForIdeaForum()
- * @method static \Illuminate\Database\Eloquent\Builder|Topic public ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic public()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic query()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic trgmSearch($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic unarchived()
@@ -69,7 +69,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereClosed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereForumId($value)

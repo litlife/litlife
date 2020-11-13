@@ -7,5 +7,5 @@ use App\Traits\NestedItems;
 
 class TestModel extends Model
 {
-	use NestedItems;
+    use NestedItems;
 }

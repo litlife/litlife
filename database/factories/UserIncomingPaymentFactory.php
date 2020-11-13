@@ -1,121 +1,153 @@
 <?php
 
-/* @var $factory Factory */
+namespace Database\Factories;
 
+use App\User;
 use App\UserIncomingPayment;
 use App\UserPaymentTransaction;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserIncomingPayment::class, function (Faker $faker) {
+class UserIncomingPaymentFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserIncomingPayment::class;
 
-    $payment_types = ['mc', 'sms', 'card', 'webmoney', 'qiwi', 'paypal', 'liqpay', 'alfaClick', 'cash', 'applepay'];
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $item_types = ['mc', 'sms', 'card', 'webmoney', 'qiwi', 'paypal', 'liqpay', 'alfaClick', 'cash', 'applepay'];
 
-    return [
-        'payment_type' => $payment_types[array_rand($payment_types)],
-        'user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'ip' => $faker->ipv4,
-        'currency' => 'RUB',
-        'payment_aggregator' => 'unitpay',
-        'params' => []
-    ];
-});
+        return [
+            'payment_type' => $item_types[array_rand($item_types)],
+            'user_id' => User::factory(),
+            'ip' => $this->faker->ipv4,
+            'currency' => 'RUB',
+            'payment_aggregator' => 'unitpay',
+            'params' => []
+        ];
+    }
 
-$factory->afterCreatingState(App\UserIncomingPayment::class, 'wait', function ($payment, $faker) {
+    public function wait()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $transaction = factory(UserPaymentTransaction::class)
-        ->make([
-            'user_id' => $payment['user_id'],
-            'sum' => rand(50, 100)
-        ]);
-    $transaction->typeDeposit();
-    $transaction->statusWait();
+        })->afterCreating(function ($item) {
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item['user_id'],
+                    'sum' => rand(50, 100)
+                ]);
+            $transaction->typeDeposit();
+            $transaction->statusWait();
 
-    $payment->transaction()->save($transaction);
+            $item->transaction()->save($transaction);
 
-    $payment->user->balance(true);
-});
+            $item->user->balance(true);
+        });
+    }
 
-$factory->afterCreatingState(App\UserIncomingPayment::class, 'processing', function ($payment, $faker) {
+    public function processing()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $payment->payment_id = rand(100, 1000000);
-    $payment->save();
+        })->afterCreating(function ($item) {
+            $item->payment_id = rand(100, 1000000);
+            $item->save();
 
-    $transaction = factory(UserPaymentTransaction::class)
-        ->make([
-            'user_id' => $payment['user_id'],
-            'sum' => rand(50, 100)
-        ]);
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item['user_id'],
+                    'sum' => rand(50, 100)
+                ]);
 
-    $transaction->typeDeposit();
-    $transaction->statusProcessing();
-    $payment->transaction()->save($transaction);
-});
+            $transaction->typeDeposit();
+            $transaction->statusProcessing();
+            $item->transaction()->save($transaction);
+        });
+    }
 
-$factory->afterCreatingState(App\UserIncomingPayment::class, 'unitpay_success', function ($payment, $faker) {
+    public function unitpay_success()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $payment->payment_id = rand(100, 1000000);
-    $payment->save();
+        })->afterCreating(function ($item) {
+            $item->payment_id = rand(100, 1000000);
+            $item->save();
 
-    $transaction = factory(UserPaymentTransaction::class)
-        ->make([
-            'user_id' => $payment['user_id'],
-            'sum' => rand(50, 100)
-        ]);
-    $transaction->typeDeposit();
-    $transaction->statusSuccess();
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item['user_id'],
+                    'sum' => rand(50, 100)
+                ]);
+            $transaction->typeDeposit();
+            $transaction->statusSuccess();
 
-    $payment->transaction()->save($transaction);
+            $item->transaction()->save($transaction);
 
-    $payment->params = [
-        'result' => [
-            'unitpayId' => $payment->payment_id,
-            'projectId' => config('unitpay.project_id'),
-            'account' => $payment->id,
-            'payerSum' => $payment->sum + 10,
-            'payerCurrency' => 'RUB',
-            'profit' => $payment->sum,
-            'paymentType' => $payment->payment_type,
-            'orderSum' => $payment->sum,
-            'orderCurrency' => 'RUB',
-            'date' => now()->toDateTimeString(),
-            'purse' => '1234123412341234',
-            'test' => '0'
-        ]
-    ];
-    $payment->save();
+            $item->params = [
+                'result' => [
+                    'unitpayId' => $item->payment_id,
+                    'projectId' => config('unitpay.project_id'),
+                    'account' => $item->id,
+                    'payerSum' => $item->sum + 10,
+                    'payerCurrency' => 'RUB',
+                    'profit' => $item->sum,
+                    'paymentType' => $item->payment_type,
+                    'orderSum' => $item->sum,
+                    'orderCurrency' => 'RUB',
+                    'date' => now()->toDateTimeString(),
+                    'purse' => '1234123412341234',
+                    'test' => '0'
+                ]
+            ];
+            $item->save();
 
-    $payment->user->balance(true);
-});
+            $item->user->balance(true);
+        });
+    }
 
-$factory->afterCreatingState(App\UserIncomingPayment::class, 'error', function ($payment, $faker) {
+    public function error()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $payment->payment_id = rand(100, 1000000);
-    $payment->save();
+        })->afterCreating(function ($item) {
+            $item->payment_id = rand(100, 1000000);
+            $item->save();
 
-    $transaction = factory(UserPaymentTransaction::class)
-        ->make([
-            'user_id' => $payment['user_id'],
-            'sum' => rand(50, 100)
-        ]);
-    $transaction->typeDeposit();
-    $transaction->statusError();
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item['user_id'],
+                    'sum' => rand(50, 100)
+                ]);
+            $transaction->typeDeposit();
+            $transaction->statusError();
 
-    $payment->transaction()->save($transaction);
-});
+            $item->transaction()->save($transaction);
+        });
+    }
 
-$factory->afterCreatingState(App\UserIncomingPayment::class, 'canceled', function ($payment, $faker) {
+    public function canceled()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $transaction = factory(UserPaymentTransaction::class)
-        ->make([
-            'user_id' => $payment['user_id'],
-            'sum' => rand(50, 100)
-        ]);
+        })->afterCreating(function ($item) {
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item['user_id'],
+                    'sum' => rand(50, 100)
+                ]);
 
-    $transaction->typeDeposit();
-    $transaction->statusCanceled();
+            $transaction->typeDeposit();
+            $transaction->statusCanceled();
 
-    $payment->transaction()->save($transaction);
-});
+            $item->transaction()->save($transaction);
+        });
+    }
+}

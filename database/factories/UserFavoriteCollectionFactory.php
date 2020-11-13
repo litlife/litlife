@@ -1,13 +1,25 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\UserFavoriteCollection;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserFavoriteCollection::class, function (Faker $faker) {
-    return [
-        //
-    ];
-});
+class UserFavoriteCollectionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserFavoriteCollection::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+
+    }
+}

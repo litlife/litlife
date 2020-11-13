@@ -9,67 +9,67 @@ use Tests\TestCase;
 
 class UserOnlineTest extends TestCase
 {
-	public function testDripOnline()
-	{
-		$this->withMiddleware(RefreshUserLastActivity::class);
+    public function testDripOnline()
+    {
+        $this->withMiddleware(RefreshUserLastActivity::class);
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('profile', ['user' => $user->id]))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('profile', ['user' => $user->id]))
+            ->assertOk();
 
-		$now = now();
+        $now = now();
 
-		$this->assertTrue($user->fresh()->isOnline());
+        $this->assertTrue($user->fresh()->isOnline());
 
-		for ($a = 0; $a < 5; $a++) {
-			$now = $now->addSeconds(config('genealabs-laravel-caffeine.drip-interval') / 1000)
-				->addSecond();
+        for ($a = 0; $a < 5; $a++) {
+            $now = $now->addSeconds(config('genealabs-laravel-caffeine.drip-interval') / 1000)
+                ->addSecond();
 
-			Carbon::setTestNow($now);
+            Carbon::setTestNow($now);
 
-			$this->get(route('drip'))
-				->assertStatus(204);
+            $this->get(route('drip'))
+                ->assertStatus(204);
 
-			$this->assertTrue($user->fresh()->isOnline());
-		}
+            $this->assertTrue($user->fresh()->isOnline());
+        }
 
-		$now = $now->addMinutes(config('litlife.user_last_activity'))
-			->subSeconds(10);
+        $now = $now->addMinutes(config('litlife.user_last_activity'))
+            ->subSeconds(10);
 
-		Carbon::setTestNow($now);
+        Carbon::setTestNow($now);
 
-		$this->get(route('profile', ['user' => $user->id]))
-			->assertOk();
+        $this->get(route('profile', ['user' => $user->id]))
+            ->assertOk();
 
-		$now = $now->addSeconds(config('genealabs-laravel-caffeine.drip-interval') / 1000);
+        $now = $now->addSeconds(config('genealabs-laravel-caffeine.drip-interval') / 1000);
 
-		Carbon::setTestNow($now);
+        Carbon::setTestNow($now);
 
-		$this->get(route('drip'))
-			->assertStatus(204);
+        $this->get(route('drip'))
+            ->assertStatus(204);
 
-		$this->assertTrue($user->fresh()->isOnline());
-	}
+        $this->assertTrue($user->fresh()->isOnline());
+    }
 
-	public function testOfflineAfterActivityExpired()
-	{
-		$user = User::factory()->create();
+    public function testOfflineAfterActivityExpired()
+    {
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('profile', ['user' => $user->id]))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('profile', ['user' => $user->id]))
+            ->assertOk();
 
-		$now = now();
+        $now = now();
 
-		$this->assertTrue($user->fresh()->isOnline());
+        $this->assertTrue($user->fresh()->isOnline());
 
-		$now = $now->addMinutes(config('litlife.user_last_activity'))
-			->addSeconds(5);
+        $now = $now->addMinutes(config('litlife.user_last_activity'))
+            ->addSeconds(5);
 
-		Carbon::setTestNow($now);
+        Carbon::setTestNow($now);
 
-		$this->assertFalse($user->fresh()->isOnline());
-	}
+        $this->assertFalse($user->fresh()->isOnline());
+    }
 }

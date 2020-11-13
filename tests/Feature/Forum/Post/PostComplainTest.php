@@ -8,15 +8,15 @@ use Tests\TestCase;
 
 class PostComplainTest extends TestCase
 {
-	public function testCanComplain()
-	{
-		$user = User::factory()->create();
-		$user->group->complain = true;
-		$user->push();
-		$user->refresh();
+    public function testCanComplain()
+    {
+        $user = User::factory()->create();
+        $user->group->complain = true;
+        $user->push();
+        $user->refresh();
 
-		$post = Post::factory()->create();
+        $post = Post::factory()->create();
 
-		$this->assertTrue($user->can('complain', $post));
-	}
+        $this->assertTrue($user->can('complain', $post));
+    }
 }

@@ -4,7 +4,7 @@ namespace App;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 
 /**
  * App\AuthorAverageRatingForPeriod
@@ -16,10 +16,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $quarter_rating
  * @property int|null $year_rating
  * @property int|null $all_rating
- * @property-read Author $author
+ * @property-read \App\Author $author
  * @method static Builder|AuthorAverageRatingForPeriod newModelQuery()
  * @method static Builder|AuthorAverageRatingForPeriod newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorAverageRatingForPeriod query()
+ * @method static Builder|Model void()
  * @method static Builder|AuthorAverageRatingForPeriod whereAllRating($value)
  * @method static Builder|AuthorAverageRatingForPeriod whereAuthorId($value)
  * @method static Builder|AuthorAverageRatingForPeriod whereDayRating($value)

@@ -9,29 +9,29 @@ use Tests\TestCase;
 
 class RefreshAllAuthorsBiographyTest extends TestCase
 {
-	public function testCommand()
-	{
-		$text = 'текст http://example.com текст';
+    public function testCommand()
+    {
+        $text = 'текст http://example.com текст';
 
-		$authorBiography = AuthorBiography::factory()->create(['text' => $text]);
+        $authorBiography = AuthorBiography::factory()->create(['text' => $text]);
 
-		$author = $authorBiography->author;
+        $author = $authorBiography->author;
 
-		Artisan::call('refresh:all_authors_biography', ['latest_id' => $author->id]);
+        Artisan::call('refresh:all_authors_biography', ['latest_id' => $author->id]);
 
-		$authorBiography->refresh();
+        $authorBiography->refresh();
 
-		$this->assertEquals('<p>текст <a href="/away?url=http%3A%2F%2Fexample.com">http://example.com</a> текст</p>', $authorBiography->text);
-	}
+        $this->assertEquals('<p>текст <a href="/away?url=http%3A%2F%2Fexample.com">http://example.com</a> текст</p>', $authorBiography->text);
+    }
 
-	public function testAuthorWithoutBiography()
-	{
-		$author = Author::factory()->create();
+    public function testAuthorWithoutBiography()
+    {
+        $author = Author::factory()->create();
 
-		Artisan::call('refresh:all_authors_biography', ['latest_id' => $author->id]);
+        Artisan::call('refresh:all_authors_biography', ['latest_id' => $author->id]);
 
-		$author->refresh();
+        $author->refresh();
 
-		$this->assertNull($author->biography);
-	}
+        $this->assertNull($author->biography);
+    }
 }

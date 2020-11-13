@@ -7,19 +7,19 @@ use Tests\TestCase;
 
 class UserEmailIsValidMethodTest extends TestCase
 {
-	public function testValid()
-	{
-		$mail = new UserEmail();
-		$mail->email = 'test@test.com';
+    public function testValid()
+    {
+        $mail = new UserEmail();
+        $mail->email = 'test@test.com';
 
-		$this->assertTrue($mail->isValid());
-	}
+        $this->assertTrue($mail->isValid());
+    }
 
-	public function testIsInvalid()
-	{
-		$mail = new UserEmail();
-		$mail->email = 'test.@test.com';
+    public function testIsInvalid()
+    {
+        $mail = new UserEmail();
+        $mail->email = 'test.@test.com';
 
-		$this->assertFalse($mail->isValid());
-	}
+        $this->assertFalse($mail->isValid());
+    }
 }

@@ -27,17 +27,17 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property-read mixed $balance_after
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $operable
- * @property-read User $user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $operable
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction deposit()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction newQuery()
  * @method static Builder|UserPaymentTransaction onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction processed()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction wait()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction whereBalanceBefore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction whereCreatedAt($value)

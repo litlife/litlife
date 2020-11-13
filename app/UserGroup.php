@@ -138,16 +138,16 @@ use Illuminate\Support\Str;
  * @property bool $send_a_support_question Может ли пользователь написать в поддержку
  * @property bool $reply_to_support_service Может ли пользователь отвечать в службе поддержки
  * @property-read mixed $rules
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup disableCache()
  * @method static CachedBuilder|UserGroup newModelQuery()
  * @method static CachedBuilder|UserGroup newQuery()
  * @method static Builder|UserGroup onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static CachedBuilder|UserGroup query()
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup show()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereAccessSendPrivateMessagesAvoidPrivacyAndBlacklists($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereAccessToClosedBooks($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserGroup whereAchievement($value)

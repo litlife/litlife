@@ -17,8 +17,8 @@ use Illuminate\Support\Carbon;
  * @property int $comission_sell_book
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $referred_by_user
- * @property-read User $referred_user
+ * @property-read \App\User $referred_by_user
+ * @property-read \App\User $referred_user
  * @method static Builder|ReferredUser newModelQuery()
  * @method static Builder|ReferredUser newQuery()
  * @method static Builder|Model orderByField($column, $ids)

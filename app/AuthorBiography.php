@@ -21,15 +21,15 @@ use Stevebauman\Purify\Facades\Purify;
  * @property Carbon|null $user_edited_at Время когда пользователь отредактировал
  * @property int $id
  * @property bool $external_images_downloaded Скачаны ли внешние изображения
- * @property-read Author|null $author
- * @property-read User|null $edit_user
+ * @property-read \App\Author|null $author
+ * @property-read \App\User|null $edit_user
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography newQuery()
  * @method static Builder|AuthorBiography onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereDeletedAt($value)

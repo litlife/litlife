@@ -17,9 +17,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $create_user_id
- * @property-read Achievement|null $achievement
- * @property-read User $create_user
- * @property-read User $user
+ * @property-read \App\Achievement|null $achievement
+ * @property-read \App\User $create_user
+ * @property-read \App\User $user
  * @method static Builder|AchievementUser newModelQuery()
  * @method static Builder|AchievementUser newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AchievementUser whereAchievementId($value)
  * @method static Builder|AchievementUser whereCreateUserId($value)
  * @method static Builder|AchievementUser whereCreatedAt($value)
- * @method static Builder|AchievementUser whereCreator(User $user)
+ * @method static Builder|AchievementUser whereCreator(\App\User $user)
  * @method static Builder|AchievementUser whereId($value)
  * @method static Builder|AchievementUser whereUpdatedAt($value)
  * @method static Builder|AchievementUser whereUserId($value)

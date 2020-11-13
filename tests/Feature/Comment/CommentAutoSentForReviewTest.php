@@ -11,141 +11,143 @@ use Tests\TestCase;
 
 class CommentAutoSentForReviewTest extends TestCase
 {
-	public function testSentForReviewIfFoundCheckWordInTextIfString()
-	{
-		$book = Book::factory()->accepted()->create();
+    public function testSentForReviewIfFoundCheckWordInTextIfString()
+    {
+        $book = Book::factory()->accepted()->create();
 
-		$user = User::factory()->create();
-		$user->group->add_comment = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->add_comment = true;
+        $user->push();
 
-		$checkWord = Str::random(8) . ' ' . mb_strtolower(Str::random(8));
+        $checkWord = Str::random(8).' '.mb_strtolower(Str::random(8));
 
-		Variable::updateOrCreate(
-			['name' => 'settings'],
-			['value' => ['check_words_in_comments' => $checkWord]]
-		);
-		/*
-				$settings = Variable::where('name', 'settings')->first();
-				dd($settings->value);
-		*/
-		$text = $this->faker->realText(100) . ' ' . mb_strtoupper($checkWord) . ' ' . $this->faker->realText(100);
+        Variable::updateOrCreate(
+            ['name' => 'settings'],
+            ['value' => ['check_words_in_comments' => $checkWord]]
+        );
+        /*
+                $settings = Variable::where('name', 'settings')->first();
+                dd($settings->value);
+        */
+        $text = $this->faker->realText(100).' '.mb_strtoupper($checkWord).' '.$this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
-				['bb_text' => $text])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
+                ['bb_text' => $text])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$book->refresh();
+        $book->refresh();
 
-		$comment = $book->comments()->first();
+        $comment = $book->comments()->first();
 
-		$this->assertTrue($comment->isSentForReview());
-	}
+        $this->assertTrue($comment->isSentForReview());
+    }
 
-	public function testSentForReviewIfFoundCheckWordInText()
-	{
-		$book = Book::factory()->accepted()->create();
+    public function testSentForReviewIfFoundCheckWordInText()
+    {
+        $book = Book::factory()->accepted()->create();
 
-		$user = User::factory()->create();
-		$user->group->add_comment = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->add_comment = true;
+        $user->push();
 
-		$checkWord = Str::random(8) . ' ' . mb_strtolower(Str::random(8));
+        $checkWord = Str::random(8).' '.mb_strtolower(Str::random(8));
 
-		Variable::updateOrCreate(
-			['name' => 'settings'],
-			['value' => ['check_words_in_comments' => [$checkWord]]]
-		);
-		/*
-				$settings = Variable::where('name', 'settings')->first();
-				dd($settings->value);
-		*/
-		$text = $this->faker->realText(100) . ' ' . mb_strtoupper($checkWord) . ' ' . $this->faker->realText(100);
+        Variable::updateOrCreate(
+            ['name' => 'settings'],
+            ['value' => ['check_words_in_comments' => [$checkWord]]]
+        );
+        /*
+                $settings = Variable::where('name', 'settings')->first();
+                dd($settings->value);
+        */
+        $text = $this->faker->realText(100).' '.mb_strtoupper($checkWord).' '.$this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
-				['bb_text' => $text])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
+                ['bb_text' => $text])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$book->refresh();
+        $book->refresh();
 
-		$comment = $book->comments()->first();
+        $comment = $book->comments()->first();
 
-		$this->assertTrue($comment->isSentForReview());
-	}
+        $this->assertTrue($comment->isSentForReview());
+    }
 
-	public function testStoreOkIfNoSettingExists()
-	{
-		$book = Book::factory()->accepted()->create();
+    public function testStoreOkIfNoSettingExists()
+    {
+        $book = Book::factory()->accepted()->create();
 
-		$user = User::factory()->create();
-		$user->group->add_comment = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->add_comment = true;
+        $user->push();
 
-		Variable::where('name', 'settings')->delete();
+        Variable::where('name', 'settings')->delete();
 
-		$text = $this->faker->realText(100);
+        $text = $this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
-				['bb_text' => $text])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
+                ['bb_text' => $text])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$book->refresh();
+        $book->refresh();
 
-		$comment = $book->comments()->first();
+        $comment = $book->comments()->first();
 
-		$this->assertNotNull($comment);
-	}
+        $this->assertNotNull($comment);
+    }
 
-	public function testSentForReviewIfFoundEmail()
-	{
-		$book = Book::factory()->accepted()->create();
+    public function testSentForReviewIfFoundEmail()
+    {
+        $book = Book::factory()->accepted()->create();
 
-		$user = User::factory()->create();
-		$user->group->add_comment = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->add_comment = true;
+        $user->push();
 
-		$text = $this->faker->realText(100) . ' ' . $this->faker->email;
+        $text = $this->faker->realText(100).' '.$this->faker->email;
 
-		$this->actingAs($user)
-			->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
-				['bb_text' => $text])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $book->id]),
+                ['bb_text' => $text])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$book->refresh();
+        $book->refresh();
 
-		$comment = $book->comments()->first();
+        $comment = $book->comments()->first();
 
-		$this->assertTrue($comment->isSentForReview());
-	}
+        $this->assertTrue($comment->isSentForReview());
+    }
 
-	public function testAcceptedIfAfterUpdateNoFoundEmail()
-	{
-		$comment = Comment::factory()->sent_for_review()->create();
+    public function testAcceptedIfAfterUpdateNoFoundEmail()
+    {
+        $comment = Comment::factory()
+            ->sent_for_review()
+            ->create(['bb_text' => $this->faker->realText(100).' '.$this->faker->email]);
 
-		$user = $comment->create_user;
-		$user->group->comment_self_edit_only_time = true;
-		$user->push();
-		$user->refresh();
+        $user = $comment->create_user;
+        $user->group->comment_self_edit_only_time = true;
+        $user->push();
+        $user->refresh();
 
-		$this->assertTrue($comment->isSentForReview());
+        $this->assertTrue($comment->isSentForReview());
 
-		$this->actingAs($user)
-			->patch(route('comments.update', ['comment' => $comment]),
-				['bb_text' => $this->faker->realText(100)])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('comments.update', ['comment' => $comment]),
+                ['bb_text' => $this->faker->realText(100)])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertTrue($comment->isAccepted());
-	}
+        $this->assertTrue($comment->isAccepted());
+    }
 }
 
 

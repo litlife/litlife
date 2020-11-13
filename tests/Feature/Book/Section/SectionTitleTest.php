@@ -8,349 +8,349 @@ use Tests\TestCase;
 
 class SectionTitleTest extends TestCase
 {
-	public function testSetNameUntitledIfEmptyContent()
-	{
-		$book = Book::factory()->create();
+    public function testSetNameUntitledIfEmptyContent()
+    {
+        $book = Book::factory()->create();
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->book_id = $book->id;
-		$section->save();
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->book_id = $book->id;
+        $section->save();
 
-		$this->assertEquals(__('section.untitled'), $section->title);
-	}
+        $this->assertEquals(__('section.untitled'), $section->title);
+    }
 
-	public function testRemoveTitleFromTextV1()
-	{
-		$title = $this->faker->realText(50);
+    public function testRemoveTitleFromTextV1()
+    {
+        $title = $this->faker->realText(50);
 
-		$content = '<p>' . $this->faker->realText(200) . '</p>';
+        $content = '<p>'.$this->faker->realText(200).'</p>';
 
-		$section = Section::factory()->create([
-				'title' => $title,
-				'content' => '<h1 class="u-title">' . $title . '</h1>' . $content
-			])->fresh();
+        $section = Section::factory()->create([
+            'title' => $title,
+            'content' => '<h1 class="u-title">'.$title.'</h1>'.$content
+        ])->fresh();
 
-		$this->assertEquals($content, $section->getContent());
-	}
+        $this->assertEquals($content, $section->getContent());
+    }
 
-	public function testRemoveTitleFromTextV2()
-	{
-		$title = $this->faker->realText(50);
+    public function testRemoveTitleFromTextV2()
+    {
+        $title = $this->faker->realText(50);
 
-		$content = '<p>' . $this->faker->realText(200) . '</p>';
+        $content = '<p>'.$this->faker->realText(200).'</p>';
 
-		$section = Section::factory()->create([
-				'title' => $title,
-				'content' => '<h1>' . $title . '</h1>' . $content
-			])->fresh();
+        $section = Section::factory()->create([
+            'title' => $title,
+            'content' => '<h1>'.$title.'</h1>'.$content
+        ])->fresh();
 
-		$this->assertEquals($content, $section->getContent());
-	}
+        $this->assertEquals($content, $section->getContent());
+    }
 
-	public function testRemoveTitleFromTextV3()
-	{
-		$title = $this->faker->realText(50);
+    public function testRemoveTitleFromTextV3()
+    {
+        $title = $this->faker->realText(50);
 
-		$content = '<p>текст</p><p>текст</p><p>текст</p><p>текст</p>' . '<h1>' . $title . '</h1>';
+        $content = '<p>текст</p><p>текст</p><p>текст</p><p>текст</p>'.'<h1>'.$title.'</h1>';
 
-		$section = Section::factory()->create([
-				'title' => $title,
-				'content' => '<h1>' . $title . '</h1>' . $content
-			])->fresh();
+        $section = Section::factory()->create([
+            'title' => $title,
+            'content' => '<h1>'.$title.'</h1>'.$content
+        ])->fresh();
 
-		$this->assertEquals($content, $section->getContent());
-	}
+        $this->assertEquals($content, $section->getContent());
+    }
 
-	public function testAutoTitleIfTagStrongInsideTagP()
-	{
-		$book = Book::factory()->create();
+    public function testAutoTitleIfTagStrongInsideTagP()
+    {
+        $book = Book::factory()->create();
 
-		$content = '
+        $content = '
 		<p><b>Название   главы</b></p>
 
 <div class="u-empty-line">&nbsp;</div>
 <p>текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->content = $content;
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->content = $content;
 
-		$this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('Название главы', $section->title);
 
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
+    }
 
-	public function testAutoTitleForHeaderTags()
-	{
-		$book = Book::factory()->create();
+    public function testAutoTitleForHeaderTags()
+    {
+        $book = Book::factory()->create();
 
-		$content = '
+        $content = '
 		<h6>Название   главы</h6>
 
 <div class="u-empty-line">&nbsp;</div>
 <p>текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->content = $content;
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->content = $content;
 
-		$this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('Название главы', $section->title);
 
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
+    }
 
-	public function testDontCreateTitleIfParagraph()
-	{
-		$book = Book::factory()->create();
+    public function testDontCreateTitleIfParagraph()
+    {
+        $book = Book::factory()->create();
 
-		$content = '
+        $content = '
 		<p>Название главы</p>
 <div class="u-empty-line">&nbsp;</div>
 <p>текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->content = $content;
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->content = $content;
 
-		$this->assertNull($section->title);
-	}
+        $this->assertNull($section->title);
+    }
 
-	public function testTitleId()
-	{
-		$section = Section::factory()->create();
-		$section->setTitleId('title2');
-		$section->content = 'текст';
-		$section->save();
-		$section->refresh();
+    public function testTitleId()
+    {
+        $section = Section::factory()->create();
+        $section->setTitleId('title2');
+        $section->content = 'текст';
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('u-title2', $section->getTitleId());
+        $this->assertEquals('u-title2', $section->getTitleId());
 
-		$page = $section->pages()->first();
+        $page = $section->pages()->first();
 
-		$this->assertEquals(['u-section-1', 'u-title2'], $page->getHtmlIds());
-	}
+        $this->assertEquals(['u-section-1', 'u-title2'], $page->getHtmlIds());
+    }
 
-	public function testRemoveH6TagIfItMatchesTheChapterTitle()
-	{
-		$book = Book::factory()->create();
+    public function testRemoveH6TagIfItMatchesTheChapterTitle()
+    {
+        $book = Book::factory()->create();
 
-		$content = '
+        $content = '
 		<h6 id="title"> Название    главы</h6>
 
 <div class="u-empty-line">&nbsp;</div>
 <p>текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->title = '  Название главы';
-		$section->content = $content;
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->title = '  Название главы';
+        $section->content = $content;
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
-		$this->assertEquals('u-title', $section->getTitleId());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
+        $this->assertEquals('u-title', $section->getTitleId());
+    }
 
-	public function testRemoveH1TagIfItMatchesTheChapterTitle()
-	{
-		$book = Book::factory()->create();
+    public function testRemoveH1TagIfItMatchesTheChapterTitle()
+    {
+        $book = Book::factory()->create();
 
-		$content = '
+        $content = '
 		<h1 id="title">  Название главы  </h1>
 
 <div class="u-empty-line">&nbsp;</div>
 <p>текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->title = 'Название главы  ';
-		$section->content = $content;
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->title = 'Название главы  ';
+        $section->content = $content;
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
-		$this->assertEquals('u-title', $section->getTitleId());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
+        $this->assertEquals('u-title', $section->getTitleId());
+    }
 
-	public function testRemovePTagIfItMatchesTheChapterTitle()
-	{
-		$book = Book::factory()->create();
+    public function testRemovePTagIfItMatchesTheChapterTitle()
+    {
+        $book = Book::factory()->create();
 
-		$content = '
+        $content = '
 		<p>  Название главы  </p>
 
 <div class="u-empty-line">&nbsp;</div>
 <p>текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->title = '  Название главы';
-		$section->content = $content;
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->title = '  Название главы';
+        $section->content = $content;
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
-		$this->assertEquals(null, $section->getTitleId());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('<div class="u-empty-line"> </div><p>текст второй главы</p>', $section->getContent());
+        $this->assertEquals(null, $section->getTitleId());
+    }
 
-	public function testDontRemovePTagIfItMatchesTheChapterTitleWithId()
-	{
-		$book = Book::factory()->create();
+    public function testDontRemovePTagIfItMatchesTheChapterTitleWithId()
+    {
+        $book = Book::factory()->create();
 
-		$content = '<p id="title">Название главы</p>';
+        $content = '<p id="title">Название главы</p>';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->title = 'Название главы';
-		$section->content = $content;
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->title = 'Название главы';
+        $section->content = $content;
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('', $section->getContent());
-		$this->assertEquals('u-title', $section->getTitleId());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('', $section->getContent());
+        $this->assertEquals('u-title', $section->getTitleId());
+    }
 
-	public function testTitleInsideDivTag()
-	{
-		$title = 'Глава первая    Имя главы';
+    public function testTitleInsideDivTag()
+    {
+        $title = 'Глава первая    Имя главы';
 
-		$content = '<div id="test"><h4>Глава первая</h4><h4>Имя главы</h4></div><p>текст</p>';
+        $content = '<div id="test"><h4>Глава первая</h4><h4>Имя главы</h4></div><p>текст</p>';
 
-		$section = Section::factory()->create([
-				'title' => $title,
-				'content' => $content
-			]);
+        $section = Section::factory()->create([
+            'title' => $title,
+            'content' => $content
+        ]);
 
-		$this->assertEquals('Глава первая Имя главы', $section->title);
-		$this->assertEquals('<p>текст</p>', $section->getContent());
-		$this->assertEquals('u-test', $section->getTitleId());
-	}
+        $this->assertEquals('Глава первая Имя главы', $section->title);
+        $this->assertEquals('<p>текст</p>', $section->getContent());
+        $this->assertEquals('u-test', $section->getTitleId());
+    }
 
-	public function testTitleIdInsideDivTag()
-	{
-		$title = 'Глава первая Имя главы';
+    public function testTitleIdInsideDivTag()
+    {
+        $title = 'Глава первая Имя главы';
 
-		$content = '<div><h4 id="test">Глава первая</h4><h4>Имя главы</h4></div><p>текст</p>';
+        $content = '<div><h4 id="test">Глава первая</h4><h4>Имя главы</h4></div><p>текст</p>';
 
-		$section = Section::factory()->create([
-				'title' => $title,
-				'content' => $content
-			]);
+        $section = Section::factory()->create([
+            'title' => $title,
+            'content' => $content
+        ]);
 
-		$this->assertEquals($title, $section->title);
-		$this->assertEquals('<p>текст</p>', $section->getContent());
-		$this->assertEquals('u-test', $section->getTitleId());
-	}
+        $this->assertEquals($title, $section->title);
+        $this->assertEquals('<p>текст</p>', $section->getContent());
+        $this->assertEquals('u-test', $section->getTitleId());
+    }
 
-	public function testRemoveFirstParagraphIfTextInsideSameAsTitle()
-	{
-		$content = '<p><b>Эпилог</b></p><p>Текст эпилога</p>';
+    public function testRemoveFirstParagraphIfTextInsideSameAsTitle()
+    {
+        $content = '<p><b>Эпилог</b></p><p>Текст эпилога</p>';
 
-		$section = Section::factory()->create([
-				'title' => 'Эпилог',
-				'content' => $content
-			]);
+        $section = Section::factory()->create([
+            'title' => 'Эпилог',
+            'content' => $content
+        ]);
 
-		$this->assertEquals('Эпилог', $section->title);
-		$this->assertEquals('<p>Текст эпилога</p>', $section->getContent());
-	}
+        $this->assertEquals('Эпилог', $section->title);
+        $this->assertEquals('<p>Текст эпилога</p>', $section->getContent());
+    }
 
-	public function testDontRemoveFirstParagraph()
-	{
-		$content = '<p><b>текст</b></p><p>текст</p>';
+    public function testDontRemoveFirstParagraph()
+    {
+        $content = '<p><b>текст</b></p><p>текст</p>';
 
-		$section = Section::factory()->create([
-				'title' => 'Название главы',
-				'content' => $content
-			]);
+        $section = Section::factory()->create([
+            'title' => 'Название главы',
+            'content' => $content
+        ]);
 
-		$this->assertEquals('Название главы', $section->title);
-		$this->assertEquals('<p><b>текст</b></p><p>текст</p>', $section->getContent());
-	}
+        $this->assertEquals('Название главы', $section->title);
+        $this->assertEquals('<p><b>текст</b></p><p>текст</p>', $section->getContent());
+    }
 
-	public function testDeleteTextFromAChapterThatMatchesTheTitleText()
-	{
-		$content = '<p><i>Текст первой главы</i></p>';
+    public function testDeleteTextFromAChapterThatMatchesTheTitleText()
+    {
+        $content = '<p><i>Текст первой главы</i></p>';
 
-		$section = Section::factory()->create([
-				'title' => 'Текст первой главы'
-			]);
-		$section->content = $content;
-		$section->save();
+        $section = Section::factory()->create([
+            'title' => 'Текст первой главы'
+        ]);
+        $section->content = $content;
+        $section->save();
 
-		$this->assertEquals('Текст первой главы', $section->title);
-		$this->assertEquals('', $section->getContent());
-
-
-		$content = '<p><b>Текст второй</b></p><p><b>главы</b></p>';
-
-		$section = Section::factory()->create([
-				'title' => 'Текст второй',
-			]);
-		$section->content = $content;
-		$section->save();
-
-		$this->assertEquals('Текст второй', $section->title);
-		$this->assertEquals('<p><b>главы</b></p>', $section->getContent());
+        $this->assertEquals('Текст первой главы', $section->title);
+        $this->assertEquals('', $section->getContent());
 
 
-		$content = '<p>Текст четвертой</p><p>главы</p>';
+        $content = '<p><b>Текст второй</b></p><p><b>главы</b></p>';
 
-		$section = Section::factory()->create([
-				'title' => 'Текст четвертой'
-			]);
-		$section->content = $content;
-		$section->save();
+        $section = Section::factory()->create([
+            'title' => 'Текст второй',
+        ]);
+        $section->content = $content;
+        $section->save();
 
-		$this->assertEquals('Текст четвертой', $section->title);
-		$this->assertEquals('<p>главы</p>', $section->getContent());
-	}
+        $this->assertEquals('Текст второй', $section->title);
+        $this->assertEquals('<p><b>главы</b></p>', $section->getContent());
 
-	public function testDontRemoveFirstBoldParagraphIfSectionIsAnnotation()
-	{
-		$content = '<p><b>текст</b></p><p>текст</p>';
 
-		$section = factory(Section::class)
-			->states('annotation')
-			->create([
-				'title' => null,
-				'content' => $content
-			]);
+        $content = '<p>Текст четвертой</p><p>главы</p>';
 
-		$this->assertEquals(__('section.untitled'), $section->title);
-		$this->assertEquals('<p><b>текст</b></p><p>текст</p>', $section->getContent());
-	}
+        $section = Section::factory()->create([
+            'title' => 'Текст четвертой'
+        ]);
+        $section->content = $content;
+        $section->save();
 
-	public function testDontRemoveImageWithStrongTag()
-	{
-		$book = Book::factory()->create();
+        $this->assertEquals('Текст четвертой', $section->title);
+        $this->assertEquals('<p>главы</p>', $section->getContent());
+    }
 
-		$content = '
+    public function testDontRemoveFirstBoldParagraphIfSectionIsAnnotation()
+    {
+        $content = '<p><b>текст</b></p><p>текст</p>';
+
+        $section = Section::factory()
+            ->annotation()
+            ->create([
+                'title' => null,
+                'content' => $content
+            ]);
+
+        $this->assertEquals(__('section.untitled'), $section->title);
+        $this->assertEquals('<p><b>текст</b></p><p>текст</p>', $section->getContent());
+    }
+
+    public function testDontRemoveImageWithStrongTag()
+    {
+        $book = Book::factory()->create();
+
+        $content = '
 		<p><b><img src="image.png" /></b></p>
 
 <div class="u-empty-line">&nbsp;</div>
@@ -358,14 +358,14 @@ class SectionTitleTest extends TestCase
 <p>еще текст второй главы</p>
 ';
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->content = $content;
-		$section->book_id = $book->id;
-		$section->save();
-		$section->refresh();
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->content = $content;
+        $section->book_id = $book->id;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals(__('section.untitled'), $section->title);
-		$this->assertEquals('<p><b></b></p><div class="u-empty-line"> </div><p>текст второй главы</p><p>еще текст второй главы</p>', $section->getContent());
-	}
+        $this->assertEquals(__('section.untitled'), $section->title);
+        $this->assertEquals('<p><b></b></p><div class="u-empty-line"> </div><p>текст второй главы</p><p>еще текст второй главы</p>', $section->getContent());
+    }
 }

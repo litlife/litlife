@@ -9,53 +9,53 @@ use Tests\TestCase;
 
 class CollectionUserCreatePolicyTest extends TestCase
 {
-	public function testCollectionCreatorCanCreateUser()
-	{
-		$collection = Collection::factory()->create();
+    public function testCollectionCreatorCanCreateUser()
+    {
+        $collection = Collection::factory()->create();
 
-		$this->assertTrue($collection->create_user->can('createUser', $collection));
-	}
+        $this->assertTrue($collection->create_user->can('createUser', $collection));
+    }
 
-	public function testOtherUserCantCreateUser()
-	{
-		$collection = Collection::factory()->create();
+    public function testOtherUserCantCreateUser()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('createUser', $collection));
-	}
+        $this->assertFalse($user->can('createUser', $collection));
+    }
 
-	public function testCollectionUserCanAddUserWithPermission()
-	{
-		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
+    public function testCollectionUserCanAddUserWithPermission()
+    {
+        $collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
-		$user = $collectionUser->user;
-		$collection = $collectionUser->collection;
+        $user = $collectionUser->user;
+        $collection = $collectionUser->collection;
 
-		$this->assertTrue($user->can('createUser', $collection));
-	}
+        $this->assertTrue($user->can('createUser', $collection));
+    }
 
-	public function testCollectionUserCantAddUserWithoutPermission()
-	{
-		$collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
+    public function testCollectionUserCantAddUserWithoutPermission()
+    {
+        $collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
 
-		$user = $collectionUser->user;
-		$collection = $collectionUser->collection;
+        $user = $collectionUser->user;
+        $collection = $collectionUser->collection;
 
-		$this->assertFalse($user->can('createUser', $collection));
-	}
+        $this->assertFalse($user->can('createUser', $collection));
+    }
 
-	public function testCollectionCreatorCanCreateUserIfCollectionPrivate()
-	{
-		$collection = Collection::factory()->private()->create();
+    public function testCollectionCreatorCanCreateUserIfCollectionPrivate()
+    {
+        $collection = Collection::factory()->private()->create();
 
-		$this->assertTrue($collection->create_user->can('createUser', $collection));
-	}
+        $this->assertTrue($collection->create_user->can('createUser', $collection));
+    }
 
-	public function testCreateUserIfCollectionPrivate()
-	{
-		$collection = Collection::factory()->private()->create();
+    public function testCreateUserIfCollectionPrivate()
+    {
+        $collection = Collection::factory()->private()->create();
 
-		$this->assertTrue($collection->create_user->can('createUser', $collection));
-	}
+        $this->assertTrue($collection->create_user->can('createUser', $collection));
+    }
 }

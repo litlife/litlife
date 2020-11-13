@@ -9,21 +9,21 @@ use Tests\TestCase;
 
 class SectionViewTest extends TestCase
 {
-	public function testIfBookPageNumberIsNull()
-	{
-		Bus::fake(BookUpdatePageNumbersJob::class);
+    public function testIfBookPageNumberIsNull()
+    {
+        Bus::fake(BookUpdatePageNumbersJob::class);
 
-		$book = Book::factory()->with_section()->create();
+        $book = Book::factory()->with_section()->create();
 
-		//Bus::assertDispatched(BookUpdatePageNumbersJob::class);
+        //Bus::assertDispatched(BookUpdatePageNumbersJob::class);
 
-		$section = $book->sections()->first();
-		$page = $section->pages()->first();
+        $section = $book->sections()->first();
+        $page = $section->pages()->first();
 
-		$this->assertNull($page->book_page);
+        $this->assertNull($page->book_page);
 
-		$this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
-			->assertOk()
-			->assertViewHas('book_pages', null);
-	}
+        $this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]))
+            ->assertOk()
+            ->assertViewHas('book_pages', null);
+    }
 }

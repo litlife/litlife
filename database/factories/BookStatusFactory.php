@@ -1,23 +1,41 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Book;
 use App\BookStatus;
-use Faker\Generator as Faker;
+use App\User;
 
-$factory->define(App\BookStatus::class, function (Faker $faker) {
-    return [
-        'user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'book_id' => function () {
-            return factory(App\Book::class)->create()->id;
-        },
-        'status' => 'readed',
-        'user_updated_at' => now()->subMinutes(1)
-    ];
-});
+class BookStatusFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookStatus::class;
 
-$factory->afterMakingState(App\BookStatus::class, 'readed', function (BookStatus $status, $faker) {
-    $status->status = 'readed';
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'book_id' => Book::factory(),
+            'status' => 'readed',
+            'user_updated_at' => now()->subMinutes(1)
+        ];
+    }
 
+    public function readed()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->status = 'readed';
+        })->afterCreating(function ($item) {
 
+        });
+    }
+}

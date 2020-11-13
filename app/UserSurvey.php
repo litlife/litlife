@@ -5,7 +5,7 @@ namespace App;
 use App\Traits\UserCreate;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Carbon;
 
 /**
@@ -30,13 +30,16 @@ use Illuminate\Support\Carbon;
  * @property array|null $what_site_features_are_interesting_to_you Какие функции сайта вам интересны? (можно выбрать несколько вариантов)
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @method static Builder|UserSurvey newModelQuery()
  * @method static Builder|UserSurvey newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserSurvey query()
+ * @method static Builder|Model void()
  * @method static Builder|UserSurvey whereCreateUserId($value)
  * @method static Builder|UserSurvey whereCreatedAt($value)
- * @method static Builder|UserSurvey whereCreator(User $user)
+ * @method static Builder|UserSurvey whereCreator(\App\User $user)
  * @method static Builder|UserSurvey whereDoYouReadBooksOrDownloadThem($value)
  * @method static Builder|UserSurvey whereHowDoYouAssessTheWorkOfTheSiteAdministration($value)
  * @method static Builder|UserSurvey whereHowDoYouRateTheConvenienceAndFunctionalityOfSearch($value)

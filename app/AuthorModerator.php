@@ -10,15 +10,15 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * App\AuthorModerator
  *
- * @property-read User $create_user
- * @property-read User|null $user
+ * @property-read \App\User $create_user
+ * @property-read \App\User|null $user
  * @method static Builder|AuthorModerator newModelQuery()
  * @method static Builder|AuthorModerator newQuery()
  * @method static Builder|Model orderByField($column, $ids)
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorModerator query()
  * @method static Builder|Model void()
- * @method static Builder|AuthorModerator whereCreator(User $user)
+ * @method static Builder|AuthorModerator whereCreator(\App\User $user)
  * @mixin Eloquent
  */
 class AuthorModerator extends Model

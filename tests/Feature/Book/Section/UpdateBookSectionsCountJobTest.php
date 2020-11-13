@@ -8,19 +8,19 @@ use Tests\TestCase;
 
 class UpdateBookSectionsCountJobTest extends TestCase
 {
-	public function testUpdate()
-	{
-		$book = Book::factory()->with_three_sections()->create();
+    public function testUpdate()
+    {
+        $book = Book::factory()->with_three_sections()->create();
 
-		$book->sections_count = 0;
-		$book->save();
+        $book->sections_count = 0;
+        $book->save();
 
-		$this->assertEquals(0, $book->sections_count);
+        $this->assertEquals(0, $book->sections_count);
 
-		UpdateBookSectionsCount::dispatch($book);
+        UpdateBookSectionsCount::dispatch($book);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertEquals(3, $book->sections_count);
-	}
+        $this->assertEquals(3, $book->sections_count);
+    }
 }

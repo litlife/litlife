@@ -5,7 +5,7 @@ namespace App;
 use App\Traits\UserCreate;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,11 +29,14 @@ use Illuminate\Support\Carbon;
  * @property bool $merge_paragraphs_if_there_is_no_dot_at_the_end Слить параграфы, если в конце текста параграфа нет точки. Например: "<p>Текст текст</p><p> текст текст.</p><p>Текст текст.</p>" станет таким: "<p>Текст текст текст текст.</p><p>Текст текст.</p>"
  * @property bool $tidy_chapter_names Сделать аккуратными названия глав. Например: "ГЛАВА   1" будет приведено в "Глава 1"
  * @property bool $remove_empty_paragraphs Удалить "жирное" выделение во всем тексте. Будут удалены теги b, strong
- * @property-read Book $book
- * @property-read User $create_user
+ * @property-read \App\Book $book
+ * @property-read \App\User $create_user
  * @method static Builder|BookTextProcessing newModelQuery()
  * @method static Builder|BookTextProcessing newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookTextProcessing query()
+ * @method static Builder|Model void()
  * @method static Builder|BookTextProcessing waited()
  * @method static Builder|BookTextProcessing whereAddASpaceAfterTheFirstHyphenInTheParagraph($value)
  * @method static Builder|BookTextProcessing whereAddSpacesAfterPunctuationsMarks($value)
@@ -42,7 +45,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookTextProcessing whereConvertNewLinesToParagraphs($value)
  * @method static Builder|BookTextProcessing whereCreateUserId($value)
  * @method static Builder|BookTextProcessing whereCreatedAt($value)
- * @method static Builder|BookTextProcessing whereCreator(User $user)
+ * @method static Builder|BookTextProcessing whereCreator(\App\User $user)
  * @method static Builder|BookTextProcessing whereId($value)
  * @method static Builder|BookTextProcessing whereMergeParagraphsIfThereIsNoDotAtTheEnd($value)
  * @method static Builder|BookTextProcessing whereRemoveBold($value)

@@ -9,21 +9,21 @@ use Tests\TestCase;
 
 class CommentVotePolicyTest extends TestCase
 {
-	public function testDisableVoteIfUserInBlacklist()
-	{
-		$relation = UserRelation::factory()->create([
-				'status' => UserRelationType::Blacklist
-			]);
+    public function testDisableVoteIfUserInBlacklist()
+    {
+        $relation = UserRelation::factory()->create([
+            'status' => UserRelationType::Blacklist
+        ]);
 
-		$commentCreator = $relation->first_user;
-		$dislikerUser = $relation->second_user;
-		$dislikerUser->group->comment_add_vote = true;
-		$dislikerUser->push();
+        $commentCreator = $relation->first_user;
+        $dislikerUser = $relation->second_user;
+        $dislikerUser->group->comment_add_vote = true;
+        $dislikerUser->push();
 
-		$this->assertTrue($commentCreator->hasAddedToBlacklist($dislikerUser));
+        $this->assertTrue($commentCreator->hasAddedToBlacklist($dislikerUser));
 
-		$comment = Comment::factory()->book()->create();
+        $comment = Comment::factory()->book()->create(['create_user_id' => $commentCreator->id]);
 
-		$this->assertFalse($dislikerUser->can('vote', $comment));
-	}
+        $this->assertFalse($dislikerUser->can('vote', $comment));
+    }
 }

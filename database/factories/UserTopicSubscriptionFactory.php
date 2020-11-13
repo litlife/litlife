@@ -1,20 +1,30 @@
 <?php
 
-/* @var $factory Factory */
+namespace Database\Factories;
 
 use App\Topic;
 use App\User;
 use App\UserTopicSubscription;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserTopicSubscription::class, function (Faker $faker) {
-    return [
-        'user_id' => function () {
-            return factory(User::class)->create();
-        },
-        'topic_id' => function () {
-            return factory(Topic::class)->create();
-        },
-    ];
-});
+class UserTopicSubscriptionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserTopicSubscription::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'topic_id' => Topic::factory(),
+        ];
+    }
+}

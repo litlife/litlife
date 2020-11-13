@@ -8,21 +8,21 @@ use Tests\TestCase;
 
 class CollectionDeletePolicyTest extends TestCase
 {
-	public function testCanIfUserCreator()
-	{
-		$collection = Collection::factory()->create();
+    public function testCanIfUserCreator()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->assertTrue($user->can('delete', $collection));
-	}
+        $this->assertTrue($user->can('delete', $collection));
+    }
 
-	public function testCantIfUserNotCreator()
-	{
-		$collection = Collection::factory()->create();
+    public function testCantIfUserNotCreator()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('delete', $collection));
-	}
+        $this->assertFalse($user->can('delete', $collection));
+    }
 }

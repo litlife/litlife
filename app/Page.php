@@ -23,10 +23,10 @@ use Litlife\Url\Url;
  * @property int $book_id
  * @property int|null $character_count
  * @property int|null $book_page Номер страницы с начала книги
- * @property-read Book $book
+ * @property-read \App\Book $book
  * @property-read mixed $content_handled
  * @property-read mixed $content_handled_splited
- * @property-read Section $section
+ * @property-read \App\Section $section
  * @method static Builder|Page inLinksIdSections($array)
  * @method static Builder|Page newModelQuery()
  * @method static Builder|Page newQuery()

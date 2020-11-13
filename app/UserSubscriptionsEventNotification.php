@@ -19,8 +19,8 @@ use Illuminate\Support\Carbon;
  * @property int $event_type Тип события
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $eventable
- * @property-read User $notifiable_user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $eventable
+ * @property-read \App\User $notifiable_user
  * @method static Builder|UserSubscriptionsEventNotification newModelQuery()
  * @method static Builder|UserSubscriptionsEventNotification newQuery()
  * @method static Builder|Model orderByField($column, $ids)

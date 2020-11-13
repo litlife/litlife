@@ -7,11 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 class AttachmentNameTest extends TestCase
 {
-	public function testExtensionToLower()
-	{
-		$attachment = new Attachment();
-		$attachment->name = 'имя.JPEG';
+    public function testExtensionToLower()
+    {
+        $attachment = new Attachment();
+        $attachment->name = 'имя.JPEG';
 
-		$this->assertEquals('ima.jpeg', $attachment->name);
-	}
+        $this->assertEquals('ima.jpeg', $attachment->name);
+    }
 }

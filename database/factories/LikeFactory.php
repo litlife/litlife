@@ -1,27 +1,48 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Like::class, function (Faker $faker) {
+use App\Blog;
+use App\Like;
+use App\User;
 
-    return [
-        'likeable_type' => 'blog',
-        'likeable_id' => function () {
-            return factory(App\Blog::class)->create()->id;
-        },
-        'create_user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'ip' => $faker->ipv4
-    ];
-});
+class LikeFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Like::class;
 
-$factory->state(App\Like::class, 'blog', function ($faker) {
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'likeable_type' => 'blog',
+            'likeable_id' => Blog::factory(),
+            'create_user_id' => User::factory(),
+            'ip' => $this->faker->ipv4
+        ];
+    }
 
-    $blog = factory(App\Blog::class)->create();
+    public function blog()
+    {
+        return $this->afterMaking(function (Like $like) {
+            //
+        })->afterCreating(function (Like $like) {
+            //
+        })->state(function (array $attributes) {
+            $blog = Blog::factory()->create();
 
-    return [
-        'likeable_type' => 'blog',
-        'likeable_id' => $blog->id,
-    ];
-});
+            return [
+                'likeable_type' => 'blog',
+                'likeable_id' => $blog->id,
+            ];
+        });
+    }
+}

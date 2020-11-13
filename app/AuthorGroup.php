@@ -18,8 +18,8 @@ use Illuminate\Support\Carbon;
  * @property int $count
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $authors
- * @property-read User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $authors
+ * @property-read \App\User|null $create_user
  * @method static Builder|AuthorGroup newModelQuery()
  * @method static Builder|AuthorGroup newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -29,7 +29,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AuthorGroup whereCount($value)
  * @method static Builder|AuthorGroup whereCreateUserId($value)
  * @method static Builder|AuthorGroup whereCreatedAt($value)
- * @method static Builder|AuthorGroup whereCreator(User $user)
+ * @method static Builder|AuthorGroup whereCreator(\App\User $user)
  * @method static Builder|AuthorGroup whereFirstName($value)
  * @method static Builder|AuthorGroup whereId($value)
  * @method static Builder|AuthorGroup whereLastName($value)

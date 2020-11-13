@@ -9,60 +9,60 @@ use Tests\TestCase;
 
 class BookKeywordSearchTest extends TestCase
 {
-	public function testSearchHttp()
-	{
-		$book_keyword = BookKeyword::factory()->create();
+    public function testSearchHttp()
+    {
+        $book_keyword = BookKeyword::factory()->create();
 
-		$response = $this->json('get', route('books.keywords.search'),
-			['q' => $book_keyword->keyword->text])
-			->assertOk();
+        $response = $this->json('get', route('books.keywords.search'),
+            ['q' => $book_keyword->keyword->text])
+            ->assertOk();
 
-		$response->assertJsonFragment(['text' => $book_keyword->keyword->text]);
-	}
+        $response->assertJsonFragment(['text' => $book_keyword->keyword->text]);
+    }
 
-	public function testSearchPartWordHttp()
-	{
-		$text = Str::random(8);
+    public function testSearchPartWordHttp()
+    {
+        $text = Str::random(8);
 
-		$book_keyword = BookKeyword::factory()->create();
-		$book_keyword->keyword->text = $text;
-		$book_keyword->push();
-		$book_keyword->refresh();
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->text = $text;
+        $book_keyword->push();
+        $book_keyword->refresh();
 
-		$response = $this->json('get', route('books.keywords.search'),
-			['q' => mb_substr($text, 1)])
-			->assertOk();
+        $response = $this->json('get', route('books.keywords.search'),
+            ['q' => mb_substr($text, 1)])
+            ->assertOk();
 
-		$response->assertJsonFragment(['text' => $book_keyword->keyword->text]);
-	}
+        $response->assertJsonFragment(['text' => $book_keyword->keyword->text]);
+    }
 
-	public function testSearchDeletedKeywordHttp()
-	{
-		$text = Str::random(8);
+    public function testSearchDeletedKeywordHttp()
+    {
+        $text = Str::random(8);
 
-		$book_keyword = BookKeyword::factory()->create();
-		$book_keyword->keyword->text = $text;
-		$book_keyword->push();
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->text = $text;
+        $book_keyword->push();
 
-		$book_keyword->keyword->delete();
+        $book_keyword->keyword->delete();
 
-		$response = $this->json('get', route('books.keywords.search'),
-			['q' => $book_keyword->keyword->text])
-			->assertOk();
+        $response = $this->json('get', route('books.keywords.search'),
+            ['q' => $book_keyword->keyword->text])
+            ->assertOk();
 
-		$response->assertJsonMissing(['text' => $book_keyword->keyword->text]);
-	}
+        $response->assertJsonMissing(['text' => $book_keyword->keyword->text]);
+    }
 
-	public function testSearchDeletedBookKeywordHttp()
-	{
-		$keyword = Keyword::factory()->create();
+    public function testSearchDeletedBookKeywordHttp()
+    {
+        $keyword = Keyword::factory()->create();
 
-		$keyword->delete();
+        $keyword->delete();
 
-		$response = $this->json('get', route('books.keywords.search'),
-			['q' => $keyword->text])
-			->assertOk();
+        $response = $this->json('get', route('books.keywords.search'),
+            ['q' => $keyword->text])
+            ->assertOk();
 
-		$response->assertJsonMissing(['text' => $keyword->text]);
-	}
+        $response->assertJsonMissing(['text' => $keyword->text]);
+    }
 }

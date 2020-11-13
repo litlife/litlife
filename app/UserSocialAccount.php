@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property object $parameters
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static Builder|UserSocialAccount newModelQuery()
  * @method static Builder|UserSocialAccount newQuery()
  * @method static Builder|Model orderByField($column, $ids)

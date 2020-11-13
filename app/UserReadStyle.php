@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string|null $font_color
  * @property string|null $card_color
  * @property bool $show_sidebar Показать сайдбар
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static Builder|UserReadStyle disableCache()
  * @method static CachedBuilder|UserReadStyle newModelQuery()
  * @method static CachedBuilder|UserReadStyle newQuery()

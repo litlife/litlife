@@ -32,17 +32,17 @@ use Illuminate\Support\Facades\Cache;
  * @property int|null $status_changed_user_id
  * @property bool $can_sale Может продавать книги или нет
  * @property int|null $profit_percent Процент от прибыли, который получает автор
- * @property-read User|null $check_user
- * @property-read User $create_user
+ * @property-read \App\User|null $check_user
+ * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $manageable
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorSaleRequest[] $saleRequests
- * @property-read User|null $status_changed_user
- * @property-read User|null $user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $manageable
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorSaleRequest[] $saleRequests
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \App\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Manager accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -59,24 +59,24 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager onlyChecked()
  * @method static Builder|Manager onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Manager orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Manager private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager private()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager query()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager sentOnReviewAndManageableNotPrivateAndNotOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCanSale($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCharacter($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCheckUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereManageableId($value)

@@ -7,32 +7,32 @@ use Tests\TestCase;
 
 class BookGetSellerTest extends TestCase
 {
-	public function testSuccess()
-	{
-		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
+    public function testSuccess()
+    {
+        $author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
-		$user = $author->managers->first()->user;
-		$book = $author->books->first();
+        $user = $author->managers->first()->user;
+        $book = $author->books->first();
 
-		$seller = $book->seller();
+        $seller = $book->seller();
 
-		$this->assertNotNull($seller);
-		$this->assertTrue($user->is($seller));
-	}
+        $this->assertNotNull($seller);
+        $this->assertTrue($user->is($seller));
+    }
 
-	public function testSellerMustBeWritter()
-	{
-		$author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
+    public function testSellerMustBeWritter()
+    {
+        $author = Author::factory()->with_author_manager_can_sell()->with_book_cover_annotation()->create();
 
-		$user = $author->managers->first()->user;
-		$book = $author->books->first();
+        $user = $author->managers->first()->user;
+        $book = $author->books->first();
 
-		$book->writers()->sync([]);
-		$book->translators()->sync([$author->id]);
-		$book->push();
+        $book->writers()->sync([]);
+        $book->translators()->sync([$author->id]);
+        $book->push();
 
-		$seller = $book->seller();
+        $seller = $book->seller();
 
-		$this->assertFalse($seller);
-	}
+        $this->assertFalse($seller);
+    }
 }

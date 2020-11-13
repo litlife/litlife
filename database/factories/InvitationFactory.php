@@ -1,12 +1,29 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use App\Invitation;
 use Illuminate\Support\Str;
 
-$factory->define(App\Invitation::class, function (Faker $faker) {
+class InvitationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Invitation::class;
 
-    return [
-        'email' => $faker->email,
-        'token' => Str::random(32)
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'email' => $this->faker->email,
+            'token' => Str::random(32)
+        ];
+    }
+}

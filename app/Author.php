@@ -77,21 +77,21 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $admin_notes_count
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
  * @property int|null $user_id ID пользователя к которому верифицирована эта страница автора
- * @property-read \Illuminate\Database\Eloquent\Collection|Activity[] $activities
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $addedToFavoritesUsers
- * @property-read AdminNote|null $admin_note
- * @property-read \Illuminate\Database\Eloquent\Collection|AdminNote[] $admin_notes
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $any_books
- * @property-read Like|null $authUserLike
- * @property-read AuthorPhoto|null $avatar
- * @property-read AuthorAverageRatingForPeriod $averageRatingForPeriod
- * @property-read AuthorBiography $biography
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $compiled_books
- * @property-read User|null $create_user
- * @property-read User|null $edit_user
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $edited_books
- * @property-read Forum|null $forum
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
+ * @property-read \App\AdminNote|null $admin_note
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AdminNote[] $admin_notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $any_books
+ * @property-read \App\Like|null $authUserLike
+ * @property-read \App\AuthorPhoto|null $avatar
+ * @property-read \App\AuthorAverageRatingForPeriod $averageRatingForPeriod
+ * @property-read \App\AuthorBiography $biography
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $compiled_books
+ * @property-read \App\User|null $create_user
+ * @property-read \App\User|null $edit_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $edited_books
+ * @property-read \App\Forum|null $forum
  * @property-read mixed $full_name
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
@@ -100,27 +100,27 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read mixed $is_sent_for_review
  * @property mixed $name
  * @property-read mixed $original_full_name
- * @property-read AuthorGroup|null $group
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $illustrated_books
- * @property-read Language|null $language
- * @property-read \Illuminate\Database\Eloquent\Collection|AdminNote[] $latest_admin_notes
- * @property-read \Illuminate\Database\Eloquent\Collection|UserAuthor[] $library_users
- * @property-read \Illuminate\Database\Eloquent\Collection|Like[] $likes
- * @property-read \Illuminate\Database\Eloquent\Collection|Manager[] $managers
- * @property-read \Illuminate\Database\Eloquent\Collection|ModeratorRequest[] $moderator_requests
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorModerator[] $moderators
- * @property-read AuthorPhoto|null $photo
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorPhoto[] $photos
+ * @property-read \App\AuthorGroup|null $group
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $illustrated_books
+ * @property-read \App\Language|null $language
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AdminNote[] $latest_admin_notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserAuthor[] $library_users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Manager[] $managers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\ModeratorRequest[] $moderator_requests
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorModerator[] $moderators
+ * @property-read \App\AuthorPhoto|null $photo
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorPhoto[] $photos
  * @property-read Author|null $redirect_to_author
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorRepeat[] $repeats
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorSaleRequest[] $sales_request
- * @property-read User|null $status_changed_user
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $translated_books
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $user2
- * @property-read AuthorStatus|null $user_status
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users_added_to_favorites
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorStatus[] $users_read_statuses
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $written_books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorRepeat[] $repeats
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorSaleRequest[] $sales_request
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $translated_books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $user2
+ * @property-read \App\AuthorStatus|null $user_status
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users_added_to_favorites
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorStatus[] $users_read_statuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $written_books
  * @method static Builder|Author accepted()
  * @method static Builder|Author acceptedAndSentForReview()
  * @method static Builder|Author acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -149,7 +149,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Author orderStatusChangedAsc()
  * @method static Builder|Author orderStatusChangedDesc()
- * @method static Builder|Author private ()
+ * @method static Builder|Author private()
  * @method static Builder|Author query()
  * @method static Builder|Author rememberCount($minutes = 5, $refresh = false)
  * @method static Builder|Author searchByNameParts($last_name = null, $first_name = null, $middle_name = null, $nickname = null)
@@ -167,7 +167,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Author whereCommentsCount($value)
  * @method static Builder|Author whereCreateUserId($value)
  * @method static Builder|Author whereCreatedAt($value)
- * @method static Builder|Author whereCreator(User $user)
+ * @method static Builder|Author whereCreator(\App\User $user)
  * @method static Builder|Author whereDeadDate($value)
  * @method static Builder|Author whereDeadPlace($value)
  * @method static Builder|Author whereDeletedAt($value)

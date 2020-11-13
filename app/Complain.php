@@ -27,15 +27,15 @@ use Illuminate\Support\Facades\Cache;
  * @property int|null $status
  * @property Carbon|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $complainable
- * @property-read User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $complainable
+ * @property-read \App\User $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read User|null $status_changed_user
- * @property-read User|null $user
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \App\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Complain accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -50,21 +50,21 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain onlyChecked()
  * @method static Builder|Complain onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Complain orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Complain private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain private()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain query()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereStatus($value)

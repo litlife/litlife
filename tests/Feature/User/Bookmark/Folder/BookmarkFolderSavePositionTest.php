@@ -8,61 +8,61 @@ use Tests\TestCase;
 
 class BookmarkFolderSavePositionTest extends TestCase
 {
-	public function testSavePosition()
-	{
-		$user = User::factory()->create();
+    public function testSavePosition()
+    {
+        $user = User::factory()->create();
 
-		$bookmark_folder = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
+        $bookmark_folder = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
-		$bookmark_folder2 = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
+        $bookmark_folder2 = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
-		$this->actingAs($user)
-			->post(route('users.bookmark_folders.save_position'), [
-				'order' => [
-					$bookmark_folder->id,
-					$bookmark_folder2->id
-				]
-			])
-			->assertOk()
-			->assertSeeText(__('bookmark_folder.position_saved'));
+        $this->actingAs($user)
+            ->post(route('users.bookmark_folders.save_position'), [
+                'order' => [
+                    $bookmark_folder->id,
+                    $bookmark_folder2->id
+                ]
+            ])
+            ->assertOk()
+            ->assertSeeText(__('bookmark_folder.position_saved'));
 
-		$user->refresh();
+        $user->refresh();
 
-		$this->assertEquals([
-			$bookmark_folder->id,
-			$bookmark_folder2->id
-		], $user->setting->bookmark_folder_order);
+        $this->assertEquals([
+            $bookmark_folder->id,
+            $bookmark_folder2->id
+        ], $user->setting->bookmark_folder_order);
 
-		$this->actingAs($user)
-			->post(route('users.bookmark_folders.save_position'), [
-				'order' => [
-					$bookmark_folder2->id,
-					$bookmark_folder->id
-				]
-			])
-			->assertOk()
-			->assertSeeText(__('bookmark_folder.position_saved'));
+        $this->actingAs($user)
+            ->post(route('users.bookmark_folders.save_position'), [
+                'order' => [
+                    $bookmark_folder2->id,
+                    $bookmark_folder->id
+                ]
+            ])
+            ->assertOk()
+            ->assertSeeText(__('bookmark_folder.position_saved'));
 
-		$user->refresh();
+        $user->refresh();
 
-		$this->assertEquals([
-			$bookmark_folder2->id,
-			$bookmark_folder->id
-		], $user->setting->bookmark_folder_order);
-	}
+        $this->assertEquals([
+            $bookmark_folder2->id,
+            $bookmark_folder->id
+        ], $user->setting->bookmark_folder_order);
+    }
 
-	public function testSavePositionIfDeleted()
-	{
-		$bookmark_folder = BookmarkFolder::factory()->create();
-		$bookmark_folder->delete();
+    public function testSavePositionIfDeleted()
+    {
+        $bookmark_folder = BookmarkFolder::factory()->create();
+        $bookmark_folder->delete();
 
-		$user = $bookmark_folder->create_user;
+        $user = $bookmark_folder->create_user;
 
-		$this->actingAs($user)
-			->post(route('users.bookmark_folders.save_position'), [
-				'order' => [$bookmark_folder->id]
-			])
-			->assertOk()
-			->assertSeeText(__('bookmark_folder.position_saved'));
-	}
+        $this->actingAs($user)
+            ->post(route('users.bookmark_folders.save_position'), [
+                'order' => [$bookmark_folder->id]
+            ])
+            ->assertOk()
+            ->assertSeeText(__('bookmark_folder.position_saved'));
+    }
 }

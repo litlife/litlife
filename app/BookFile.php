@@ -49,12 +49,12 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
  * @property bool|null $auto_created Создан ли файл сайтом, после редактирования онлайн текста
- * @property-read \Illuminate\Database\Eloquent\Collection|Activity[] $activities
- * @property-read User|null $add_user
- * @property-read Book $book
- * @property-read \Illuminate\Database\Eloquent\Collection|Complain[] $complaints
- * @property-read User|null $create_user
- * @property-read \Illuminate\Database\Eloquent\Collection|BookFileDownloadLog[] $download_logs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
+ * @property-read \App\User|null $add_user
+ * @property-read \App\Book $book
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
+ * @property-read \App\User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookFileDownloadLog[] $download_logs
  * @property-read mixed $encoded_name
  * @property mixed $extension
  * @property-read mixed $is_accepted
@@ -65,7 +65,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read mixed $path_file
  * @property-read mixed $url
  * @property-write mixed $show_status
- * @property-read User|null $status_changed_user
+ * @property-read \App\User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -83,23 +83,23 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile onlyChecked()
  * @method static Builder|BookFile onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|BookFile private()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile query()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereAutoCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereCheckUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookFile whereDownloadCount($value)

@@ -48,11 +48,11 @@ use Illuminate\Support\Facades\Cache;
  * @property int|null $status_changed_user_id
  * @property int|null $user_agent_id
  * @property int|null $characters_count
- * @property-read Like|null $authUserLike
- * @property-read \Illuminate\Database\Eloquent\Collection|Complain[] $complaints
- * @property-read User $create_user
- * @property-read User|null $edit_user
- * @property-read Forum|null $forum
+ * @property-read \App\Like|null $authUserLike
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
+ * @property-read \App\User $create_user
+ * @property-read \App\User|null $edit_user
+ * @property-read \App\Forum|null $forum
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
@@ -62,11 +62,11 @@ use Illuminate\Support\Facades\Cache;
  * @property Post|null $parent
  * @property-read mixed $root
  * @property-read mixed $text
- * @property-read \Illuminate\Database\Eloquent\Collection|Like[] $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
  * @property-write mixed $b_b_text
- * @property-read User|null $status_changed_user
- * @property-read Topic $topic
- * @property-read UserAgent|null $user_agent
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \App\Topic $topic
+ * @property-read \App\UserAgent|null $user_agent
  * @method static \Illuminate\Database\Eloquent\Builder|Post accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Post acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Post acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -88,23 +88,23 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Post onlyChecked()
  * @method static Builder|Post onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Post orDescendants($ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Post orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Post orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Post private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Post private()
  * @method static \Illuminate\Database\Eloquent\Builder|Post query()
  * @method static \Illuminate\Database\Eloquent\Builder|Post roots()
  * @method static \Illuminate\Database\Eloquent\Builder|Post sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Post unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Post unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCharactersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereChildrenCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereEditUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereExternalImagesDownloaded($value)

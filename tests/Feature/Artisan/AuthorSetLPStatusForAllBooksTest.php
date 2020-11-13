@@ -8,20 +8,20 @@ use Tests\TestCase;
 
 class AuthorSetLPStatusForAllBooksTest extends TestCase
 {
-	public function testCommand()
-	{
-		$author = Author::factory()->with_book()->create();
+    public function testCommand()
+    {
+        $author = Author::factory()->with_book()->create();
 
-		$book = $author->any_books()->first();
-		$book->is_lp = false;
-		$book->save();
+        $book = $author->any_books()->first();
+        $book->is_lp = false;
+        $book->save();
 
-		$this->assertFalse($book->is_lp);
+        $this->assertFalse($book->is_lp);
 
-		Artisan::call('author:set_lp_status_for_all_books', ['author_id' => $author->id]);
+        Artisan::call('author:set_lp_status_for_all_books', ['author_id' => $author->id]);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertTrue($book->is_lp);
-	}
+        $this->assertTrue($book->is_lp);
+    }
 }

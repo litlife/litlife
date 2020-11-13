@@ -5,8 +5,10 @@ namespace App;
 
 use App\Traits\PaginatableTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use InvalidArgumentException;
+use Orchestra\Testbench\Concerns\WithFactories;
 
 abstract class Model extends Eloquent
 {
@@ -14,6 +16,7 @@ abstract class Model extends Eloquent
 
     //use CacheQueryBuilder;
     use PaginatableTrait;
+    use HasFactory;
 
     // set default date Format
     public $dateFormat = 'Y-m-d H:i:s';

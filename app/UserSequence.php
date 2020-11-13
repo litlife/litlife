@@ -16,8 +16,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read Sequence $sequence
- * @property-read User|null $user
+ * @property-read \App\Sequence $sequence
+ * @property-read \App\User|null $user
  * @method static Builder|UserSequence newModelQuery()
  * @method static Builder|UserSequence newQuery()
  * @method static Builder|Model orderByField($column, $ids)

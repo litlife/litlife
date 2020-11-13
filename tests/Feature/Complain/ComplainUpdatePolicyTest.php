@@ -8,47 +8,47 @@ use Tests\TestCase;
 
 class ComplainUpdatePolicyTest extends TestCase
 {
-	public function testCanIfOnReview()
-	{
-		$complain = Complain::factory()->comment()->sent_for_review()->create();
+    public function testCanIfOnReview()
+    {
+        $complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$user = $complain->create_user;
-		$user->group->complain = true;
-		$user->push();
+        $user = $complain->create_user;
+        $user->group->complain = true;
+        $user->push();
 
-		$this->assertTrue($user->can('update', $complain));
-	}
+        $this->assertTrue($user->can('update', $complain));
+    }
 
-	public function testCantIfOtherUser()
-	{
-		$complain = Complain::factory()->comment()->sent_for_review()->create();
+    public function testCantIfOtherUser()
+    {
+        $complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$user = User::factory()->create();
-		$user->group->complain = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->complain = true;
+        $user->push();
 
-		$this->assertFalse($user->can('update', $complain));
-	}
+        $this->assertFalse($user->can('update', $complain));
+    }
 
-	public function testCantIfReviewStarts()
-	{
-		$complain = Complain::factory()->comment()->review_starts()->create();
+    public function testCantIfReviewStarts()
+    {
+        $complain = Complain::factory()->comment()->review_starts()->create();
 
-		$user = $complain->create_user;
-		$user->group->complain = true;
-		$user->push();
+        $user = $complain->create_user;
+        $user->group->complain = true;
+        $user->push();
 
-		$this->assertFalse($user->can('update', $complain));
-	}
+        $this->assertFalse($user->can('update', $complain));
+    }
 
-	public function testCantIfAccepted()
-	{
-		$complain = Complain::factory()->comment()->accepted()->create();
+    public function testCantIfAccepted()
+    {
+        $complain = Complain::factory()->comment()->accepted()->create();
 
-		$user = $complain->create_user;
-		$user->group->complain = true;
-		$user->push();
+        $user = $complain->create_user;
+        $user->group->complain = true;
+        $user->push();
 
-		$this->assertFalse($user->can('update', $complain));
-	}
+        $this->assertFalse($user->can('update', $complain));
+    }
 }

@@ -25,14 +25,14 @@ use Illuminate\Support\Carbon;
  * @property int|null $status
  * @property string|null $status_changed_at
  * @property int|null $status_changed_user_id
- * @property-read \Illuminate\Database\Eloquent\Collection|BookKeyword[] $book_keywords
- * @property-read User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookKeyword[] $book_keywords
+ * @property-read \App\User|null $create_user
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read User|null $status_changed_user
+ * @property-read \App\User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -48,11 +48,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword onlyChecked()
  * @method static Builder|Keyword onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword private()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword query()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword search($text)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword searchFullWord($textOrArray)
@@ -60,11 +60,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Keyword whereStatus($value)

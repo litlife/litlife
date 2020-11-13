@@ -8,25 +8,25 @@ use Tests\TestCase;
 
 class AdBlockComponentTest extends TestCase
 {
-	public function testIfExists()
-	{
-		$block = AdBlock::factory()->enabled()->create();
+    public function testIfExists()
+    {
+        $block = AdBlock::factory()->enabled()->create();
 
-		$component = new Component($block->name);
+        $component = new Component($block->name);
 
-		$this->assertEquals('<script type="text/javascript">alert("test");</script>',
-			$component->render());
-	}
+        $this->assertEquals('<script type="text/javascript">alert("test");</script>',
+            $component->render());
+    }
 
-	public function testIfNotExists()
-	{
-		$block = factory(AdBlock::class)
-			->states('enabled')
-			->make();
+    public function testIfNotExists()
+    {
+        $block = AdBlock::factory()
+            ->enabled()
+            ->make();
 
-		$component = new Component($block->name);
+        $component = new Component($block->name);
 
-		$this->assertEquals('',
-			$component->render());
-	}
+        $this->assertEquals('',
+            $component->render());
+    }
 }

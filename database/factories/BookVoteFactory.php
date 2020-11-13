@@ -1,49 +1,64 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Book;
 use App\BookVote;
 use App\Jobs\Book\UpdateBookRating;
-use Faker\Generator as Faker;
+use App\User;
 
-$factory->define(App\BookVote::class, function (Faker $faker) {
-    return [
-        'book_id' => function () {
-            return factory(App\Book::class)->create()->id;
-        },
-        'create_user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'vote' => rand(1, 10),
-        'user_updated_at' => now()
-    ];
-});
+class BookVoteFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookVote::class;
 
-$factory->afterCreating(App\BookVote::class, function (BookVote $book_vote, $faker) {
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'book_id' => Book::factory(),
+            'create_user_id' => User::factory(),
+            'vote' => rand(1, 10),
+            'user_updated_at' => now()
+        ];
+    }
 
-    UpdateBookRating::dispatch($book_vote->book);
-});
+    public function configure()
+    {
+        return $this->afterCreating(function (BookVote $vote) {
+            UpdateBookRating::dispatch($vote->book);
+        });
+    }
 
-$factory->state(App\BookVote::class, 'male_vote', function ($faker) {
+    public function male_vote()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'create_user_id' => function () {
+                    return User::factory()->male()->create()
+                        ->id;
+                }
+            ];
+        });
+    }
 
-    return [
-        'create_user_id' => function () {
-            return factory(App\User::class)
-                ->states('male')
-                ->create()
-                ->id;
-        }
-    ];
-});
-
-$factory->state(App\BookVote::class, 'female_vote', function ($faker) {
-
-    return [
-        'create_user_id' => function () {
-            return factory(App\User::class)
-                ->states('female')
-                ->create()
-                ->id;
-        }
-    ];
-});
-
-
+    public function female_vote()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'create_user_id' => function () {
+                    return User::factory()->female()->create()
+                        ->id;
+                }
+            ];
+        });
+    }
+}

@@ -33,29 +33,29 @@ use Illuminate\Support\Carbon;
  * @property bool|null $autofix_first_post_in_created_topics
  * @property bool|null $order_topics_based_on_fix_post_likes
  * @property bool $is_idea_forum
- * @property-read User|null $create_user
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $forumable
- * @property-read ForumGroup|null $group
- * @property-read Post|null $last_post
- * @property-read Topic|null $last_topic
- * @property-read \Illuminate\Database\Eloquent\Collection|Post[] $posts
- * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $topics
- * @property-read \Illuminate\Database\Eloquent\Collection|UsersAccessToForum[] $user_access
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users_with_access
+ * @property-read \App\User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $forumable
+ * @property-read \App\ForumGroup|null $group
+ * @property-read \App\Post|null $last_post
+ * @property-read \App\Topic|null $last_topic
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Post[] $posts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Topic[] $topics
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UsersAccessToForum[] $user_access
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users_with_access
  * @method static \Illuminate\Database\Eloquent\Builder|Forum any()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum fulltextSearch($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum newQuery()
  * @method static Builder|Forum onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
- * @method static \Illuminate\Database\Eloquent\Builder|Forum public ()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static \Illuminate\Database\Eloquent\Builder|Forum public()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum query()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum void()
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereAutofixFirstPostInCreatedTopics($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Forum whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Forum whereForumGroupId($value)

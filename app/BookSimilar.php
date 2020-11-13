@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * App\BookSimilar
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|BookSimilarVote[] $votes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookSimilarVote[] $votes
  * @method static Builder|BookSimilar newModelQuery()
  * @method static Builder|BookSimilar newQuery()
  * @method static Builder|Model orderByField($column, $ids)

@@ -17,10 +17,10 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $status
  * @property int|null $origin_book_id
- * @property-read Book $book
+ * @property-read \App\Book $book
  * @property mixed $code
- * @property-read Book|null $originBook
- * @property-read User $user
+ * @property-read \App\Book|null $originBook
+ * @property-read \App\User $user
  * @method static Builder|BookStatus newModelQuery()
  * @method static Builder|BookStatus newQuery()
  * @method static Builder|BookStatus onlyTrashed()

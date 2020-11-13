@@ -8,11 +8,11 @@ use PHPUnit\Framework\TestCase;
 
 class BookTest extends TestCase
 {
-	public function testDefaultAttributes()
-	{
-		$book = new Book();
+    public function testDefaultAttributes()
+    {
+        $book = new Book();
 
-		$this->assertEquals(StatusEnum::Private, $book->status);
-		$this->assertEquals(true, $book->online_read_new_format);
-	}
+        $this->assertEquals(StatusEnum::Private, $book->status);
+        $this->assertEquals(true, $book->online_read_new_format);
+    }
 }

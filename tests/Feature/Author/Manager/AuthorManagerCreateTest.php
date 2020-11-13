@@ -9,80 +9,80 @@ use Tests\TestCase;
 
 class AuthorManagerCreateTest extends TestCase
 {
-	public function testAttachUserToAuthor()
-	{
-		$admin = User::factory()->create();
-		$admin->group->moderator_add_remove = true;
-		$admin->push();
+    public function testAttachUserToAuthor()
+    {
+        $admin = User::factory()->create();
+        $admin->group->moderator_add_remove = true;
+        $admin->push();
 
-		$author = Author::factory()->create();
+        $author = Author::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($admin)
-			->post(route('authors.managers.store', ['author' => $author->id]), [
-				'user_id' => $user->id,
-				'character' => 'author'
-			])
-			->assertRedirect()
-			->assertSessionHasNoErrors();
+        $this->actingAs($admin)
+            ->post(route('authors.managers.store', ['author' => $author->id]), [
+                'user_id' => $user->id,
+                'character' => 'author'
+            ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
 
-		$manager = $author->managers()->first();
+        $manager = $author->managers()->first();
 
-		$this->assertNotNull($manager);
-		$this->assertEquals($user->id, $manager->user_id);
-	}
+        $this->assertNotNull($manager);
+        $this->assertEquals($user->id, $manager->user_id);
+    }
 
-	public function testAttachUserToAuthorIfOtherUserAlreadyAttachedAsAuthor()
-	{
-		$admin = User::factory()->create();
-		$admin->group->moderator_add_remove = true;
-		$admin->push();
+    public function testAttachUserToAuthorIfOtherUserAlreadyAttachedAsAuthor()
+    {
+        $admin = User::factory()->create();
+        $admin->group->moderator_add_remove = true;
+        $admin->push();
 
-		$author = Author::factory()->create();
+        $author = Author::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$manager = Manager::factory()->create([
-				'create_user_id' => $admin->id,
-				'character' => 'author',
-				'manageable_id' => $author->id,
-			]);
+        $manager = Manager::factory()->create([
+            'create_user_id' => $admin->id,
+            'character' => 'author',
+            'manageable_id' => $author->id,
+        ]);
 
-		$response = $this->actingAs($admin)
-			->post(route('authors.managers.store', ['author' => $author->id]), [
-				'user_id' => $user->id,
-				'character' => 'author'
-			])
-			->assertRedirect();
+        $response = $this->actingAs($admin)
+            ->post(route('authors.managers.store', ['author' => $author->id]), [
+                'user_id' => $user->id,
+                'character' => 'author'
+            ])
+            ->assertRedirect();
 
-		//dump(session('errors'));
+        //dump(session('errors'));
 
-		$response->assertSessionHasErrors(['user_id' => __('The author has already been verified. Delete the other verification to add a new one')]);
+        $response->assertSessionHasErrors(['user_id' => __('The author has already been verified. Delete the other verification to add a new one')]);
 
-		$count = $author->managers()->count();
+        $count = $author->managers()->count();
 
-		$this->assertEquals(1, $count);
-	}
+        $this->assertEquals(1, $count);
+    }
 
-	public function testAttachAuthorUserGroupOnAttach()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testAttachAuthorUserGroupOnAttach()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$author = Author::factory()->create();
+        $author = Author::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($admin)
-			->post(route('authors.managers.store', ['author' => $author->id]), [
-				'user_id' => $user->id,
-				'character' => 'author'
-			])
-			->assertRedirect()
-			->assertSessionHasNoErrors();
+        $this->actingAs($admin)
+            ->post(route('authors.managers.store', ['author' => $author->id]), [
+                'user_id' => $user->id,
+                'character' => 'author'
+            ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
 
-		$user->refresh();
+        $user->refresh();
 
-		$this->assertEquals('Автор', $user->groups()->disableCache()->whereName('Автор')->first()->name);
-	}
+        $this->assertEquals('Автор', $user->groups()->disableCache()->whereName('Автор')->first()->name);
+    }
 }

@@ -15,8 +15,8 @@ use Illuminate\Support\Carbon;
  * @property int $user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Topic $topic
- * @property-read User $user
+ * @property-read \App\Topic $topic
+ * @property-read \App\User $user
  * @method static Builder|UserTopicSubscription newModelQuery()
  * @method static Builder|UserTopicSubscription newQuery()
  * @method static Builder|Model orderByField($column, $ids)

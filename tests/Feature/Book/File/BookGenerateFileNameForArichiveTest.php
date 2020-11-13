@@ -8,15 +8,19 @@ use Tests\TestCase;
 
 class BookGenerateFileNameForArichiveTest extends TestCase
 {
-	public function testGenerateFileNameForArichive()
-	{
-		$file = factory(BookFile::class)->states('fb2')->create();
+    public function testGenerateFileNameForArichive()
+    {
+        $file = BookFile::factory()
+            ->fb2()
+            ->create();
 
-		$book = Book::factory()->without_any_authors()->create();
+        $book = Book::factory()
+            ->without_any_authors()
+            ->create(['title' => 'Книга']);
 
-		$file->book()->associate($book);
+        $file->book()->associate($book);
 
-		$this->assertRegExp('/^Kniga_([A-z0-9]{5})\.fb2\.zip$/iu', $file->generateFileNameForArichive());
-		$this->assertNotRegExp('/^Kniga_([A-z0-9]{6})\.fb2\.zip$/iu', $file->generateFileNameForArichive());
-	}
+        $this->assertRegExp('/^Kniga_([A-z0-9]{5})\.fb2\.zip$/iu', $file->generateFileNameForArichive());
+        $this->assertNotRegExp('/^Kniga_([A-z0-9]{6})\.fb2\.zip$/iu', $file->generateFileNameForArichive());
+    }
 }

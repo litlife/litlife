@@ -11,15 +11,15 @@ use Illuminate\Support\Str;
 /**
  * App\GenreGroup
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|Genre[] $genres
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Genre[] $genres
  * @property-write mixed $name
  * @method static \Illuminate\Database\Eloquent\Builder|GenreGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|GenreGroup newQuery()
  * @method static Builder|GenreGroup onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|GenreGroup query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|GenreGroup whereIdWithSlug($id)
  * @method static Builder|GenreGroup withTrashed()
  * @method static Builder|GenreGroup withoutTrashed()

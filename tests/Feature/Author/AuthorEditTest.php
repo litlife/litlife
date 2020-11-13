@@ -9,194 +9,193 @@ use Tests\TestCase;
 
 class AuthorEditTest extends TestCase
 {
-	public function testEditDeletedHttp()
-	{
-		$user = User::factory()->create();
-		$user->group->author_edit = true;
-		$user->push();
+    public function testEditDeletedHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->author_edit = true;
+        $user->push();
 
-		$author = Author::factory()->with_photo()->create(
-			)
-			->fresh();
+        $author = Author::factory()->with_photo()->create()
+            ->fresh();
 
-		$this->assertEquals(1, $author->photos()->count());
-		$this->assertNotNull($author->photo);
+        $this->assertEquals(1, $author->photos()->count());
+        $this->assertNotNull($author->photo);
 
-		$author->delete();
+        $author->delete();
 
-		$response = $this->actingAs($user)
-			->get(route('authors.edit', ['author' => $author]))
-			->assertOk();
-	}
+        $response = $this->actingAs($user)
+            ->get(route('authors.edit', ['author' => $author]))
+            ->assertOk();
+    }
 
-	public function testWithEmptyBiographyHttp()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testWithEmptyBiographyHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$user = User::factory()->create();
-		$user->group->author_edit = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->author_edit = true;
+        $user->push();
 
-		$author = Author::factory()->create();
-		$author->save();
+        $author = Author::factory()->create();
+        $author->save();
 
-		$response = $this->actingAs($user)
-			->patch(route('authors.update', $author),
-				[
-					'first_name' => $this->faker->firstName,
-					'last_name' => $this->faker->lastName,
-					'gender' => 'male'
-				]);
-		//dump(session('errors'));
-		$response->assertSessionHasNoErrors()
-			->assertRedirect();
+        $response = $this->actingAs($user)
+            ->patch(route('authors.update', $author),
+                [
+                    'first_name' => $this->faker->firstName,
+                    'last_name' => $this->faker->lastName,
+                    'gender' => 'male'
+                ]);
+        //dump(session('errors'));
+        $response->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$this->assertEquals(1, $author->activities()->count());
-		$activity = $author->activities()->first();
-		$this->assertEquals('updated', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $this->assertEquals(1, $author->activities()->count());
+        $activity = $author->activities()->first();
+        $this->assertEquals('updated', $activity->description);
+        $this->assertEquals($user->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 
-	public function testBiographyHttp()
-	{
-		$user = User::factory()->create();
-		$user->group->author_edit = true;
-		$user->push();
+    public function testBiographyHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->author_edit = true;
+        $user->push();
 
-		$author = Author::factory()->create();
-		$author->save();
+        $author = Author::factory()->create();
+        $author->save();
 
-		$biography = $this->faker->realText(100);
+        $biography = $this->faker->realText(100);
 
-		$response = $this->actingAs($user)
-			->patch(route('authors.update', $author),
-				[
-					'first_name' => $this->faker->firstName,
-					'last_name' => $this->faker->lastName,
-					'gender' => 'male',
-					'biography' => $biography
-				]);
-		//dump(session('errors'));
-		$response->assertSessionHasNoErrors()
-			->assertRedirect(route('authors.edit', $author))
-			->assertSessionHas(['success' => __('author.description_was_saved_successfully')]);
+        $response = $this->actingAs($user)
+            ->patch(route('authors.update', $author),
+                [
+                    'first_name' => $this->faker->firstName,
+                    'last_name' => $this->faker->lastName,
+                    'gender' => 'male',
+                    'biography' => $biography
+                ]);
+        //dump(session('errors'));
+        $response->assertSessionHasNoErrors()
+            ->assertRedirect(route('authors.edit', $author))
+            ->assertSessionHas(['success' => __('author.description_was_saved_successfully')]);
 
-		$response = $this->get(route('authors.show', $author))
-			->assertSeeText($biography);
+        $response = $this->get(route('authors.show', $author))
+            ->assertSeeText($biography);
 
-		$biography = $this->faker->realText(100);
+        $biography = $this->faker->realText(100);
 
-		$response = $this->actingAs($user)
-			->patch(route('authors.update', $author),
-				[
-					'first_name' => $this->faker->firstName,
-					'last_name' => $this->faker->lastName,
-					'gender' => 'male',
-					'biography' => $biography
-				]);
-		//dump(session('errors'));
-		$response->assertSessionHasNoErrors()
-			->assertRedirect();
+        $response = $this->actingAs($user)
+            ->patch(route('authors.update', $author),
+                [
+                    'first_name' => $this->faker->firstName,
+                    'last_name' => $this->faker->lastName,
+                    'gender' => 'male',
+                    'biography' => $biography
+                ]);
+        //dump(session('errors'));
+        $response->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$response = $this->get(route('authors.show', $author))
-			->assertSeeText($biography);
-	}
+        $response = $this->get(route('authors.show', $author))
+            ->assertSeeText($biography);
+    }
 
 
-	public function testDeleteBiographyIfClear()
-	{
-		$user = User::factory()->admin()->create();
+    public function testDeleteBiographyIfClear()
+    {
+        $user = User::factory()->admin()->create();
 
-		$biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
+        $biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 
-		$author = $biography->author;
+        $author = $biography->author;
 
-		$post = $author->toArray();
-		$post['biography'] = '<p></p><p></p><p></p>';
+        $post = $author->toArray();
+        $post['biography'] = '<p></p><p></p><p></p>';
 
-		$this->actingAs($user)
-			->patch(route('authors.update', $author), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('authors.update', $author), $post)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$author->refresh();
+        $author->refresh();
 
-		$this->assertNull($author->biography);
-	}
+        $this->assertNull($author->biography);
+    }
 
-	public function testRestoreDeletedBiography()
-	{
-		$user = User::factory()->admin()->create();
+    public function testRestoreDeletedBiography()
+    {
+        $user = User::factory()->admin()->create();
 
-		$biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
+        $biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 
-		$author = $biography->author;
+        $author = $biography->author;
 
-		$post = $author->toArray();
-		$post['biography'] = '<p>123</p>';
+        $post = $author->toArray();
+        $post['biography'] = '<p>123</p>';
 
-		$biography->delete();
+        $biography->delete();
 
-		$this->actingAs($user)
-			->patch(route('authors.update', $author), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('authors.update', $author), $post)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$biography->refresh();
+        $biography->refresh();
 
-		$this->assertFalse($biography->trashed());
-		$this->assertEquals($post['biography'], $biography->text);
-	}
+        $this->assertFalse($biography->trashed());
+        $this->assertEquals($post['biography'], $biography->text);
+    }
 
-	public function testDontDeleteBiographyIfImageExists()
-	{
-		$user = User::factory()->admin()->create();
+    public function testDontDeleteBiographyIfImageExists()
+    {
+        $user = User::factory()->admin()->create();
 
-		$biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
+        $biography = AuthorBiography::factory()->create(['text' => '<p>текст</p>']);
 
-		$author = $biography->author;
+        $author = $biography->author;
 
-		$post = $author->toArray();
-		$post['biography'] = '<p><img src="https://example.com/img.png" alt="img.png" /></p>';
+        $post = $author->toArray();
+        $post['biography'] = '<p><img src="https://example.com/img.png" alt="img.png" /></p>';
 
-		$this->actingAs($user)
-			->patch(route('authors.update', $author), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('authors.update', $author), $post)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$author->refresh();
+        $author->refresh();
 
-		$this->assertNotNull($author->biography);
-		$this->assertEquals($post['biography'], $author->biography->text);
-	}
+        $this->assertNotNull($author->biography);
+        $this->assertEquals($post['biography'], $author->biography->text);
+    }
 
-	public function testIsBookAttributeTitleAuthorsHelperUpdateAfterAuthorUpdate()
-	{
-		$user = User::factory()->admin()->create();
+    public function testIsBookAttributeTitleAuthorsHelperUpdateAfterAuthorUpdate()
+    {
+        $user = User::factory()->admin()->create();
 
-		$author = Author::factory()->with_book()->create();
+        $author = Author::factory()->with_book()->create();
 
-		$book = $author->books()->first();
+        $book = $author->books()->first();
 
-		$last_name = uniqid();
+        $last_name = uniqid();
 
-		$post = $author->toArray();
-		$post['last_name'] = $last_name;
+        $post = $author->toArray();
+        $post['last_name'] = $last_name;
 
-		$this->actingAs($user)
-			->patch(route('authors.update', $author), $post)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('authors.update', $author), $post)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$author->refresh();
-		$book->refresh();
+        $author->refresh();
+        $book->refresh();
 
-		$this->assertEquals($last_name, $author->last_name);
+        $this->assertEquals($last_name, $author->last_name);
 
-		$expected = mb_strtolower(trim($book->title));
-		$expected = mb_str_replace('ё', 'е', $expected);
+        $expected = mb_strtolower(trim($book->title));
+        $expected = mb_str_replace('ё', 'е', $expected);
 
-		$this->assertEquals($expected, $book->title_search_helper);
-	}
+        $this->assertEquals($expected, $book->title_search_helper);
+    }
 }

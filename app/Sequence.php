@@ -38,11 +38,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int|null $merge_user_id
  * @property Carbon|null $merged_at
  * @property int $added_to_favorites_count Количество пользователей добавивших в избранное
- * @property-read \Illuminate\Database\Eloquent\Collection|Activity[] $activities
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $addedToFavoritesUsers
- * @property-read Like|null $authUserLike
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
- * @property-read User|null $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $activities
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
+ * @property-read \App\Like|null $authUserLike
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
+ * @property-read \App\User|null $create_user
  * @property mixed $books_count
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
@@ -50,11 +50,11 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
  * @property-read mixed $pivot_number
- * @property-read \Illuminate\Database\Eloquent\Collection|UserSequence[] $library_users
- * @property-read \Illuminate\Database\Eloquent\Collection|Like[] $likes
- * @property-read User|null $merge_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSequence[] $library_users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
+ * @property-read \App\User|null $merge_user
  * @property-read Sequence|null $merged_sequence
- * @property-read User|null $status_changed_user
+ * @property-read \App\User|null $status_changed_user
  * @method static Builder|Sequence accepted()
  * @method static Builder|Sequence acceptedAndSentForReview()
  * @method static Builder|Sequence acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -78,7 +78,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Sequence orderStatusChangedAsc()
  * @method static Builder|Sequence orderStatusChangedDesc()
- * @method static Builder|Sequence private ()
+ * @method static Builder|Sequence private()
  * @method static Builder|Sequence query()
  * @method static Builder|Sequence rememberCount($minutes = 5, $refresh = false)
  * @method static Builder|Sequence sentOnReview()
@@ -90,7 +90,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @method static Builder|Sequence whereBookCount($value)
  * @method static Builder|Sequence whereCreateUserId($value)
  * @method static Builder|Sequence whereCreatedAt($value)
- * @method static Builder|Sequence whereCreator(User $user)
+ * @method static Builder|Sequence whereCreator(\App\User $user)
  * @method static Builder|Sequence whereDeletedAt($value)
  * @method static Builder|Sequence whereDescription($value)
  * @method static Builder|Sequence whereId($value)

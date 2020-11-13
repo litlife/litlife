@@ -7,27 +7,27 @@ use Tests\TestCase;
 
 class CommentPublishTest extends TestCase
 {
-	public function testPublishPrivate()
-	{
-		$comment = Comment::factory()->book()->private()->create();
+    public function testPublishPrivate()
+    {
+        $comment = Comment::factory()->book()->private()->create();
 
-		$this->assertTrue($comment->isPrivate());
+        $this->assertTrue($comment->isPrivate());
 
-		$comment->commentable->refreshCommentCount();
-		$comment->commentable->save();
+        $comment->commentable->refreshCommentCount();
+        $comment->commentable->save();
 
-		$this->assertEquals(0, $comment->commentable->comment_count);
+        $this->assertEquals(0, $comment->commentable->comment_count);
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		$this->actingAs($user)
-			->get(route('comments.publish', $comment))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('comments.publish', $comment))
+            ->assertOk();
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertTrue($comment->isAccepted());
+        $this->assertTrue($comment->isAccepted());
 
-		$this->assertEquals(1, $comment->commentable->comment_count);
-	}
+        $this->assertEquals(1, $comment->commentable->comment_count);
+    }
 }

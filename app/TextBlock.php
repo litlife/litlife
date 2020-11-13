@@ -21,7 +21,7 @@ use League\HTMLToMarkdown\HtmlConverter;
  * @property Carbon|null $updated_at
  * @property int $id
  * @property string|null $user_edited_at Время когда пользователь отредактировал
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @method static Builder|TextBlock name($name)
  * @method static Builder|TextBlock newModelQuery()
  * @method static Builder|TextBlock newQuery()
@@ -30,7 +30,7 @@ use League\HTMLToMarkdown\HtmlConverter;
  * @method static Builder|TextBlock query()
  * @method static Builder|Model void()
  * @method static Builder|TextBlock whereCreatedAt($value)
- * @method static Builder|TextBlock whereCreator(User $user)
+ * @method static Builder|TextBlock whereCreator(\App\User $user)
  * @method static Builder|TextBlock whereId($value)
  * @method static Builder|TextBlock whereName($value)
  * @method static Builder|TextBlock whereShowForAll($value)

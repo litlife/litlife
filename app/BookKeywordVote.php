@@ -17,8 +17,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $id
- * @property-read BookKeyword $book_keyword
- * @property-read User $create_user
+ * @property-read \App\BookKeyword $book_keyword
+ * @property-read \App\User $create_user
  * @method static Builder|BookKeywordVote newModelQuery()
  * @method static Builder|BookKeywordVote newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -28,7 +28,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookKeywordVote whereBookKeywordId($value)
  * @method static Builder|BookKeywordVote whereCreateUserId($value)
  * @method static Builder|BookKeywordVote whereCreatedAt($value)
- * @method static Builder|BookKeywordVote whereCreator(User $user)
+ * @method static Builder|BookKeywordVote whereCreator(\App\User $user)
  * @method static Builder|BookKeywordVote whereId($value)
  * @method static Builder|BookKeywordVote whereUpdatedAt($value)
  * @method static Builder|BookKeywordVote whereVote($value)

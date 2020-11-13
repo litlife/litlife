@@ -1,33 +1,59 @@
 <?php
 
+namespace Database\Factories;
+
 use App\PasswordReset;
-use Faker\Generator as Faker;
+use App\User;
 
-$factory->define(App\PasswordReset::class, function (Faker $faker) {
+class PasswordResetFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = PasswordReset::class;
 
-    return [
-        'user_id' => 0,
-        'email' => '',
-        'used_at' => null,
-        'created_at' => now(),
-        'updated_at' => now()
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => 0,
+            'email' => '',
+            'used_at' => null,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+    }
 
-$factory->state(App\PasswordReset::class, 'with_user_with_confirmed_email', function ($faker) {
+    public function with_user_with_confirmed_email()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $user = factory(App\User::class)
-        ->states('with_confirmed_email')
-        ->create();
+        })->afterCreating(function ($item) {
 
-    $email = $user->emails()->first();
+        })->state(function (array $attributes) {
+            $user = User::factory()->with_confirmed_email()->create();
 
-    return [
-        'user_id' => $user->id,
-        'email' => $email->email,
-    ];
-});
+            $email = $user->emails()->first();
 
-$factory->afterMakingState(App\PasswordReset::class, 'used', function (PasswordReset $passwordReset, $faker) {
-    $passwordReset->used();
-});
+            return [
+                'user_id' => $user->id,
+                'email' => $email->email,
+            ];
+        });
+    }
+
+    public function used()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->used();
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

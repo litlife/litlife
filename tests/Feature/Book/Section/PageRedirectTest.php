@@ -9,66 +9,70 @@ use Tests\TestCase;
 
 class PageRedirectTest extends TestCase
 {
-	public function testIsRedirectOk()
-	{
-		$book = Book::factory()->create();
+    public function testIsRedirectOk()
+    {
+        $book = Book::factory()->create();
 
-		$chapter1 = Section::factory()->with_two_pages()->create();
+        $chapter1 = Section::factory()
+            ->with_two_pages()
+            ->create(['book_id' => $book->id]);
 
-		$chapter2 = Section::factory()->with_two_pages()->create();
+        $chapter2 = Section::factory()
+            ->with_two_pages()
+            ->create(['book_id' => $book->id]);
 
-		BookUpdatePageNumbersJob::dispatch($book);
+        BookUpdatePageNumbersJob::dispatch($book);
 
-		$this->get(route('books.pages', ['book' => $book, 'page' => 2]))
-			->assertRedirect(route('books.sections.show', [
-				'book' => $book,
-				'section' => $chapter1->inner_id,
-				'page' => 2
-			]));
+        $this->get(route('books.pages', ['book' => $book, 'page' => 2]))
+            ->assertRedirect(route('books.sections.show', [
+                'book' => $book,
+                'section' => $chapter1->inner_id,
+                'page' => 2
+            ]));
 
-		$this->get(route('books.pages', ['book' => $book, 'page' => 4]))
-			->assertRedirect(route('books.sections.show', [
-				'book' => $book,
-				'section' => $chapter2->inner_id,
-				'page' => 2
-			]));
-	}
+        $this->get(route('books.pages', ['book' => $book, 'page' => 4]))
+            ->assertRedirect(route('books.sections.show', [
+                'book' => $book,
+                'section' => $chapter2->inner_id,
+                'page' => 2
+            ]));
+    }
 
-	public function testPageNotFound()
-	{
-		$book = Book::factory()->create();
+    public function testPageNotFound()
+    {
+        $book = Book::factory()->create();
 
-		$chapter1 = Section::factory()->with_two_pages()->create();
+        $chapter1 = Section::factory()->with_two_pages()->create();
 
-		BookUpdatePageNumbersJob::dispatch($book);
+        BookUpdatePageNumbersJob::dispatch($book);
 
-		$this->get(route('books.pages', ['book' => $book, 'page' => 60]))
-			->assertNotFound();
-	}
+        $this->get(route('books.pages', ['book' => $book, 'page' => 60]))
+            ->assertNotFound();
+    }
 
-	public function testPageGreaterThanSmallIntIsNotFound()
-	{
-		$book = Book::factory()->create();
+    public function testPageGreaterThanSmallIntIsNotFound()
+    {
+        $book = Book::factory()->create();
 
-		$this->get(route('books.pages', ['book' => $book, 'page' => 99999999999]))
-			->assertNotFound();
-	}
+        $this->get(route('books.pages', ['book' => $book, 'page' => 99999999999]))
+            ->assertNotFound();
+    }
 
-	public function testIfSectionDeleted()
-	{
-		$book = Book::factory()->create();
+    public function testIfSectionDeleted()
+    {
+        $book = Book::factory()->create();
 
-		$chapter = Section::factory()->with_two_pages()->create();
+        $chapter = Section::factory()->with_two_pages()->create();
 
-		BookUpdatePageNumbersJob::dispatch($book);
+        BookUpdatePageNumbersJob::dispatch($book);
 
-		$page = $chapter->pages()->first();
+        $page = $chapter->pages()->first();
 
-		$this->assertNotNull($page);
+        $this->assertNotNull($page);
 
-		$chapter->delete();
+        $chapter->delete();
 
-		$this->get(route('books.pages', ['book' => $book, 'page' => $page->page]))
-			->assertNotFound();
-	}
+        $this->get(route('books.pages', ['book' => $book, 'page' => $page->page]))
+            ->assertNotFound();
+    }
 }

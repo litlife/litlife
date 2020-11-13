@@ -15,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string $payload
  * @property string $exception
  * @property string $failed_at
- * @property-read Book|null $book
+ * @property-read \App\Book|null $book
  * @method static Builder|FailedJobs inBook($bookId)
  * @method static Builder|FailedJobs newModelQuery()
  * @method static Builder|FailedJobs newQuery()

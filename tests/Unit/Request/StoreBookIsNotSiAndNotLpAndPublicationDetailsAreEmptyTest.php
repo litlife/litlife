@@ -7,35 +7,35 @@ use PHPUnit\Framework\TestCase;
 
 class StoreBookIsNotSiAndNotLpAndPublicationDetailsAreEmptyTest extends TestCase
 {
-	public function testIsSiTrue()
-	{
-		$request = new StoreBook(['is_si' => true]);
+    public function testIsSiTrue()
+    {
+        $request = new StoreBook(['is_si' => true]);
 
-		$this->assertFalse($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
-	}
+        $this->assertFalse($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
+    }
 
-	public function testIsLpTrue()
-	{
-		$request = new StoreBook(['is_lp' => true]);
+    public function testIsLpTrue()
+    {
+        $request = new StoreBook(['is_lp' => true]);
 
-		$this->assertFalse($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
-	}
+        $this->assertFalse($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
+    }
 
-	public function testIsPublisherFilled()
-	{
-		$request = new StoreBook(['pi_pub' => 'test']);
+    public function testIsPublisherFilled()
+    {
+        $request = new StoreBook(['pi_pub' => 'test']);
 
-		$this->assertFalse($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
-	}
+        $this->assertFalse($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
+    }
 
-	public function testEmpty()
-	{
-		$request = new StoreBook([
-			'is_si' => false,
-			'is_lp' => false,
-			'pi_pub' => ''
-		]);
+    public function testEmpty()
+    {
+        $request = new StoreBook([
+            'is_si' => false,
+            'is_lp' => false,
+            'pi_pub' => ''
+        ]);
 
-		$this->assertTrue($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
-	}
+        $this->assertTrue($request->isNotSiAndNotLpAndPublicationDetailsAreEmpty());
+    }
 }

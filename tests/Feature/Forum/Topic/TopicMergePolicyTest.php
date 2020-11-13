@@ -8,25 +8,25 @@ use Tests\TestCase;
 
 class TopicMergePolicyTest extends TestCase
 {
-	public function testTrue()
-	{
-		$user = User::factory()->create();
-		$user->group->manipulate_topic = true;
-		$user->push();
+    public function testTrue()
+    {
+        $user = User::factory()->create();
+        $user->group->manipulate_topic = true;
+        $user->push();
 
-		$topic = Topic::factory()->create();
+        $topic = Topic::factory()->create();
 
-		$this->assertTrue($user->can('merge', $topic));
-	}
+        $this->assertTrue($user->can('merge', $topic));
+    }
 
-	public function testFalse()
-	{
-		$user = User::factory()->create();
-		$user->group->manipulate_topic = false;
-		$user->push();
+    public function testFalse()
+    {
+        $user = User::factory()->create();
+        $user->group->manipulate_topic = false;
+        $user->push();
 
-		$topic = Topic::factory()->create();
+        $topic = Topic::factory()->create();
 
-		$this->assertFalse($user->can('merge', $topic));
-	}
+        $this->assertFalse($user->can('merge', $topic));
+    }
 }

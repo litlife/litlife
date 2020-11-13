@@ -21,15 +21,15 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
  * @method static \Illuminate\Database\Eloquent\Builder|Language disableCache()
  * @method static CachedBuilder|Language newModelQuery()
  * @method static CachedBuilder|Language newQuery()
  * @method static Builder|Language onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static CachedBuilder|Language query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Language whereDeletedAt($value)

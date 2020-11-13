@@ -44,20 +44,20 @@ use tidy;
  * @property int $status Статус главы. Пока будут варианты опубликована и в личном доступе или черновик
  * @property string|null $status_changed_at Дата изменения статуса
  * @property int|null $status_changed_user_id Пользователь последний изменивший статус
- * @property-read Book $book
+ * @property-read \App\Book $book
  * @property-read \Kalnoy\Nestedset\Collection|Section[] $children
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @property mixed $characters_count
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \Illuminate\Database\Eloquent\Collection|Page[] $pages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Page[] $pages
  * @property-read Section|null $parent
  * @property-write mixed $content
  * @property-write mixed $element_id
- * @property-read User|null $status_changed_user
+ * @property-read \App\User|null $status_changed_user
  * @method static \Illuminate\Database\Eloquent\Builder|Section accepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Section acceptedAndSentForReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Section acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -84,21 +84,21 @@ use tidy;
  * @method static \Illuminate\Database\Eloquent\Builder|Section onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Section onlyChecked()
  * @method static Builder|Section onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Section orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Section orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Section parametersIn($var, $array)
- * @method static \Illuminate\Database\Eloquent\Builder|Section private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Section private()
  * @method static QueryBuilder|Section query()
  * @method static \Illuminate\Database\Eloquent\Builder|Section sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Section unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Section unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCharacterCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Section whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Section whereInnerId($value)

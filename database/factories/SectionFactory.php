@@ -1,195 +1,246 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Book;
 use App\Jobs\Book\UpdateBookNotesCount;
 use App\Jobs\Book\UpdateBookPagesCount;
 use App\Jobs\Book\UpdateBookSectionsCount;
+use App\Page;
 use App\Section;
-use Faker\Generator as Faker;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(App\Section::class, function (Faker $faker) {
+class SectionFactory extends Factory
+{
+    use CheckedItems;
 
-    return [
-        'title' => $faker->realText(200),
-        'type' => 'section',
-        'book_id' => function () {
-            return factory(App\Book::class)
-                ->states('private', 'with_create_user')
-                ->create()
-                ->id;
-        },
-        'created_at' => now(),
-        'updated_at' => now(),
-        '_lft' => '1',
-        '_rgt' => '2'
-    ];
-});
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Section::class;
 
-$factory->afterCreating(App\Section::class, function (Section $section, $faker) {
-
-    if ($section->pages_count < 1) {
-        $section->pages()->save(factory(App\Page::class)->make(
-            [
-                'book_id' => $section->book_id,
-                'page' => '1',
-                'content' => '<p>' . $faker->realText(800) . '</p>'
-            ]
-        ));
-
-        $section->pages()->save(factory(App\Page::class)->make(
-            [
-                'book_id' => $section->book_id,
-                'page' => '2',
-                'content' => '<p>' . $faker->realText(800) . '</p>'
-            ]
-        ));
-
-        unset($section->pages);
-
-        $section->pages_count = $section->pages()->count();
-        $section->refreshCharactersCount();
-
-        if ($section->type == 'section') {
-            UpdateBookSectionsCount::dispatch($section->book);
-        }
-
-        if ($section->type == 'note') {
-            UpdateBookNotesCount::dispatch($section->book);
-        }
-
-        UpdateBookPagesCount::dispatch($section->book);
-
-        $section->book->refreshCharactersCount();
-    }
-});
-
-$factory->state(App\Section::class, 'annotation', function ($faker) {
-    return [
-        'type' => 'annotation',
-    ];
-});
-
-$factory->state(App\Section::class, 'note', function ($faker) {
-    return [
-        'type' => 'note',
-    ];
-});
-
-$factory->state(App\Section::class, 'chapter', function ($faker) {
-    return [
-        'type' => 'section',
-    ];
-});
-
-$factory->afterMakingState(App\Section::class, 'accepted', function (Section $section, $faker) {
-    $section->statusAccepted();
-});
-
-$factory->afterMakingState(App\Section::class, 'private', function (Section $section, $faker) {
-    $section->statusPrivate();
-});
-
-$factory->afterMakingState(App\Section::class, 'book_private', function (Section $section, $faker) {
-    $section->book->statusPrivate();
-    $section->book->save();
-});
-
-$factory->afterCreatingState(App\Section::class, 'no_pages', function (Section $section, $faker) {
-    $section->pages()->delete();
-    $section->pages_count = $section->pages()->count();
-    $section->save();
-
-    if ($section->type == 'section') {
-        UpdateBookSectionsCount::dispatch($section->book);
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title' => $this->faker->realText(200),
+            'type' => 'section',
+            'book_id' => Book::factory()->private()->with_create_user(),
+            'created_at' => now(),
+            'updated_at' => now(),
+            '_lft' => '1',
+            '_rgt' => '2'
+        ];
     }
 
-    if ($section->type == 'note') {
-        UpdateBookNotesCount::dispatch($section->book);
+    public function configure()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+            if ($item->pages_count < 1) {
+                $item->pages()->save(Page::factory()->make(
+                    [
+                        'book_id' => $item->book_id,
+                        'page' => '1',
+                        'content' => '<p>'.$this->faker->realText(800).'</p>'
+                    ]
+                ));
+
+                $item->pages()->save(Page::factory()->make(
+                    [
+                        'book_id' => $item->book_id,
+                        'page' => '2',
+                        'content' => '<p>'.$this->faker->realText(800).'</p>'
+                    ]
+                ));
+
+                unset($item->pages);
+
+                $item->pages_count = $item->pages()->count();
+                $item->refreshCharactersCount();
+
+                if ($item->type == 'section') {
+                    UpdateBookSectionsCount::dispatch($item->book);
+                }
+
+                if ($item->type == 'note') {
+                    UpdateBookNotesCount::dispatch($item->book);
+                }
+
+                UpdateBookPagesCount::dispatch($item->book);
+
+                $item->book->refreshCharactersCount();
+            }
+        });
     }
 
-    UpdateBookPagesCount::dispatch($section->book);
+    public function annotation()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $section->refreshCharactersCount();
-    $section->book->refreshCharactersCount();
-});
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\Section::class, 'with_three_pages', function (Section $section, $faker) {
-    $section->pages()->delete();
-
-    $section->pages()->save(factory(App\Page::class)->make(
-        [
-            'book_id' => $section->book_id,
-            'page' => 1,
-            'content' => '<p>' . $faker->realText(800) . '</p>'
-        ]
-    ));
-
-    $section->pages()->save(factory(App\Page::class)->make(
-        [
-            'book_id' => $section->book_id,
-            'page' => 2,
-            'content' => '<p>' . $faker->realText(800) . '</p>'
-        ]
-    ));
-
-    $section->pages()->save(factory(App\Page::class)->make(
-        [
-            'book_id' => $section->book_id,
-            'page' => 3,
-            'content' => '<p>' . $faker->realText(800) . '</p>'
-        ]
-    ));
-
-    $section->pages_count = $section->pages()->count();
-    $section->save();
-
-    if ($section->type == 'section') {
-        UpdateBookSectionsCount::dispatch($section->book);
+        })->state(function (array $attributes) {
+            return [
+                'type' => 'annotation'
+            ];
+        });
     }
 
-    if ($section->type == 'note') {
-        UpdateBookNotesCount::dispatch($section->book);
+    public function note()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+
+        })->state(function (array $attributes) {
+            return [
+                'type' => 'note',
+            ];
+        });
     }
 
-    UpdateBookPagesCount::dispatch($section->book);
+    public function chapter()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $section->refreshCharactersCount();
-    $section->book->refreshCharactersCount();
-});
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\Section::class, 'with_two_pages', function (Section $section, $faker) {
-    $section->pages()->delete();
-
-    $section->pages()->save(factory(App\Page::class)->make(
-        [
-            'book_id' => $section->book_id,
-            'page' => 1,
-            'content' => '<p>' . $faker->realText(800) . '</p>'
-        ]
-    ));
-
-    $section->pages()->save(factory(App\Page::class)->make(
-        [
-            'book_id' => $section->book_id,
-            'page' => 2,
-            'content' => '<p>' . $faker->realText(800) . '</p>'
-        ]
-    ));
-
-    $section->pages_count = $section->pages()->count();
-    $section->save();
-
-    if ($section->type == 'section') {
-        UpdateBookSectionsCount::dispatch($section->book);
+        })->state(function (array $attributes) {
+            return [
+                'type' => 'section',
+            ];
+        });
     }
 
-    if ($section->type == 'note') {
-        UpdateBookNotesCount::dispatch($section->book);
+    public function book_private()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->book->statusPrivate();
+            $item->book->save();
+        })->afterCreating(function ($item) {
+
+        });
     }
 
-    UpdateBookPagesCount::dispatch($section->book);
+    public function no_pages()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $section->refreshCharactersCount();
-    $section->book->refreshCharactersCount();
-});
+        })->afterCreating(function ($item) {
+            $item->pages()->delete();
+            $item->pages_count = $item->pages()->count();
+            $item->save();
 
+            if ($item->type == 'section') {
+                UpdateBookSectionsCount::dispatch($item->book);
+            }
 
+            if ($item->type == 'note') {
+                UpdateBookNotesCount::dispatch($item->book);
+            }
+
+            UpdateBookPagesCount::dispatch($item->book);
+
+            $item->refreshCharactersCount();
+            $item->book->refreshCharactersCount();
+        });
+    }
+
+    public function with_three_pages()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+            $item->pages()->delete();
+
+            $item->pages()->save(Page::factory()->make(
+                [
+                    'book_id' => $item->book_id,
+                    'page' => 1,
+                    'content' => '<p>'.$this->faker->realText(800).'</p>'
+                ]
+            ));
+
+            $item->pages()->save(Page::factory()->make(
+                [
+                    'book_id' => $item->book_id,
+                    'page' => 2,
+                    'content' => '<p>'.$this->faker->realText(800).'</p>'
+                ]
+            ));
+
+            $item->pages()->save(Page::factory()->make(
+                [
+                    'book_id' => $item->book_id,
+                    'page' => 3,
+                    'content' => '<p>'.$this->faker->realText(800).'</p>'
+                ]
+            ));
+
+            $item->pages_count = $item->pages()->count();
+            $item->save();
+
+            if ($item->type == 'section') {
+                UpdateBookSectionsCount::dispatch($item->book);
+            }
+
+            if ($item->type == 'note') {
+                UpdateBookNotesCount::dispatch($item->book);
+            }
+
+            UpdateBookPagesCount::dispatch($item->book);
+
+            $item->refreshCharactersCount();
+            $item->book->refreshCharactersCount();
+        });
+    }
+
+    public function with_two_pages()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+            $item->pages()->delete();
+
+            $item->pages()->save(Page::factory()->make(
+                [
+                    'book_id' => $item->book_id,
+                    'page' => 1,
+                    'content' => '<p>'.$this->faker->realText(800).'</p>'
+                ]
+            ));
+
+            $item->pages()->save(Page::factory()->make(
+                [
+                    'book_id' => $item->book_id,
+                    'page' => 2,
+                    'content' => '<p>'.$this->faker->realText(800).'</p>'
+                ]
+            ));
+
+            $item->pages_count = $item->pages()->count();
+            $item->save();
+
+            if ($item->type == 'section') {
+                UpdateBookSectionsCount::dispatch($item->book);
+            }
+
+            if ($item->type == 'note') {
+                UpdateBookNotesCount::dispatch($item->book);
+            }
+
+            UpdateBookPagesCount::dispatch($item->book);
+
+            $item->refreshCharactersCount();
+            $item->book->refreshCharactersCount();
+        });
+    }
+}

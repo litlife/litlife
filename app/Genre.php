@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $deleted_at
  * @property string|null $slug Слаг
  * @property int|null $genre_group_id Старый ID главного жанра
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
  * @property-read \Illuminate\Database\Eloquent\Collection|Genre[] $childGenres
  * @property-read Genre|null $group
  * @method static \Illuminate\Database\Eloquent\Builder|Genre main()
@@ -32,13 +32,13 @@ use Illuminate\Support\Str;
  * @method static \Illuminate\Database\Eloquent\Builder|Genre newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Genre notMain()
  * @method static Builder|Genre onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Genre parseIds($ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre query()
  * @method static \Illuminate\Database\Eloquent\Builder|Genre rememberCount($minutes = 5, $refresh = false)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre search($searchText)
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereAge($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereBookCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Genre whereCreatedAt($value)

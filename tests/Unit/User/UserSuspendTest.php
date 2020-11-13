@@ -7,18 +7,18 @@ use PHPUnit\Framework\TestCase;
 
 class UserSuspendTest extends TestCase
 {
-	public function testSuspended()
-	{
-		$user = new User();
+    public function testSuspended()
+    {
+        $user = new User();
 
-		$this->assertFalse($user->isSuspended());
+        $this->assertFalse($user->isSuspended());
 
-		$user->suspend();
+        $user->suspend();
 
-		$this->assertTrue($user->isSuspended());
+        $this->assertTrue($user->isSuspended());
 
-		$user->unsuspend();
+        $user->unsuspend();
 
-		$this->assertFalse($user->isSuspended());
-	}
+        $this->assertFalse($user->isSuspended());
+    }
 }

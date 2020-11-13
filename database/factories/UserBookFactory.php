@@ -1,16 +1,30 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Book;
 use App\User;
-use Faker\Generator as Faker;
+use App\UserBook;
 
-$factory->define(App\UserBook::class, function (Faker $faker) {
-    return [
-        'user_id' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'book_id' => function () {
-            return factory(Book::class)->create()->id;
-        },
-    ];
-});
+class UserBookFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserBook::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'book_id' => Book::factory(),
+        ];
+    }
+}

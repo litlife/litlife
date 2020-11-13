@@ -4,7 +4,7 @@ namespace App;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Carbon;
 
 /**
@@ -17,7 +17,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @method static Builder|SearchQueriesLog newModelQuery()
  * @method static Builder|SearchQueriesLog newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|SearchQueriesLog query()
+ * @method static Builder|Model void()
  * @method static Builder|SearchQueriesLog whereCreatedAt($value)
  * @method static Builder|SearchQueriesLog whereId($value)
  * @method static Builder|SearchQueriesLog whereQueryText($value)

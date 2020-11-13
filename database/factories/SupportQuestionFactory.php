@@ -1,49 +1,47 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\Enums\SupportQuestionTypeEnum;
 use App\SupportQuestion;
 use App\SupportQuestionMessage;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(SupportQuestion::class, function (Faker $faker) {
-    return [
-        'category' => SupportQuestionTypeEnum::getRandomValue(),
-        'title' => $this->faker->realText(100),
-        'create_user_id' => function () {
-            return factory(App\User::class)->states('with_user_group')->create()->id;
-        }
-    ];
-});
+class SupportQuestionFactory extends Factory
+{
+    use CheckedItems;
 
-$factory->afterMakingState(App\SupportQuestion::class, 'accepted', function (SupportQuestion $supportQuestion, $faker) {
-    $supportQuestion->statusAccepted();
-});
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = SupportQuestion::class;
 
-$factory->afterMakingState(App\SupportQuestion::class, 'sent_for_review', function (SupportQuestion $supportQuestion, $faker) {
-    $supportQuestion->statusSentForReview();
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'category' => SupportQuestionTypeEnum::getRandomValue(),
+            'title' => $this->faker->realText(100),
+            'create_user_id' => User::factory()->with_user_group()
+        ];
+    }
 
-$factory->afterCreatingState(App\SupportQuestion::class, 'with_message', function (SupportQuestion $supportQuestion, $faker) {
-    $message = factory(SupportQuestionMessage::class)
-        ->make(['create_user_id' => $supportQuestion->create_user_id]);
+    public function with_message()
+    {
+        return $this->afterMaking(function ($item) {
 
-    $supportQuestion->messages()->save($message);
-});
+        })->afterCreating(function ($item) {
+            $message = SupportQuestionMessage::factory()
+                ->make(['create_user_id' => $item->create_user_id]);
 
-$factory->afterMakingState(App\SupportQuestion::class, 'review_starts', function (SupportQuestion $supportQuestion, $faker) {
-    $supportQuestion->statusReviewStarts();
-});
-
-$factory->afterCreatingState(App\SupportQuestion::class, 'review_starts', function (SupportQuestion $supportQuestion, $faker) {
-
-    $supportQuestion->status_changed_user_id = factory(App\User::class)
-        ->states('with_user_group', 'admin')
-        ->create()
-        ->id;
-
-    $supportQuestion->save();
-
-});
+            $item->messages()->save($message);
+        });
+    }
+}

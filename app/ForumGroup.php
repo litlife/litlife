@@ -22,21 +22,21 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property int|null $image_id forum_group.image_id
- * @property-read User $create_user
- * @property-read \Illuminate\Database\Eloquent\Collection|Forum[] $forums
- * @property-read Image|null $image
+ * @property-read \App\User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Forum[] $forums
+ * @property-read \App\Image|null $image
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup any()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup newQuery()
  * @method static Builder|ForumGroup onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup orderBySettings()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereForumSort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereId($value)

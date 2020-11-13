@@ -21,8 +21,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $waited_at
  * @property int|null $create_user_id
- * @property-read Book $book
- * @property-read User|null $create_user
+ * @property-read \App\Book $book
+ * @property-read \App\User|null $create_user
  * @method static Builder|BookParse failedParse()
  * @method static Builder|BookParse newModelQuery()
  * @method static Builder|BookParse newQuery()
@@ -35,7 +35,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookParse whereBookId($value)
  * @method static Builder|BookParse whereCreateUserId($value)
  * @method static Builder|BookParse whereCreatedAt($value)
- * @method static Builder|BookParse whereCreator(User $user)
+ * @method static Builder|BookParse whereCreator(\App\User $user)
  * @method static Builder|BookParse whereFailedAt($value)
  * @method static Builder|BookParse whereId($value)
  * @method static Builder|BookParse whereOptions($value)

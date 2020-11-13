@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
  * @property string $ip
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read BookFile $book_file
+ * @property-read \App\BookFile $book_file
  * @method static Builder|BookFileDownloadLog newModelQuery()
  * @method static Builder|BookFileDownloadLog newQuery()
  * @method static Builder|Model orderByField($column, $ids)

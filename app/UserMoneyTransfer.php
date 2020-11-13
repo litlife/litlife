@@ -16,11 +16,11 @@ use Illuminate\Support\Carbon;
  * @property int $recepient_user_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $recepient
- * @property-read UserPaymentTransaction|null $recepient_transaction
- * @property-read User $sender
- * @property-read UserPaymentTransaction|null $sender_transaction
- * @property-read UserPaymentTransaction|null $transaction
+ * @property-read \App\User $recepient
+ * @property-read \App\UserPaymentTransaction|null $recepient_transaction
+ * @property-read \App\User $sender
+ * @property-read \App\UserPaymentTransaction|null $sender_transaction
+ * @property-read \App\UserPaymentTransaction|null $transaction
  * @method static Builder|UserMoneyTransfer newModelQuery()
  * @method static Builder|UserMoneyTransfer newQuery()
  * @method static Builder|Model orderByField($column, $ids)

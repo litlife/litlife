@@ -8,41 +8,41 @@ use Tests\TestCase;
 
 class PostFixTest extends TestCase
 {
-	public function testFix()
-	{
-		$user = User::factory()->admin()->create();
+    public function testFix()
+    {
+        $user = User::factory()->admin()->create();
 
-		$topic = Topic::factory()->with_post()->create();
+        $topic = Topic::factory()->with_post()->create();
 
-		$post = $topic->posts()->first();
+        $post = $topic->posts()->first();
 
-		$this->assertFalse($post->isFixed());
+        $this->assertFalse($post->isFixed());
 
-		$this->actingAs($user)
-			->get(route('posts.fix', $post))
-			->assertRedirect();
+        $this->actingAs($user)
+            ->get(route('posts.fix', $post))
+            ->assertRedirect();
 
-		$post->refresh();
+        $post->refresh();
 
-		$this->assertTrue($post->isFixed());
-	}
+        $this->assertTrue($post->isFixed());
+    }
 
-	public function testUnFix()
-	{
-		$user = User::factory()->admin()->create();
+    public function testUnFix()
+    {
+        $user = User::factory()->admin()->create();
 
-		$topic = Topic::factory()->with_fixed_post()->create();
+        $topic = Topic::factory()->with_fixed_post()->create();
 
-		$post = $topic->posts()->first();
+        $post = $topic->posts()->first();
 
-		$this->assertTrue($post->isFixed());
+        $this->assertTrue($post->isFixed());
 
-		$this->actingAs($user)
-			->get(route('posts.unfix', $post))
-			->assertRedirect();
+        $this->actingAs($user)
+            ->get(route('posts.unfix', $post))
+            ->assertRedirect();
 
-		$post->refresh();
+        $post->refresh();
 
-		$this->assertFalse($post->isFixed());
-	}
+        $this->assertFalse($post->isFixed());
+    }
 }

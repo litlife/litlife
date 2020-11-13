@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $updated_at
  * @property int|null $inner_section_id
  * @property int|null $characters_count Количество символов в тексте книги на момент последнего прочтения
- * @property-read Book $book
- * @property-read User $user
+ * @property-read \App\Book $book
+ * @property-read \App\User $user
  * @method static Builder|BookReadRememberPage newModelQuery()
  * @method static Builder|BookReadRememberPage newQuery()
  * @method static Builder|Model orderByField($column, $ids)

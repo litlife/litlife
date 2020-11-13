@@ -15,86 +15,86 @@ use Tests\TestCase;
 
 class SupportQuestionStoreTest extends TestCase
 {
-	public function testIsOk()
-	{
-		Bus::fake();
+    public function testIsOk()
+    {
+        Bus::fake();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$supportQuestionNew = factory(SupportQuestion::class)
-			->make();
+        $supportQuestionNew = SupportQuestion::factory()
+            ->make();
 
-		$supportQuestionMessageNew = factory(SupportQuestionMessage::class)
-			->make();
+        $supportQuestionMessageNew = SupportQuestionMessage::factory()
+            ->make();
 
-		$response = $this->actingAs($user)
-			->post(route('support_questions.store', ['user' => $user]),
-				array_merge($supportQuestionNew->toArray(), $supportQuestionMessageNew->toArray()))
-			->assertSessionHasNoErrors()
-			->assertRedirect()
-			->assertSessionHas('success', __('Question to support has been sent successfully'));
+        $response = $this->actingAs($user)
+            ->post(route('support_questions.store', ['user' => $user]),
+                array_merge($supportQuestionNew->toArray(), $supportQuestionMessageNew->toArray()))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect()
+            ->assertSessionHas('success', __('Question to support has been sent successfully'));
 
-		$message = $user->createdSupportMessages()->first();
+        $message = $user->createdSupportMessages()->first();
 
-		$this->assertNotNull($message);
+        $this->assertNotNull($message);
 
-		$supportQuestion = $message->supportQuestion;
+        $supportQuestion = $message->supportQuestion;
 
-		$this->assertEquals($supportQuestionNew->title, $supportQuestion->title);
+        $this->assertEquals($supportQuestionNew->title, $supportQuestion->title);
 
-		$response->assertRedirect(route('support_questions.show', ['support_question' => $supportQuestion->id]));
+        $response->assertRedirect(route('support_questions.show', ['support_question' => $supportQuestion->id]));
 
-		$this->assertEquals($supportQuestion->id, $message->support_question_id);
-		$this->assertEquals($user->id, $message->create_user_id);
-		$this->assertEquals($supportQuestionMessageNew->text, $message->text);
+        $this->assertEquals($supportQuestion->id, $message->support_question_id);
+        $this->assertEquals($user->id, $message->create_user_id);
+        $this->assertEquals($supportQuestionMessageNew->text, $message->text);
 
-		$this->assertEquals(1, $supportQuestion->number_of_messages);
-		$this->assertEquals($message->id, $supportQuestion->latest_message_id);
+        $this->assertEquals(1, $supportQuestion->number_of_messages);
+        $this->assertEquals($message->id, $supportQuestion->latest_message_id);
 
-		Bus::assertNotDispatched(UpdateNumberInProgressQuestions::class);
-		Bus::assertNotDispatched(UpdateNumberOfAnsweredQuestions::class);
-		Bus::assertDispatched(UpdateNumberOfNewQuestions::class);
-	}
+        Bus::assertNotDispatched(UpdateNumberInProgressQuestions::class);
+        Bus::assertNotDispatched(UpdateNumberOfAnsweredQuestions::class);
+        Bus::assertDispatched(UpdateNumberOfNewQuestions::class);
+    }
 
-	public function testWithoutTitle()
-	{
-		$user = User::factory()->create();
+    public function testWithoutTitle()
+    {
+        $user = User::factory()->create();
 
-		$supportQuestionNew = factory(SupportQuestion::class)
-			->make();
+        $supportQuestionNew = SupportQuestion::factory()
+            ->make();
 
-		$supportQuestionMessageNew = factory(SupportQuestionMessage::class)
-			->make();
+        $supportQuestionMessageNew = SupportQuestionMessage::factory()
+            ->make();
 
-		$array = array_merge($supportQuestionNew->toArray(), $supportQuestionMessageNew->toArray());
+        $array = array_merge($supportQuestionNew->toArray(), $supportQuestionMessageNew->toArray());
 
-		unset($array['title']);
+        unset($array['title']);
 
-		$array['category'] = (string)$array['category'];
+        $array['category'] = (string) $array['category'];
 
-		$response = $this->actingAs($user)
-			->post(route('support_questions.store', ['user' => $user]), $array)
-			->assertSessionHasNoErrors()
-			->assertRedirect()
-			->assertSessionHas('success', __('Question to support has been sent successfully'));
+        $response = $this->actingAs($user)
+            ->post(route('support_questions.store', ['user' => $user]), $array)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect()
+            ->assertSessionHas('success', __('Question to support has been sent successfully'));
 
-		$message = $user->createdSupportMessages()->first();
+        $message = $user->createdSupportMessages()->first();
 
-		$this->assertNotNull($message);
+        $this->assertNotNull($message);
 
-		$supportQuestion = $message->supportQuestion;
+        $supportQuestion = $message->supportQuestion;
 
-		$this->assertEquals(Str::limit($supportQuestionMessageNew->text, 97), $supportQuestion->title);
+        $this->assertEquals(Str::limit($supportQuestionMessageNew->text, 97), $supportQuestion->title);
 
-		$response->assertRedirect(route('support_questions.show', ['support_question' => $supportQuestion->id]));
+        $response->assertRedirect(route('support_questions.show', ['support_question' => $supportQuestion->id]));
 
-		$this->assertEquals($supportQuestion->id, $message->support_question_id);
-		$this->assertEquals($user->id, $message->create_user_id);
-		$this->assertEquals($supportQuestionMessageNew->text, $message->text);
+        $this->assertEquals($supportQuestion->id, $message->support_question_id);
+        $this->assertEquals($user->id, $message->create_user_id);
+        $this->assertEquals($supportQuestionMessageNew->text, $message->text);
 
-		$this->assertEquals(1, $supportQuestion->number_of_messages);
-		$this->assertEquals($message->id, $supportQuestion->latest_message_id);
+        $this->assertEquals(1, $supportQuestion->number_of_messages);
+        $this->assertEquals($message->id, $supportQuestion->latest_message_id);
 
-		$this->assertEquals($supportQuestionNew->category, $supportQuestion->category);
-	}
+        $this->assertEquals($supportQuestionNew->category, $supportQuestion->category);
+    }
 }

@@ -7,18 +7,18 @@ use Tests\TestCase;
 
 class AttachmentParametersTest extends TestCase
 {
-	public function testParameters()
-	{
-		$key = 'ключ';
-		$value = 'значение';
+    public function testParameters()
+    {
+        $key = 'ключ';
+        $value = 'значение';
 
-		$attachment = new Attachment();
-		$attachment->addParameter($key, $value);
+        $attachment = new Attachment();
+        $attachment->addParameter($key, $value);
 
-		$this->assertEquals($value, $attachment->getParameter($key));
+        $this->assertEquals($value, $attachment->getParameter($key));
 
-		$key = uniqid();
+        $key = uniqid();
 
-		$this->assertNull($attachment->getParameter($key));
-	}
+        $this->assertNull($attachment->getParameter($key));
+    }
 }

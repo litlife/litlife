@@ -20,18 +20,18 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read User $create_user
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $likeable
+ * @property-read \App\User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $likeable
  * @method static \Illuminate\Database\Eloquent\Builder|Like newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Like newQuery()
  * @method static Builder|Like onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Like query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereIp($value)

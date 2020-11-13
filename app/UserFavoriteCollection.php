@@ -15,8 +15,8 @@ use Illuminate\Support\Carbon;
  * @property int $user_id ID пользователя
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection $collection
- * @property-read User $user
+ * @property-read \App\Collection $collection
+ * @property-read \App\User $user
  * @method static Builder|UserFavoriteCollection newModelQuery()
  * @method static Builder|UserFavoriteCollection newQuery()
  * @method static Builder|Model orderByField($column, $ids)

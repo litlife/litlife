@@ -7,19 +7,19 @@ use Tests\TestCase;
 
 class AttachmentIsCoverTest extends TestCase
 {
-	public function testTrue()
-	{
-		$cover = Attachment::factory()->cover()->create();
+    public function testTrue()
+    {
+        $cover = Attachment::factory()->cover()->create();
 
-		$this->assertTrue($cover->isCover());
-	}
+        $this->assertTrue($cover->isCover());
+    }
 
-	public function testFalse()
-	{
-		$attachment = Attachment::factory()->create();
+    public function testFalse()
+    {
+        $attachment = Attachment::factory()->create();
 
-		$book = $attachment->book;
+        $book = $attachment->book;
 
-		$this->assertFalse($attachment->isCover());
-	}
+        $this->assertFalse($attachment->isCover());
+    }
 }

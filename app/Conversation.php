@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $latest_message_id
  * @property int $messages_count
  * @property int $participations_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Message[] $messages
- * @property-read \Illuminate\Database\Eloquent\Collection|Participation[] $participations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Message[] $messages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Participation[] $participations
  * @method static Builder|Conversation newModelQuery()
  * @method static Builder|Conversation newQuery()
  * @method static Builder|Model orderByField($column, $ids)

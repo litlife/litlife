@@ -1,31 +1,44 @@
 <?php
 
-/* @var $factory Factory */
+namespace Database\Factories;
 
 use App\Author;
 use App\AuthorGroup;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use App\User;
 
-$factory->define(AuthorGroup::class, function (Faker $faker) {
-    return [
-        'last_name' => $faker->lastName,
-        'first_name' => $faker->firstName,
-        'create_user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        }
-    ];
-});
+class AuthorGroupFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AuthorGroup::class;
 
-$factory->afterCreatingState(App\AuthorGroup::class, 'with_two_authors', function (AuthorGroup $authorGroup, $faker) {
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'last_name' => $this->faker->lastName,
+            'first_name' => $this->faker->firstName,
+            'create_user_id' => User::factory()
+        ];
+    }
 
-    $author = factory(Author::class)
-        ->create();
+    public function with_two_authors()
+    {
+        return $this->afterCreating(function (AuthorGroup $authorGroup) {
+            $author = Author::factory()->create();
 
-    $author->attach_to_group($authorGroup);
+            $author->attach_to_group($authorGroup);
 
-    $author = factory(Author::class)
-        ->create();
+            $author = Author::factory()->create();
 
-    $author->attach_to_group($authorGroup);
-});
+            $author->attach_to_group($authorGroup);
+        });
+    }
+}

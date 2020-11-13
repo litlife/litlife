@@ -4,6 +4,7 @@ namespace App;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
 /**
@@ -19,9 +20,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $causer_type
  * @property string|null $log_name
  * @property \Illuminate\Support\Collection|null $properties
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $causer
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $causer
  * @property-read \Illuminate\Support\Collection $changes
- * @property-read \Illuminate\Database\Eloquent\Model|Eloquent $subject
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $subject
  * @method static Builder|Activity causedBy(\Illuminate\Database\Eloquent\Model $causer)
  * @method static Builder|Activity forSubject(\Illuminate\Database\Eloquent\Model $subject)
  * @method static Builder|Activity inLog($logNames)
@@ -42,6 +43,8 @@ use Illuminate\Support\Carbon;
  */
 class Activity extends \Spatie\Activitylog\Models\Activity
 {
+    use HasFactory;
+
     protected $table = 'activity_log';
 
     public function getChanges()

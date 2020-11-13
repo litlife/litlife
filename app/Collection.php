@@ -40,26 +40,26 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property string|null $status_changed_at Дата изменения поля кто видит подборку
  * @property int|null $status_changed_user_id Пользователь изменивший поле кто видит подборку
  * @property int|null $users_count Количество участников
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $addedToFavoritesUsers
- * @property-read Like|null $authUserLike
- * @property-read \Illuminate\Database\Eloquent\Collection|CollectedBook[] $collected
- * @property-read \Illuminate\Database\Eloquent\Collection|CollectionUser[] $collectionUser
- * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $comments
- * @property-read \Illuminate\Database\Eloquent\Collection|Complain[] $complaints
- * @property-read User $create_user
- * @property-read \Illuminate\Database\Eloquent\Collection|UserSubscriptionsEventNotification[] $eventNotificationSubscriptions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $addedToFavoritesUsers
+ * @property-read \App\Like|null $authUserLike
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\CollectedBook[] $collected
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\CollectionUser[] $collectionUser
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Complain[] $complaints
+ * @property-read \App\User $create_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSubscriptionsEventNotification[] $eventNotificationSubscriptions
  * @property-read mixed $is_accepted
  * @property-read mixed $is_private
  * @property-read mixed $is_rejected
  * @property-read mixed $is_review_starts
  * @property-read mixed $is_sent_for_review
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $latest_books
- * @property-read \Illuminate\Database\Eloquent\Collection|Like[] $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $latest_books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
  * @property-write mixed $who_can_see
- * @property-read User|null $status_changed_user
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $users
- * @property-read \Illuminate\Database\Eloquent\Collection|User[] $usersAddedToFavorites
- * @property-read \Illuminate\Database\Eloquent\Collection|UserFavoriteCollection[] $usersAddedToFavoritesPivot
+ * @property-read \App\User|null $status_changed_user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\User[] $usersAddedToFavorites
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserFavoriteCollection[] $usersAddedToFavoritesPivot
  * @method static Builder|Collection accepted()
  * @method static Builder|Collection acceptedAndSentForReview()
  * @method static Builder|Collection acceptedAndSentForReviewOrBelongsToAuthUser()
@@ -82,7 +82,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Collection orderStatusChangedAsc()
  * @method static Builder|Collection orderStatusChangedDesc()
- * @method static Builder|Collection private ()
+ * @method static Builder|Collection private()
  * @method static Builder|Collection query()
  * @method static Builder|Collection seeEveryone()
  * @method static Builder|Collection sentOnReview()
@@ -96,7 +96,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Collection whereCoverId($value)
  * @method static Builder|Collection whereCreateUserId($value)
  * @method static Builder|Collection whereCreatedAt($value)
- * @method static Builder|Collection whereCreator(User $user)
+ * @method static Builder|Collection whereCreator(\App\User $user)
  * @method static Builder|Collection whereDeletedAt($value)
  * @method static Builder|Collection whereDescription($value)
  * @method static Builder|Collection whereId($value)
@@ -112,7 +112,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Collection whereUpdatedAt($value)
  * @method static Builder|Collection whereUrl($value)
  * @method static Builder|Collection whereUrlTitle($value)
- * @method static Builder|Collection whereUserCanAddBooks(User $user)
+ * @method static Builder|Collection whereUserCanAddBooks(\App\User $user)
  * @method static Builder|Collection whereUsersCount($value)
  * @method static Builder|Collection whereViewsCount($value)
  * @method static Builder|Collection whereWhoCanAdd($value)

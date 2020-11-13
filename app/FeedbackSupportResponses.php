@@ -4,7 +4,7 @@ namespace App;
 
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Carbon;
 
 /**
@@ -16,10 +16,13 @@ use Illuminate\Support\Carbon;
  * @property int|null $face_reaction Код реакции в виде смайлика
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read SupportQuestion $support_question
+ * @property-read \App\SupportQuestion $support_question
  * @method static Builder|FeedbackSupportResponses newModelQuery()
  * @method static Builder|FeedbackSupportResponses newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|FeedbackSupportResponses query()
+ * @method static Builder|Model void()
  * @method static Builder|FeedbackSupportResponses whereCreatedAt($value)
  * @method static Builder|FeedbackSupportResponses whereFaceReaction($value)
  * @method static Builder|FeedbackSupportResponses whereId($value)

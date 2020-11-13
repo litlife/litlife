@@ -8,52 +8,52 @@ use Tests\TestCase;
 
 class BookPublishedNotificationTest extends TestCase
 {
-	public function testVia()
-	{
-		$book = Book::factory()->with_create_user()->create();
+    public function testVia()
+    {
+        $book = Book::factory()->with_create_user()->create();
 
-		$notification = new BookPublishedNotification($book);
+        $notification = new BookPublishedNotification($book);
 
-		$user = $book->create_user;
+        $user = $book->create_user;
 
-		$this->assertEquals(['mail', 'database'], $notification->via($user));
-	}
+        $this->assertEquals(['mail', 'database'], $notification->via($user));
+    }
 
-	public function testMailNotification()
-	{
-		$book = Book::factory()->with_create_user()->create();
+    public function testMailNotification()
+    {
+        $book = Book::factory()->with_create_user()->create();
 
-		$notification = new BookPublishedNotification($book);
+        $notification = new BookPublishedNotification($book);
 
-		$mail = $notification->toMail($book->create_user);
+        $mail = $notification->toMail($book->create_user);
 
-		$this->assertEquals(__('notification.book_published.subject'), $mail->subject);
+        $this->assertEquals(__('notification.book_published.subject'), $mail->subject);
 
-		$this->assertEquals(__('notification.book_published.line', [
-			'book_title' => $book->title,
-			'writers_names' => implode(', ', $book->writers->pluck('name')->toArray())
-		]), $mail->introLines[0]);
+        $this->assertEquals(__('notification.book_published.line', [
+            'book_title' => $book->title,
+            'writers_names' => implode(', ', $book->writers->pluck('name')->toArray())
+        ]), $mail->introLines[0]);
 
-		$this->assertEquals(__('notification.book_published.action'), $mail->actionText);
+        $this->assertEquals(__('notification.book_published.action'), $mail->actionText);
 
-		$this->assertEquals(route('books.show', ['book' => $book]), $mail->actionUrl);
-	}
+        $this->assertEquals(route('books.show', ['book' => $book]), $mail->actionUrl);
+    }
 
-	public function testDatabaseNotification()
-	{
-		$book = Book::factory()->with_create_user()->with_writer()->create();
+    public function testDatabaseNotification()
+    {
+        $book = Book::factory()->with_create_user()->with_writer()->create();
 
-		$notification = new BookPublishedNotification($book);
+        $notification = new BookPublishedNotification($book);
 
-		$array = $notification->toArray($book->create_user);
+        $array = $notification->toArray($book->create_user);
 
-		$this->assertEquals(__('notification.book_published.subject'), $array['title']);
+        $this->assertEquals(__('notification.book_published.subject'), $array['title']);
 
-		$this->assertEquals(__('notification.book_published.line', [
-			'book_title' => $book->title,
-			'writers_names' => implode(', ', $book->writers->pluck('name')->toArray())
-		]), $array['description']);
+        $this->assertEquals(__('notification.book_published.line', [
+            'book_title' => $book->title,
+            'writers_names' => implode(', ', $book->writers->pluck('name')->toArray())
+        ]), $array['description']);
 
-		$this->assertEquals(route('books.show', ['book' => $book]), $array['url']);
-	}
+        $this->assertEquals(route('books.show', ['book' => $book]), $array['url']);
+    }
 }

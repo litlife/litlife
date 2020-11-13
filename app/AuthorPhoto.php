@@ -28,8 +28,8 @@ use Illuminate\Support\Carbon;
  * @property string $storage
  * @property string|null $dirname
  * @property int|null $create_user_id
- * @property-read Author $author
- * @property-read User|null $create_user
+ * @property-read \App\Author $author
+ * @property-read \App\User|null $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -42,14 +42,14 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto newQuery()
  * @method static Builder|AuthorPhoto onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereHeight($value)

@@ -7,29 +7,29 @@ use Tests\TestCase;
 
 class BookmarkThisPageInBookmarksTest extends TestCase
 {
-	public function testCurrentPageInBookmarkExists()
-	{
-		$url = '/test/test?test=test';
+    public function testCurrentPageInBookmarkExists()
+    {
+        $url = '/test/test?test=test';
 
-		$bookmark = Bookmark::factory()->create(['url' => $url]);
+        $bookmark = Bookmark::factory()->create(['url' => $url]);
 
-		$this->get($url)
-			->assertNotFound();
+        $this->get($url)
+            ->assertNotFound();
 
-		$this->assertEquals($url, $bookmark->url);
+        $this->assertEquals($url, $bookmark->url);
 
-		$this->assertNotNull($bookmark->create_user->thisPageInBookmarks);
-	}
+        $this->assertNotNull($bookmark->create_user->thisPageInBookmarks);
+    }
 
-	public function testCurrentPageInBookmarkNotExists()
-	{
-		$url = '/test/test';
+    public function testCurrentPageInBookmarkNotExists()
+    {
+        $url = '/test/test';
 
-		$bookmark = Bookmark::factory()->create(['url' => $url]);
+        $bookmark = Bookmark::factory()->create(['url' => $url]);
 
-		$this->get($url . '/test')
-			->assertNotFound();
+        $this->get($url.'/test')
+            ->assertNotFound();
 
-		$this->assertNull($bookmark->create_user->thisPageInBookmarks);
-	}
+        $this->assertNull($bookmark->create_user->thisPageInBookmarks);
+    }
 }

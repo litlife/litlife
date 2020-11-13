@@ -24,8 +24,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $font_family
  * @property mixed $email_delivery
  * @property mixed $user_access
- * @property-read Blog|null $top_blog_record
- * @property-read User $user
+ * @property-read \App\Blog|null $top_blog_record
+ * @property-read \App\User $user
  * @method static Builder|UserSetting disableCache()
  * @method static CachedBuilder|UserSetting newModelQuery()
  * @method static CachedBuilder|UserSetting newQuery()

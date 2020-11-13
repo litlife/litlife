@@ -17,8 +17,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property int $type Автор или переводчик или редактор и тп
- * @property-read Author $author
- * @property-read Book $book
+ * @property-read \App\Author $author
+ * @property-read \App\Book $book
  * @method static Builder|BookAuthor newModelQuery()
  * @method static Builder|BookAuthor newQuery()
  * @method static Builder|BookAuthor query()

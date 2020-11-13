@@ -9,59 +9,59 @@ use Tests\TestCase;
 
 class BookRemoveCoverTest extends TestCase
 {
-	public function testDetachCover()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testDetachCover()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$user = User::factory()->administrator()->create();
+        $user = User::factory()->administrator()->create();
 
-		$attachment = Attachment::factory()->cover()->create();
+        $attachment = Attachment::factory()->cover()->create();
 
-		$book = $attachment->book;
-		$book->sections_count = 10;
-		$book->save();
+        $book = $attachment->book;
+        $book->sections_count = 10;
+        $book->save();
 
-		$this->assertTrue($attachment->isCover());
+        $this->assertTrue($attachment->isCover());
 
-		$this->actingAs($user)
-			->followingRedirects()
-			->get(route('books.remove_cover', ['book' => $book]))
-			->assertOk()
-			->assertSeeText(__('attachment.cover_removed'));
+        $this->actingAs($user)
+            ->followingRedirects()
+            ->get(route('books.remove_cover', ['book' => $book]))
+            ->assertOk()
+            ->assertSeeText(__('attachment.cover_removed'));
 
-		$attachment->refresh();
-		$book->refresh();
+        $attachment->refresh();
+        $book->refresh();
 
-		$this->assertFalse($attachment->isCover());
-		$this->assertTrue($book->isWaitedCreateNewBookFiles());
-		$this->assertEquals($book->edit_user_id, $user->id);
-		/*
-				$this->assertEquals(1, $book->activities()->count());
-				$activity = $book->activities()->first();
-				$this->assertEquals('set_cover', $activity->description);
-				$this->assertEquals($user->id, $activity->causer_id);
-				$this->assertEquals('user', $activity->causer_type);
-		*/
-	}
+        $this->assertFalse($attachment->isCover());
+        $this->assertTrue($book->isWaitedCreateNewBookFiles());
+        $this->assertEquals($book->edit_user_id, $user->id);
+        /*
+                $this->assertEquals(1, $book->activities()->count());
+                $activity = $book->activities()->first();
+                $this->assertEquals('set_cover', $activity->description);
+                $this->assertEquals($user->id, $activity->causer_id);
+                $this->assertEquals('user', $activity->causer_type);
+        */
+    }
 
-	public function testCantRemoveCoverIfBookForSale()
-	{
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+    public function testCantRemoveCoverIfBookForSale()
+    {
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$manager = $author->managers->first();
-		$book = $author->books->first();
-		$user = $manager->user;
+        $manager = $author->managers->first();
+        $book = $author->books->first();
+        $user = $manager->user;
 
-		$cover = Attachment::factory()->cover()->create();
+        $cover = Attachment::factory()->cover()->create();
 
-		$this->assertNotNull($book->fresh()->cover);
-		$this->assertTrue($book->isForSale());
+        $this->assertNotNull($book->fresh()->cover);
+        $this->assertTrue($book->isForSale());
 
-		$this->assertFalse($user->can('remove_cover', $book));
-		$this->assertFalse($user->can('delete', $cover));
+        $this->assertFalse($user->can('remove_cover', $book));
+        $this->assertFalse($user->can('delete', $cover));
 
-		$this->actingAs($user)
-			->get(route('books.remove_cover', ['book' => $book]))
-			->assertForbidden();
-	}
+        $this->actingAs($user)
+            ->get(route('books.remove_cover', ['book' => $book]))
+            ->assertForbidden();
+    }
 }

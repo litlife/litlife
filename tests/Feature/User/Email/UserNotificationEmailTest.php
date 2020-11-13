@@ -9,33 +9,33 @@ use Tests\TestCase;
 
 class UserNotificationEmailTest extends TestCase
 {
-	public function testFound()
-	{
-		$user = User::factory()->with_confirmed_email()->create();
+    public function testFound()
+    {
+        $user = User::factory()->with_confirmed_email()->create();
 
-		$email = $user->emails()->first();
-		$email->notice = true;
-		$email->save();
+        $email = $user->emails()->first();
+        $email->notice = true;
+        $email->save();
 
-		$like = Like::factory()->create();
+        $like = Like::factory()->create();
 
-		$notification = new NewLikeNotification($like);
+        $notification = new NewLikeNotification($like);
 
-		$this->assertEquals($email->email, $user->routeNotificationForMail($notification));
-	}
+        $this->assertEquals($email->email, $user->routeNotificationForMail($notification));
+    }
 
-	public function testNotFound()
-	{
-		$user = User::factory()->with_confirmed_email()->create();
+    public function testNotFound()
+    {
+        $user = User::factory()->with_confirmed_email()->create();
 
-		$email = $user->emails()->first();
-		$email->notice = false;
-		$email->save();
+        $email = $user->emails()->first();
+        $email->notice = false;
+        $email->save();
 
-		$like = Like::factory()->create();
+        $like = Like::factory()->create();
 
-		$notification = new NewLikeNotification($like);
+        $notification = new NewLikeNotification($like);
 
-		$this->assertNull($user->routeNotificationForMail($notification));
-	}
+        $this->assertNull($user->routeNotificationForMail($notification));
+    }
 }

@@ -1,48 +1,64 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\Collection;
 use App\Comment;
 use App\Enums\StatusEnum;
 use App\Enums\UserAccountPermissionValues;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(Collection::class, function (Faker $faker) {
+class CollectionFactory extends Factory
+{
+    use CheckedItems;
 
-    return [
-        'title' => $faker->realText(100),
-        'description' => $faker->realText(100),
-        'status' => StatusEnum::Accepted,
-        'who_can_add' => UserAccountPermissionValues::getRandomKey(),
-        'who_can_comment' => UserAccountPermissionValues::getRandomKey(),
-        'url' => $faker->url,
-        'url_title' => $faker->realText(50),
-        'create_user_id' => function () {
-            return factory(App\User::class)->states('with_user_permissions')->create()->id;
-        },
-    ];
-});
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Collection::class;
 
-$factory->afterMakingState(App\Collection::class, 'private', function (Collection $collection, $faker) {
-    $collection->statusPrivate();
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title' => $this->faker->realText(100),
+            'description' => $this->faker->realText(100),
+            'status' => StatusEnum::Accepted,
+            'who_can_add' => UserAccountPermissionValues::getRandomKey(),
+            'who_can_comment' => UserAccountPermissionValues::getRandomKey(),
+            'url' => $this->faker->url,
+            'url_title' => $this->faker->realText(50),
+            'create_user_id' => User::factory()->with_user_permissions(),
+        ];
+    }
 
-$factory->afterMakingState(App\Collection::class, 'accepted', function (Collection $collection, $faker) {
-    $collection->statusAccepted();
-});
+    public function configure()
+    {
+        return $this->afterMaking(function (Collection $collection) {
+            //
+        })->afterCreating(function (Collection $collection) {
+            $collection->refreshUsersCount();
+            $collection->save();
+        });
+    }
 
-$factory->afterCreating(App\Collection::class, function (Collection $collection, $faker) {
-    $collection->refreshUsersCount();
-    $collection->save();
-});
+    public function with_comment()
+    {
+        return $this->afterMaking(function (Collection $collection) {
+            //
+        })->afterCreating(function (Collection $collection) {
+            $comment = Comment::factory()
+                ->make();
 
-$factory->afterCreatingState(App\Collection::class, 'with_comment', function (Collection $collection, $faker) {
-
-    $comment = \factory(Comment::class)
-        ->make();
-
-    $collection->comments()
-        ->save($comment);
-});
+            $collection->comments()
+                ->save($comment);
+        });
+    }
+}

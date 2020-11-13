@@ -8,32 +8,32 @@ use Tests\TestCase;
 
 class CommentDeclineTest extends TestCase
 {
-	public function testDecline()
-	{
-		$user = User::factory()->create();
-		$user->group->delete_my_comment = true;
-		$user->group->delete_other_user_comment = true;
-		$user->push();
+    public function testDecline()
+    {
+        $user = User::factory()->create();
+        $user->group->delete_my_comment = true;
+        $user->group->delete_other_user_comment = true;
+        $user->push();
 
-		foreach (Comment::sentOnReview()->get() as $comment) {
-			$comment->forceDelete();
-		}
+        foreach (Comment::sentOnReview()->get() as $comment) {
+            $comment->forceDelete();
+        }
 
-		$this->assertEquals(0, Comment::getCachedOnModerationCount());
+        $this->assertEquals(0, Comment::getCachedOnModerationCount());
 
-		$comment = Comment::factory()->create();
-		$comment->statusSentForReview();
-		$comment->save();
+        $comment = Comment::factory()->create();
+        $comment->statusSentForReview();
+        $comment->save();
 
-		Comment::flushCachedOnModerationCount();
-		$this->assertEquals(1, Comment::getCachedOnModerationCount());
+        Comment::flushCachedOnModerationCount();
+        $this->assertEquals(1, Comment::getCachedOnModerationCount());
 
-		$this->actingAs($user)
-			->delete(route('comments.destroy', ['comment' => $comment]))
-			->assertOk();
+        $this->actingAs($user)
+            ->delete(route('comments.destroy', ['comment' => $comment]))
+            ->assertOk();
 
-		$this->assertTrue($comment->fresh()->trashed());
+        $this->assertTrue($comment->fresh()->trashed());
 
-		$this->assertEquals(0, Comment::getCachedOnModerationCount());
-	}
+        $this->assertEquals(0, Comment::getCachedOnModerationCount());
+    }
 }

@@ -126,12 +126,10 @@
         }
     },
     "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/Factories/",
+            "Database\\Seeders\\": "database/Seeders/"
         },
         "files": [
             "app/Library/helpers.php"
@@ -162,50 +160,50 @@
             "@php artisan ide-helper:models --write"
         ]
     },
-    "repositories": {
-        "0": {
+    "repositories": [
+        {
             "type": "path",
             "url": "./packages/litlife/book-converter"
         },
-        "1": {
+        {
             "type": "path",
             "url": "./packages/litlife/epub"
         },
-        "2": {
+        {
             "type": "path",
             "url": "./packages/litlife/fb2"
         },
-        "3": {
+        {
             "type": "path",
             "url": "./packages/litlife/fb2-fix"
         },
-        "4": {
+        {
             "type": "path",
             "url": "./packages/litlife/fb2-to-html"
         },
-        "5": {
+        {
             "type": "path",
             "url": "./packages/litlife/html-splitter"
         },
-        "6": {
+        {
             "type": "path",
             "url": "./packages/litlife/id-dirname"
         },
-        "7": {
+        {
             "type": "path",
             "url": "./packages/litlife/sitemap"
         },
-        "8": {
+        {
             "type": "path",
             "url": "./packages/litlife/unitpay"
         },
-        "9": {
+        {
             "type": "path",
             "url": "./packages/litlife/url"
         },
-        "10": {
+        {
             "type": "path",
             "url": "./packages/litlife/laravel-dkim"
         }
-    }
+    ]
 }

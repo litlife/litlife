@@ -14,8 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $id
  * @property string|null $user_updated_at Время последнего изменения статуса пользователем
  * @property int $status
- * @property-read Author $author
- * @property-read User $user
+ * @property-read \App\Author $author
+ * @property-read \App\User $user
  * @method static Builder|AuthorStatus newModelQuery()
  * @method static Builder|AuthorStatus newQuery()
  * @method static Builder|Model orderByField($column, $ids)

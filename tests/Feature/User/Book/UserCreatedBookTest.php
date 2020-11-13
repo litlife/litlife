@@ -7,12 +7,12 @@ use Tests\TestCase;
 
 class UserCreatedBookTest extends TestCase
 {
-	public function testCreatedIsOk()
-	{
-		$user = User::factory()->create();
+    public function testCreatedIsOk()
+    {
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('users.books.created', ['user' => $user]))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('users.books.created', ['user' => $user]))
+            ->assertOk();
+    }
 }

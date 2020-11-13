@@ -27,15 +27,15 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property string $uniqid Уникальный номер транзакции
- * @property-read UserPaymentTransaction|null $transaction
- * @property-read User $user
+ * @property-read \App\UserPaymentTransaction|null $transaction
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment newQuery()
  * @method static Builder|UserOutgoingPayment onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserOutgoingPayment whereId($value)

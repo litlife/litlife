@@ -1,15 +1,30 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\BookViewIp::class, function (Faker $faker) {
-    return [
-        'book_id' => function () {
-            return factory(App\Book::class)->create()->id;
-        },
-        'ip' => $faker->ipv4,
-        'count' => '0'
-    ];
-});
+use App\Book;
+use App\BookViewIp;
 
+class BookViewIpFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookViewIp::class;
 
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'book_id' => Book::factory(),
+            'ip' => $this->faker->ipv4,
+            'count' => '0'
+        ];
+    }
+}

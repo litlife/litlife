@@ -30,7 +30,7 @@ use Litlife\Url\Url;
  * @property string|null $dirname
  * @property string|null $sha256_hash
  * @property string|null $phash
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -45,16 +45,16 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
  * @method static Builder|Image onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Image pHash($hash)
  * @method static \Illuminate\Database\Eloquent\Builder|Image query()
  * @method static \Illuminate\Database\Eloquent\Builder|Image setSize($height)
  * @method static \Illuminate\Database\Eloquent\Builder|Image sha256Hash($hash)
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereId($value)

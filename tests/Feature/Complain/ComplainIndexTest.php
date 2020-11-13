@@ -12,150 +12,150 @@ use Tests\TestCase;
 
 class ComplainIndexTest extends TestCase
 {
-	public function testIfCommentDeleted()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testIfCommentDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$comment = Comment::factory()->create();
+        $comment = Comment::factory()->create();
 
-		$complain = Complain::factory()->create([
-				'complainable_type' => 'comment',
-				'complainable_id' => $comment->id
-			]);
+        $complain = Complain::factory()->create([
+            'complainable_type' => 'comment',
+            'complainable_id' => $comment->id
+        ]);
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($comment->text)
-			->assertSeeText($complain->text);
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($comment->text)
+            ->assertSeeText($complain->text);
 
-		$comment->delete();
+        $comment->delete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($comment->text)
-			->assertSeeText($complain->text);
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($comment->text)
+            ->assertSeeText($complain->text);
 
-		$comment->forceDelete();
+        $comment->forceDelete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($complain->text);
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($complain->text);
+    }
 
-	public function testIfPostDeleted()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testIfPostDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = Complain::factory()->post()->create();
+        $complain = Complain::factory()->post()->create();
 
-		$post = $complain->complainable;
+        $post = $complain->complainable;
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($post->text)
-			->assertSeeText($complain->text);
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($post->text)
+            ->assertSeeText($complain->text);
 
-		$post->delete();
+        $post->delete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($post->text)
-			->assertSeeText($complain->text);
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($post->text)
+            ->assertSeeText($complain->text);
 
-		$post->forceDelete();
+        $post->forceDelete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($complain->text);
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($complain->text);
+    }
 
-	public function testIfWallPostDeleted()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testIfWallPostDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = Complain::factory()->wall_post()->create();
+        $complain = Complain::factory()->wall_post()->create();
 
-		$wall_post = $complain->complainable;
+        $wall_post = $complain->complainable;
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($wall_post->text)
-			->assertSeeText($complain->text);
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($wall_post->text)
+            ->assertSeeText($complain->text);
 
-		$wall_post->delete();
+        $wall_post->delete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($wall_post->text)
-			->assertSeeText($complain->text);
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($wall_post->text)
+            ->assertSeeText($complain->text);
 
-		$wall_post->forceDelete();
+        $wall_post->forceDelete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($complain->text);
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($complain->text);
+    }
 
-	public function testComplainForBook()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testComplainForBook()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = Complain::factory()->book()->create();
+        $complain = Complain::factory()->book()->create();
 
-		$this->assertInstanceOf(Book::class, $complain->complainable);
+        $this->assertInstanceOf(Book::class, $complain->complainable);
 
-		$title = Str::random(10);
+        $title = Str::random(10);
 
-		$complain->complainable->title = $title;
-		$complain->push();
+        $complain->complainable->title = $title;
+        $complain->push();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk()
-			->assertSeeText($title);
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk()
+            ->assertSeeText($title);
+    }
 
 
-	public function testIfWallPostCreatorIsDeleted()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testIfWallPostCreatorIsDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = Complain::factory()->wall_post()->create();
+        $complain = Complain::factory()->wall_post()->create();
 
-		$this->assertInstanceOf(Blog::class, $complain->complainable);
+        $this->assertInstanceOf(Blog::class, $complain->complainable);
 
-		$wall_post = $complain->complainable;
+        $wall_post = $complain->complainable;
 
-		$wall_post->owner->delete();
+        $wall_post->owner->delete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk();
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk();
+    }
 
-	public function testIfWallPostCreateUserIsDeleted()
-	{
-		$admin = User::factory()->admin()->create();
+    public function testIfWallPostCreateUserIsDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = Complain::factory()->wall_post()->create();
+        $complain = Complain::factory()->wall_post()->create();
 
-		$this->assertInstanceOf(Blog::class, $complain->complainable);
+        $this->assertInstanceOf(Blog::class, $complain->complainable);
 
-		$wall_post = $complain->complainable;
+        $wall_post = $complain->complainable;
 
-		$wall_post->create_user->delete();
+        $wall_post->create_user->delete();
 
-		$this->actingAs($admin)
-			->get(route('complaints.index'))
-			->assertOk();
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.index'))
+            ->assertOk();
+    }
 }

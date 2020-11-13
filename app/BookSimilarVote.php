@@ -18,9 +18,9 @@ use Illuminate\Support\Carbon;
  * @property int $book_id
  * @property int $other_book_id
  * @property int $id
- * @property-read Book $book
- * @property-read User $create_user
- * @property-read Book $other_book
+ * @property-read \App\Book $book
+ * @property-read \App\User $create_user
+ * @property-read \App\Book $other_book
  * @method static Builder|BookSimilarVote newModelQuery()
  * @method static Builder|BookSimilarVote newQuery()
  * @method static Builder|Model orderByField($column, $ids)
@@ -30,7 +30,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|BookSimilarVote whereBookId($value)
  * @method static Builder|BookSimilarVote whereCreateUserId($value)
  * @method static Builder|BookSimilarVote whereCreatedAt($value)
- * @method static Builder|BookSimilarVote whereCreator(User $user)
+ * @method static Builder|BookSimilarVote whereCreator(\App\User $user)
  * @method static Builder|BookSimilarVote whereId($value)
  * @method static Builder|BookSimilarVote whereOtherBookId($value)
  * @method static Builder|BookSimilarVote whereUpdatedAt($value)

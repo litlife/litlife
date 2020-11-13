@@ -8,21 +8,21 @@ use Tests\TestCase;
 
 class SupportQuestionIndexPolicyTest extends TestCase
 {
-	public function testCanIfHasPermissions()
-	{
-		$user = User::factory()->create();
-		$user->group->reply_to_support_service = true;
-		$user->push();
+    public function testCanIfHasPermissions()
+    {
+        $user = User::factory()->create();
+        $user->group->reply_to_support_service = true;
+        $user->push();
 
-		$this->assertTrue($user->can('view_index', SupportQuestion::class));
-	}
+        $this->assertTrue($user->can('view_index', SupportQuestion::class));
+    }
 
-	public function testCantIfDoesntHavePermissions()
-	{
-		$user = User::factory()->create();
-		$user->group->reply_to_support_service = false;
-		$user->push();
+    public function testCantIfDoesntHavePermissions()
+    {
+        $user = User::factory()->create();
+        $user->group->reply_to_support_service = false;
+        $user->push();
 
-		$this->assertFalse($user->can('view_index', SupportQuestion::class));
-	}
+        $this->assertFalse($user->can('view_index', SupportQuestion::class));
+    }
 }

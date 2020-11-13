@@ -7,10 +7,10 @@ use Tests\TestCase;
 
 class AuthorTest extends TestCase
 {
-	public function testFulltextSearch()
-	{
-		$author = Author::FulltextSearch('Время&—&детство!')->get();
+    public function testFulltextSearch()
+    {
+        $author = Author::FulltextSearch('Время&—&детство!')->get();
 
-		$this->assertTrue(true);
-	}
+        $this->assertTrue(true);
+    }
 }

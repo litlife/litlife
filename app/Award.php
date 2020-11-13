@@ -19,19 +19,19 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
  * @property int $create_user_id
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @method static \Illuminate\Database\Eloquent\Builder|Award newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Award newQuery()
  * @method static Builder|Award onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Award query()
  * @method static \Illuminate\Database\Eloquent\Builder|Award searchPartWord($textOrArray)
  * @method static \Illuminate\Database\Eloquent\Builder|Award similaritySearch($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|Award void()
  * @method static \Illuminate\Database\Eloquent\Builder|Award whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Award whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Award whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Award whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Award whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Award whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Award whereId($value)

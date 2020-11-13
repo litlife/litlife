@@ -1,14 +1,31 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\BookmarkFolder::class, function (Faker $faker) {
-    return [
-        'create_user_id' => function () {
-            return factory(App\User::class)->create()->id;
-        },
-        'title' => $faker->realText(50),
-        'created_at' => now(),
-        'updated_at' => now(),
-    ];
-});
+use App\BookmarkFolder;
+use App\User;
+
+class BookmarkFolderFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookmarkFolder::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'create_user_id' => User::factory(),
+            'title' => $this->faker->realText(50),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
+}

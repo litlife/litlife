@@ -15,447 +15,447 @@ use Tests\TestCase;
 
 class UserPurchasesTest extends TestCase
 {
-	public function testRelation()
-	{
-		$purchase = UserPurchase::factory()->book()->create();
+    public function testRelation()
+    {
+        $purchase = UserPurchase::factory()->book()->create();
 
-		$this->assertEquals($purchase->buyer_user_id, $purchase->buyer->id);
-		$this->assertEquals($purchase->seller_user_id, $purchase->seller->id);
-		$this->assertEquals($purchase->purchasable_id, $purchase->buyer->purchased_books->first()->id);
-	}
+        $this->assertEquals($purchase->buyer_user_id, $purchase->buyer->id);
+        $this->assertEquals($purchase->seller_user_id, $purchase->seller->id);
+        $this->assertEquals($purchase->purchasable_id, $purchase->buyer->purchased_books->first()->id);
+    }
 
-	public function testIsBook()
-	{
-		$purchase = UserPurchase::factory()->book()->create();
+    public function testIsBook()
+    {
+        $purchase = UserPurchase::factory()->book()->create();
 
-		$this->assertTrue($purchase->isBook());
-	}
+        $this->assertTrue($purchase->isBook());
+    }
 
-	public function testPurchaseBook()
-	{
-		Notification::fake();
+    public function testPurchaseBook()
+    {
+        Notification::fake();
 
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$book = $author->books->first();
-		$book->price = rand(50, 200) . '.' . rand(0, 99);
-		$book->save();
+        $book = $author->books->first();
+        $book->price = rand(50, 200).'.'.rand(0, 99);
+        $book->save();
 
-		$comission_sum = round(($book->price / 100) * config('litlife.comission'), 2, PHP_ROUND_HALF_DOWN);
-		$buyer_sum = $book->price;
-		$seller_sum = $book->price - $comission_sum;
+        $comission_sum = round(($book->price / 100) * config('litlife.comission'), 2, PHP_ROUND_HALF_DOWN);
+        $buyer_sum = $book->price;
+        $seller_sum = $book->price - $comission_sum;
 
-		$this->assertEquals($book->price, $seller_sum + $comission_sum);
+        $this->assertEquals($book->price, $seller_sum + $comission_sum);
 
-		$seller = $author->seller();
+        $seller = $author->seller();
 
-		$buyer = User::factory()->with_thousand_money_on_balance()->create();
+        $buyer = User::factory()->withMoneyOnBalance()->create();
 
-		$this->assertEquals(1000, $buyer->balance);
+        $this->assertEquals(1000, $buyer->balance);
 
-		$this->actingAs($buyer)
-			->get(route('books.buy', $book))
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.show', $book));
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('books.show', $book));
 
-		$purchase = $buyer->purchases()->first();
-		$seller = $book->seller();
-		$book->refresh();
+        $purchase = $buyer->purchases()->first();
+        $seller = $book->seller();
+        $book->refresh();
 
-		$this->assertNotNull($purchase);
-		$this->assertEquals($buyer->id, $purchase->buyer->id);
-		$this->assertEquals($book->seller()->id, $purchase->seller->id);
-		$this->assertEquals($book->price, $purchase->price);
-		$this->assertEquals($purchase->site_commission, config('litlife.comission'));
-		$this->assertEquals('book', $purchase->purchasable_type);
-		$this->assertEquals($book->id, $purchase->purchasable_id);
+        $this->assertNotNull($purchase);
+        $this->assertEquals($buyer->id, $purchase->buyer->id);
+        $this->assertEquals($book->seller()->id, $purchase->seller->id);
+        $this->assertEquals($book->price, $purchase->price);
+        $this->assertEquals($purchase->site_commission, config('litlife.comission'));
+        $this->assertEquals('book', $purchase->purchasable_type);
+        $this->assertEquals($book->id, $purchase->purchasable_id);
 
-		$this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
-		$this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
+        $this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
+        $this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
 
-		$this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
-		$this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
+        $this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
+        $this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
 
-		$this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
-		$this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
+        $this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
+        $this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
 
-		$this->assertEquals($seller_sum, $seller->balance);
-		$this->assertEquals(1000 - $book->price, $buyer->balance);
+        $this->assertEquals($seller_sum, $seller->balance);
+        $this->assertEquals(1000 - $book->price, $buyer->balance);
 
-		$this->assertEquals(1, $buyer->data->books_purchased_count);
-		$this->assertEquals(1, $book->bought_times_count);
+        $this->assertEquals(1, $buyer->data->books_purchased_count);
+        $this->assertEquals(1, $book->bought_times_count);
 
-		Notification::assertSentTo(
-			$seller,
-			BookSoldNotification::class,
-			function ($notification, $channels) use ($purchase) {
-				$this->assertContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $seller,
+            BookSoldNotification::class,
+            function ($notification, $channels) use ($purchase) {
+                $this->assertContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$mail = $notification->toMail($purchase->seller);
+                $mail = $notification->toMail($purchase->seller);
 
-				$this->assertEquals(__('notification.book_sold.subject'), $mail->subject);
+                $this->assertEquals(__('notification.book_sold.subject'), $mail->subject);
 
-				$this->assertEquals(__('notification.book_sold.line', [
-					'sum' => $purchase->seller_transaction->sum,
-					'user_name' => $purchase->buyer->userName,
-					'book_title' => $purchase->purchasable->title
-				]), $mail->introLines[0]);
+                $this->assertEquals(__('notification.book_sold.line', [
+                    'sum' => $purchase->seller_transaction->sum,
+                    'user_name' => $purchase->buyer->userName,
+                    'book_title' => $purchase->purchasable->title
+                ]), $mail->introLines[0]);
 
-				$this->assertEquals(__('notification.book_sold.action'), $mail->actionText);
+                $this->assertEquals(__('notification.book_sold.action'), $mail->actionText);
 
-				$this->assertEquals(route('users.wallet', ['user' => $purchase->seller]), $mail->actionUrl);
+                $this->assertEquals(route('users.wallet', ['user' => $purchase->seller]), $mail->actionUrl);
 
-				return $notification->user_purchase->id == $purchase->id;
-			}
-		);
+                return $notification->user_purchase->id == $purchase->id;
+            }
+        );
 
-		Notification::assertSentTo(
-			$buyer,
-			BookPurchasedNotification::class,
-			function ($notification, $channels) use ($purchase) {
-				$this->assertContains('mail', $channels);
-				$this->assertContains('database', $channels);
+        Notification::assertSentTo(
+            $buyer,
+            BookPurchasedNotification::class,
+            function ($notification, $channels) use ($purchase) {
+                $this->assertContains('mail', $channels);
+                $this->assertContains('database', $channels);
 
-				$mail = $notification->toMail($purchase->buyer);
+                $mail = $notification->toMail($purchase->buyer);
 
-				$this->assertEquals(__('notification.book_purchased.subject'), $mail->subject);
+                $this->assertEquals(__('notification.book_purchased.subject'), $mail->subject);
 
-				$this->assertEquals(__('notification.book_purchased.line', [
-					'book_title' => $purchase->purchasable->title,
-					'writers_names' => implode(', ', $purchase->purchasable->writers->pluck('name')->toArray())
-				]), $mail->introLines[0]);
+                $this->assertEquals(__('notification.book_purchased.line', [
+                    'book_title' => $purchase->purchasable->title,
+                    'writers_names' => implode(', ', $purchase->purchasable->writers->pluck('name')->toArray())
+                ]), $mail->introLines[0]);
 
-				$this->assertEquals(__('notification.book_purchased.action'), $mail->actionText);
+                $this->assertEquals(__('notification.book_purchased.action'), $mail->actionText);
 
-				$this->assertEquals(route('books.show', ['book' => $purchase->purchasable]), $mail->actionUrl);
+                $this->assertEquals(route('books.show', ['book' => $purchase->purchasable]), $mail->actionUrl);
 
-				return $notification->user_purchase->id == $purchase->id;
-			}
-		);
-	}
+                return $notification->user_purchase->id == $purchase->id;
+            }
+        );
+    }
 
-	public function testBuyDeposit()
-	{
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+    public function testBuyDeposit()
+    {
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$book = $author->books->first();
-		$book->price = 100;
-		$book->save();
+        $book = $author->books->first();
+        $book->price = 100;
+        $book->save();
 
-		$seller = $author->seller();
+        $seller = $author->seller();
 
-		$buyer = User::factory()->with_thousand_money_on_balance()->create();
+        $buyer = User::factory()->withMoneyOnBalance()->create();
 
-		$response = $this->actingAs($buyer)
-			->post(route('books.buy.deposit', $book),
-				[
-					'payment_type' => 'card'
-				]);
+        $response = $this->actingAs($buyer)
+            ->post(route('books.buy.deposit', $book),
+                [
+                    'payment_type' => 'card'
+                ]);
 
-		$payment = $buyer->incoming_payment()->orderBy('id', 'desc')
-			->get()->first();
+        $payment = $buyer->incoming_payment()->orderBy('id', 'desc')
+            ->get()->first();
 
-		$params['sum'] = $book->price;
-		$params['account'] = $payment->transaction->id;
-		$params['desc'] = __('user_incoming_payment.desc_buy_book', ['title' => $book->getSellTitle(), 'sum' => $params['sum']]);
-		$params['currency'] = 'RUB';
-		$params['backUrl'] = route('books.show', ['book' => $book]);
+        $params['sum'] = $book->price;
+        $params['account'] = $payment->transaction->id;
+        $params['desc'] = __('user_incoming_payment.desc_buy_book', ['title' => $book->getSellTitle(), 'sum' => $params['sum']]);
+        $params['currency'] = 'RUB';
+        $params['backUrl'] = route('books.show', ['book' => $book]);
 
-		$redirect_url = UnitPay::getFormUrl('card', $params);
+        $redirect_url = UnitPay::getFormUrl('card', $params);
 
-		$response->assertRedirect($redirect_url);
-	}
+        $response->assertRedirect($redirect_url);
+    }
 
-	public function testTryBuyAgain()
-	{
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+    public function testTryBuyAgain()
+    {
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$book = $author->books->first();
-		$book->price = 100;
-		$book->save();
+        $book = $author->books->first();
+        $book->price = 100;
+        $book->save();
 
-		$seller = $author->seller();
+        $seller = $author->seller();
 
-		$buyer = User::factory()->with_thousand_money_on_balance()->create();
+        $buyer = User::factory()->withMoneyOnBalance()->create();
 
-		$this->assertEquals(1000, $buyer->balance);
+        $this->assertEquals(1000, $buyer->balance);
 
-		$this->actingAs($buyer)
-			->get(route('books.buy', $book))
-			->assertRedirect(route('books.show', $book));
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertRedirect(route('books.show', $book));
 
-		$purchase = $buyer->purchases->first();
-		$seller = $book->seller();
+        $purchase = $buyer->purchases->first();
+        $seller = $book->seller();
 
-		$this->actingAs($buyer)
-			->get(route('books.buy', $book))
-			->assertForbidden();
-	}
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertForbidden();
+    }
 
-	public function testUsersListBoughtHttp()
-	{
-		$purchase = UserPurchase::factory()->book()->create();
+    public function testUsersListBoughtHttp()
+    {
+        $purchase = UserPurchase::factory()->book()->create();
 
-		$this->actingAs($purchase->seller)
-			->get(route('books.users.bought', $purchase->purchasable))
-			->assertOk()
-			->assertSeeText($purchase->buyer->userName);
-	}
+        $this->actingAs($purchase->seller)
+            ->get(route('books.users.bought', $purchase->purchasable))
+            ->assertOk()
+            ->assertSeeText($purchase->buyer->userName);
+    }
 
-	public function testDontSeeUserIfPurchaseCanceled()
-	{
-		$purchase = UserPurchase::factory()->book()->canceled()->create();
+    public function testDontSeeUserIfPurchaseCanceled()
+    {
+        $purchase = UserPurchase::factory()->book()->canceled()->create();
 
-		$this->actingAs($purchase->seller)
-			->get(route('books.users.bought', $purchase->purchasable))
-			->assertOk()
-			->assertDontSeeText($purchase->buyer->userName);
-	}
+        $this->actingAs($purchase->seller)
+            ->get(route('books.users.bought', $purchase->purchasable))
+            ->assertOk()
+            ->assertDontSeeText($purchase->buyer->userName);
+    }
 
-	public function testPurchaseWithBuyerReference()
-	{
-		Notification::fake();
+    public function testPurchaseWithBuyerReference()
+    {
+        Notification::fake();
 
-		$comission_from_reference_buyer = rand(1, 9);
-		$comission_from_reference_seller = rand(1, 9);
+        $comission_from_reference_buyer = rand(1, 9);
+        $comission_from_reference_seller = rand(1, 9);
 
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$book = $author->books->first();
-		$book->price = rand(50, 200) . '.' . rand(0, 99);
-		$book->save();
+        $book = $author->books->first();
+        $book->price = rand(50, 200).'.'.rand(0, 99);
+        $book->save();
 
-		$manager = $author->managers->first();
-		$manager->profit_percent = rand(30, 60);
-		$manager->save();
+        $manager = $author->managers->first();
+        $manager->profit_percent = rand(30, 60);
+        $manager->save();
 
-		$referer_buyer_sum = round(($book->price / 100) * $comission_from_reference_buyer, 2, PHP_ROUND_HALF_UP);
-		$comission_sum = round(($book->price / 100) * (100 - $manager->profit_percent), 2, PHP_ROUND_HALF_DOWN) - $referer_buyer_sum;
+        $referer_buyer_sum = round(($book->price / 100) * $comission_from_reference_buyer, 2, PHP_ROUND_HALF_UP);
+        $comission_sum = round(($book->price / 100) * (100 - $manager->profit_percent), 2, PHP_ROUND_HALF_DOWN) - $referer_buyer_sum;
 
-		$buyer_sum = $book->price;
+        $buyer_sum = $book->price;
 
-		$seller_sum = $book->price - $comission_sum - $referer_buyer_sum;
+        $seller_sum = $book->price - $comission_sum - $referer_buyer_sum;
 
-		$this->assertEquals($book->price, $seller_sum + $comission_sum + $referer_buyer_sum);
+        $this->assertEquals($book->price, $seller_sum + $comission_sum + $referer_buyer_sum);
 
-		$seller = $author->seller();
+        $seller = $author->seller();
 
-		$buyer = User::factory()->with_thousand_money_on_balance()->create();
+        $buyer = User::factory()->withMoneyOnBalance()->create();
 
-		$reference = ReferredUser::factory()->create([
-				'comission_buy_book' => $comission_from_reference_buyer,
-				'comission_sell_book' => $comission_from_reference_seller,
-				'referred_user_id' => $buyer->id
-			])
-			->fresh();
+        $reference = ReferredUser::factory()->create([
+            'comission_buy_book' => $comission_from_reference_buyer,
+            'comission_sell_book' => $comission_from_reference_seller,
+            'referred_user_id' => $buyer->id
+        ])
+            ->fresh();
 
-		$referer = $reference->referred_by_user;
+        $referer = $reference->referred_by_user;
 
-		$this->assertNotEquals($referer->id, $buyer->id);
+        $this->assertNotEquals($referer->id, $buyer->id);
 
-		$this->assertEquals(1000, $buyer->balance);
+        $this->assertEquals(1000, $buyer->balance);
 
-		$this->actingAs($buyer)
-			->get(route('books.buy', $book))
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.show', $book));
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('books.show', $book));
 
-		$purchase = $buyer->purchases()->first();
-		$seller = $book->seller();
-		$book->refresh();
+        $purchase = $buyer->purchases()->first();
+        $seller = $book->seller();
+        $book->refresh();
 
-		$this->assertNotNull($purchase);
-		$this->assertEquals($buyer->id, $purchase->buyer->id);
-		$this->assertEquals($book->seller()->id, $purchase->seller->id);
-		$this->assertEquals($book->price, $purchase->price);
-		$this->assertEquals($purchase->site_commission, (100 - $manager->profit_percent) - $comission_from_reference_buyer);
-		$this->assertEquals('book', $purchase->purchasable_type);
-		$this->assertEquals($book->id, $purchase->purchasable_id);
+        $this->assertNotNull($purchase);
+        $this->assertEquals($buyer->id, $purchase->buyer->id);
+        $this->assertEquals($book->seller()->id, $purchase->seller->id);
+        $this->assertEquals($book->price, $purchase->price);
+        $this->assertEquals($purchase->site_commission, (100 - $manager->profit_percent) - $comission_from_reference_buyer);
+        $this->assertEquals('book', $purchase->purchasable_type);
+        $this->assertEquals($book->id, $purchase->purchasable_id);
 
-		$this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
-		$this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
+        $this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
+        $this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
 
-		$this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
-		$this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
+        $this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
+        $this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
 
-		$this->assertEquals($referer->id, $purchase->referer_buyer_transaction->user_id);
-		$this->assertEquals($referer_buyer_sum, $purchase->referer_buyer_transaction->sum);
+        $this->assertEquals($referer->id, $purchase->referer_buyer_transaction->user_id);
+        $this->assertEquals($referer_buyer_sum, $purchase->referer_buyer_transaction->sum);
 
-		$this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
-		$this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
+        $this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
+        $this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
 
-		$this->assertEquals($seller_sum, $seller->balance);
-		$this->assertEquals(1000 - $book->price, $buyer->balance);
+        $this->assertEquals($seller_sum, $seller->balance);
+        $this->assertEquals(1000 - $book->price, $buyer->balance);
 
-		$this->assertEquals(1, $buyer->data->books_purchased_count);
-		$this->assertEquals(1, $book->bought_times_count);
-	}
+        $this->assertEquals(1, $buyer->data->books_purchased_count);
+        $this->assertEquals(1, $book->bought_times_count);
+    }
 
-	public function testPurchaseWithSellerReference()
-	{
-		Notification::fake();
+    public function testPurchaseWithSellerReference()
+    {
+        Notification::fake();
 
-		$comission_from_reference_buyer = rand(1, 9);
-		$comission_from_reference_seller = rand(1, 9);
+        $comission_from_reference_buyer = rand(1, 9);
+        $comission_from_reference_seller = rand(1, 9);
 
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$book = $author->books->first();
-		$book->price = rand(50, 200) . '.' . rand(0, 99);
-		$book->save();
+        $book = $author->books->first();
+        $book->price = rand(50, 200).'.'.rand(0, 99);
+        $book->save();
 
-		$manager = $author->managers->first();
-		$manager->profit_percent = rand(30, 60);
-		$manager->save();
+        $manager = $author->managers->first();
+        $manager->profit_percent = rand(30, 60);
+        $manager->save();
 
-		$referer_seller_sum = round(($book->price / 100) * $comission_from_reference_seller, 2, PHP_ROUND_HALF_UP);
-		$comission_sum = round(($book->price / 100) * (100 - $manager->profit_percent), 2, PHP_ROUND_HALF_DOWN) - $referer_seller_sum;
+        $referer_seller_sum = round(($book->price / 100) * $comission_from_reference_seller, 2, PHP_ROUND_HALF_UP);
+        $comission_sum = round(($book->price / 100) * (100 - $manager->profit_percent), 2, PHP_ROUND_HALF_DOWN) - $referer_seller_sum;
 
-		$buyer_sum = $book->price;
+        $buyer_sum = $book->price;
 
-		$seller_sum = $book->price - $comission_sum - $referer_seller_sum;
+        $seller_sum = $book->price - $comission_sum - $referer_seller_sum;
 
-		$this->assertEquals($book->price, $seller_sum + $comission_sum + $referer_seller_sum);
+        $this->assertEquals($book->price, $seller_sum + $comission_sum + $referer_seller_sum);
 
-		$seller = $author->seller();
+        $seller = $author->seller();
 
-		$reference = ReferredUser::factory()->create([
-				'comission_buy_book' => $comission_from_reference_buyer,
-				'comission_sell_book' => $comission_from_reference_seller,
-				'referred_user_id' => $seller->id
-			])
-			->fresh();
+        $reference = ReferredUser::factory()->create([
+            'comission_buy_book' => $comission_from_reference_buyer,
+            'comission_sell_book' => $comission_from_reference_seller,
+            'referred_user_id' => $seller->id
+        ])
+            ->fresh();
 
-		$referer = $reference->referred_by_user;
+        $referer = $reference->referred_by_user;
 
-		$buyer = User::factory()->with_thousand_money_on_balance()->create();
+        $buyer = User::factory()->withMoneyOnBalance()->create();
 
-		$this->assertEquals(1000, $buyer->balance);
+        $this->assertEquals(1000, $buyer->balance);
 
-		$this->actingAs($buyer)
-			->get(route('books.buy', $book))
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.show', $book));
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('books.show', $book));
 
-		$purchase = $buyer->purchases()->first();
-		$seller = $book->seller();
-		$book->refresh();
+        $purchase = $buyer->purchases()->first();
+        $seller = $book->seller();
+        $book->refresh();
 
-		$this->assertNotNull($purchase);
-		$this->assertEquals($buyer->id, $purchase->buyer->id);
-		$this->assertEquals($book->seller()->id, $purchase->seller->id);
-		$this->assertEquals($book->price, $purchase->price);
-		$this->assertEquals($purchase->site_commission, (100 - $manager->profit_percent) - $comission_from_reference_seller);
-		$this->assertEquals('book', $purchase->purchasable_type);
-		$this->assertEquals($book->id, $purchase->purchasable_id);
+        $this->assertNotNull($purchase);
+        $this->assertEquals($buyer->id, $purchase->buyer->id);
+        $this->assertEquals($book->seller()->id, $purchase->seller->id);
+        $this->assertEquals($book->price, $purchase->price);
+        $this->assertEquals($purchase->site_commission, (100 - $manager->profit_percent) - $comission_from_reference_seller);
+        $this->assertEquals('book', $purchase->purchasable_type);
+        $this->assertEquals($book->id, $purchase->purchasable_id);
 
-		$this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
-		$this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
+        $this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
+        $this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
 
-		$this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
-		$this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
+        $this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
+        $this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
 
-		$this->assertEquals($referer->id, $purchase->referer_seller_transaction->user_id);
-		$this->assertEquals($referer_seller_sum, $purchase->referer_seller_transaction->sum);
+        $this->assertEquals($referer->id, $purchase->referer_seller_transaction->user_id);
+        $this->assertEquals($referer_seller_sum, $purchase->referer_seller_transaction->sum);
 
-		$this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
-		$this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
+        $this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
+        $this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
 
-		$this->assertEquals($seller_sum, $seller->balance);
-		$this->assertEquals(1000 - $book->price, $buyer->balance);
+        $this->assertEquals($seller_sum, $seller->balance);
+        $this->assertEquals(1000 - $book->price, $buyer->balance);
 
-		$this->assertEquals(1, $buyer->data->books_purchased_count);
-		$this->assertEquals(1, $book->bought_times_count);
-	}
+        $this->assertEquals(1, $buyer->data->books_purchased_count);
+        $this->assertEquals(1, $book->bought_times_count);
+    }
 
-	public function testPurchaseWithSellerReferenceAndBuyerReference()
-	{
-		Notification::fake();
+    public function testPurchaseWithSellerReferenceAndBuyerReference()
+    {
+        Notification::fake();
 
-		$comission_from_reference_buyer = rand(1, 9);
-		$comission_from_reference_seller = rand(1, 9);
+        $comission_from_reference_buyer = rand(1, 9);
+        $comission_from_reference_seller = rand(1, 9);
 
-		$author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
 
-		$book = $author->books->first();
-		$book->price = rand(50, 200) . '.' . rand(0, 99);
-		$book->save();
+        $book = $author->books->first();
+        $book->price = rand(50, 200).'.'.rand(0, 99);
+        $book->save();
 
-		$manager = $author->managers->first();
-		$manager->profit_percent = rand(30, 60);
-		$manager->save();
+        $manager = $author->managers->first();
+        $manager->profit_percent = rand(30, 60);
+        $manager->save();
 
-		$referer_buyer_sum = round(($book->price / 100) * $comission_from_reference_buyer, 2, PHP_ROUND_HALF_UP);
-		$referer_seller_sum = round(($book->price / 100) * $comission_from_reference_seller, 2, PHP_ROUND_HALF_UP);
-		$comission_sum = round(($book->price / 100) * (100 - $manager->profit_percent), 2, PHP_ROUND_HALF_DOWN) - $referer_seller_sum - $referer_buyer_sum;
+        $referer_buyer_sum = round(($book->price / 100) * $comission_from_reference_buyer, 2, PHP_ROUND_HALF_UP);
+        $referer_seller_sum = round(($book->price / 100) * $comission_from_reference_seller, 2, PHP_ROUND_HALF_UP);
+        $comission_sum = round(($book->price / 100) * (100 - $manager->profit_percent), 2, PHP_ROUND_HALF_DOWN) - $referer_seller_sum - $referer_buyer_sum;
 
-		$buyer_sum = $book->price;
+        $buyer_sum = $book->price;
 
-		$seller_sum = $book->price - $comission_sum - $referer_seller_sum - $referer_buyer_sum;
+        $seller_sum = $book->price - $comission_sum - $referer_seller_sum - $referer_buyer_sum;
 
-		$this->assertEquals($book->price, $seller_sum + $comission_sum + $referer_seller_sum + $referer_buyer_sum);
+        $this->assertEquals($book->price, $seller_sum + $comission_sum + $referer_seller_sum + $referer_buyer_sum);
 
-		$seller = $author->seller();
+        $seller = $author->seller();
 
-		$reference = ReferredUser::factory()->create([
-				'comission_buy_book' => $comission_from_reference_buyer,
-				'comission_sell_book' => $comission_from_reference_seller,
-				'referred_user_id' => $seller->id
-			])
-			->fresh();
+        $reference = ReferredUser::factory()->create([
+            'comission_buy_book' => $comission_from_reference_buyer,
+            'comission_sell_book' => $comission_from_reference_seller,
+            'referred_user_id' => $seller->id
+        ])
+            ->fresh();
 
-		$seller_referer = $reference->referred_by_user;
+        $seller_referer = $reference->referred_by_user;
 
-		$buyer = User::factory()->with_thousand_money_on_balance()->create();
+        $buyer = User::factory()->withMoneyOnBalance()->create();
 
-		$this->assertEquals(1000, $buyer->balance);
+        $this->assertEquals(1000, $buyer->balance);
 
-		$reference = ReferredUser::factory()->create([
-				'comission_buy_book' => $comission_from_reference_buyer,
-				'comission_sell_book' => $comission_from_reference_seller,
-				'referred_user_id' => $buyer->id
-			])
-			->fresh();
+        $reference = ReferredUser::factory()->create([
+            'comission_buy_book' => $comission_from_reference_buyer,
+            'comission_sell_book' => $comission_from_reference_seller,
+            'referred_user_id' => $buyer->id
+        ])
+            ->fresh();
 
-		$buyer_referer = $reference->referred_by_user;
+        $buyer_referer = $reference->referred_by_user;
 
-		$this->actingAs($buyer)
-			->get(route('books.buy', $book))
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.show', $book));
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('books.show', $book));
 
-		$purchase = $buyer->purchases()->first();
-		$seller = $book->seller();
-		$book->refresh();
+        $purchase = $buyer->purchases()->first();
+        $seller = $book->seller();
+        $book->refresh();
 
-		$this->assertNotNull($purchase);
-		$this->assertEquals($buyer->id, $purchase->buyer->id);
-		$this->assertEquals($book->seller()->id, $purchase->seller->id);
-		$this->assertEquals($book->price, $purchase->price);
-		$this->assertEquals($purchase->site_commission, 100 - $manager->profit_percent - $comission_from_reference_seller - $comission_from_reference_buyer);
-		$this->assertEquals('book', $purchase->purchasable_type);
-		$this->assertEquals($book->id, $purchase->purchasable_id);
+        $this->assertNotNull($purchase);
+        $this->assertEquals($buyer->id, $purchase->buyer->id);
+        $this->assertEquals($book->seller()->id, $purchase->seller->id);
+        $this->assertEquals($book->price, $purchase->price);
+        $this->assertEquals($purchase->site_commission, 100 - $manager->profit_percent - $comission_from_reference_seller - $comission_from_reference_buyer);
+        $this->assertEquals('book', $purchase->purchasable_type);
+        $this->assertEquals($book->id, $purchase->purchasable_id);
 
-		$this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
-		$this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
+        $this->assertEquals($buyer->id, $purchase->buyer_transaction->user_id);
+        $this->assertEquals(-$buyer_sum, $purchase->buyer_transaction->sum);
 
-		$this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
-		$this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
+        $this->assertEquals($seller->id, $purchase->seller_transaction->user_id);
+        $this->assertEquals($seller_sum, $purchase->seller_transaction->sum);
 
-		$this->assertEquals($seller_referer->id, $purchase->referer_seller_transaction->user_id);
-		$this->assertEquals($referer_seller_sum, $purchase->referer_seller_transaction->sum);
+        $this->assertEquals($seller_referer->id, $purchase->referer_seller_transaction->user_id);
+        $this->assertEquals($referer_seller_sum, $purchase->referer_seller_transaction->sum);
 
-		$this->assertEquals($buyer_referer->id, $purchase->referer_buyer_transaction->user_id);
-		$this->assertEquals($referer_buyer_sum, $purchase->referer_buyer_transaction->sum);
+        $this->assertEquals($buyer_referer->id, $purchase->referer_buyer_transaction->user_id);
+        $this->assertEquals($referer_buyer_sum, $purchase->referer_buyer_transaction->sum);
 
-		$this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
-		$this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
+        $this->assertEquals(config('app.user_id'), $purchase->commission_transaction->user_id);
+        $this->assertEquals($comission_sum, $purchase->commission_transaction->sum);
 
-		$this->assertEquals($seller_sum, $seller->balance);
-		$this->assertEquals(1000 - $book->price, $buyer->balance);
+        $this->assertEquals($seller_sum, $seller->balance);
+        $this->assertEquals(1000 - $book->price, $buyer->balance);
 
-		$this->assertEquals(1, $buyer->data->books_purchased_count);
-		$this->assertEquals(1, $book->bought_times_count);
-	}
+        $this->assertEquals(1, $buyer->data->books_purchased_count);
+        $this->assertEquals(1, $book->bought_times_count);
+    }
 }

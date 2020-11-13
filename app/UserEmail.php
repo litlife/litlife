@@ -23,8 +23,8 @@ use Illuminate\Support\Facades\Validator;
  * @property bool $notice
  * @property string|null $domain
  * @property bool|null $is_valid Соответствует ли адрес RFC
- * @property-read \Illuminate\Database\Eloquent\Collection|UserEmailToken[] $tokens
- * @property-read User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserEmailToken[] $tokens
+ * @property-read \App\User $user
  * @method static Builder|UserEmail confirmed()
  * @method static Builder|UserEmail confirmedOrUnconfirmed()
  * @method static Builder|UserEmail createdBeforeMoveToNewEngine()

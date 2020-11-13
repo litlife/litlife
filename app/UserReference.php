@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * App\UserReference
  *
- * @property-read User $refer_user
- * @property-read User $referred_user
+ * @property-read \App\User $refer_user
+ * @property-read \App\User $referred_user
  * @method static Builder|UserReference newModelQuery()
  * @method static Builder|UserReference newQuery()
  * @method static Builder|Model orderByField($column, $ids)

@@ -10,37 +10,37 @@ use Tests\TestCase;
 
 class BookFileGetStreamOrFirstFileInArchiveStreamTest extends TestCase
 {
-	public function testGetStreamOrFirstFileInArchiveStream()
-	{
-		Storage::fake(config('filesystems.default'));
+    public function testGetStreamOrFirstFileInArchiveStream()
+    {
+        Storage::fake(config('filesystems.default'));
 
-		$book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-		$file = new BookFile;
-		$file->zip = true;
-		$file->open(__DIR__ . '/../Books/test.fb2');
-		$file->statusAccepted();
-		$book->files()->save($file);
-		$file->refresh();
+        $file = new BookFile;
+        $file->zip = true;
+        $file->open(__DIR__.'/../Books/test.fb2');
+        $file->statusAccepted();
+        $book->files()->save($file);
+        $file->refresh();
 
-		$stream = $file->getStreamOrFirstFileInArchiveStream();
+        $stream = $file->getStreamOrFirstFileInArchiveStream();
 
-		$fb2 = new Fb2();
-		$fb2->setFile($stream);
-		$this->assertIsObject($fb2->description());
+        $fb2 = new Fb2();
+        $fb2->setFile($stream);
+        $this->assertIsObject($fb2->description());
 
-		$book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-		$file = new BookFile;
-		$file->open(__DIR__ . '/../Books/test.fb2');
-		$file->statusAccepted();
-		$book->files()->save($file);
-		$file->refresh();
+        $file = new BookFile;
+        $file->open(__DIR__.'/../Books/test.fb2');
+        $file->statusAccepted();
+        $book->files()->save($file);
+        $file->refresh();
 
-		$stream = $file->getStreamOrFirstFileInArchiveStream();
+        $stream = $file->getStreamOrFirstFileInArchiveStream();
 
-		$fb2 = new Fb2();
-		$fb2->setFile($stream);
-		$this->assertIsObject($fb2->description());
-	}
+        $fb2 = new Fb2();
+        $fb2->setFile($stream);
+        $this->assertIsObject($fb2->description());
+    }
 }

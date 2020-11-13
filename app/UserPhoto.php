@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $storage
  * @property string|null $dirname
  * @property string|null $md5
- * @property-read User $create_user
+ * @property-read \App\User $create_user
  * @property-read mixed $full_url200x200
  * @property-read mixed $full_url50x50
  * @property-read mixed $full_url90x90
@@ -34,16 +34,16 @@ use Illuminate\Support\Carbon;
  * @property-write mixed $max_width
  * @property-write mixed $path_to_file
  * @property-write mixed $quality
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto newQuery()
  * @method static Builder|UserPhoto onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreator(User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereDirname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereId($value)

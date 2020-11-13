@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @property string $ip
  * @property int $book_id
  * @property int $count
- * @property-read Book $book
+ * @property-read \App\Book $book
  * @method static Builder|BookViewIp newModelQuery()
  * @method static Builder|BookViewIp newQuery()
  * @method static Builder|Model orderByField($column, $ids)

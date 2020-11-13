@@ -8,21 +8,21 @@ use Tests\TestCase;
 
 class BookCollectionAddToCollectionPolicyTest extends TestCase
 {
-	public function testCanIfBookAccepted()
-	{
-		$book = Book::factory()->accepted()->create();
+    public function testCanIfBookAccepted()
+    {
+        $book = Book::factory()->accepted()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->assertTrue($user->can('addToCollection', $book));
-	}
+        $this->assertTrue($user->can('addToCollection', $book));
+    }
 
-	public function testCantIfBookPrivate()
-	{
-		$book = Book::factory()->private()->create();
+    public function testCantIfBookPrivate()
+    {
+        $book = Book::factory()->private()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('addToCollection', $book));
-	}
+        $this->assertFalse($user->can('addToCollection', $book));
+    }
 }

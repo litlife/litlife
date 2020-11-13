@@ -10,22 +10,28 @@ use Tests\TestCase;
 
 class SequenceUpdateBooksCountTest extends TestCase
 {
-	public function testBooksCountIfPrivate()
-	{
-		$user = User::factory()->create();
+    public function testBooksCountIfPrivate()
+    {
+        $user = User::factory()->create();
 
-		$sequence = Sequence::factory()->private()->create();
+        $sequence = Sequence::factory()
+            ->private()
+            ->create(['create_user_id' => $user->id]);
 
-		$book = Book::factory()->private()->create();
+        $book = Book::factory()
+            ->private()
+            ->create(['create_user_id' => $user->id]);
 
-		$book2 = Book::factory()->private()->create();
+        $book2 = Book::factory()
+            ->private()
+            ->create(['create_user_id' => $user->id]);
 
-		$sequence->books()->sync([$book->id, $book2->id]);
+        $sequence->books()->sync([$book->id, $book2->id]);
 
-		UpdateSequenceBooksCount::dispatch($sequence);
+        UpdateSequenceBooksCount::dispatch($sequence);
 
-		$sequence->refresh();
+        $sequence->refresh();
 
-		$this->assertEquals(2, $sequence->book_count);
-	}
+        $this->assertEquals(2, $sequence->book_count);
+    }
 }

@@ -15,6 +15,7 @@ use App\Traits\PaginatableTrait;
 use App\Traits\Payments;
 use Carbon\Carbon;
 use Eloquent;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Jenssegers\Date\Date;
+use Orchestra\Testbench\Concerns\WithFactories;
 use Spatie\Activitylog\Traits\CausesActivity;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -81,99 +83,99 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property float $balance Баланс пользователя в рублях
  * @property int|null $referred_by_user_id ID пользователя по рекомендации которого зарегистрировался этот пользователь
  * @property bool|null $refresh_counters
- * @property-read UserAccountPermission $account_permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|Activity[] $actions
- * @property-read AdminNote|null $admin_note
- * @property-read \Illuminate\Database\Eloquent\Collection|AdminNote[] $admin_notes
- * @property-read \Illuminate\Database\Eloquent\Collection|UserAuthFail[] $auth_fails
- * @property-read \Illuminate\Database\Eloquent\Collection|UserAuthLog[] $auth_logs
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorStatus[] $author_read_statuses
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $authors
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $authors_read_statuses
- * @property-read UserPhoto|null $avatar
+ * @property-read \App\UserAccountPermission $account_permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Activity[] $actions
+ * @property-read \App\AdminNote|null $admin_note
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AdminNote[] $admin_notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserAuthFail[] $auth_fails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserAuthLog[] $auth_logs
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorStatus[] $author_read_statuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $authors
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $authors_read_statuses
+ * @property-read \App\UserPhoto|null $avatar
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $blacklists
- * @property-read \Illuminate\Database\Eloquent\Collection|Blog[] $blog
- * @property-read Book|null $book
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $bookThatRated
- * @property-read \Illuminate\Database\Eloquent\Collection|BookStatus[] $book_read_statuses
- * @property-read \Illuminate\Database\Eloquent\Collection|BookmarkFolder[] $bookmark_folders
- * @property-read \Illuminate\Database\Eloquent\Collection|Bookmark[] $bookmarks
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books
- * @property-read \Illuminate\Database\Eloquent\Collection|UserSearchSetting[] $booksSearchSettings
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $books_read_statuses
- * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $comments
- * @property-read \Illuminate\Database\Eloquent\Collection|SupportQuestionMessage[] $createdSupportMessages
- * @property-read \Illuminate\Database\Eloquent\Collection|SupportQuestion[] $createdSupportQuestions
- * @property-read \Illuminate\Database\Eloquent\Collection|AuthorRepeat[] $created_author_repeats
- * @property-read \Illuminate\Database\Eloquent\Collection|Author[] $created_authors
- * @property-read \Illuminate\Database\Eloquent\Collection|BookFile[] $created_book_files
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $created_books
- * @property-read \Illuminate\Database\Eloquent\Collection|Collection[] $created_collections
- * @property-read \Illuminate\Database\Eloquent\Collection|Forum[] $created_forums
- * @property-read \Illuminate\Database\Eloquent\Collection|Keyword[] $created_keywords
- * @property-read \Illuminate\Database\Eloquent\Collection|Sequence[] $created_sequences
- * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $created_topics
- * @property-read \Illuminate\Database\Eloquent\Collection|Blog[] $created_wall_posts
- * @property-read UserData $data
- * @property-read UserEmailNotificationSetting $email_notification_setting
- * @property-read \Illuminate\Database\Eloquent\Collection|UserEmail[] $emails
- * @property-read \Illuminate\Database\Eloquent\Collection|UserSubscriptionsEventNotification[] $eventNotificationSubscriptions
- * @property-read \Illuminate\Database\Eloquent\Collection|Collection[] $favorite_collections
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Blog[] $blog
+ * @property-read \App\Book|null $book
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $bookThatRated
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookStatus[] $book_read_statuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookmarkFolder[] $bookmark_folders
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Bookmark[] $bookmarks
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSearchSetting[] $booksSearchSettings
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $books_read_statuses
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Comment[] $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestionMessage[] $createdSupportMessages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SupportQuestion[] $createdSupportQuestions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AuthorRepeat[] $created_author_repeats
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Author[] $created_authors
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookFile[] $created_book_files
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $created_books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Collection[] $created_collections
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Forum[] $created_forums
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Keyword[] $created_keywords
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Sequence[] $created_sequences
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Topic[] $created_topics
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Blog[] $created_wall_posts
+ * @property-read \App\UserData $data
+ * @property-read \App\UserEmailNotificationSetting $email_notification_setting
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserEmail[] $emails
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSubscriptionsEventNotification[] $eventNotificationSubscriptions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Collection[] $favorite_collections
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $friends
- * @property-read \Illuminate\Database\Eloquent\Collection|Genre[] $genre_blacklist
- * @property-read \Illuminate\Database\Eloquent\Collection|UserGenreBlacklist[] $genres_blacklist
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Genre[] $genre_blacklist
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserGenreBlacklist[] $genres_blacklist
  * @property-read mixed $born_date_format
  * @property-read mixed $group
  * @property-read mixed $name
  * @property-read mixed $user_name
- * @property-read \Illuminate\Database\Eloquent\Collection|UserGroup[] $groups
- * @property-read \Illuminate\Database\Eloquent\Collection|Image[] $images
- * @property-read \Illuminate\Database\Eloquent\Collection|UserIncomingPayment[] $incoming_payment
- * @property-read \Illuminate\Database\Eloquent\Collection|AdminNote[] $latest_admin_notes
- * @property-read \Illuminate\Database\Eloquent\Collection|AchievementUser[] $latest_user_achievements
- * @property-read \Illuminate\Database\Eloquent\Collection|Like[] $likes
- * @property-read \Illuminate\Database\Eloquent\Collection|Manager[] $managers
- * @property-read \Illuminate\Database\Eloquent\Collection|Message[] $messages
- * @property-read Image|null $miniature
- * @property-read \Illuminate\Database\Eloquent\Collection|UserNote[] $notes
- * @property-read UserEmail|null $notice_email
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserGroup[] $groups
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Image[] $images
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserIncomingPayment[] $incoming_payment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AdminNote[] $latest_admin_notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AchievementUser[] $latest_user_achievements
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Like[] $likes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Manager[] $managers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Message[] $messages
+ * @property-read \App\Image|null $miniature
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserNote[] $notes
+ * @property-read \App\UserEmail|null $notice_email
  * @property-read DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read UserOnModeration|null $on_moderate
- * @property-read \Illuminate\Database\Eloquent\Collection|UserOutgoingPayment[] $outgoing_payment
- * @property-read \Illuminate\Database\Eloquent\Collection|Participation[] $participations
- * @property-read \Illuminate\Database\Eloquent\Collection|PasswordReset[] $password_resets
- * @property-read \Illuminate\Database\Eloquent\Collection|UserPaymentTransaction[] $payment_transactions
- * @property-read \Illuminate\Database\Eloquent\Collection|UserPhoto[] $photos
- * @property-read \Illuminate\Database\Eloquent\Collection|Post[] $posts
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $purchased_books
- * @property-read \Illuminate\Database\Eloquent\Collection|UserPurchase[] $purchases
- * @property-read UserReadStyle $readStyle
- * @property-read \Illuminate\Database\Eloquent\Collection|UserMoneyTransfer[] $receiving
+ * @property-read \App\UserOnModeration|null $on_moderate
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserOutgoingPayment[] $outgoing_payment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Participation[] $participations
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\PasswordReset[] $password_resets
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserPaymentTransaction[] $payment_transactions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserPhoto[] $photos
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Post[] $posts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $purchased_books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserPurchase[] $purchases
+ * @property-read \App\UserReadStyle $readStyle
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserMoneyTransfer[] $receiving
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $refered_users
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $referred_by_user
- * @property-read \Illuminate\Database\Eloquent\Collection|UserRelation[] $relationship
- * @property-read \Illuminate\Database\Eloquent\Collection|UserRelation[] $relationshipReverse
- * @property-read \Illuminate\Database\Eloquent\Collection|BookReadRememberPage[] $remembered_pages
- * @property-read \Illuminate\Database\Eloquent\Collection|UserPurchase[] $sales
- * @property-read \Illuminate\Database\Eloquent\Collection|SearchQueriesLog[] $searchQueries
- * @property-read \Illuminate\Database\Eloquent\Collection|Message[] $sent_messages
- * @property-read \Illuminate\Database\Eloquent\Collection|Sequence[] $sequences
- * @property-read UserSetting $setting
- * @property-read \Illuminate\Database\Eloquent\Collection|BookSimilarVote[] $similar_book_votes
- * @property-read \Illuminate\Database\Eloquent\Collection|UserSocialAccount[] $social_accounts
- * @property-read \Illuminate\Database\Eloquent\Collection|Book[] $sold_books
- * @property-read \Illuminate\Database\Eloquent\Collection|UserTopicSubscription[] $subscribed_topics
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserRelation[] $relationship
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserRelation[] $relationshipReverse
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookReadRememberPage[] $remembered_pages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserPurchase[] $sales
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SearchQueriesLog[] $searchQueries
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Message[] $sent_messages
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Sequence[] $sequences
+ * @property-read \App\UserSetting $setting
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookSimilarVote[] $similar_book_votes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSocialAccount[] $social_accounts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Book[] $sold_books
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserTopicSubscription[] $subscribed_topics
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $subscribers
  * @property-read \Illuminate\Database\Eloquent\Collection|User[] $subscriptions
- * @property-read \Illuminate\Database\Eloquent\Collection|UserSurvey[] $surveys
- * @property-read Bookmark|null $thisPageInBookmarks
- * @property-read UserToken|null $token
- * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $topics
- * @property-read \Illuminate\Database\Eloquent\Collection|UserMoneyTransfer[] $transfers
- * @property-read \Illuminate\Database\Eloquent\Collection|AchievementUser[] $user_achievements
- * @property-read UserGroup $user_group
- * @property-read \Illuminate\Database\Eloquent\Collection|BookVote[] $votes
- * @property-read \Illuminate\Database\Eloquent\Collection|UserPaymentDetail[] $wallets
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserSurvey[] $surveys
+ * @property-read \App\Bookmark|null $thisPageInBookmarks
+ * @property-read \App\UserToken|null $token
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Topic[] $topics
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserMoneyTransfer[] $transfers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AchievementUser[] $user_achievements
+ * @property-read \App\UserGroup $user_group
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\BookVote[] $votes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\UserPaymentDetail[] $wallets
  * @method static \Illuminate\Database\Eloquent\Builder|User active()
  * @method static \Illuminate\Database\Eloquent\Builder|User any()
  * @method static \Illuminate\Database\Eloquent\Builder|User female()
@@ -256,6 +258,7 @@ class User extends Authenticatable
     use AdminNoteableTrait;
     use Payments;
     use PaginatableTrait;
+    use HasFactory;
 
     //use CacheQueryBuilder;
 

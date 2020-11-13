@@ -9,25 +9,27 @@ use Tests\TestCase;
 
 class AdBlockDisableTest extends TestCase
 {
-	public function testDisable()
-	{
-		$user = User::factory()->create();
-		$user->group->manage_ad_blocks = true;
-		$user->push();
+    public function testDisable()
+    {
+        $user = User::factory()->create();
+        $user->group->manage_ad_blocks = true;
+        $user->push();
 
-		$name = Str::random(8);
+        $name = Str::random(8);
 
-		$block = AdBlock::factory()->enabled()->create();
+        $block = AdBlock::factory()
+            ->enabled()
+            ->create(['name' => $name]);
 
-		$this->assertTrue($block->isEnabled());
+        $this->assertTrue($block->isEnabled());
 
-		$this->actingAs($user)
-			->get(route('ad_blocks.disable', ['ad_block' => $block->id]))
-			->assertRedirect(route('ad_blocks.index'))
-			->assertSessionHas('success', __('Ad block :name disabled', ['name' => $name]));
+        $this->actingAs($user)
+            ->get(route('ad_blocks.disable', ['ad_block' => $block->id]))
+            ->assertRedirect(route('ad_blocks.index'))
+            ->assertSessionHas('success', __('Ad block :name disabled', ['name' => $name]));
 
-		$block->refresh();
+        $block->refresh();
 
-		$this->assertFalse($block->isEnabled());
-	}
+        $this->assertFalse($block->isEnabled());
+    }
 }

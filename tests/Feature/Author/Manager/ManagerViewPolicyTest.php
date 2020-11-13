@@ -8,37 +8,37 @@ use Tests\TestCase;
 
 class ManagerViewPolicyTest extends TestCase
 {
-	public function testCanIfUserManager()
-	{
-		$manager = Manager::factory()->create();
+    public function testCanIfUserManager()
+    {
+        $manager = Manager::factory()->create();
 
-		$user = $manager->user;
-		$author = $manager->manageable;
+        $user = $manager->user;
+        $author = $manager->manageable;
 
-		$this->assertTrue($user->can('view', $manager));
-	}
+        $this->assertTrue($user->can('view', $manager));
+    }
 
-	public function testCantIfOtherUser()
-	{
-		$manager = Manager::factory()->create();
+    public function testCantIfOtherUser()
+    {
+        $manager = Manager::factory()->create();
 
-		$author = $manager->manageable;
+        $author = $manager->manageable;
 
-		$user = User::factory()->create();
-		$user->group->moderator_add_remove = false;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->moderator_add_remove = false;
+        $user->push();
 
-		$this->assertFalse($user->can('view', $manager));
-	}
+        $this->assertFalse($user->can('view', $manager));
+    }
 
-	public function testCanIfAdmin()
-	{
-		$manager = Manager::factory()->create();
+    public function testCanIfAdmin()
+    {
+        $manager = Manager::factory()->create();
 
-		$author = $manager->manageable;
+        $author = $manager->manageable;
 
-		$user = User::factory()->admin()->create();
+        $user = User::factory()->admin()->create();
 
-		$this->assertTrue($user->can('view', $manager));
-	}
+        $this->assertTrue($user->can('view', $manager));
+    }
 }

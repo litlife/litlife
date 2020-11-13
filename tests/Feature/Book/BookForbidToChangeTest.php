@@ -12,177 +12,177 @@ use Tests\TestCase;
 
 class BookForbidToChangeTest extends TestCase
 {
-	public function testAttribute()
-	{
-		$book = Book::factory()->create();
-		$book->forbid_to_change = true;
-		$book->save();
+    public function testAttribute()
+    {
+        $book = Book::factory()->create();
+        $book->forbid_to_change = true;
+        $book->save();
 
-		$this->assertTrue($book->forbid_to_change);
+        $this->assertTrue($book->forbid_to_change);
 
-		$book->forbid_to_change = false;
-		$book->save();
+        $book->forbid_to_change = false;
+        $book->save();
 
-		$this->assertFalse($book->forbid_to_change);
-	}
+        $this->assertFalse($book->forbid_to_change);
+    }
 
-	public function testIsCanChange()
-	{
-		$book = Book::factory()->create();
-		$book->forbid_to_change = false;
-		$book->save();
+    public function testIsCanChange()
+    {
+        $book = Book::factory()->create();
+        $book->forbid_to_change = false;
+        $book->save();
 
-		$user = User::factory()->create();
-		$user->group->enable_disable_changes_in_book = false;
-		$user->save();
+        $user = User::factory()->create();
+        $user->group->enable_disable_changes_in_book = false;
+        $user->save();
 
-		$this->assertTrue($book->isCanChange($user));
+        $this->assertTrue($book->isCanChange($user));
 
-		$book->forbid_to_change = true;
-		$book->save();
-		$user->group->enable_disable_changes_in_book = false;
-		$user->save();
+        $book->forbid_to_change = true;
+        $book->save();
+        $user->group->enable_disable_changes_in_book = false;
+        $user->save();
 
-		$this->assertFalse($book->isCanChange($user));
+        $this->assertFalse($book->isCanChange($user));
 
-		$book->forbid_to_change = true;
-		$book->save();
-		$user->group->enable_disable_changes_in_book = true;
-		$user->save();
+        $book->forbid_to_change = true;
+        $book->save();
+        $user->group->enable_disable_changes_in_book = true;
+        $user->save();
 
-		$this->assertTrue($book->isCanChange($user));
+        $this->assertTrue($book->isCanChange($user));
 
-		$book->forbid_to_change = false;
-		$book->save();
-		$user->group->enable_disable_changes_in_book = true;
-		$user->save();
+        $book->forbid_to_change = false;
+        $book->save();
+        $user->group->enable_disable_changes_in_book = true;
+        $user->save();
 
-		$this->assertTrue($book->isCanChange($user));
-	}
+        $this->assertTrue($book->isCanChange($user));
+    }
 
-	public function testPolicy()
-	{
-		$user = User::factory()->admin()->create();
-		$user->group->enable_disable_changes_in_book = false;
-		$user->save();
+    public function testPolicy()
+    {
+        $user = User::factory()->admin()->create();
+        $user->group->enable_disable_changes_in_book = false;
+        $user->save();
 
-		$book = Book::factory()->with_cover()->create();
-		$book->forbid_to_change = true;
-		$book->save();
+        $book = Book::factory()->with_cover()->create(['create_user_id' => $user->id]);
+        $book->forbid_to_change = true;
+        $book->save();
 
-		$file = BookFile::factory()->txt()->create();
+        $file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 
-		$section = Section::factory()->create(['book_id' => $book->id]);
+        $section = Section::factory()->create(['book_id' => $book->id]);
 
-		$attachment = Attachment::factory()->create(['book_id' => $book->id]);
+        $attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertFalse($user->can('update', $book));
-		//$this->assertTrue($user->can('addForReview', $book));
-		//$this->assertTrue($user->can('makeAccepted', $book));
-		$this->assertTrue($user->can('addToPrivate', $book));
-		$this->assertFalse($user->can('delete', $book));
-		$this->assertFalse($user->can('restore', $book));
-		$this->assertFalse($user->can('group', $book));
-		$this->assertFalse($user->can('ungroup', $book));
-		$this->assertFalse($user->can('make_main_in_group', $book));
-		$this->assertFalse($user->can('change_access', $book));
-		$this->assertTrue($user->can('commentOn', $book));
-		$this->assertFalse($user->can('add_similar_book', $book));
-		$this->assertTrue($user->can('view_section_list', $book));
-		$this->assertFalse($user->can('retry_failed_parse', $book));
-		$this->assertFalse($user->can('refresh_counters', $book));
-		$this->assertFalse($user->can('open_comments', $book));
-		$this->assertFalse($user->can('close_comments', $book));
-		$this->assertTrue($user->can('read', $book));
-		$this->assertTrue($user->can('view_download_files', $book));
-		$this->assertTrue($user->can('download', $book));
-		$this->assertTrue($user->can('read_or_download', $book));
-		$this->assertFalse($user->can('attachAward', $book));
-		$this->assertFalse($user->can('set_as_new_read_online_format', $book));
-		$this->assertFalse($user->can('cancel_parse', $book));
+        $this->assertFalse($user->can('update', $book));
+        //$this->assertTrue($user->can('addForReview', $book));
+        //$this->assertTrue($user->can('makeAccepted', $book));
+        $this->assertTrue($user->can('addToPrivate', $book));
+        $this->assertFalse($user->can('delete', $book));
+        $this->assertFalse($user->can('restore', $book));
+        $this->assertFalse($user->can('group', $book));
+        $this->assertFalse($user->can('ungroup', $book));
+        $this->assertFalse($user->can('make_main_in_group', $book));
+        $this->assertFalse($user->can('change_access', $book));
+        $this->assertTrue($user->can('commentOn', $book));
+        $this->assertFalse($user->can('add_similar_book', $book));
+        $this->assertTrue($user->can('view_section_list', $book));
+        $this->assertFalse($user->can('retry_failed_parse', $book));
+        $this->assertFalse($user->can('refresh_counters', $book));
+        $this->assertFalse($user->can('open_comments', $book));
+        $this->assertFalse($user->can('close_comments', $book));
+        $this->assertTrue($user->can('read', $book));
+        $this->assertTrue($user->can('view_download_files', $book));
+        $this->assertTrue($user->can('download', $book));
+        $this->assertTrue($user->can('read_or_download', $book));
+        $this->assertFalse($user->can('attachAward', $book));
+        $this->assertFalse($user->can('set_as_new_read_online_format', $book));
+        $this->assertFalse($user->can('cancel_parse', $book));
 
-		$this->assertFalse($user->can('create_section', $book));
-		$this->assertFalse($user->can('update', $section));
-		$this->assertFalse($user->can('delete', $section));
-		$this->assertFalse($user->can('save_sections_position', $book));
-		$this->assertFalse($user->can('move_sections_to_notes', $book));
+        $this->assertFalse($user->can('create_section', $book));
+        $this->assertFalse($user->can('update', $section));
+        $this->assertFalse($user->can('delete', $section));
+        $this->assertFalse($user->can('save_sections_position', $book));
+        $this->assertFalse($user->can('move_sections_to_notes', $book));
 
-		$this->assertFalse($user->can('create_attachment', $book));
-		$this->assertFalse($user->can('delete', $attachment));
-		$this->assertFalse($user->can('setAsCover', $attachment));
-		$this->assertFalse($user->can('remove_cover', $book));
+        $this->assertFalse($user->can('create_attachment', $book));
+        $this->assertFalse($user->can('delete', $attachment));
+        $this->assertFalse($user->can('setAsCover', $attachment));
+        $this->assertFalse($user->can('remove_cover', $book));
 
-		$book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
+        $book_keyword = BookKeyword::factory()->create(['book_id' => $book->id]);
 
-		$this->assertTrue($user->can('addKeywords', $book));
-		$this->assertTrue($user->can('delete', $book_keyword));
-		$this->assertTrue($user->can('vote', $book_keyword));
-		$this->assertTrue($user->can('viewOnCheck', $book_keyword));
+        $this->assertTrue($user->can('addKeywords', $book));
+        $this->assertTrue($user->can('delete', $book_keyword));
+        $this->assertTrue($user->can('vote', $book_keyword));
+        $this->assertTrue($user->can('viewOnCheck', $book_keyword));
 
-		$this->assertFalse($user->can('addFiles', $book));
-		$this->assertFalse($user->can('update', $file));
-		$this->assertFalse($user->can('delete', $file));
-		$this->assertFalse($user->can('restore', $file));
-		$this->assertFalse($user->can('set_source_and_make_pages', $file));
-	}
+        $this->assertFalse($user->can('addFiles', $book));
+        $this->assertFalse($user->can('update', $file));
+        $this->assertFalse($user->can('delete', $file));
+        $this->assertFalse($user->can('restore', $file));
+        $this->assertFalse($user->can('set_source_and_make_pages', $file));
+    }
 
-	public function testEnableForbidChangesInBookPolicy()
-	{
-		$user = User::factory()->create();
-		$user->group->enable_disable_changes_in_book = false;
-		$user->save();
+    public function testEnableForbidChangesInBookPolicy()
+    {
+        $user = User::factory()->create();
+        $user->group->enable_disable_changes_in_book = false;
+        $user->save();
 
-		$book = Book::factory()->create();
-		$book->forbid_to_change = false;
-		$book->save();
+        $book = Book::factory()->create();
+        $book->forbid_to_change = false;
+        $book->save();
 
-		$this->assertFalse($user->can('enableForbidChangesInBook', $book));
-		$this->assertFalse($user->can('disableForbidChangesInBook', $book));
+        $this->assertFalse($user->can('enableForbidChangesInBook', $book));
+        $this->assertFalse($user->can('disableForbidChangesInBook', $book));
 
-		$user->group->enable_disable_changes_in_book = true;
-		$user->save();
+        $user->group->enable_disable_changes_in_book = true;
+        $user->save();
 
-		$this->assertTrue($user->can('enableForbidChangesInBook', $book));
-		$this->assertFalse($user->can('disableForbidChangesInBook', $book));
+        $this->assertTrue($user->can('enableForbidChangesInBook', $book));
+        $this->assertFalse($user->can('disableForbidChangesInBook', $book));
 
-		$book->forbid_to_change = true;
-		$book->save();
+        $book->forbid_to_change = true;
+        $book->save();
 
-		$this->assertFalse($user->can('enableForbidChangesInBook', $book));
-		$this->assertTrue($user->can('disableForbidChangesInBook', $book));
-	}
+        $this->assertFalse($user->can('enableForbidChangesInBook', $book));
+        $this->assertTrue($user->can('disableForbidChangesInBook', $book));
+    }
 
-	public function testEnableForbidChangesInBookHttp()
-	{
-		$user = User::factory()->admin()->create();
+    public function testEnableForbidChangesInBookHttp()
+    {
+        $user = User::factory()->admin()->create();
 
-		$book = Book::factory()->create();
+        $book = Book::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.forbid_changes.enable', $book))
-			->assertRedirect();
+        $this->actingAs($user)
+            ->get(route('books.forbid_changes.enable', $book))
+            ->assertRedirect();
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertTrue($book->forbid_to_change);
-	}
+        $this->assertTrue($book->forbid_to_change);
+    }
 
-	public function testDisableForbidChangesInBookHttp()
-	{
-		$user = User::factory()->admin()->create();
+    public function testDisableForbidChangesInBookHttp()
+    {
+        $user = User::factory()->admin()->create();
 
-		$book = Book::factory()->create();
-		$book->forbid_to_change = true;
-		$book->save();
+        $book = Book::factory()->create();
+        $book->forbid_to_change = true;
+        $book->save();
 
-		$this->actingAs($user)
-			->get(route('books.forbid_changes.disable', $book))
-			->assertRedirect();
+        $this->actingAs($user)
+            ->get(route('books.forbid_changes.disable', $book))
+            ->assertRedirect();
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertFalse($book->forbid_to_change);
-	}
+        $this->assertFalse($book->forbid_to_change);
+    }
 }

@@ -8,58 +8,58 @@ use Tests\TestCase;
 
 class CommentDeleteTest extends TestCase
 {
-	public function testIsOkIfBookSoftDeleted()
-	{
-		$user = User::factory()->admin()->create();
+    public function testIsOkIfBookSoftDeleted()
+    {
+        $user = User::factory()->admin()->create();
 
-		$comment = Comment::factory()->create();
+        $comment = Comment::factory()->create();
 
-		$book = $comment->commentable;
-		$book->delete();
+        $book = $comment->commentable;
+        $book->delete();
 
-		$this->actingAs($user)
-			->delete(route('comments.destroy', $comment))
-			->assertOk();
+        $this->actingAs($user)
+            ->delete(route('comments.destroy', $comment))
+            ->assertOk();
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertSoftDeleted($comment);
-	}
+        $this->assertSoftDeleted($comment);
+    }
 
-	public function testIsOkIfBookForceDeleted()
-	{
-		$user = User::factory()->admin()->create();
+    public function testIsOkIfBookForceDeleted()
+    {
+        $user = User::factory()->admin()->create();
 
-		$comment = Comment::factory()->create();
+        $comment = Comment::factory()->create();
 
-		$book = $comment->commentable;
-		$book->forceDelete();
+        $book = $comment->commentable;
+        $book->forceDelete();
 
-		$this->actingAs($user)
-			->delete(route('comments.destroy', $comment))
-			->assertOk();
+        $this->actingAs($user)
+            ->delete(route('comments.destroy', $comment))
+            ->assertOk();
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertSoftDeleted($comment);
-	}
+        $this->assertSoftDeleted($comment);
+    }
 
-	public function testIfCreatorDeleted()
-	{
-		$comment = Comment::factory()->book()->create();
+    public function testIfCreatorDeleted()
+    {
+        $comment = Comment::factory()->book()->create();
 
-		$comment->create_user->delete();
-		$comment->refresh();
-		$comment->delete();
+        $comment->create_user->delete();
+        $comment->refresh();
+        $comment->delete();
 
-		$this->assertTrue($comment->trashed());
+        $this->assertTrue($comment->trashed());
 
-		$comment = Comment::factory()->book()->create();
+        $comment = Comment::factory()->book()->create();
 
-		$comment->create_user->forceDelete();
-		$comment->refresh();
-		$comment->delete();
+        $comment->create_user->forceDelete();
+        $comment->refresh();
+        $comment->delete();
 
-		$this->assertTrue($comment->trashed());
-	}
+        $this->assertTrue($comment->trashed());
+    }
 }

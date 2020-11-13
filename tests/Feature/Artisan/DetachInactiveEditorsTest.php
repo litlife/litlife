@@ -9,48 +9,48 @@ use Tests\TestCase;
 
 class DetachInactiveEditorsTest extends TestCase
 {
-	public function testDontDeleteIfNotEditor()
-	{
-		$manager = Manager::factory()->character_author()->accepted()->create();
+    public function testDontDeleteIfNotEditor()
+    {
+        $manager = Manager::factory()->character_author()->accepted()->create();
 
-		$user = $manager->user;
+        $user = $manager->user;
 
-		Carbon::setTestNow(now()->addMonths(13));
+        Carbon::setTestNow(now()->addMonths(13));
 
-		Artisan::call('managers:delete_inactive_editors', ['months_have_passed_since_the_last_visit' => 12, 'latest_id' => $manager->id]);
+        Artisan::call('managers:delete_inactive_editors', ['months_have_passed_since_the_last_visit' => 12, 'latest_id' => $manager->id]);
 
-		$manager->refresh();
+        $manager->refresh();
 
-		$this->assertFalse($manager->trashed());
-	}
+        $this->assertFalse($manager->trashed());
+    }
 
-	public function testDeleteIfTimePassed()
-	{
-		$manager = Manager::factory()->character_editor()->accepted()->create();
+    public function testDeleteIfTimePassed()
+    {
+        $manager = Manager::factory()->character_editor()->accepted()->create();
 
-		$user = $manager->user;
+        $user = $manager->user;
 
-		Carbon::setTestNow(now()->addMonths(13));
+        Carbon::setTestNow(now()->addMonths(13));
 
-		Artisan::call('managers:delete_inactive_editors', ['months_have_passed_since_the_last_visit' => 12, 'latest_id' => $manager->id]);
+        Artisan::call('managers:delete_inactive_editors', ['months_have_passed_since_the_last_visit' => 12, 'latest_id' => $manager->id]);
 
-		$manager->refresh();
+        $manager->refresh();
 
-		$this->assertTrue($manager->trashed());
-	}
+        $this->assertTrue($manager->trashed());
+    }
 
-	public function testDontDeleteIfTimeNotPassed()
-	{
-		$manager = Manager::factory()->character_editor()->accepted()->create();
+    public function testDontDeleteIfTimeNotPassed()
+    {
+        $manager = Manager::factory()->character_editor()->accepted()->create();
 
-		$user = $manager->user;
+        $user = $manager->user;
 
-		Carbon::setTestNow(now()->addMonths(11));
+        Carbon::setTestNow(now()->addMonths(11));
 
-		Artisan::call('managers:delete_inactive_editors', ['months_have_passed_since_the_last_visit' => 12, 'latest_id' => $manager->id]);
+        Artisan::call('managers:delete_inactive_editors', ['months_have_passed_since_the_last_visit' => 12, 'latest_id' => $manager->id]);
 
-		$manager->refresh();
+        $manager->refresh();
 
-		$this->assertFalse($manager->trashed());
-	}
+        $this->assertFalse($manager->trashed());
+    }
 }

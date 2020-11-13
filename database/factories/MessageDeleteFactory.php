@@ -1,18 +1,31 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Message;
+use App\MessageDelete;
 use App\User;
-use Faker\Generator as Faker;
 
-$factory->define(App\MessageDelete::class, function (Faker $faker) {
+class MessageDeleteFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = MessageDelete::class;
 
-    return [
-        'message_id' => function () {
-            return factory(Message::class)->create()->id;
-        },
-        'user_id' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'deleted_at' => now()
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'message_id' => Message::factory(),
+            'user_id' => User::factory(),
+            'deleted_at' => now()
+        ];
+    }
+}

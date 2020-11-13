@@ -1,16 +1,30 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Author;
 use App\User;
-use Faker\Generator as Faker;
+use App\UserAuthor;
 
-$factory->define(App\UserAuthor::class, function (Faker $faker) {
-    return [
-        'user_id' => function () {
-            return factory(User::class)->create()->id;
-        },
-        'author_id' => function () {
-            return factory(Author::class)->create()->id;
-        },
-    ];
-});
+class UserAuthorFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserAuthor::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'author_id' => Author::factory(),
+        ];
+    }
+}

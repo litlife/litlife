@@ -9,58 +9,58 @@ use Tests\TestCase;
 
 class BookFavoritesTest extends TestCase
 {
-	public function testToggle()
-	{
-		$book = Book::factory()->create();
+    public function testToggle()
+    {
+        $book = Book::factory()->create();
 
-		$user = User::factory()->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.favorites.toggle', ['book' => $book]))
-			->assertOk()
-			->assertJson([
-				'result' => 'attached',
-				'added_to_favorites_count' => 1
-			]);
+        $this->actingAs($user)
+            ->get(route('books.favorites.toggle', ['book' => $book]))
+            ->assertOk()
+            ->assertJson([
+                'result' => 'attached',
+                'added_to_favorites_count' => 1
+            ]);
 
-		$user->refresh();
-		$book->refresh();
+        $user->refresh();
+        $book->refresh();
 
-		$this->assertTrue($user->is($book->addedToFavoritesUsers()->first()));
-		$this->assertEquals(1, $book->added_to_favorites_count);
+        $this->assertTrue($user->is($book->addedToFavoritesUsers()->first()));
+        $this->assertEquals(1, $book->added_to_favorites_count);
 
-		$this->actingAs($user)
-			->get(route('books.favorites.toggle', ['book' => $book]))
-			->assertOk()
-			->assertJson([
-				'result' => 'detached',
-				'added_to_favorites_count' => 0
-			]);
+        $this->actingAs($user)
+            ->get(route('books.favorites.toggle', ['book' => $book]))
+            ->assertOk()
+            ->assertJson([
+                'result' => 'detached',
+                'added_to_favorites_count' => 0
+            ]);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertEquals(0, $book->added_to_favorites_count);
-	}
+        $this->assertEquals(0, $book->added_to_favorites_count);
+    }
 
-	public function testToggleIfAuthorDeleted()
-	{
-		$user_book = UserBook::factory()->create();
+    public function testToggleIfAuthorDeleted()
+    {
+        $user_book = UserBook::factory()->create();
 
-		$book = $user_book->book;
-		$user = $user_book->user;
+        $book = $user_book->book;
+        $user = $user_book->user;
 
-		$book->delete();
+        $book->delete();
 
-		$this->actingAs($user)
-			->get(route('books.favorites.toggle', ['book' => $book]))
-			->assertOk()
-			->assertJson([
-				'result' => 'detached',
-				'added_to_favorites_count' => 0
-			]);
+        $this->actingAs($user)
+            ->get(route('books.favorites.toggle', ['book' => $book]))
+            ->assertOk()
+            ->assertJson([
+                'result' => 'detached',
+                'added_to_favorites_count' => 0
+            ]);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertEquals(0, $book->added_to_favorites_count);
-	}
+        $this->assertEquals(0, $book->added_to_favorites_count);
+    }
 }

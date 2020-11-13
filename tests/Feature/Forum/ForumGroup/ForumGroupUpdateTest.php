@@ -9,57 +9,57 @@ use Tests\TestCase;
 
 class ForumGroupUpdateTest extends TestCase
 {
-	public function testUpdateWithImageHttp()
-	{
-		$user = User::factory()->admin()->create();
+    public function testUpdateWithImageHttp()
+    {
+        $user = User::factory()->admin()->create();
 
-		$title = $this->faker->realText(100);
+        $title = $this->faker->realText(100);
 
-		$jpeg_image_path = __DIR__ . '/../../images/test.jpeg';
-		$filename = 'test.jpeg';
-		$image = new UploadedFile($jpeg_image_path, $filename, null, null, true);
+        $jpeg_image_path = __DIR__.'/../../images/test.jpeg';
+        $filename = 'test.jpeg';
+        $image = new UploadedFile($jpeg_image_path, $filename, null, null, true);
 
-		$forumGroup = ForumGroup::factory()->create();
+        $forumGroup = ForumGroup::factory()->create();
 
-		$this->assertNull($forumGroup->image);
+        $this->assertNull($forumGroup->image);
 
-		$this->actingAs($user)
-			->patch(route('forum_groups.update', $forumGroup),
-				[
-					'name' => $title,
-					'image' => $image
-				])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('forum_groups.update', $forumGroup),
+                [
+                    'name' => $title,
+                    'image' => $image
+                ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$forumGroup->refresh();
+        $forumGroup->refresh();
 
-		$this->assertEquals($title, $forumGroup->name);
-		$this->assertNotNull($forumGroup->image);
-		$this->assertNotNull($forumGroup->image->size);
-	}
+        $this->assertEquals($title, $forumGroup->name);
+        $this->assertNotNull($forumGroup->image);
+        $this->assertNotNull($forumGroup->image->size);
+    }
 
-	public function testUpdateWithoutImageHttp()
-	{
-		$user = User::factory()->admin()->create();
+    public function testUpdateWithoutImageHttp()
+    {
+        $user = User::factory()->admin()->create();
 
-		$title = $this->faker->realText(100);
+        $title = $this->faker->realText(100);
 
-		$forumGroup = ForumGroup::factory()->create();
+        $forumGroup = ForumGroup::factory()->create();
 
-		$this->assertNull($forumGroup->image);
+        $this->assertNull($forumGroup->image);
 
-		$this->actingAs($user)
-			->patch(route('forum_groups.update', $forumGroup),
-				[
-					'name' => $title
-				])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($user)
+            ->patch(route('forum_groups.update', $forumGroup),
+                [
+                    'name' => $title
+                ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$forumGroup->refresh();
+        $forumGroup->refresh();
 
-		$this->assertEquals($title, $forumGroup->name);
-		$this->assertNull($forumGroup->image);
-	}
+        $this->assertEquals($title, $forumGroup->name);
+        $this->assertNull($forumGroup->image);
+    }
 }

@@ -14,7 +14,7 @@ use Illuminate\Support\Carbon;
  * @property string $token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $user
+ * @property-read \App\User $user
  * @method static Builder|UserToken newModelQuery()
  * @method static Builder|UserToken newQuery()
  * @method static Builder|UserToken query()
