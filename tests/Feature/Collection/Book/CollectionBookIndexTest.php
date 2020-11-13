@@ -10,86 +10,76 @@ use Tests\TestCase;
 
 class CollectionBookIndexTest extends TestCase
 {
-	public function testBooksHttp()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testBooksHttp()
+    {
+        $user = User::factory()->admin()->create();
 
-		$collected_book = factory(CollectedBook::class)
-			->create();
+        $collected_book = CollectedBook::factory()->create();
 
-		$collection = $collected_book->collection;
-		$collection->status = StatusEnum::Accepted;
-		$collection->who_can_add = 'everyone';
-		$collection->save();
-		$collection->refresh();
+        $collection = $collected_book->collection;
+        $collection->status = StatusEnum::Accepted;
+        $collection->who_can_add = 'everyone';
+        $collection->save();
+        $collection->refresh();
 
-		$book = $collected_book->book;
+        $book = $collected_book->book;
 
-		$response = $this->actingAs($user)
-			->get(route('collections.books', $collection))
-			->assertOk();
-		//->assertSeeText($book->title);
+        $response = $this->actingAs($user)
+            ->get(route('collections.books', $collection))
+            ->assertOk();
+        //->assertSeeText($book->title);
 
-		$resource = $response->original->gatherData()['resource'];
+        $resource = $response->original->gatherData()['resource'];
 
-		$this->assertFalse($resource->isSaveSetting());
-		$this->assertEquals('gallery', $resource->getDefaultInputValue('view'));
-		$this->assertEquals('gallery', $resource->getInputValue('view'));
-	}
+        $this->assertFalse($resource->isSaveSetting());
+        $this->assertEquals('gallery', $resource->getDefaultInputValue('view'));
+        $this->assertEquals('gallery', $resource->getInputValue('view'));
+    }
 
-	public function testBooksOkIfUserGuestCanSeeEveryone()
-	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+    public function testBooksOkIfUserGuestCanSeeEveryone()
+    {
+        $collection = Collection::factory()->accepted()->create();
 
-		$this->get(route('collections.books', $collection))
-			->assertOk();
-	}
+        $this->get(route('collections.books', $collection))
+            ->assertOk();
+    }
 
-	public function testBooksForbiddenIfUserGuestCanSeeMe()
-	{
-		$collection = factory(Collection::class)
-			->states('private')
-			->create();
+    public function testBooksForbiddenIfUserGuestCanSeeMe()
+    {
+        $collection = Collection::factory()->private()->create();
 
-		$this->get(route('collections.books', $collection))
-			->assertForbidden();
-	}
+        $this->get(route('collections.books', $collection))
+            ->assertForbidden();
+    }
 
-	public function testOrderIsOk()
-	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+    public function testOrderIsOk()
+    {
+        $collection = Collection::factory()->accepted()->create();
 
-		$collectedBook = factory(CollectedBook::class)
-			->create([
-				'collection_id' => $collection->id,
-				'number' => 2,
-				'comment' => 'test'
-			]);
+        $collectedBook = CollectedBook::factory()->create([
+            'collection_id' => $collection->id,
+            'number' => 2,
+            'comment' => 'test'
+        ]);
 
-		$response = $this->get(route('collections.books', [
-			'collection' => $collection,
-			'order' => 'collection_number_asc'
-		]))->assertOk();
+        $response = $this->get(route('collections.books', [
+            'collection' => $collection,
+            'order' => 'collection_number_asc'
+        ]))->assertOk();
 
-		$response = $this->get(route('collections.books', [
-			'collection' => $collection,
-			'order' => 'collection_number_desc'
-		]))->assertOk();
+        $response = $this->get(route('collections.books', [
+            'collection' => $collection,
+            'order' => 'collection_number_desc'
+        ]))->assertOk();
 
-		$response = $this->get(route('collections.books', [
-			'collection' => $collection,
-			'order' => 'oldest_added_to_collection'
-		]))->assertOk();
+        $response = $this->get(route('collections.books', [
+            'collection' => $collection,
+            'order' => 'oldest_added_to_collection'
+        ]))->assertOk();
 
-		$response = $this->get(route('collections.books', [
-			'collection' => $collection,
-			'order' => 'latest_added_to_collection'
-		]))->assertOk();
-	}
+        $response = $this->get(route('collections.books', [
+            'collection' => $collection,
+            'order' => 'latest_added_to_collection'
+        ]))->assertOk();
+    }
 }

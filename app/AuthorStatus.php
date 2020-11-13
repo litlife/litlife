@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\User $user
  * @method static Builder|AuthorStatus newModelQuery()
  * @method static Builder|AuthorStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|AuthorStatus whereAuthorId($value)
  * @method static Builder|AuthorStatus whereId($value)
  * @method static Builder|AuthorStatus whereStatus($value)
@@ -31,21 +31,21 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class AuthorStatus extends Model
 {
-	public $timestamps = false;
-	protected $fillable = [
-		'author_id',
-		'user_id',
-		'status',
-		'user_updated_at'
-	];
+    public $timestamps = false;
+    protected $fillable = [
+        'author_id',
+        'user_id',
+        'status',
+        'user_updated_at'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author', 'author_id', 'id');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author', 'author_id', 'id');
+    }
 }

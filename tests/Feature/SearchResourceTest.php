@@ -9,40 +9,40 @@ use Tests\TestCase;
 
 class SearchResourceTest extends TestCase
 {
-	public function testSetGetDefaultInputValue()
-	{
-		$request = new Request();
-		$builder = Builder::class;
+    public function testSetGetDefaultInputValue()
+    {
+        $request = new Request();
+        $builder = Builder::class;
 
-		$resource = new SearchResource($request, $builder);
+        $resource = new SearchResource($request, $builder);
 
-		$resource->setDefaultInputValue('key', 'value');
+        $resource->setDefaultInputValue('key', 'value');
 
-		$this->assertEquals('value', $resource->getDefaultInputValue('key'));
-	}
+        $this->assertEquals('value', $resource->getDefaultInputValue('key'));
+    }
 
-	public function testGetInputValueIfOnlyDefaultExists()
-	{
-		$request = new Request();
-		$builder = Builder::class;
+    public function testGetInputValueIfOnlyDefaultExists()
+    {
+        $request = new Request();
+        $builder = Builder::class;
 
-		$resource = new SearchResource($request, $builder);
+        $resource = new SearchResource($request, $builder);
 
-		$resource->setDefaultInputValue('key', 'value');
+        $resource->setDefaultInputValue('key', 'value');
 
-		$this->assertEquals('value', $resource->getInputValue('key'));
-	}
+        $this->assertEquals('value', $resource->getInputValue('key'));
+    }
 
-	public function testGetInputValueIfExists()
-	{
-		$request = new Request();
-		$builder = Builder::class;
+    public function testGetInputValueIfExists()
+    {
+        $request = new Request();
+        $builder = Builder::class;
 
-		$resource = new SearchResource($request, $builder);
+        $resource = new SearchResource($request, $builder);
 
-		$resource->setDefaultInputValue('key', 'value');
-		$resource->setInputValue('key', 'value2');
+        $resource->setDefaultInputValue('key', 'value');
+        $resource->setInputValue('key', 'value2');
 
-		$this->assertEquals('value2', $resource->getInputValue('key'));
-	}
+        $this->assertEquals('value2', $resource->getInputValue('key'));
+    }
 }

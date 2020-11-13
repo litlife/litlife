@@ -9,72 +9,66 @@ use Tests\TestCase;
 
 class AuthorCloseAccessToBooksTest extends TestCase
 {
-	public function testCantCloseAccessIfNoPermission()
-	{
-		$admin = factory(User::class)
-			->create();
+    public function testCantCloseAccessIfNoPermission()
+    {
+        $admin = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+        $author = Author::factory()->create();
 
-		$admin->group->book_secret_hide_set = false;
-		$admin->push();
+        $admin->group->book_secret_hide_set = false;
+        $admin->push();
 
-		$this->assertFalse($admin->can('booksCloseAccess', $author));
-	}
+        $this->assertFalse($admin->can('booksCloseAccess', $author));
+    }
 
-	public function testCanCloseAccessIfHasPermission()
-	{
-		$admin = factory(User::class)
-			->create();
+    public function testCanCloseAccessIfHasPermission()
+    {
+        $admin = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+        $author = Author::factory()->create();
 
-		$admin->group->book_secret_hide_set = true;
-		$admin->push();
+        $admin->group->book_secret_hide_set = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('booksCloseAccess', $author));
-	}
+        $this->assertTrue($admin->can('booksCloseAccess', $author));
+    }
 
-	public function testBooksCloseAccess()
-	{
-		$admin = factory(User::class)
-			->create();
-		$admin->group->book_secret_hide_set = true;
-		$admin->push();
+    public function testBooksCloseAccess()
+    {
+        $admin = User::factory()->create();
+        $admin->group->book_secret_hide_set = true;
+        $admin->push();
 
-		$author = factory(Author::class)
-			->create();
+        $author = Author::factory()->create();
 
-		$book = factory(Book::class)->create();
-		$translated_book = factory(Book::class)->create();
-		$illustrated_book = factory(Book::class)->create();
+        $book = Book::factory()->create();
+        $translated_book = Book::factory()->create();
+        $illustrated_book = Book::factory()->create();
 
-		$author->books()->sync([$book->id]);
-		$author->translated_books()->sync([$book->id]);
-		$author->illustrated_books()->sync([$book->id]);
-		$author->push();
-		$author->save();
+        $author->books()->sync([$book->id]);
+        $author->translated_books()->sync([$book->id]);
+        $author->illustrated_books()->sync([$book->id]);
+        $author->push();
+        $author->save();
 
-		$books = $author->any_books()->get();
+        $books = $author->any_books()->get();
 
-		foreach ($books as $book) {
-			$this->assertTrue($book->isReadAccess());
-			$this->assertTrue($book->isDownloadAccess());
-		}
+        foreach ($books as $book) {
+            $this->assertTrue($book->isReadAccess());
+            $this->assertTrue($book->isDownloadAccess());
+        }
 
-		$this->actingAs($admin)
-			->followingRedirects()
-			->get(route('authors.books.close_access', $author))
-			->assertOk()
-			->assertSeeText(__('author.books_access_closed'));
+        $this->actingAs($admin)
+            ->followingRedirects()
+            ->get(route('authors.books.close_access', $author))
+            ->assertOk()
+            ->assertSeeText(__('author.books_access_closed'));
 
-		$books = $author->any_books()->get();
+        $books = $author->any_books()->get();
 
-		foreach ($books as $book) {
-			$this->assertFalse($book->isReadOrDownloadAccess());
-		}
-	}
+        foreach ($books as $book) {
+            $this->assertFalse($book->isReadOrDownloadAccess());
+        }
+    }
 
 }

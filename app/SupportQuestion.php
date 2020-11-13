@@ -6,9 +6,11 @@ use App\Enums\CacheTags;
 use App\Enums\StatusEnum;
 use App\Traits\CheckedItems;
 use App\Traits\UserCreate;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -25,9 +27,9 @@ use Illuminate\Support\Str;
  * @property int|null $latest_message_id ID последнего сообщения
  * @property int $number_of_messages Количество сообщений
  * @property string|null $last_message_created_at Количество сообщений
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read \App\User $create_user
  * @property-read \App\FeedbackSupportResponses|null $feedback
  * @property-read mixed $is_accepted
@@ -52,13 +54,16 @@ use Illuminate\Support\Str;
  * @method static Builder|SupportQuestion onCheck()
  * @method static Builder|SupportQuestion onlyChecked()
  * @method static \Illuminate\Database\Query\Builder|SupportQuestion onlyTrashed()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|SupportQuestion orderStatusChangedAsc()
  * @method static Builder|SupportQuestion orderStatusChangedDesc()
- * @method static Builder|SupportQuestion private ()
+ * @method static Builder|SupportQuestion private()
  * @method static Builder|SupportQuestion query()
  * @method static Builder|SupportQuestion sentOnReview()
  * @method static Builder|SupportQuestion unaccepted()
  * @method static Builder|SupportQuestion unchecked()
+ * @method static Builder|Model void()
  * @method static Builder|SupportQuestion whereCategory($value)
  * @method static Builder|SupportQuestion whereCreateUserId($value)
  * @method static Builder|SupportQuestion whereCreatedAt($value)
@@ -81,141 +86,140 @@ use Illuminate\Support\Str;
  * @method static Builder|SupportQuestion withUnchecked()
  * @method static Builder|SupportQuestion withoutCheckedScope()
  * @method static \Illuminate\Database\Query\Builder|SupportQuestion withoutTrashed()
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class SupportQuestion extends Model
 {
-	use UserCreate;
-	use CheckedItems;
-	use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
+    use SoftDeletes;
 
-	protected $attributes = [
-		'status' => StatusEnum::OnReview
-	];
+    public $fillable = [
+        'title',
+        'category'
+    ];
+    protected $attributes = [
+        'status' => StatusEnum::OnReview
+    ];
 
-	public $fillable = [
-		'title',
-		'category'
-	];
+    static function getNumberInProcess(): int
+    {
+        return Cache::tags([CacheTags::NumberInProcessSupportQuestions])
+            ->remember(CacheTags::NumberInProcessSupportQuestions, 86400, function () {
 
-	public function messages()
-	{
-		return $this->hasMany('App\SupportQuestionMessage');
-	}
+                $count = SupportQuestion::whereStatusIn(['ReviewStarts'])
+                    ->count();
 
-	public function latest_message()
-	{
-		return $this->hasOne('App\SupportQuestionMessage', 'id', 'latest_message_id');
-	}
+                return (int)$count;
+            });
+    }
 
-	public function upadateNumberOfMessages()
-	{
-		$this->number_of_messages = $this->messages()->count();
-	}
+    static function flushNumberInProcess()
+    {
+        Cache::tags([CacheTags::NumberInProcessSupportQuestions])
+            ->pull(CacheTags::NumberInProcessSupportQuestions);
+    }
 
-	public function upadateLatestMessage()
-	{
-		$latestMessage = $this->messages()
-			->orderBy('id', 'desc')
-			->first();
+    static function getNumberOfSolved(): int
+    {
+        return Cache::tags([CacheTags::NumberOfSolvedSupportQuestions])
+            ->remember(CacheTags::NumberOfSolvedSupportQuestions, 86400, function () {
 
-		if (!empty($latestMessage)) {
-			$this->latest_message_id = $latestMessage->id;
-			$this->last_message_created_at = $latestMessage->created_at;
-		}
-	}
+                $count = SupportQuestion::accepted()
+                    ->count();
 
-	public function scopeWhereLastResponseByUser($query)
-	{
-		return $query->whereHas('latest_message', function (Builder $query) {
-			$query->whereColumn('support_questions.create_user_id', '=', 'support_question_messages.create_user_id');
-		});
-	}
+                return (int)$count;
+            });
+    }
 
-	public function scopeWhereLastResponseNotByUser($query)
-	{
-		return $query->whereHas('latest_message', function (Builder $query) {
-			$query->whereColumn('support_questions.create_user_id', '!=', 'support_question_messages.create_user_id');
-		});
-	}
+    static function flushNumberOfSolved()
+    {
+        Cache::tags([CacheTags::NumberOfSolvedSupportQuestions])
+            ->pull(CacheTags::NumberOfSolvedSupportQuestions);
+    }
 
-	public function isLatestMessageByCreatedUser(): bool
-	{
-		return $this->create_user->is($this->latest_message->create_user);
-	}
+    static function getNumberOfNewQuestions(): int
+    {
+        return Cache::tags([CacheTags::NumberOfNewSupportQuestions])
+            ->remember(CacheTags::NumberOfNewSupportQuestions, 86400, function () {
 
-	static function getNumberInProcess(): int
-	{
-		return Cache::tags([CacheTags::NumberInProcessSupportQuestions])
-			->remember(CacheTags::NumberInProcessSupportQuestions, 86400, function () {
+                $count = SupportQuestion::whereStatusIn(['OnReview'])
+                    ->count();
 
-				$count = SupportQuestion::whereStatusIn(['ReviewStarts'])
-					->count();
+                return (int)$count;
+            });
+    }
 
-				return (int)$count;
-			});
-	}
+    static function flushNumberOfNewQuestions()
+    {
+        Cache::tags([CacheTags::NumberOfNewSupportQuestions])
+            ->pull(CacheTags::NumberOfNewSupportQuestions);
+    }
 
-	static function flushNumberInProcess()
-	{
-		Cache::tags([CacheTags::NumberInProcessSupportQuestions])
-			->pull(CacheTags::NumberInProcessSupportQuestions);
-	}
+    public function latest_message()
+    {
+        return $this->hasOne('App\SupportQuestionMessage', 'id', 'latest_message_id');
+    }
 
-	static function getNumberOfSolved(): int
-	{
-		return Cache::tags([CacheTags::NumberOfSolvedSupportQuestions])
-			->remember(CacheTags::NumberOfSolvedSupportQuestions, 86400, function () {
+    public function upadateNumberOfMessages()
+    {
+        $this->number_of_messages = $this->messages()->count();
+    }
 
-				$count = SupportQuestion::accepted()
-					->count();
+    public function messages()
+    {
+        return $this->hasMany('App\SupportQuestionMessage');
+    }
 
-				return (int)$count;
-			});
-	}
+    public function upadateLatestMessage()
+    {
+        $latestMessage = $this->messages()
+            ->orderBy('id', 'desc')
+            ->first();
 
-	static function flushNumberOfSolved()
-	{
-		Cache::tags([CacheTags::NumberOfSolvedSupportQuestions])
-			->pull(CacheTags::NumberOfSolvedSupportQuestions);
-	}
+        if (!empty($latestMessage)) {
+            $this->latest_message_id = $latestMessage->id;
+            $this->last_message_created_at = $latestMessage->created_at;
+        }
+    }
 
-	static function getNumberOfNewQuestions(): int
-	{
-		return Cache::tags([CacheTags::NumberOfNewSupportQuestions])
-			->remember(CacheTags::NumberOfNewSupportQuestions, 86400, function () {
+    public function scopeWhereLastResponseByUser($query)
+    {
+        return $query->whereHas('latest_message', function (Builder $query) {
+            $query->whereColumn('support_questions.create_user_id', '=', 'support_question_messages.create_user_id');
+        });
+    }
 
-				$count = SupportQuestion::whereStatusIn(['OnReview'])
-					->count();
+    public function scopeWhereLastResponseNotByUser($query)
+    {
+        return $query->whereHas('latest_message', function (Builder $query) {
+            $query->whereColumn('support_questions.create_user_id', '!=', 'support_question_messages.create_user_id');
+        });
+    }
 
-				return (int)$count;
-			});
-	}
+    public function isLatestMessageByCreatedUser(): bool
+    {
+        return $this->create_user->is($this->latest_message->create_user);
+    }
 
-	static function flushNumberOfNewQuestions()
-	{
-		Cache::tags([CacheTags::NumberOfNewSupportQuestions])
-			->pull(CacheTags::NumberOfNewSupportQuestions);
-	}
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = Str::limit($value, 97);
+    }
 
-	public function setTitleAttribute($value)
-	{
-		$this->attributes['title'] = Str::limit($value, 97);
-	}
+    public function feedback()
+    {
+        return $this->hasOne('App\FeedbackSupportResponses');
+    }
 
-	public function feedback()
-	{
-		return $this->hasOne('App\FeedbackSupportResponses');
-	}
+    public function hasFeedback(): bool
+    {
+        if ($this->isAccepted()) {
+            if ($this->feedback) {
+                return true;
+            }
+        }
 
-	public function hasFeedback(): bool
-	{
-		if ($this->isAccepted()) {
-			if ($this->feedback) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+        return false;
+    }
 }

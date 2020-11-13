@@ -79,18 +79,18 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|Blog onlyChecked()
  * @method static Builder|Blog onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog orDescendants($ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Blog orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog orderStatusChangedDesc()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog owned()
- * @method static \Illuminate\Database\Eloquent\Builder|Blog private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Blog private()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog query()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog roots()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereBlogUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Blog whereCharactersCount($value)
@@ -123,191 +123,194 @@ use Stevebauman\Purify\Facades\Purify;
  */
 class Blog extends Model
 {
-	use SoftDeletes;
-	use NestedItems;
-	use UserCreate;
-	use UserAgentTrait;
-	use Likeable;
-	use CheckedItems;
-	use CharactersCountTrait;
-	use ExternalLinks;
-	use BBCodeable;
+    use SoftDeletes;
+    use NestedItems;
+    use UserCreate;
+    use UserAgentTrait;
+    use Likeable;
+    use CheckedItems;
+    use CharactersCountTrait;
+    use ExternalLinks;
+    use BBCodeable;
 
-	public $visible = [
-		'id',
-		'blog_user_id',
-		'create_user_id',
-		'text',
-		'like_count',
-		'created_at',
-		'deleted_at',
-		'characters_count',
-		'children_count'
-	];
+    const BB_CODE_COLUMN = 'bb_text';
+    const HTML_COLUMN = 'text';
+    public $visible = [
+        'id',
+        'blog_user_id',
+        'create_user_id',
+        'text',
+        'like_count',
+        'created_at',
+        'deleted_at',
+        'characters_count',
+        'children_count'
+    ];
+    protected $perPage = 10;
+    protected $dates = [
+        'add_time',
+        'deleted_at'
+    ];
+    protected $fillable = [
+        'bb_text',
+        'display_on_home_page'
+    ];
 
-	protected $perPage = 10;
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::BlogPostsOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	protected $dates = [
-		'add_time',
-		'deleted_at'
-	];
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::BlogPostsOnModerationCount])->pull('count');
+    }
 
-	protected $fillable = [
-		'bb_text',
-		'display_on_home_page'
-	];
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	const BB_CODE_COLUMN = 'bb_text';
-	const HTML_COLUMN = 'text';
+    function owner()
+    {
+        return $this->belongsTo('App\User', 'blog_user_id', 'id');
+    }
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::BlogPostsOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    /*
+     * Проверка это стена такого то пользователя
+     * */
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::BlogPostsOnModerationCount])->pull('count');
-	}
+    public function complaints()
+    {
+        return $this->morphMany('App\Complain', 'complainable');
+    }
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function scopeOwned($query)
+    {
+        return $query->whereRaw('"blog_user_id" = "create_user_id"');
+    }
 
-	function owner()
-	{
-		return $this->belongsTo('App\User', 'blog_user_id', 'id');
-	}
+    public function isUserBlog($user)
+    {
+        return $this->blog_user_id == $user->id;
+    }
 
-	/*
-	 * Проверка это стена такого то пользователя
-	 * */
+    public function isCreateOwner()
+    {
+        return $this->blog_user_id == $this->create_user_id;
+    }
 
-	public function complaints()
-	{
-		return $this->morphMany('App\Complain', 'complainable');
-	}
+    public function getTextAttribute($value)
+    {
+        $value = preg_replace_callback("/((?:<\\/?\\w+)(?:\\s+\\w+(?:\\s*=\\s*(?:\\\".*?\\\"|'.*?'|[^'\\\">\\s]+)?)+\\s*|\\s*)\\/?>)([^<]*)?/",
+            function ($matches) {
+                return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
+            }, $value);
 
-	public function scopeOwned($query)
-	{
-		return $query->whereRaw('"blog_user_id" = "create_user_id"');
-	}
+        $value = preg_replace_callback("/^([^<>]*)(<?)/i", function ($matches) {
+            return str_replace("  ", "&#160; ", $matches[1]) . $matches[2];
+        }, $value);
+        $value = preg_replace_callback("/(>)([^<>]*)$/i", function ($matches) {
+            return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
+        }, $value);
 
-	public function isUserBlog($user)
-	{
-		return $this->blog_user_id == $user->id;
-	}
+        return $value;
+    }
 
-	public function isCreateOwner()
-	{
-		return $this->blog_user_id == $this->create_user_id;
-	}
+    public function setBBTextAttribute($value)
+    {
+        $this->setBBCode($value);
+        $this->attributes['external_images_downloaded'] = false;
+        $this->refreshCharactersCount();
+    }
 
-	public function getTextAttribute($value)
-	{
-		$value = preg_replace_callback("/((?:<\\/?\\w+)(?:\\s+\\w+(?:\\s*=\\s*(?:\\\".*?\\\"|'.*?'|[^'\\\">\\s]+)?)+\\s*|\\s*)\\/?>)([^<]*)?/", function ($matches) {
-			return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
-		}, $value);
+    public function refreshCharactersCount()
+    {
+        $this->{$this->getCharactersCountColumn()} = $this->getCharacterCountInText($this->getContent());
+    }
 
-		$value = preg_replace_callback("/^([^<>]*)(<?)/i", function ($matches) {
-			return str_replace("  ", "&#160; ", $matches[1]) . $matches[2];
-		}, $value);
-		$value = preg_replace_callback("/(>)([^<>]*)$/i", function ($matches) {
-			return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
-		}, $value);
+    public function getCharacterCountInText($text)
+    {
+        return transform($text, function ($text) {
 
-		return $value;
-	}
+            $text = strip_tags($text);
 
-	public function setBBTextAttribute($value)
-	{
-		$this->setBBCode($value);
-		$this->attributes['external_images_downloaded'] = false;
-		$this->refreshCharactersCount();
-	}
+            $text = preg_replace("/[[:space:]]+/iu", "", $text);
 
-	public function refreshCharactersCount()
-	{
-		$this->{$this->getCharactersCountColumn()} = $this->getCharacterCountInText($this->getContent());
-	}
+            $text = mb_strlen($text);
 
-	public function getCharacterCountInText($text)
-	{
-		return transform($text, function ($text) {
+            return $text;
+        });
+    }
 
-			$text = strip_tags($text);
+    public function getContent()
+    {
+        return $this->text;
+    }
 
-			$text = preg_replace("/[[:space:]]+/iu", "", $text);
+    public function setTextAttribute($value)
+    {
+        $value = trim(replaceAsc194toAsc32($value));
+        $value = removeJsAdCode($value);
+        $value = preg_replace("/<br(\ *)\/?>(\ *)<br(\ *)\/?>/iu", "\n\n", $value);
+        $this->attributes['text'] = @Purify::clean($value);
+        $this->attributes['external_images_downloaded'] = false;
+        $this->refreshCharactersCount();
+    }
 
-			$text = mb_strlen($text);
+    public function isFixed()
+    {
+        if (empty($this->owner)) {
+            return false;
+        }
 
-			return $text;
-		});
-	}
+        if (empty($blogTopRecordId = $this->owner->setting->blog_top_record)) {
+            return false;
+        }
 
-	public function getContent()
-	{
-		return $this->text;
-	}
+        if ($blogTopRecordId == $this->id) {
+            return true;
+        }
 
-	public function setTextAttribute($value)
-	{
-		$value = trim(replaceAsc194toAsc32($value));
-		$value = removeJsAdCode($value);
-		$value = preg_replace("/<br(\ *)\/?>(\ *)<br(\ *)\/?>/iu", "\n\n", $value);
-		$this->attributes['text'] = @Purify::clean($value);
-		$this->attributes['external_images_downloaded'] = false;
-		$this->refreshCharactersCount();
-	}
+        return false;
+    }
 
-	public function isFixed()
-	{
-		if (empty($this->owner))
-			return false;
+    public function fix()
+    {
+        $this->owner->setting->blog_top_record = $this->id;
+        $this->owner->setting->save();
+    }
 
-		if (empty($blogTopRecordId = $this->owner->setting->blog_top_record))
-			return false;
+    public function unfix()
+    {
+        $this->owner->setting->blog_top_record = null;
+        $this->owner->setting->save();
+    }
 
-		if ($blogTopRecordId == $this->id)
-			return true;
+    public function getShareTitle()
+    {
+        return __('blog.message_on_the_wall_from_user',
+            [
+                'user_name' => optional($this->create_user)->userName,
+                'wall_user_name' => optional($this->owner)->userName
+            ]);
+    }
 
-		return false;
-	}
+    public function getShareDescription()
+    {
+        return mb_substr(strip_tags($this->text), 0, 200);
+    }
 
-	public function fix()
-	{
-		$this->owner->setting->blog_top_record = $this->id;
-		$this->owner->setting->save();
-	}
+    public function isMustBeSentForReview()
+    {
+        if (($this->create_user->comment_count + $this->create_user->forum_message_count) < 10) {
+            if ($this->getExternalLinksCount($this->getContent()) > 0) {
+                return true;
+            }
+        }
 
-	public function unfix()
-	{
-		$this->owner->setting->blog_top_record = null;
-		$this->owner->setting->save();
-	}
-
-	public function getShareTitle()
-	{
-		return __('blog.message_on_the_wall_from_user',
-			['user_name' => optional($this->create_user)->userName,
-				'wall_user_name' => optional($this->owner)->userName]);
-	}
-
-	public function getShareDescription()
-	{
-		return mb_substr(strip_tags($this->text), 0, 200);
-	}
-
-	public function isMustBeSentForReview()
-	{
-		if (($this->create_user->comment_count + $this->create_user->forum_message_count) < 10) {
-			if ($this->getExternalLinksCount($this->getContent()) > 0)
-				return true;
-		}
-
-		return false;
-	}
+        return false;
+    }
 }

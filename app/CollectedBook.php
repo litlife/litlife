@@ -3,6 +3,9 @@
 namespace App;
 
 use App\Traits\UserCreate;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 
 /**
  * App\CollectedBook
@@ -13,48 +16,48 @@ use App\Traits\UserCreate;
  * @property int $create_user_id collected_books.create_user_id
  * @property int|null $number Номер
  * @property string|null $comment Комментарий
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \App\Book $book
  * @property-read \App\Collection $collection
  * @property-read \App\User $create_user
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereBookId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereCollectionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereComment($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereCreateUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereCreator(\App\User $user)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|CollectedBook whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|CollectedBook newModelQuery()
+ * @method static Builder|CollectedBook newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|CollectedBook query()
+ * @method static Builder|Model void()
+ * @method static Builder|CollectedBook whereBookId($value)
+ * @method static Builder|CollectedBook whereCollectionId($value)
+ * @method static Builder|CollectedBook whereComment($value)
+ * @method static Builder|CollectedBook whereCreateUserId($value)
+ * @method static Builder|CollectedBook whereCreatedAt($value)
+ * @method static Builder|CollectedBook whereCreator(\App\User $user)
+ * @method static Builder|CollectedBook whereId($value)
+ * @method static Builder|CollectedBook whereNumber($value)
+ * @method static Builder|CollectedBook whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class CollectedBook extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	protected $table = 'collected_books';
+    protected $table = 'collected_books';
 
-	protected $fillable = [
-		'collection_id',
-		'book_id',
-		'number',
-		'comment'
-	];
+    protected $fillable = [
+        'collection_id',
+        'book_id',
+        'number',
+        'comment'
+    ];
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book');
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book');
+    }
 
-	public function collection()
-	{
-		return $this->belongsTo('App\Collection');
-	}
+    public function collection()
+    {
+        return $this->belongsTo('App\Collection');
+    }
 }

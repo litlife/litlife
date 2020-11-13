@@ -26,8 +26,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement newQuery()
  * @method static Builder|Achievement onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement query()
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement similaritySearch($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|Achievement void()
@@ -46,34 +46,34 @@ use Illuminate\Support\Carbon;
  */
 class Achievement extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description'];
 
-	public function scopeVoid($query)
-	{
-		return $query;
-	}
+    public function scopeVoid($query)
+    {
+        return $query;
+    }
 
-	public function image()
-	{
-		return $this->belongsTo('App\Image');
-	}
+    public function image()
+    {
+        return $this->belongsTo('App\Image');
+    }
 
-	public function users()
-	{
-		return $this->belongsToMany('App\User');
-	}
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
+    }
 
-	public function scopeSimilaritySearch($query, $searchText)
-	{
-		$query->selectRaw("*, similarity(title, ?) AS rank", [$searchText]);
+    public function scopeSimilaritySearch($query, $searchText)
+    {
+        $query->selectRaw("*, similarity(title, ?) AS rank", [$searchText]);
 
-		$query->whereRaw("title % ?", [$searchText]);
+        $query->whereRaw("title % ?", [$searchText]);
 
-		$query->orderBy("rank", 'desc');
+        $query->orderBy("rank", 'desc');
 
-		return $query;
-	}
+        return $query;
+    }
 }

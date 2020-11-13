@@ -1,13 +1,29 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use App\Enums\FaceReactionEnum;
 use App\FeedbackSupportResponses;
-use Faker\Generator as Faker;
 
-$factory->define(FeedbackSupportResponses::class, function (Faker $faker) {
-	return [
-		'text' => $faker->realText(100),
-		'face_reaction' => \App\Enums\FaceReactionEnum::getRandomValue()
-	];
-});
+class FeedbackSupportResponsesFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = FeedbackSupportResponses::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'text' => $this->faker->realText(100),
+            'face_reaction' => FaceReactionEnum::getRandomValue()
+        ];
+    }
+}

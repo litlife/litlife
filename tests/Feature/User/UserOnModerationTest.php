@@ -10,147 +10,143 @@ use Tests\TestCase;
 
 class UserOnModerationTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testCreateCommentHttp()
-	{
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCreateCommentHttp()
+    {
+        $user_on_moderation = UserOnModeration::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$user = $user_on_moderation->user;
-		$user->group->add_comment = true;
-		$user->push();
+        $user = $user_on_moderation->user;
+        $user->group->add_comment = true;
+        $user->push();
 
-		$text = $this->faker->realText(100);
+        $text = $this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('comments.store', ['commentable_type' => 'book',
-				'commentable_id' => $book]),
-				['bb_text' => $text])
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('comments.store', [
+                'commentable_type' => 'book',
+                'commentable_id' => $book
+            ]),
+                ['bb_text' => $text])
+            ->assertRedirect();
 
-		$comment = $user->comments()->first();
+        $comment = $user->comments()->first();
 
-		$this->assertTrue($comment->isSentForReview());
+        $this->assertTrue($comment->isSentForReview());
 
-		$this->actingAs($user)
-			->get(route('books.show', ['book' => $book]))
-			->assertOk()
-			->assertSeeText($text);
+        $this->actingAs($user)
+            ->get(route('books.show', ['book' => $book]))
+            ->assertOk()
+            ->assertSeeText($text);
 
-		$admin = factory(User::class)->create();
-		$admin->group->check_post_comments = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->check_post_comments = true;
+        $admin->push();
 
-		$this->actingAs($admin)
-			->get(route('books.show', ['book' => $book]))
-			->assertOk()
-			->assertDontSeeText($text);
+        $this->actingAs($admin)
+            ->get(route('books.show', ['book' => $book]))
+            ->assertOk()
+            ->assertDontSeeText($text);
 
-		$this->actingAs($admin)
-			->get(route('comments.on_check'))
-			->assertOk()
-			->assertSeeText($text);
-	}
+        $this->actingAs($admin)
+            ->get(route('comments.on_check'))
+            ->assertOk()
+            ->assertSeeText($text);
+    }
 
-	public function testCreatePostHttp()
-	{
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+    public function testCreatePostHttp()
+    {
+        $user_on_moderation = UserOnModeration::factory()->create();
 
-		$topic = factory(Topic::class)
-			->create();
+        $topic = Topic::factory()->create();
 
-		$user = $user_on_moderation->user;
-		$user->group->add_comment = true;
-		$user->push();
+        $user = $user_on_moderation->user;
+        $user->group->add_comment = true;
+        $user->push();
 
-		$text = $this->faker->realText(100);
+        $text = $this->faker->realText(100);
 
-		$this->actingAs($user)
-			->post(route('posts.store', ['topic' => $topic->id]),
-				['bb_text' => $text])
-			->assertRedirect();
+        $this->actingAs($user)
+            ->post(route('posts.store', ['topic' => $topic->id]),
+                ['bb_text' => $text])
+            ->assertRedirect();
 
-		$post = $user->posts()->first();
+        $post = $user->posts()->first();
 
-		$this->assertTrue($post->isSentForReview());
+        $this->assertTrue($post->isSentForReview());
 
-		$this->actingAs($user)
-			->get(route('topics.show', ['topic' => $topic]))
-			->assertOk()
-			->assertSeeText($text);
+        $this->actingAs($user)
+            ->get(route('topics.show', ['topic' => $topic]))
+            ->assertOk()
+            ->assertSeeText($text);
 
-		$admin = factory(User::class)->create();
-		$admin->group->check_post_comments = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->check_post_comments = true;
+        $admin->push();
 
-		$this->actingAs($admin)
-			->get(route('topics.show', ['topic' => $topic]))
-			->assertOk()
-			->assertDontSeeText($text);
+        $this->actingAs($admin)
+            ->get(route('topics.show', ['topic' => $topic]))
+            ->assertOk()
+            ->assertDontSeeText($text);
 
-		$this->actingAs($admin)
-			->get(route('posts.on_check'))
-			->assertOk()
-			->assertSeeText($text);
-	}
+        $this->actingAs($admin)
+            ->get(route('posts.on_check'))
+            ->assertOk()
+            ->assertSeeText($text);
+    }
 
-	public function testIsOnModeration()
-	{
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+    public function testIsOnModeration()
+    {
+        $user_on_moderation = UserOnModeration::factory()->create();
 
-		$user = $user_on_moderation->user;
+        $user = $user_on_moderation->user;
 
-		$this->assertTrue($user->isOnModeration());
+        $this->assertTrue($user->isOnModeration());
 
-		$user_on_moderation->delete();
-		$user->refresh();
+        $user_on_moderation->delete();
+        $user->refresh();
 
-		$this->assertFalse($user->isOnModeration());
-	}
+        $this->assertFalse($user->isOnModeration());
+    }
 
-	public function testAddUserOnModeration()
-	{
-		$admin = factory(User::class)->states('admin')->create();
+    public function testAddUserOnModeration()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->isOnModeration());
+        $this->assertFalse($user->isOnModeration());
 
-		$this->actingAs($admin)
-			->get(route('users.moderations.add', ['user' => $user]))
-			->assertRedirect();
+        $this->actingAs($admin)
+            ->get(route('users.moderations.add', ['user' => $user]))
+            ->assertRedirect();
 
-		$user->refresh();
+        $user->refresh();
 
-		$this->assertTrue($user->isOnModeration());
-	}
+        $this->assertTrue($user->isOnModeration());
+    }
 
-	public function testRemoveUserOnModeration()
-	{
-		$admin = factory(User::class)->states('admin')->create();
+    public function testRemoveUserOnModeration()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$user_on_moderation = factory(UserOnModeration::class)
-			->create();
+        $user_on_moderation = UserOnModeration::factory()->create();
 
-		$user = $user_on_moderation->user;
+        $user = $user_on_moderation->user;
 
-		$this->assertTrue($user->isOnModeration());
+        $this->assertTrue($user->isOnModeration());
 
-		$this->actingAs($admin)
-			->get(route('users.moderations.remove', ['user' => $user]))
-			->assertRedirect();
+        $this->actingAs($admin)
+            ->get(route('users.moderations.remove', ['user' => $user]))
+            ->assertRedirect();
 
-		$user->refresh();
+        $user->refresh();
 
-		$this->assertFalse($user->isOnModeration());
-	}
+        $this->assertFalse($user->isOnModeration());
+    }
 }

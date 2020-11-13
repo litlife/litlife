@@ -15,270 +15,256 @@ use Tests\TestCase;
 
 class BookShowTest extends TestCase
 {
-	public function testViewBookIfUserBuyThisBook()
-	{
-		$book = factory(Book::class)
-			->create();
+    public function testViewBookIfUserBuyThisBook()
+    {
+        $book = Book::factory()->create();
 
-		$book->delete();
+        $book->delete();
 
-		$reader = factory(User::class)
-			->create();
+        $reader = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
-				'buyer_user_id' => $reader->id,
-				'purchasable_type' => 'book',
-				'purchasable_id' => $book->id,
-			]);
+        $purchase = UserPurchase::factory()->create([
+            'buyer_user_id' => $reader->id,
+            'purchasable_type' => 'book',
+            'purchasable_id' => $book->id,
+        ]);
 
-		$this->actingAs($reader)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertDontSeeText($book->title)
-			->assertSeeText(__('Book was deleted'));
-	}
+        $this->actingAs($reader)
+            ->get(route('books.show', $book))
+            ->assertOk()
+            ->assertDontSeeText($book->title)
+            ->assertSeeText(__('Book was deleted'));
+    }
 
-	public function testSeeTextRemoveFromSaleHttp()
-	{
-		$book = factory(Book::class)
-			->states('removed_from_sale')
-			->create();
+    public function testSeeTextRemoveFromSaleHttp()
+    {
+        $book = Book::factory()->removed_from_sale()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.show', ['book' => $book]))
-			->assertOk()
-			->assertSeeText(__('book.removed_from_sale'));
-	}
+        $this->actingAs($user)
+            ->get(route('books.show', ['book' => $book]))
+            ->assertOk()
+            ->assertSeeText(__('book.removed_from_sale'));
+    }
 
-	public function testSeePrivateAuthorIfBookSentOnReview()
-	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+    public function testSeePrivateAuthorIfBookSentOnReview()
+    {
+        $book = Book::factory()->sent_for_review()->create();
 
-		$author = factory(Author::class)
-			->states('private')
-			->create();
+        $author = Author::factory()->private()->create();
 
-		$book->authors()->sync([$author->id]);
+        $book->authors()->sync([$author->id]);
 
-		$user = $author->create_user;
+        $user = $author->create_user;
 
-		$this->actingAs($user)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertSeeText($author->name);
+        $this->actingAs($user)
+            ->get(route('books.show', $book))
+            ->assertOk()
+            ->assertSeeText($author->name);
 
-		$other_user = factory(User::class)->create();
+        $other_user = User::factory()->create();
 
-		$this->actingAs($other_user)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertDontSeeText($author->name);
-	}
+        $this->actingAs($other_user)
+            ->get(route('books.show', $book))
+            ->assertOk()
+            ->assertDontSeeText($author->name);
+    }
 
-	public function testShowSentForReviewOk()
-	{
-		$user = factory(User::class)->create();
+    public function testShowSentForReviewOk()
+    {
+        $user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
-		$book->status_changed_user_id = $user->id;
-		$book->save();
+        $book = Book::factory()->sent_for_review()->create();
+        $book->status_changed_user_id = $user->id;
+        $book->save();
 
-		$this->assertTrue($book->isSentForReview());
+        $this->assertTrue($book->isSentForReview());
 
-		$this->get(route('books.show', $book))
-			->assertOk();
-	}
+        $this->get(route('books.show', $book))
+            ->assertOk();
+    }
 
-	public function testShowPrivateBook()
-	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+    public function testShowPrivateBook()
+    {
+        $book = Book::factory()->private()->with_create_user()->create();
 
-		$this->get(route('books.show', $book))
-			->assertForbidden()
-			->assertSeeText(__('book.access_denied'));
-	}
+        $this->get(route('books.show', $book))
+            ->assertForbidden()
+            ->assertSeeText(__('book.access_denied'));
+    }
 
-	public function testShowSentForReviewBook()
-	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+    public function testShowSentForReviewBook()
+    {
+        $book = Book::factory()->sent_for_review()->create();
 
-		$this->get(route('books.show', $book))
-			->assertOk()
-			->assertSeeText(__('book.on_check'));
-	}
+        $this->get(route('books.show', $book))
+            ->assertOk()
+            ->assertSeeText(__('book.on_check'));
+    }
 
-	public function testGuestSeeOnReview()
-	{
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create();
+    public function testGuestSeeOnReview()
+    {
+        $book = Book::factory()->sent_for_review()->create();
 
-		$response = $this->get(route('books.show', $book))
-			->assertOk()
-			->assertSeeText($book->title)
-			->assertSeeText(__('book.on_check'))
-			->assertDontSeeText(__('book.you_will_receive_a_notification_when_the_book_is_published'))
-			->assertDontSeeText(__('book.added_for_check'));
-	}
+        $this->assertTrue($book->isSentForReview());
 
-	public function testViewFilesOnReviewIfBookOnReview()
-	{
-		foreach (BookFile::sentOnReview()->get() as $file)
-			$file->delete();
+        $response = $this->get(route('books.show', $book))
+            ->assertOk()
+            ->assertSeeText($book->title)
+            ->assertSeeText(__('book.on_check'))
+            ->assertDontSeeText(__('book.you_will_receive_a_notification_when_the_book_is_published'))
+            ->assertDontSeeText(__('book.added_for_check'));
+    }
 
-		$book = factory(Book::class)->create();
-		$book->statusSentForReview();
-		$book->save();
-		$book->refresh();
+    public function testViewFilesOnReviewIfBookOnReview()
+    {
+        foreach (BookFile::sentOnReview()->get() as $file) {
+            $file->delete();
+        }
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
-		$book_file->statusSentForReview();
-		$book_file->save();
-		UpdateBookFilesCount::dispatch($book);
-		$book->refresh();
+        $book = Book::factory()->create();
+        $book->statusSentForReview();
+        $book->save();
+        $book->refresh();
 
-		$this->get(route('books.show', $book))
-			->assertOk()
-			->assertDontSeeText($book_file->extension);
+        $book_file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
+        $book_file->statusSentForReview();
+        $book_file->save();
+        UpdateBookFilesCount::dispatch($book);
+        $book->refresh();
 
-		$admin = factory(User::class)->states('with_user_group')->create();
-		$admin->group->book_file_add_check = true;
-		$admin->push();
+        $this->get(route('books.show', $book))
+            ->assertOk()
+            ->assertDontSeeText($book_file->extension);
 
-		$user = factory(User::class)->create();
+        $admin = User::factory()->with_user_group()->create();
+        $admin->group->book_file_add_check = true;
+        $admin->push();
 
-		$this->actingAs($admin)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertSeeText($book_file->extension);
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertDontSeeText($book_file->extension);
-	}
+        $this->actingAs($admin)
+            ->get(route('books.show', $book))
+            ->assertOk()
+            ->assertSeeText($book_file->extension);
 
-	public function testIfCommentOnReview()
-	{
-		$comment = factory(Comment::class)
-			->states('sent_for_review')
-			->create();
+        $this->actingAs($user)
+            ->get(route('books.show', $book))
+            ->assertOk()
+            ->assertDontSeeText($book_file->extension);
+    }
 
-		$user = factory(User::class)
-			->create();
+    public function testIfCommentOnReview()
+    {
+        $comment = Comment::factory()
+            ->book()
+            ->sent_for_review()
+            ->create();
 
-		$this->actingAs($comment->create_user)
-			->get(route('books.show', $comment->commentable->id))
-			->assertOk()
-			->assertSeeText($comment->text);
+        $user = User::factory()
+            ->create();
 
-		$this->actingAs($user)
-			->get(route('books.show', $comment->commentable->id))
-			->assertOk()
-			->assertDontSeeText($comment->text)
-			->assertSeeText(trans_choice('comment.on_check', 1));
-	}
+        $this->assertTrue($comment->isSentForReview());
 
-	public function testIsOkIfBookDeleted()
-	{
-		$comment = factory(Comment::class)
-			->create();
+        $this->actingAs($comment->create_user)
+            ->get(route('books.show', $comment->commentable->id))
+            ->assertOk()
+            ->assertSeeText($comment->text);
 
-		$this->assertTrue($comment->isBookType());
+        $this->actingAs($user)
+            ->get(route('books.show', $comment->commentable->id))
+            ->assertOk()
+            ->assertDontSeeText($comment->text)
+            ->assertSeeText(trans_choice('comment.on_check', 1));
+    }
 
-		$book = $comment->commentable;
+    public function testIsOkIfBookDeleted()
+    {
+        $comment = Comment::factory()->create();
 
-		$this->get(route('books.show', $book))
-			->assertOk();
+        $this->assertTrue($comment->isBookType());
 
-		$comment->commentable->delete();
+        $book = $comment->commentable;
 
-		$this->get(route('books.show', $book))
-			->assertNotFound();
-	}
+        $this->get(route('books.show', $book))
+            ->assertOk();
 
-	public function testViewCounterIncrement()
-	{
-		$section = factory(Section::class)
-			->create();
+        $comment->commentable->delete();
 
-		$book = $section->book;
-		$book->statusAccepted();
-		$book->push();
-		$book->refresh();
+        $this->get(route('books.show', $book))
+            ->assertNotFound();
+    }
 
-		$this->assertEquals(0, $book->view_count->day);
-		$this->assertEquals(0, $book->view_count->week);
-		$this->assertEquals(0, $book->view_count->month);
-		$this->assertEquals(0, $book->view_count->year);
-		$this->assertEquals(0, $book->view_count->all);
+    public function testViewCounterIncrement()
+    {
+        $section = Section::factory()->create();
 
-		$this->get(route('books.show', $book))
-			->assertOk();
+        $book = $section->book;
+        $book->statusAccepted();
+        $book->push();
+        $book->refresh();
 
-		$book->refresh();
+        $this->assertEquals(0, $book->view_count->day);
+        $this->assertEquals(0, $book->view_count->week);
+        $this->assertEquals(0, $book->view_count->month);
+        $this->assertEquals(0, $book->view_count->year);
+        $this->assertEquals(0, $book->view_count->all);
 
-		$this->assertEquals(1, $book->view_count->day);
-		$this->assertEquals(1, $book->view_count->week);
-		$this->assertEquals(1, $book->view_count->month);
-		$this->assertEquals(1, $book->view_count->year);
-		$this->assertEquals(1, $book->view_count->all);
+        $this->get(route('books.show', $book))
+            ->assertOk();
 
-		$this->get(route('books.show', $book))
-			->assertOk();
+        $book->refresh();
 
-		$book->refresh();
+        $this->assertEquals(1, $book->view_count->day);
+        $this->assertEquals(1, $book->view_count->week);
+        $this->assertEquals(1, $book->view_count->month);
+        $this->assertEquals(1, $book->view_count->year);
+        $this->assertEquals(1, $book->view_count->all);
 
-		$this->assertEquals(1, $book->view_count->day);
-		$this->assertEquals(1, $book->view_count->week);
-		$this->assertEquals(1, $book->view_count->month);
-		$this->assertEquals(1, $book->view_count->year);
-		$this->assertEquals(1, $book->view_count->all);
+        $this->get(route('books.show', $book))
+            ->assertOk();
 
-		$this->get(route('books.show', $book), ['REMOTE_ADDR' => $this->faker->ipv4])
-			->assertOk();
+        $book->refresh();
 
-		$book->refresh();
+        $this->assertEquals(1, $book->view_count->day);
+        $this->assertEquals(1, $book->view_count->week);
+        $this->assertEquals(1, $book->view_count->month);
+        $this->assertEquals(1, $book->view_count->year);
+        $this->assertEquals(1, $book->view_count->all);
 
-		$this->assertEquals(2, $book->view_count->day);
-		$this->assertEquals(2, $book->view_count->week);
-		$this->assertEquals(2, $book->view_count->month);
-		$this->assertEquals(2, $book->view_count->year);
-		$this->assertEquals(2, $book->view_count->all);
+        $this->get(route('books.show', $book), ['REMOTE_ADDR' => $this->faker->ipv4])
+            ->assertOk();
 
-		$this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]), ['REMOTE_ADDR' => $this->faker->ipv4])
-			->assertOk();
+        $book->refresh();
 
-		$book->refresh();
+        $this->assertEquals(2, $book->view_count->day);
+        $this->assertEquals(2, $book->view_count->week);
+        $this->assertEquals(2, $book->view_count->month);
+        $this->assertEquals(2, $book->view_count->year);
+        $this->assertEquals(2, $book->view_count->all);
 
-		$this->assertEquals(3, $book->view_count->day);
-		$this->assertEquals(3, $book->view_count->week);
-		$this->assertEquals(3, $book->view_count->month);
-		$this->assertEquals(3, $book->view_count->year);
-		$this->assertEquals(3, $book->view_count->all);
-	}
+        $this->get(route('books.sections.show', ['book' => $book, 'section' => $section->inner_id]), ['REMOTE_ADDR' => $this->faker->ipv4])
+            ->assertOk();
 
-	public function testInCollection()
-	{
-		$collectedBook = factory(CollectedBook::class)->create();
+        $book->refresh();
 
-		$book = $collectedBook->book;
-		$collection = $collectedBook->collection;
+        $this->assertEquals(3, $book->view_count->day);
+        $this->assertEquals(3, $book->view_count->week);
+        $this->assertEquals(3, $book->view_count->month);
+        $this->assertEquals(3, $book->view_count->year);
+        $this->assertEquals(3, $book->view_count->all);
+    }
 
-		$this->get(route('books.show', $book))
-			->assertOk()
-			->assertViewHas('collectionsCount', 1);
-	}
+    public function testInCollection()
+    {
+        $collectedBook = CollectedBook::factory()->create();
+
+        $book = $collectedBook->book;
+        $collection = $collectedBook->collection;
+
+        $this->get(route('books.show', $book))
+            ->assertOk()
+            ->assertViewHas('collectionsCount', 1);
+    }
 }

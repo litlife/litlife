@@ -8,62 +8,62 @@ use Tests\TestCase;
 
 class BookSimilarVoteTest extends TestCase
 {
-	public function testVoteHttp()
-	{
-		$book = factory(Book::class)->create();
-		$book2 = factory(Book::class)->create();
+    public function testVoteHttp()
+    {
+        $book = Book::factory()->create();
+        $book2 = Book::factory()->create();
 
-		$user = factory(User::class)->create();
-		$user->group->book_similar_vote = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->book_similar_vote = true;
+        $user->push();
 
-		$response = $this->actingAs($user)
-			->get(
-				route('books.similar.vote', [
-					'book' => $book->id,
-					'otherBook' => $book2->id,
-					'vote' => 1
-				]));
+        $response = $this->actingAs($user)
+            ->get(
+                route('books.similar.vote', [
+                    'book' => $book->id,
+                    'otherBook' => $book2->id,
+                    'vote' => 1
+                ]));
 
-		$response->assertSessionHasNoErrors()
-			->assertStatus(201);
+        $response->assertSessionHasNoErrors()
+            ->assertStatus(201);
 
-		$this->assertEquals(1, $book->fresh()->similars->first()->sum);
+        $this->assertEquals(1, $book->fresh()->similars->first()->sum);
 
-		$response = $this->actingAs($user)
-			->get(
-				route('books.similar.vote', [
-					'book' => $book->id,
-					'otherBook' => $book2->id,
-					'vote' => 1
-				]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $response = $this->actingAs($user)
+            ->get(
+                route('books.similar.vote', [
+                    'book' => $book->id,
+                    'otherBook' => $book2->id,
+                    'vote' => 1
+                ]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$this->assertEquals(0, $book->fresh()->similars->first()->sum);
+        $this->assertEquals(0, $book->fresh()->similars->first()->sum);
 
-		$response = $this->actingAs($user)
-			->get(
-				route('books.similar.vote', [
-					'book' => $book->id,
-					'otherBook' => $book2->id,
-					'vote' => 1
-				]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $response = $this->actingAs($user)
+            ->get(
+                route('books.similar.vote', [
+                    'book' => $book->id,
+                    'otherBook' => $book2->id,
+                    'vote' => 1
+                ]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$this->assertEquals(1, $book->fresh()->similars->first()->sum);
+        $this->assertEquals(1, $book->fresh()->similars->first()->sum);
 
-		$response = $this->actingAs($user)
-			->get(
-				route('books.similar.vote', [
-					'book' => $book->id,
-					'otherBook' => $book2->id,
-					'vote' => -1
-				]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $response = $this->actingAs($user)
+            ->get(
+                route('books.similar.vote', [
+                    'book' => $book->id,
+                    'otherBook' => $book2->id,
+                    'vote' => -1
+                ]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$this->assertEquals(-1, $book->fresh()->similars->first()->sum);
-	}
+        $this->assertEquals(-1, $book->fresh()->similars->first()->sum);
+    }
 }

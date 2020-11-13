@@ -1,16 +1,31 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\BookFileDownloadLog::class, function (Faker $faker) {
-	return [
-		'book_file_id' => function () {
-			return factory(App\BookFile::class)->states('txt')->create()->id;
-		},
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'ip' => $faker->ipv4
-	];
-});
+use App\BookFile;
+use App\BookFileDownloadLog;
+use App\User;
 
+class BookFileDownloadLogFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookFileDownloadLog::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'book_file_id' => BookFile::factory()->txt(),
+            'user_id' => User::factory(),
+            'ip' => $this->faker->ipv4
+        ];
+    }
+}

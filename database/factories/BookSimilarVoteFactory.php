@@ -1,20 +1,32 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\BookSimilarVote::class, function (Faker $faker) {
-	return [
-		'book_id' => function () {
-			return factory(App\Book::class)->create()->id;
-		},
-		'other_book_id' => function () {
-			return factory(App\Book::class)->create()->id;
-		},
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'vote' => 1
-	];
-});
+use App\Book;
+use App\BookSimilarVote;
+use App\User;
 
+class BookSimilarVoteFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookSimilarVote::class;
 
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'book_id' => Book::factory(),
+            'other_book_id' => Book::factory(),
+            'create_user_id' => User::factory(),
+            'vote' => 1
+        ];
+    }
+}

@@ -10,36 +10,31 @@ use Tests\TestCase;
 
 class CommentReplyPolicyTest extends TestCase
 {
-	public function testFalseIfIfCreatorAddedToBlacklist()
-	{
-		$relation = factory(UserRelation::class)
-			->create([
-				'status' => UserRelationType::Blacklist
-			]);
+    public function testFalseIfIfCreatorAddedToBlacklist()
+    {
+        $relation = UserRelation::factory()->create([
+            'status' => UserRelationType::Blacklist
+        ]);
 
-		$commentCreator = $relation->first_user;
-		$dislikerUser = $relation->second_user;
-		$dislikerUser->push();
+        $commentCreator = $relation->first_user;
+        $dislikerUser = $relation->second_user;
+        $dislikerUser->push();
 
-		$this->assertTrue($commentCreator->hasAddedToBlacklist($dislikerUser));
+        $this->assertTrue($commentCreator->hasAddedToBlacklist($dislikerUser));
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['create_user_id' => $commentCreator->id]);
+        $comment = Comment::factory()->book()->create(['create_user_id' => $commentCreator->id]);
 
-		$this->assertFalse($dislikerUser->can('reply', $comment));
-	}
+        $this->assertFalse($dislikerUser->can('reply', $comment));
+    }
 
-	public function testFalseIfCommentOnReview()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testFalseIfCommentOnReview()
+    {
+        $user = User::factory()->admin()->create();
 
-		$comment = factory(Comment::class)
-			->states('sent_for_review')
-			->create();
+        $comment = Comment::factory()->sent_for_review()->create();
 
-		$this->assertFalse($user->can('reply', $comment));
-	}
+        $this->assertTrue($comment->isSentForReview());
+
+        $this->assertFalse($user->can('reply', $comment));
+    }
 }

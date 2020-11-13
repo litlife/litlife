@@ -9,14 +9,13 @@ use Tests\TestCase;
 
 class ForumGroupTest extends TestCase
 {
-	public function testEmptyGetSort()
-	{
-		Variable::where('name', VariablesEnum::getValue('ForumGroupSort'))
-			->delete();
+    public function testEmptyGetSort()
+    {
+        Variable::where('name', VariablesEnum::getValue('ForumGroupSort'))
+            ->delete();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+        $forumGroup = ForumGroup::factory()->create();
 
-		$this->assertNull($forumGroup->getSort());
-	}
+        $this->assertNull($forumGroup->getSort());
+    }
 }

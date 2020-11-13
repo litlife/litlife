@@ -9,60 +9,47 @@ use Tests\TestCase;
 
 class CommentViewPolicyTest extends TestCase
 {
-	public function testCanViewPrivateByCreator()
-	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+    public function testCanViewPrivateByCreator()
+    {
+        $comment = Comment::factory()->private()->create();
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		$this->assertTrue($user->can('view', $comment));
-	}
+        $this->assertTrue($user->can('view', $comment));
+    }
 
-	public function testCantViewPrivateIfOtherUser()
-	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+    public function testCantViewPrivateIfOtherUser()
+    {
+        $comment = Comment::factory()->private()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('view', $comment));
-	}
+        $this->assertFalse($user->can('view', $comment));
+    }
 
-	public function testCanViewAccepted()
-	{
-		$comment = factory(Comment::class)
-			->states('accepted')
-			->create();
+    public function testCanViewAccepted()
+    {
+        $comment = Comment::factory()->accepted()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertTrue($user->can('view', $comment));
-	}
+        $this->assertTrue($user->can('view', $comment));
+    }
 
-	public function testCanViewAcceptedByGuest()
-	{
-		$comment = factory(Comment::class)
-			->states('accepted')
-			->create();
+    public function testCanViewAcceptedByGuest()
+    {
+        $comment = Comment::factory()->accepted()->create();
 
-		$this->assertTrue(Gate::forUser(new User)->allows('view', $comment));
-		$this->assertTrue(Gate::allows('view', $comment));
-	}
+        $this->assertTrue(Gate::forUser(new User)->allows('view', $comment));
+        $this->assertTrue(Gate::allows('view', $comment));
+    }
 
-	public function testCanViewSentForReviewComment()
-	{
-		$comment = factory(Comment::class)
-			->states('sent_for_review')
-			->create();
+    public function testCanViewSentForReviewComment()
+    {
+        $comment = Comment::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertTrue($user->can('view', $comment));
-	}
+        $this->assertTrue($user->can('view', $comment));
+    }
 }

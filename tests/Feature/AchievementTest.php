@@ -10,159 +10,154 @@ use Tests\TestCase;
 
 class AchievementTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testCreateHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->achievement = true;
-		$user->push();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCreateHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->achievement = true;
+        $user->push();
 
-		Storage::fake(config('filesystems.default'));
+        Storage::fake(config('filesystems.default'));
 
-		$title = $this->faker->realText(20);
-		$description = $this->faker->realText(50);
+        $title = $this->faker->realText(20);
+        $description = $this->faker->realText(50);
 
-		$file = UploadedFile::fake()
-			->image(__DIR__ . '/images/test.jpeg');
+        $file = UploadedFile::fake()
+            ->image(__DIR__.'/images/test.jpeg');
 
-		$response = $this->actingAs($user)
-			->json('POST',
-				route('achievements.store'),
-				[
-					'title' => $title,
-					'description' => $description,
-					'image' => $file
-				]
-			)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('achievements.index'));
+        $response = $this->actingAs($user)
+            ->json('POST',
+                route('achievements.store'),
+                [
+                    'title' => $title,
+                    'description' => $description,
+                    'image' => $file
+                ]
+            )
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('achievements.index'));
 
-		$achievement = Achievement::whereTitle($title)
-			->whereDescription($description)
-			->latest()
-			->first();
+        $achievement = Achievement::whereTitle($title)
+            ->whereDescription($description)
+            ->latest()
+            ->first();
 
-		$this->assertNotNull($achievement);
-		$this->assertNotNull($achievement->image);
-	}
+        $this->assertNotNull($achievement);
+        $this->assertNotNull($achievement->image);
+    }
 
-	public function testAttachToUserHttp()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->achievement = true;
-		$admin->push();
+    public function testAttachToUserHttp()
+    {
+        $admin = User::factory()->create();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$user = factory(User::class)->create();
-		$user->push();
+        $user = User::factory()->create();
+        $user->push();
 
-		$achievement = factory(Achievement::class)->create();
+        $achievement = Achievement::factory()->create();
 
-		$response = $this->actingAs($admin)
-			->json('POST',
-				route('users.achievements.attach', compact('user')),
-				[
-					'achievement' => $achievement->id
-				]
-			)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $response = $this->actingAs($admin)
+            ->json('POST',
+                route('users.achievements.attach', compact('user')),
+                [
+                    'achievement' => $achievement->id
+                ]
+            )
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$user_achievement = $user->user_achievements()->first();
+        $user_achievement = $user->user_achievements()->first();
 
-		$this->assertNotNull($user_achievement);
-		$this->assertEquals($achievement->id, $user_achievement->achievement->id);
-	}
+        $this->assertNotNull($user_achievement);
+        $this->assertEquals($achievement->id, $user_achievement->achievement->id);
+    }
 
-	public function testAttachToUserPolicy()
-	{
-		$admin = factory(User::class)->create();
+    public function testAttachToUserPolicy()
+    {
+        $admin = User::factory()->create();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($admin->can('attach_achievement', $user));
+        $this->assertFalse($admin->can('attach_achievement', $user));
 
-		$admin->group->achievement = true;
-		$admin->push();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('attach_achievement', $user));
-	}
+        $this->assertTrue($admin->can('attach_achievement', $user));
+    }
 
-	public function testDetachFromUserPolicy()
-	{
-		$admin = factory(User::class)->states('with_user_group')->create();
-		$admin->group->achievement = true;
-		$admin->push();
+    public function testDetachFromUserPolicy()
+    {
+        $admin = User::factory()->with_user_group()->create();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('detach', Achievement::class));
+        $this->assertTrue($admin->can('detach', Achievement::class));
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('detach', Achievement::class));
-	}
+        $this->assertFalse($user->can('detach', Achievement::class));
+    }
 
-	public function testCreatePolicy()
-	{
-		$admin = factory(User::class)->states('with_user_group')->create();
-		$admin->group->achievement = true;
-		$admin->push();
+    public function testCreatePolicy()
+    {
+        $admin = User::factory()->with_user_group()->create();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('create', Achievement::class));
+        $this->assertTrue($admin->can('create', Achievement::class));
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('create', Achievement::class));
-	}
+        $this->assertFalse($user->can('create', Achievement::class));
+    }
 
-	public function testUpdatePolicy()
-	{
-		$admin = factory(User::class)->states('with_user_group')->create();
-		$admin->group->achievement = true;
-		$admin->push();
+    public function testUpdatePolicy()
+    {
+        $admin = User::factory()->with_user_group()->create();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('update', Achievement::class));
+        $this->assertTrue($admin->can('update', Achievement::class));
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('update', Achievement::class));
-	}
+        $this->assertFalse($user->can('update', Achievement::class));
+    }
 
-	public function testDeletePolicy()
-	{
-		$achievement = factory(Achievement::class)->create();
+    public function testDeletePolicy()
+    {
+        $achievement = Achievement::factory()->create();
 
-		$admin = factory(User::class)->states('with_user_group')->create();
-		$admin->group->achievement = true;
-		$admin->push();
+        $admin = User::factory()->with_user_group()->create();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('delete', $achievement));
+        $this->assertTrue($admin->can('delete', $achievement));
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('delete', $achievement));
-	}
+        $this->assertFalse($user->can('delete', $achievement));
+    }
 
-	public function testRestorePolicy()
-	{
-		$achievement = factory(Achievement::class)->create();
-		$achievement->delete();
+    public function testRestorePolicy()
+    {
+        $achievement = Achievement::factory()->create();
+        $achievement->delete();
 
-		$admin = factory(User::class)->states('with_user_group')->create();
-		$admin->group->achievement = true;
-		$admin->push();
+        $admin = User::factory()->with_user_group()->create();
+        $admin->group->achievement = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('restore', $achievement));
+        $this->assertTrue($admin->can('restore', $achievement));
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('restore', $achievement));
-	}
+        $this->assertFalse($user->can('restore', $achievement));
+    }
 }

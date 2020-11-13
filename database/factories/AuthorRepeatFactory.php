@@ -1,21 +1,41 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\AuthorRepeat::class, function (Faker $faker) {
-	return [
-		'comment' => $faker->realText(200),
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		}
-	];
-});
+use App\Author;
+use App\AuthorRepeat;
+use App\User;
 
-$factory->afterCreating(App\AuthorRepeat::class, function ($author_repeat, $faker) {
+class AuthorRepeatFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AuthorRepeat::class;
 
-	$author = factory(\App\Author::class)->create();
-	$author2 = factory(\App\Author::class)->create();
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'comment' => $this->faker->realText(200),
+            'create_user_id' => User::factory()
+        ];
+    }
 
-	$author_repeat->authors()
-		->attach([$author->id, $author2->id]);
-});
+    public function configure()
+    {
+        return $this->afterCreating(function (AuthorRepeat $author_repeat) {
+            $author = Author::factory()->create();
+            $author2 = Author::factory()->create();
+
+            $author_repeat->authors()
+                ->attach([$author->id, $author2->id]);
+        });
+    }
+}

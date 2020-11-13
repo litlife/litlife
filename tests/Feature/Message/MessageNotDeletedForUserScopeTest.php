@@ -8,76 +8,68 @@ use Tests\TestCase;
 
 class MessageNotDeletedForUserScopeTest extends TestCase
 {
-	public function testFoundMessageIfNotDeleted()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+    public function testFoundMessageIfNotDeleted()
+    {
+        $conversation = Conversation::factory()->with_viewed_message()->create();
 
-		$message = $conversation->messages()->first();
+        $message = $conversation->messages()->first();
 
-		//$recepientParticipation = $message->getFirstRecepientParticipation();
+        //$recepientParticipation = $message->getFirstRecepientParticipation();
 
-		$sender = $message->create_user;
-		//$recepient = $recepientParticipation->user;
+        $sender = $message->create_user;
+        //$recepient = $recepientParticipation->user;
 
-		$this->assertEquals(1, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
-	}
+        $this->assertEquals(1, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
+    }
 
-	public function testNotFoundMessageIfDeleted()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+    public function testNotFoundMessageIfDeleted()
+    {
+        $conversation = Conversation::factory()->with_viewed_message()->create();
 
-		$message = $conversation->messages()->first();
+        $message = $conversation->messages()->first();
 
-		$sender = $message->create_user;
+        $sender = $message->create_user;
 
-		$message->delete();
+        $message->delete();
 
-		$this->assertEquals(0, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
-	}
+        $this->assertEquals(0, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
+    }
 
-	public function testIfDeletedForSender()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+    public function testIfDeletedForSender()
+    {
+        $conversation = Conversation::factory()->with_viewed_message()->create();
 
-		$message = $conversation->messages()->first();
+        $message = $conversation->messages()->first();
 
-		$sender = $message->create_user;
-		$recepient = $message->getFirstRecepientParticipation()->user;
+        $sender = $message->create_user;
+        $recepient = $message->getFirstRecepientParticipation()->user;
 
-		$message->user_deletetions()
-			->firstOrCreate(
-				['user_id' => $sender->id],
-				['deleted_at' => now()]
-			);
+        $message->user_deletetions()
+            ->firstOrCreate(
+                ['user_id' => $sender->id],
+                ['deleted_at' => now()]
+            );
 
-		$this->assertEquals(0, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
-		$this->assertEquals(1, Message::where('id', $message->id)->notDeletedForUser($recepient)->count());
-	}
+        $this->assertEquals(0, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
+        $this->assertEquals(1, Message::where('id', $message->id)->notDeletedForUser($recepient)->count());
+    }
 
-	public function testIfDeletedForRecepient()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+    public function testIfDeletedForRecepient()
+    {
+        $conversation = Conversation::factory()->with_viewed_message()->create();
 
-		$message = $conversation->messages()->first();
+        $message = $conversation->messages()->first();
 
-		$sender = $message->create_user;
-		$recepient = $message->getFirstRecepientParticipation()->user;
+        $sender = $message->create_user;
+        $recepient = $message->getFirstRecepientParticipation()->user;
 
-		$message->user_deletetions()
-			->firstOrCreate(
-				['user_id' => $recepient->id],
-				['deleted_at' => now()]
-			);
+        $message->user_deletetions()
+            ->firstOrCreate(
+                ['user_id' => $recepient->id],
+                ['deleted_at' => now()]
+            );
 
-		$this->assertEquals(1, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
-		$this->assertEquals(0, Message::where('id', $message->id)->notDeletedForUser($recepient)->count());
-	}
+        $this->assertEquals(1, Message::where('id', $message->id)->notDeletedForUser($sender)->count());
+        $this->assertEquals(0, Message::where('id', $message->id)->notDeletedForUser($recepient)->count());
+    }
 }

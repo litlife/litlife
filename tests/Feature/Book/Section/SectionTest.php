@@ -10,256 +10,251 @@ use Tests\TestCase;
 
 class SectionTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testCreate()
-	{
-		Storage::fake(config('filesystems.default'));
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testCreate()
+    {
+        Storage::fake(config('filesystems.default'));
 
-		$content = '<p>' . $this->faker->text . ' <strong>' . $this->faker->sentence . '</strong></p>';
+        $content = '<p>'.$this->faker->text.' <strong>'.$this->faker->sentence.'</strong></p>';
 
-		$book = factory(Book::class)->create([
-			'create_user_id' => 50000,
-			'is_si' => false,
-			'is_lp' => false,
-			'age' => 0
-		]);
+        $book = Book::factory()->create([
+            'create_user_id' => 50000,
+            'is_si' => false,
+            'is_lp' => false,
+            'age' => 0
+        ]);
 
-		$title = $this->faker->realText(100);
+        $title = $this->faker->realText(100);
 
-		$section = new Section;
-		$section->title = $title;
-		$section->content = $content;
-		$section->type = 'section';
-		$book->sections()->save($section);
+        $section = new Section;
+        $section->title = $title;
+        $section->content = $content;
+        $section->type = 'section';
+        $book->sections()->save($section);
 
-		$section->refresh();
+        $section->refresh();
 
-		$this->assertEquals($title, $section->title);
-		$this->assertEquals($content, $section->getContent());
-	}
+        $this->assertEquals($title, $section->title);
+        $this->assertEquals($content, $section->getContent());
+    }
 
-	public function testCreateChild()
-	{
-		$book = factory(Book::class)->create([
-			'create_user_id' => 50000,
-			'is_si' => false,
-			'is_lp' => false,
-			'age' => 0
-		]);
+    public function testCreateChild()
+    {
+        $book = Book::factory()->create([
+            'create_user_id' => 50000,
+            'is_si' => false,
+            'is_lp' => false,
+            'age' => 0
+        ]);
 
-		$parent_section = new Section;
-		$parent_section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$parent_section->title = $this->faker->realText(100);
-		$parent_section->content = $this->faker->text;
-		$parent_section->type = 'section';
-		$book->sections()->save($parent_section);
+        $parent_section = new Section;
+        $parent_section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $parent_section->title = $this->faker->realText(100);
+        $parent_section->content = $this->faker->text;
+        $parent_section->type = 'section';
+        $book->sections()->save($parent_section);
 
-		$parent_section->refresh();
+        $parent_section->refresh();
 
-		$section = new Section;
-		$section->scoped(['book_id' => $book->id, 'type' => 'section']);
-		$section->title = $this->faker->realText(100);
-		$section->content = $this->faker->text;
-		$section->type = 'section';
-		$book->sections()->save($section);
+        $section = new Section;
+        $section->scoped(['book_id' => $book->id, 'type' => 'section']);
+        $section->title = $this->faker->realText(100);
+        $section->content = $this->faker->text;
+        $section->type = 'section';
+        $book->sections()->save($section);
 
-		$section->appendToNode($parent_section)->save();
+        $section->appendToNode($parent_section)->save();
 
-		$this->assertTrue($parent_section->isRoot());
-		$this->assertTrue($section->isChildOf($parent_section));
+        $this->assertTrue($parent_section->isRoot());
+        $this->assertTrue($section->isChildOf($parent_section));
 
-		$this->assertCount(1, $parent_section->children);
-	}
+        $this->assertCount(1, $parent_section->children);
+    }
 
-	public function testFulltextSearch()
-	{
-		$author = Section::FulltextSearch('Время&—&детство!')->limit(5)->get();
+    public function testFulltextSearch()
+    {
+        $author = Section::FulltextSearch('Время&—&детство!')->limit(5)->get();
 
-		$this->assertTrue(true);
-	}
+        $this->assertTrue(true);
+    }
 
-	public function testSplitOnPages()
-	{
-		config(['litlife.max_symbols_on_one_page' => 800]);
+    public function testSplitOnPages()
+    {
+        config(['litlife.max_symbols_on_one_page' => 800]);
 
-		$page1_text = '';
-		for ($a = 0; $a < 8; $a++) {
-			$page1_text .= '<p>' . $this->getTextEqualsLength(100) . '</p>';
-		}
+        $page1_text = '';
+        for ($a = 0; $a < 8; $a++) {
+            $page1_text .= '<p>'.$this->getTextEqualsLength(100).'</p>';
+        }
 
-		$page2_text = '';
-		for ($a = 0; $a < 8; $a++) {
-			$page2_text .= '<p>' . $this->getTextEqualsLength(100) . '</p>';
-		}
+        $page2_text = '';
+        for ($a = 0; $a < 8; $a++) {
+            $page2_text .= '<p>'.$this->getTextEqualsLength(100).'</p>';
+        }
 
-		$page3_text = '';
-		for ($a = 0; $a < 4; $a++) {
-			$page3_text .= '<p>' . $this->getTextEqualsLength(100) . '</p>';
-		}
+        $page3_text = '';
+        for ($a = 0; $a < 4; $a++) {
+            $page3_text .= '<p>'.$this->getTextEqualsLength(100).'</p>';
+        }
 
-		$section_content = $page1_text . $page2_text . $page3_text;
+        $section_content = $page1_text.$page2_text.$page3_text;
 
-		$section = factory(Section::class)->create();
-		$section->content = $section_content;
-		$section->save();
+        $section = Section::factory()->create();
+        $section->content = $section_content;
+        $section->save();
 
-		$this->assertEquals(3, $section->pages()->count());
+        $this->assertEquals(3, $section->pages()->count());
 
-		$book = $section->book;
+        $book = $section->book;
 
-		$section->refresh();
+        $section->refresh();
 
-		$this->assertEquals('u-section-1', $section->getSectionId());
+        $this->assertEquals('u-section-1', $section->getSectionId());
 
-		$this->assertEquals($section_content, $section->getContent());
+        $this->assertEquals($section_content, $section->getContent());
 
-		$this->assertEquals($page1_text, $section->pages[0]->content);
-		$this->assertEquals(1, $section->pages[0]->page);
+        $this->assertEquals($page1_text, $section->pages[0]->content);
+        $this->assertEquals(1, $section->pages[0]->page);
 
-		$this->assertEquals($page2_text, $section->pages[1]->content);
-		$this->assertEquals(2, $section->pages[1]->page);
+        $this->assertEquals($page2_text, $section->pages[1]->content);
+        $this->assertEquals(2, $section->pages[1]->page);
 
-		$this->assertEquals($page3_text, $section->pages[2]->content);
-		$this->assertEquals(3, $section->pages[2]->page);
-	}
+        $this->assertEquals($page3_text, $section->pages[2]->content);
+        $this->assertEquals(3, $section->pages[2]->page);
+    }
 
-	private function getTextEqualsLength($number)
-	{
-		$text = $this->faker->sentence($number);
+    private function getTextEqualsLength($number)
+    {
+        $text = $this->faker->sentence($number);
 
-		$text = preg_replace("/[[:space:]]+/iu", "", $text);
+        $text = preg_replace("/[[:space:]]+/iu", "", $text);
 
-		return mb_substr($text, 0, $number);
-	}
+        return mb_substr($text, 0, $number);
+    }
 
-	public function testIsChangedMethod()
-	{
-		$section = factory(Section::class)
-			->create();
+    public function testIsChangedMethod()
+    {
+        $section = Section::factory()->create();
 
-		$this->assertTrue($section->isChanged('character_count'));
+        $this->assertTrue($section->isChanged('character_count'));
 
-		$section = Section::findOrFail($section->id);
+        $section = Section::findOrFail($section->id);
 
-		$character_count = $section->character_count;
-		$section->character_count = $character_count;
-		$section->save();
+        $character_count = $section->character_count;
+        $section->character_count = $character_count;
+        $section->save();
 
-		$this->assertFalse($section->isChanged('character_count'));
+        $this->assertFalse($section->isChanged('character_count'));
 
-		$section = Section::findOrFail($section->id);
+        $section = Section::findOrFail($section->id);
 
-		$this->assertFalse($section->isChanged('character_count'));
+        $this->assertFalse($section->isChanged('character_count'));
 
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$section = new Section();
-		$section->fill([
-			'title' => $this->faker->realText(100),
-			'content' => $this->faker->realText(100),
-		]);
+        $section = new Section();
+        $section->fill([
+            'title' => $this->faker->realText(100),
+            'content' => $this->faker->realText(100),
+        ]);
 
-		$this->assertTrue($section->isChanged('character_count'));
+        $this->assertTrue($section->isChanged('character_count'));
 
-		$book->sections()->save($section);
-	}
+        $book->sections()->save($section);
+    }
 
-	public function testXHTMLUsed()
-	{
-		$section = factory(Section::class)
-			->create();
+    public function testXHTMLUsed()
+    {
+        $section = Section::factory()->create();
 
-		$book = $section->book;
+        $book = $section->book;
 
-		$attachment = factory(Attachment::class)->create(['book_id' => $book->id]);
+        $attachment = Attachment::factory()->create(['book_id' => $book->id]);
 
-		$xhtml = '<p>текст <img src="' . $attachment->url . '" alt="test.jpg"/> текст</p>';
+        $xhtml = '<p>текст <img src="'.$attachment->url.'" alt="test.jpg"/> текст</p>';
 
-		$section->content = $xhtml;
-		$section->save();
-		$section->refresh();
+        $section->content = $xhtml;
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals($xhtml, $section->getContent());
-		$this->assertEquals(10, $section->character_count);
-	}
+        $this->assertEquals($xhtml, $section->getContent());
+        $this->assertEquals(10, $section->character_count);
+    }
 
-	public function testGetFirstTag()
-	{
-		$section = factory(Section::class)->create();
+    public function testGetFirstTag()
+    {
+        $section = Section::factory()->create();
 
-		$section->content = '<div><div><div><div><p>текст</p><p>текст2</p></div></div></div></div>';
-		$section->save();
-		$section->refresh();
+        $section->content = '<div><div><div><div><p>текст</p><p>текст2</p></div></div></div></div>';
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('<p>текст</p><p>текст2</p>', $section->getContent());
+        $this->assertEquals('<p>текст</p><p>текст2</p>', $section->getContent());
 
-		$section->content = '<div><div><div><div><p>текст</p></div></div></div></div>';
-		$section->save();
-		$section->refresh();
+        $section->content = '<div><div><div><div><p>текст</p></div></div></div></div>';
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('<p>текст</p>', $section->getContent());
+        $this->assertEquals('<p>текст</p>', $section->getContent());
 
-		$section->content = '<div><div><div><div>текст</div></div></div></div>';
-		$section->save();
-		$section->refresh();
+        $section->content = '<div><div><div><div>текст</div></div></div></div>';
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('<div>текст</div>', $section->getContent());
+        $this->assertEquals('<div>текст</div>', $section->getContent());
 
-		$section->content = '<div><div><div><div>текст</div><div>текст2</div></div></div></div>';
-		$section->save();
-		$section->refresh();
+        $section->content = '<div><div><div><div>текст</div><div>текст2</div></div></div></div>';
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals('<div>текст</div><div>текст2</div>', $section->getContent());
-	}
+        $this->assertEquals('<div>текст</div><div>текст2</div>', $section->getContent());
+    }
 
-	public function testInnerId()
-	{
-		$book = factory(Book::class)->create();
+    public function testInnerId()
+    {
+        $book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section2 = Section::factory()->create(['book_id' => $book->id]);
 
-		$section->refresh();
-		$section2->refresh();
+        $section->refresh();
+        $section2->refresh();
 
-		$this->assertEquals(1, $section->inner_id);
-		$this->assertEquals(2, $section2->inner_id);
-	}
+        $this->assertEquals(1, $section->inner_id);
+        $this->assertEquals(2, $section2->inner_id);
+    }
 
-	public function testEmptyContent()
-	{
-		$section = factory(Section::class)->create();
-		$section->content = '';
-		$section->save();
-		$section->refresh();
+    public function testEmptyContent()
+    {
+        $section = Section::factory()->create();
+        $section->content = '';
+        $section->save();
+        $section->refresh();
 
-		$this->assertEquals(0, $section->pages()->count());
-		$this->assertEquals('', $section->getContent());
-	}
+        $this->assertEquals(0, $section->pages()->count());
+        $this->assertEquals('', $section->getContent());
+    }
 
-	public function testDontCountPrivateSections()
-	{
-		$book = factory(Book::class)->create();
+    public function testDontCountPrivateSections()
+    {
+        $book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('private')
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()
+            ->private()
+            ->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->states('accepted')
-			->create(['book_id' => $book->id]);
+        $section2 = Section::factory()
+            ->accepted()
+            ->create(['book_id' => $book->id]);
 
-		$book->refreshSectionsCount();
+        $book->refreshSectionsCount();
 
-		$this->assertEquals(1, $book->sections_count);
-	}
+        $this->assertEquals(1, $book->sections_count);
+    }
 }

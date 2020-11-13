@@ -1,15 +1,33 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Bookmark::class, function (Faker $faker) {
-	return [
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'title' => $faker->realText(30),
-		'url' => \Litlife\Url\Url::fromString($faker->url)->getPath(),
-		'created_at' => now(),
-		'updated_at' => now(),
-	];
-});
+use App\Bookmark;
+use App\User;
+use Litlife\Url\Url;
+
+class BookmarkFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Bookmark::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'create_user_id' => User::factory(),
+            'title' => $this->faker->realText(30),
+            'url' => Url::fromString($this->faker->url)->getPath(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
+}

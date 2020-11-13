@@ -1,59 +1,69 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Book;
 use App\Enums\StatusEnum;
 use App\Sequence;
-use Faker\Generator as Faker;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(App\Sequence::class, function (Faker $faker) {
-	return [
-		'name' => $faker->realText(30),
-		'description' => $faker->realText(50),
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'status' => StatusEnum::Accepted,
-		'status_changed_at' => now(),
-		'status_changed_user_id' => rand(50000, 100000)
-	];
-});
+class SequenceFactory extends Factory
+{
+    use CheckedItems;
 
-$factory->afterCreatingState(App\Sequence::class, 'with_book', function (Sequence $sequence, $faker) {
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Sequence::class;
 
-	$book = factory(\App\Book::class)
-		->state('with_section')
-		->create();
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->realText(30),
+            'description' => $this->faker->realText(50),
+            'create_user_id' => User::factory(),
+            'status' => StatusEnum::Accepted,
+            'status_changed_at' => now(),
+            'status_changed_user_id' => rand(50000, 100000)
+        ];
+    }
 
-	$sequence->books()->detach();
-	$sequence->books()->attach([$book->id]);
-	$sequence->refreshBooksCount();
-	$sequence->save();
-});
+    public function with_book()
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterCreatingState(App\Sequence::class, 'with_two_books', function (Sequence $sequence, $faker) {
+        })->afterCreating(function ($item) {
+            $book = Book::factory()->with_section()->create();
 
-	$book = factory(\App\Book::class)
-		->state('with_section')
-		->create();
+            $item->books()->detach();
+            $item->books()->attach([$book->id]);
+            $item->refreshBooksCount();
+            $item->save();
+        });
+    }
 
-	$book2 = factory(\App\Book::class)
-		->state('with_section')
-		->create();
+    public function with_two_books()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$sequence->books()->detach();
-	$sequence->books()->attach([$book->id]);
-	$sequence->books()->attach([$book2->id]);
-	$sequence->refreshBooksCount();
-	$sequence->save();
-});
+        })->afterCreating(function ($item) {
+            $book = Book::factory()->with_section()->create();
 
-$factory->afterMakingState(App\Sequence::class, 'accepted', function (Sequence $sequence, $faker) {
-	$sequence->statusAccepted();
-});
+            $book2 = Book::factory()->with_section()->create();
 
-$factory->afterMakingState(App\Sequence::class, 'sent_for_review', function (Sequence $sequence, $faker) {
-	$sequence->statusSentForReview();
-});
-
-$factory->afterMakingState(App\Sequence::class, 'private', function (Sequence $sequence, $faker) {
-	$sequence->statusPrivate();
-});
+            $item->books()->detach();
+            $item->books()->attach([$book->id]);
+            $item->books()->attach([$book2->id]);
+            $item->refreshBooksCount();
+            $item->save();
+        });
+    }
+}

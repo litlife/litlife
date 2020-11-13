@@ -20,10 +20,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Invitation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Invitation newQuery()
  * @method static Builder|Invitation onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Invitation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereEmail($value)
@@ -36,19 +36,20 @@ use Illuminate\Support\Carbon;
  */
 class Invitation extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $fillable = [
-		'email', 'token',
-	];
+    protected $fillable = [
+        'email',
+        'token',
+    ];
 
-	public function scopeWhereToken($query, $token)
-	{
-		return $query->where('token', $token);
-	}
+    public function scopeWhereToken($query, $token)
+    {
+        return $query->where('token', $token);
+    }
 
-	public function scopeWhereEmail($query, $email)
-	{
-		return $query->where('email', 'ilike', mb_strtolower($email));
-	}
+    public function scopeWhereEmail($query, $email)
+    {
+        return $query->where('email', 'ilike', mb_strtolower($email));
+    }
 }

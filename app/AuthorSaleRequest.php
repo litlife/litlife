@@ -50,16 +50,16 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest onlyChecked()
  * @method static Builder|AuthorSaleRequest onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest private()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest query()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorSaleRequest whereCreatedAt($value)
@@ -83,34 +83,34 @@ use Illuminate\Support\Facades\Cache;
  */
 class AuthorSaleRequest extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
 
-	public $dates = ['status_changed_at'];
-	protected $fillable = [
-		'text'
-	];
+    public $dates = ['status_changed_at'];
+    protected $fillable = [
+        'text'
+    ];
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::AuthorSaleRequestCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::AuthorSaleRequestCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::AuthorSaleRequestCount])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::AuthorSaleRequestCount])->pull('count');
+    }
 
-	public function manager()
-	{
-		return $this->belongsTo('App\Manager', 'manager_id');
-	}
+    public function manager()
+    {
+        return $this->belongsTo('App\Manager', 'manager_id');
+    }
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author');
+    }
 }

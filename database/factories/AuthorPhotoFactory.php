@@ -1,23 +1,40 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\AuthorPhoto::class, function (Faker $faker) {
-	return [
-		'author_id' => function () {
-			return factory(App\Author::class)->create()->id;
-		},
-		'name' => uniqid() . '.jpeg',
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'size' => rand(1245, 345346),
-	];
-});
+use App\Author;
+use App\AuthorPhoto;
+use App\User;
 
-$factory->afterMaking(App\AuthorPhoto::class, function ($author_photo, $faker) {
+class AuthorPhotoFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AuthorPhoto::class;
 
-	$author_photo->openImage(__DIR__ . '/../../tests/Feature/images/test.jpeg');
-	$author_photo->author->photos()->save($author_photo);
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'author_id' => Author::factory(),
+            'name' => uniqid().'.jpeg',
+            'create_user_id' => User::factory(),
+            'size' => rand(1245, 345346),
+        ];
+    }
 
-});
+    public function configure()
+    {
+        return $this->afterMaking(function (AuthorPhoto $author_photo) {
+            $author_photo->openImage(__DIR__.'/../../tests/Feature/images/test.jpeg');
+            $author_photo->author->photos()->save($author_photo);
+        });
+    }
+}

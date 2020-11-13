@@ -1,22 +1,42 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Image::class, function (Faker $faker) {
+use App\Image;
+use App\User;
+use Imagick;
+use ImagickPixel;
 
-	return [
-		'storage' => config('filesystems.default'),
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		}
-	];
-});
+class ImageFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Image::class;
 
-$factory->afterMaking(App\Image::class, function ($image, $faker) {
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'storage' => config('filesystems.default'),
+            'create_user_id' => User::factory()
+        ];
+    }
 
-	$imagick = new Imagick();
-	$imagick->newImage(100, 100, new ImagickPixel('red'));
-	$imagick->setImageFormat('png');
+    public function configure()
+    {
+        return $this->afterMaking(function (Image $image) {
+            $imagick = new Imagick();
+            $imagick->newImage(100, 100, new ImagickPixel('red'));
+            $imagick->setImageFormat('png');
 
-	$image->openImage($imagick);
-});
+            $image->openImage($imagick);
+        });
+    }
+}

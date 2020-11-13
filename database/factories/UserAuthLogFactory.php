@@ -1,21 +1,40 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\UserAuthLog::class, function (Faker $faker) {
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'ip' => $faker->ipv4,
-		'user_agent_id' => function () {
-			return factory(App\UserAgent::class)->create()->id;
-		},
-	];
-});
+use App\User;
+use App\UserAgent;
+use App\UserAuthLog;
 
-$factory->afterCreatingState(App\UserAuthLog::class, 'without_user_agent', function ($log, $faker) {
+class UserAuthLogFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserAuthLog::class;
 
-	$log->user_agent_id = null;
-	$log->save();
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'ip' => $this->faker->ipv4,
+            'user_agent_id' => UserAgent::factory(),
+        ];
+    }
+
+    public function without_user_agent()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->user_agent_id = null;
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

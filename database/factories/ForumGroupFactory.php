@@ -1,13 +1,29 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\ForumGroup::class, function (Faker $faker) {
+use App\ForumGroup;
+use App\User;
 
-	return [
-		'name' => $faker->realText(100),
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		}
-	];
-});
+class ForumGroupFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ForumGroup::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->realText(100),
+            'create_user_id' => User::factory()
+        ];
+    }
+}

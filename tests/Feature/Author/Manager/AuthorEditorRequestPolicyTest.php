@@ -8,144 +8,118 @@ use Tests\TestCase;
 
 class AuthorEditorRequestPolicyTest extends TestCase
 {
-	public function testFalse()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testFalse()
+    {
+        $user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+        $author = Author::factory()->accepted()->create();
 
-		$this->assertFalse($user->can('editorRequest', $author));
-	}
+        $this->assertFalse($user->can('editorRequest', $author));
+    }
 
-	/*
-		public function testFalseIfAuthorPrivate()
-		{
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+    /*
+        public function testFalseIfAuthorPrivate()
+        {
+            $user = User::factory()->admin()->create();
 
-			$author = factory(Author::class)
-				->states('private')
-				->create();
+            $author = Author::factory()->private()->create();
 
-			$this->assertTrue($user->can('editorRequest', $author));
-		}
+            $this->assertTrue($user->can('editorRequest', $author));
+        }
 
-		public function testTrueIfAuthorHasEditorManager()
-		{
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+        public function testTrueIfAuthorHasEditorManager()
+        {
+            $user = User::factory()->admin()->create();
 
-			$author = factory(Author::class)
-				->states('with_editor_manager')
-				->create();
+            $author = Author::factory()->with_editor_manager()->create();
 
-			$this->assertTrue($user->can('editorRequest', $author));
-		}
-	*/
-	public function testFalseIfEditorManagerOnReview()
-	{
-		$author = factory(Author::class)
-			->states('with_editor_manager')
-			->create();
+            $this->assertTrue($user->can('editorRequest', $author));
+        }
+    */
+    public function testFalseIfEditorManagerOnReview()
+    {
+        $author = Author::factory()->with_editor_manager()->create();
 
-		$manager = $author->managers()->first();
-		$manager->statusSentForReview();
-		$manager->save();
+        $manager = $author->managers()->first();
+        $manager->statusSentForReview();
+        $manager->save();
 
-		$user = $manager->user;
-		$user->group->author_editor_request = true;
-		$user->push();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
 
-		$this->assertFalse($user->can('editorRequest', $author));
-	}
+        $this->assertFalse($user->can('editorRequest', $author));
+    }
 
-	/*
-		public function testTrueIfOtherUserEditorManagerOnReview()
-		{
-			$author = factory(Author::class)
-				->states('with_editor_manager')
-				->create();
+    /*
+        public function testTrueIfOtherUserEditorManagerOnReview()
+        {
+            $author = Author::factory()->with_editor_manager()->create();
 
-			$manager = $author->managers()->first();
-			$manager->statusSentForReview();
-			$manager->save();
+            $manager = $author->managers()->first();
+            $manager->statusSentForReview();
+            $manager->save();
 
-			$user = factory(User::class)
-				->states('admin')
-				->create();
+            $user = User::factory()->admin()->create();
 
-			$this->assertTrue($user->can('editorRequest', $author));
-		}
-	*/
-	public function testFalseIfUserRequestVerification()
-	{
-		$author = factory(Author::class)
-			->states('with_author_manager_on_review')
-			->create();
+            $this->assertTrue($user->can('editorRequest', $author));
+        }
+    */
+    public function testFalseIfUserRequestVerification()
+    {
+        $author = Author::factory()->with_author_manager_sent_for_review()->create();
 
-		$manager = $author->managers()->first();
-		$user = $manager->user;
-		$user->group->author_editor_request = true;
-		$user->push();
+        $manager = $author->managers()->first();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
 
-		$this->assertFalse($user->can('editorRequest', $author));
-	}
+        $this->assertFalse($user->can('editorRequest', $author));
+    }
 
-	public function testFalseIfAuthorManagerPrivate()
-	{
-		$author = factory(Author::class)
-			->states('private', 'with_author_manager')
-			->create();
+    public function testFalseIfAuthorManagerPrivate()
+    {
+        $author = Author::factory()->private()->with_author_manager()->create();
 
-		$manager = $author->managers()->first();
-		$manager->statusPrivate();
-		$manager->save();
+        $manager = $author->managers()->first();
+        $manager->statusPrivate();
+        $manager->save();
 
-		$user = $manager->user;
-		$user->group->author_editor_request = true;
-		$user->push();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
 
-		$this->assertFalse($user->can('editorRequest', $author));
-	}
+        $this->assertFalse($user->can('editorRequest', $author));
+    }
 
-	public function testFalseIfUserAuthor()
-	{
-		$author = factory(Author::class)
-			->states('accepted', 'with_author_manager')
-			->create();
+    public function testFalseIfUserAuthor()
+    {
+        $author = Author::factory()->accepted()->with_author_manager()->create();
 
-		$manager = $author->managers()->first();
-		$manager->statusAccepted();
-		$manager->save();
+        $manager = $author->managers()->first();
+        $manager->statusAccepted();
+        $manager->save();
 
-		$user = $manager->user;
-		$user->group->author_editor_request = true;
-		$user->push();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
 
-		$this->assertFalse($user->can('editorRequest', $author));
-	}
-	/*
-		public function testTrueIfUserNotAuthor()
-		{
-			$author = factory(Author::class)
-				->states('accepted', 'with_author_manager')
-				->create();
+        $this->assertFalse($user->can('editorRequest', $author));
+    }
+    /*
+        public function testTrueIfUserNotAuthor()
+        {
+            $author = Author::factory()->accepted()->with_author_manager()->create();
 
-			$manager = $author->managers()->first();
-			$manager->statusAccepted();
-			$manager->save();
+            $manager = $author->managers()->first();
+            $manager->statusAccepted();
+            $manager->save();
 
-			$user = factory(User::class)->create();
-			$user->group->author_editor_request = true;
-			$user->push();
+            $user = User::factory()->create();
+            $user->group->author_editor_request = true;
+            $user->push();
 
-			$this->assertTrue($user->can('editorRequest', $author));
-		}
-		*/
+            $this->assertTrue($user->can('editorRequest', $author));
+        }
+        */
 }

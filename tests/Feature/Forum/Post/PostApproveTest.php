@@ -8,31 +8,31 @@ use Tests\TestCase;
 
 class PostApproveTest extends TestCase
 {
-	public function testApprove()
-	{
-		$user = factory(User::class)->create();
-		$user->group->check_post_comments = true;
-		$user->push();
+    public function testApprove()
+    {
+        $user = User::factory()->create();
+        $user->group->check_post_comments = true;
+        $user->push();
 
-		foreach (Post::sentOnReview()->get() as $post) {
-			$post->forceDelete();
-		}
+        foreach (Post::sentOnReview()->get() as $post) {
+            $post->forceDelete();
+        }
 
-		$this->assertEquals(0, Post::getCachedOnModerationCount());
+        $this->assertEquals(0, Post::getCachedOnModerationCount());
 
-		$post = factory(Post::class)->create();
-		$post->statusSentForReview();
-		$post->save();
+        $post = Post::factory()->create();
+        $post->statusSentForReview();
+        $post->save();
 
-		Post::flushCachedOnModerationCount();
-		$this->assertEquals(1, Post::getCachedOnModerationCount());
+        Post::flushCachedOnModerationCount();
+        $this->assertEquals(1, Post::getCachedOnModerationCount());
 
-		$this->actingAs($user)
-			->get(route('posts.approve', ['post' => $post]))
-			->assertOk();
+        $this->actingAs($user)
+            ->get(route('posts.approve', ['post' => $post]))
+            ->assertOk();
 
-		$this->assertTrue($post->fresh()->isAccepted());
+        $this->assertTrue($post->fresh()->isAccepted());
 
-		$this->assertEquals(0, Post::getCachedOnModerationCount());
-	}
+        $this->assertEquals(0, Post::getCachedOnModerationCount());
+    }
 }

@@ -9,45 +9,40 @@ use Tests\TestCase;
 
 class CollectionUserEditPolicyTest extends TestCase
 {
-	public function testCollectionCreatorCanEditUser()
-	{
-		$collection = factory(Collection::class)
-			->create();
+    public function testCollectionCreatorCanEditUser()
+    {
+        $collection = Collection::factory()->create();
 
-		$this->assertTrue($collection->create_user->can('editUser', $collection));
-	}
+        $this->assertTrue($collection->create_user->can('editUser', $collection));
+    }
 
-	public function testOtherUserCantEditUser()
-	{
-		$collection = factory(Collection::class)
-			->create();
+    public function testOtherUserCantEditUser()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('editUser', $collection));
-	}
+        $this->assertFalse($user->can('editUser', $collection));
+    }
 
-	public function testCollectionUserCanEditUserWithPermission()
-	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => true]);
+    public function testCollectionUserCanEditUserWithPermission()
+    {
+        $collectionUser = CollectionUser::factory()->create(['can_user_manage' => true]);
 
-		$user = $collectionUser->user;
-		$collection = $collectionUser->collection;
+        $user = $collectionUser->user;
+        $collection = $collectionUser->collection;
 
-		$this->assertTrue($user->can('editUser', $collection));
-	}
+        $this->assertTrue($user->can('editUser', $collection));
+    }
 
-	public function testCollectionUserCantEditUserWithoutPermission()
-	{
-		$collectionUser = factory(CollectionUser::class)
-			->create(['can_user_manage' => false]);
+    public function testCollectionUserCantEditUserWithoutPermission()
+    {
+        $collectionUser = CollectionUser::factory()->create(['can_user_manage' => false]);
 
-		$user = $collectionUser->user;
-		$collection = $collectionUser->collection;
+        $user = $collectionUser->user;
+        $collection = $collectionUser->collection;
 
-		$this->assertFalse($user->can('editUser', $collection));
-	}
+        $this->assertFalse($user->can('editUser', $collection));
+    }
 
 }

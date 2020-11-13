@@ -1,26 +1,51 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Enums\TextBlockShowEnum;
 use App\TextBlock;
-use Faker\Generator as Faker;
+use App\User;
 
-$factory->define(App\TextBlock::class, function (Faker $faker) {
+class TextBlockFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = TextBlock::class;
 
-	return [
-		'name' => uniqid(),
-		'text' => $faker->realText(rand(50, 100)),
-		'show_for_all' => TextBlockShowEnum::Administration,
-		'user_id' => function () {
-			return factory(App\User::class)->states('with_user_group')->create()->id;
-		},
-		'user_edited_at' => now()
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => uniqid(),
+            'text' => $this->faker->realText(rand(50, 100)),
+            'show_for_all' => TextBlockShowEnum::Administration,
+            'user_id' => User::factory()->with_user_group(),
+            'user_edited_at' => now()
+        ];
+    }
 
-$factory->afterMakingState(App\TextBlock::class, 'show_for_admin', function (TextBlock $textBlock, $faker) {
-	$textBlock->show_for_all = TextBlockShowEnum::Administration;
-});
+    public function show_for_admin()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->show_for_all = TextBlockShowEnum::Administration;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\TextBlock::class, 'show_for_all', function (TextBlock $textBlock, $faker) {
-	$textBlock->show_for_all = TextBlockShowEnum::All;
-});
+        });
+    }
+
+    public function show_for_all()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->show_for_all = TextBlockShowEnum::All;
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

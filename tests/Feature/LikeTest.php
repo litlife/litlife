@@ -14,418 +14,401 @@ use Tests\TestCase;
 
 class LikeTest extends TestCase
 {
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testShowUsersHttp()
-	{
-		$like = factory(Like::class)
-			->create()
-			->fresh();
-
-		$user = factory(User::class)->create();
-
-		$this->actingAs($user)
-			->get(route('likes.users', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
-			->assertOk()
-			->assertSeeText($like->create_user->nick);
-	}
-
-	public function testDontSeeDeletedLikeUsersHttp()
-	{
-		$like = factory(Like::class)
-			->create()
-			->fresh();
-		$like->delete();
-
-		$this->assertSoftDeleted($like);
-
-		$user = factory(User::class)->create();
-
-		$this->actingAs($user)
-			->get(route('likes.users', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
-			->assertOk()
-			->assertDontSeeText($like->create_user->nick);
-	}
-
-	public function testAddLikeHttp()
-	{
-		$user = factory(User::class)
-			->create();
-		$user->group->like_click = true;
-		$user->push();
-
-		$blog = factory(Blog::class)
-			->create()
-			->fresh();
-
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]));
-
-		$response->assertSessionHasNoErrors()
-			->assertOk();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testShowUsersHttp()
+    {
+        $like = Like::factory()->create()
+            ->fresh();
+
+        $user = User::factory()->create();
 
-		$blog->refresh();
+        $this->actingAs($user)
+            ->get(route('likes.users', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
+            ->assertOk()
+            ->assertSeeText($like->create_user->nick);
+    }
 
-		$this->assertEquals(1, $user->fresh()->likes()->count());
-		$this->assertEquals(1, $blog->like_count);
-	}
-
-	public function testRestoreLikeHttp()
-	{
-		$like = factory(Like::class)->create();
-		$like->delete();
+    public function testDontSeeDeletedLikeUsersHttp()
+    {
+        $like = Like::factory()->create()
+            ->fresh();
+        $like->delete();
 
-		$blog = $like->likeable;
+        $this->assertSoftDeleted($like);
 
-		$user = $like->create_user;
-		$user->group->like_click = true;
-		$user->push();
+        $user = User::factory()->create();
 
-		$this->assertEquals(0, $blog->like_count);
-		$this->assertSoftDeleted($like);
+        $this->actingAs($user)
+            ->get(route('likes.users', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
+            ->assertOk()
+            ->assertDontSeeText($like->create_user->nick);
+    }
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertOk();
+    public function testAddLikeHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$blog->refresh();
-		$like->refresh();
+        $blog = Blog::factory()->create()
+            ->fresh();
 
-		$this->assertEquals(1, $blog->like_count);
-		$this->assertFalse($like->trashed());
-	}
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]));
 
-	public function testCantAddLikeToSelfItemsHttp()
-	{
-		$user = factory(User::class)
-			->create();
-		$user->group->like_click = true;
-		$user->push();
+        $response->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$blog = factory(Blog::class)
-			->create(['create_user_id' => $user->id])
-			->fresh();
+        $blog->refresh();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]));
+        $this->assertEquals(1, $user->fresh()->likes()->count());
+        $this->assertEquals(1, $blog->like_count);
+    }
 
-		$response->assertSessionHasNoErrors()
-			->assertOk();
+    public function testRestoreLikeHttp()
+    {
+        $like = Like::factory()->create();
+        $like->delete();
 
-		$this->assertEquals(0, $user->fresh()->likes()->count());
-		$this->assertEquals(0, $blog->fresh()->likes()->count());
-	}
+        $blog = $like->likeable;
 
-	public function testCanRemoveLikeToSelfItemsHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+        $user = $like->create_user;
+        $user->group->like_click = true;
+        $user->push();
 
-		$like = factory(Like::class)
-			->states('blog')
-			->create(['create_user_id' => $user->id]);
+        $this->assertEquals(0, $blog->like_count);
+        $this->assertSoftDeleted($like);
 
-		$blog = $like->likeable;
-		$blog->create_user_id = $like->create_user_id;
-		$blog->save();
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertOk();
 
-		$this->assertEquals(1, $blog->fresh()->likes()->count());
+        $blog->refresh();
+        $like->refresh();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]));
+        $this->assertEquals(1, $blog->like_count);
+        $this->assertFalse($like->trashed());
+    }
 
-		$like->refresh();
+    public function testCantAddLikeToSelfItemsHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$response->assertOk()
-			->assertJsonFragment(['like' => $like->toArray()]);
+        $blog = Blog::factory()->create(['create_user_id' => $user->id])
+            ->fresh();
 
-		$this->assertTrue($like->trashed());
-		$this->assertEquals(0, $blog->fresh()->likes()->count());
-	}
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]));
 
-	public function testNotificationSend()
-	{
-		Notification::fake();
+        $response->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+        $this->assertEquals(0, $user->fresh()->likes()->count());
+        $this->assertEquals(0, $blog->fresh()->likes()->count());
+    }
 
-		$blog = factory(Blog::class)
-			->create()
-			->fresh();
+    public function testCanRemoveLikeToSelfItemsHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$notifiable = $blog->create_user;
+        $like = Like::factory()->blog()->create(['create_user_id' => $user->id]);
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $blog = $like->likeable;
+        $blog->create_user_id = $like->create_user_id;
+        $blog->save();
 
-		$like = $blog->likes()->first();
+        $this->assertEquals(1, $blog->fresh()->likes()->count());
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewLikeNotification::class,
-			function ($notification, $channels) use ($like, $blog, $notifiable, $user) {
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]));
 
-				$this->assertEquals(['database'], $channels);
+        $like->refresh();
 
-				$data = $notification->toArray($notifiable);
+        $response->assertOk()
+            ->assertJsonFragment(['like' => $like->toArray()]);
 
-				$this->assertEquals(__('notification.new_like_notification.blog.subject'), $data['title']);
-				$this->assertEquals(__('notification.new_like_notification.blog.line', ['userName' => $user->userName]), $data['description']);
-				$this->assertEquals(route('users.blogs.go', ['user' => $blog->owner, 'blog' => $blog]), $data['url']);
+        $this->assertTrue($like->trashed());
+        $this->assertEquals(0, $blog->fresh()->likes()->count());
+    }
 
-				return $notification->like->id === $like->id;
-			}
-		);
-	}
+    public function testNotificationSend()
+    {
+        Notification::fake();
 
-	public function testCommentLikeNotificationSend()
-	{
-		Notification::fake();
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+        $blog = Blog::factory()->create()
+            ->fresh();
 
-		$post = factory(Post::class)
-			->create()
-			->fresh();
+        $notifiable = $blog->create_user;
 
-		$notifiable = $post->create_user;
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'post', 'id' => $post->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $like = $blog->likes()->first();
 
-		$like = $post->likes()->first();
+        Notification::assertSentTo(
+            $notifiable,
+            NewLikeNotification::class,
+            function ($notification, $channels) use ($like, $blog, $notifiable, $user) {
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewLikeNotification::class,
-			function ($notification, $channels) use ($like, $post, $notifiable, $user) {
+                $this->assertEquals(['database'], $channels);
 
-				$this->assertEquals(['database'], $channels);
+                $data = $notification->toArray($notifiable);
 
-				$data = $notification->toArray($notifiable);
+                $this->assertEquals(__('notification.new_like_notification.blog.subject'), $data['title']);
+                $this->assertEquals(__('notification.new_like_notification.blog.line', ['userName' => $user->userName]), $data['description']);
+                $this->assertEquals(route('users.blogs.go', ['user' => $blog->owner, 'blog' => $blog]), $data['url']);
 
-				$this->assertEquals(__('notification.new_like_notification.post.subject'), $data['title']);
-				$this->assertEquals(__('notification.new_like_notification.post.line', ['userName' => $user->userName]), $data['description']);
-				$this->assertEquals(route('posts.go_to', ['post' => $post]), $data['url']);
+                return $notification->like->id === $like->id;
+            }
+        );
+    }
 
-				return $notification->like->id === $like->id;
-			}
-		);
-	}
+    public function testCommentLikeNotificationSend()
+    {
+        Notification::fake();
 
-	public function testBookLikeNotificationSend()
-	{
-		Notification::fake();
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+        $post = Post::factory()->create()
+            ->fresh();
 
-		$book = factory(Book::class)
-			->states('with_create_user')
-			->create()
-			->fresh();
+        $notifiable = $post->create_user;
 
-		$notifiable = $book->create_user;
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'post', 'id' => $post->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'book', 'id' => $book->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $like = $post->likes()->first();
 
-		$like = $book->likes()->first();
+        Notification::assertSentTo(
+            $notifiable,
+            NewLikeNotification::class,
+            function ($notification, $channels) use ($like, $post, $notifiable, $user) {
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewLikeNotification::class,
-			function ($notification, $channels) use ($like, $book, $notifiable, $user) {
+                $this->assertEquals(['database'], $channels);
 
-				$this->assertEquals(['database'], $channels);
+                $data = $notification->toArray($notifiable);
 
-				$data = $notification->toArray($notifiable);
+                $this->assertEquals(__('notification.new_like_notification.post.subject'), $data['title']);
+                $this->assertEquals(__('notification.new_like_notification.post.line', ['userName' => $user->userName]), $data['description']);
+                $this->assertEquals(route('posts.go_to', ['post' => $post]), $data['url']);
 
-				$this->assertEquals(__('notification.new_like_notification.book.subject'), $data['title']);
-				$this->assertEquals(__('notification.new_like_notification.book.line', [
-					'userName' => $user->userName,
-					'book_title' => $book->title
-				]),
-					$data['description']);
-				$this->assertEquals(route('books.show', ['book' => $book]), $data['url']);
+                return $notification->like->id === $like->id;
+            }
+        );
+    }
 
-				return $notification->like->id === $like->id;
-			}
-		);
-	}
+    public function testBookLikeNotificationSend()
+    {
+        Notification::fake();
 
-	public function testNotificationDontSend()
-	{
-		Notification::fake();
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+        $book = Book::factory()->with_create_user()->create()
+            ->fresh();
 
-		$blog = factory(Blog::class)
-			->create()
-			->fresh();
+        $notifiable = $book->create_user;
 
-		$notifiable = $blog->create_user;
-		$notifiable->email_notification_setting->db_like = false;
-		$notifiable->push();
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'book', 'id' => $book->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $like = $book->likes()->first();
 
-		$like = $blog->likes()->first();
+        Notification::assertSentTo(
+            $notifiable,
+            NewLikeNotification::class,
+            function ($notification, $channels) use ($like, $book, $notifiable, $user) {
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewLikeNotification::class,
-			function ($notification, $channels) use ($like, $blog, $notifiable, $user) {
+                $this->assertEquals(['database'], $channels);
 
-				$this->assertEquals([], $channels);
+                $data = $notification->toArray($notifiable);
 
-				return $notification->like->id === $like->id;
-			}
-		);
-	}
+                $this->assertEquals(__('notification.new_like_notification.book.subject'), $data['title']);
+                $this->assertEquals(__('notification.new_like_notification.book.line', [
+                    'userName' => $user->userName,
+                    'book_title' => $book->title
+                ]),
+                    $data['description']);
+                $this->assertEquals(route('books.show', ['book' => $book]), $data['url']);
 
-	public function testCollectionLikeNotificationSend()
-	{
-		Notification::fake();
+                return $notification->like->id === $like->id;
+            }
+        );
+    }
 
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+    public function testNotificationDontSend()
+    {
+        Notification::fake();
 
-		$collection = factory(Collection::class)
-			->create()
-			->fresh();
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$notifiable = $collection->create_user;
+        $blog = Blog::factory()->create()
+            ->fresh();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 18, 'id' => $collection->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $notifiable = $blog->create_user;
+        $notifiable->email_notification_setting->db_like = false;
+        $notifiable->push();
 
-		$like = $collection->likes()->first();
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewLikeNotification::class,
-			function ($notification, $channels) use ($like, $collection, $notifiable, $user) {
+        $like = $blog->likes()->first();
 
-				$this->assertEquals(['database'], $channels);
+        Notification::assertSentTo(
+            $notifiable,
+            NewLikeNotification::class,
+            function ($notification, $channels) use ($like, $blog, $notifiable, $user) {
 
-				$data = $notification->toArray($notifiable);
+                $this->assertEquals([], $channels);
 
-				$this->assertEquals(__('notification.new_like_notification.collection.subject'), $data['title']);
+                return $notification->like->id === $like->id;
+            }
+        );
+    }
 
-				$this->assertEquals(__('notification.new_like_notification.collection.line', [
-					'userName' => $user->userName,
-					'collection_title' => $collection->title
-				]), $data['description']);
+    public function testCollectionLikeNotificationSend()
+    {
+        Notification::fake();
 
-				$this->assertEquals(route('collections.show', ['collection' => $collection]), $data['url']);
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-				return $notification->like->id === $like->id;
-			}
-		);
-	}
+        $collection = Collection::factory()->create()
+            ->fresh();
 
-	public function testPreventDuplicate()
-	{
-		Notification::fake();
+        $notifiable = $collection->create_user;
 
-		$user = factory(User::class)->create();
-		$user->group->like_click = true;
-		$user->push();
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 18, 'id' => $collection->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$blog = factory(Blog::class)
-			->create()
-			->fresh();
+        $like = $collection->likes()->first();
 
-		$notifiable = $blog->create_user;
-		$notifiable->email_notification_setting->db_like = false;
-		$notifiable->push();
+        Notification::assertSentTo(
+            $notifiable,
+            NewLikeNotification::class,
+            function ($notification, $channels) use ($like, $collection, $notifiable, $user) {
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+                $this->assertEquals(['database'], $channels);
 
-		$like = $blog->likes()->first();
+                $data = $notification->toArray($notifiable);
 
-		Notification::assertSentTo(
-			$notifiable,
-			NewLikeNotification::class,
-			function ($notification, $channels) use ($like, $blog, $notifiable, $user) {
+                $this->assertEquals(__('notification.new_like_notification.collection.subject'), $data['title']);
 
-				$this->assertEquals([], $channels);
+                $this->assertEquals(__('notification.new_like_notification.collection.line', [
+                    'userName' => $user->userName,
+                    'collection_title' => $collection->title
+                ]), $data['description']);
 
-				return $notification->like->id === $like->id;
-			}
-		);
+                $this->assertEquals(route('collections.show', ['collection' => $collection]), $data['url']);
 
-		Notification::fake();
+                return $notification->like->id === $like->id;
+            }
+        );
+    }
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+    public function testPreventDuplicate()
+    {
+        Notification::fake();
 
-		$this->assertTrue($like->fresh()->trashed());
+        $user = User::factory()->create();
+        $user->group->like_click = true;
+        $user->push();
 
-		$response = $this->actingAs($user)
-			->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $blog = Blog::factory()->create()
+            ->fresh();
 
-		$this->assertFalse($like->fresh()->trashed());
+        $notifiable = $blog->create_user;
+        $notifiable->email_notification_setting->db_like = false;
+        $notifiable->push();
 
-		Notification::assertNotSentTo(
-			[$user], NewLikeNotification::class
-		);
-	}
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-	public function testTooltip()
-	{
-		$like = factory(Like::class)
-			->create();
+        $like = $blog->likes()->first();
 
-		$likeable = $like->likeable;
+        Notification::assertSentTo(
+            $notifiable,
+            NewLikeNotification::class,
+            function ($notification, $channels) use ($like, $blog, $notifiable, $user) {
 
-		$response = $this->get(route('likes.tooltip', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
-			->assertOk();
+                $this->assertEquals([], $channels);
 
-		$this->assertStringContainsString($like->create_user->userName, $response->getContent());
-	}
+                return $notification->like->id === $like->id;
+            }
+        );
 
-	public function testTooltipIfUserDeleted()
-	{
-		$like = factory(Like::class)
-			->create();
+        Notification::fake();
 
-		$like->create_user->delete();
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$response = $this->get(route('likes.tooltip', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
-			->assertOk();
+        $this->assertTrue($like->fresh()->trashed());
 
-		$this->assertStringContainsString(__('user.deleted'), $response->getContent());
-	}
+        $response = $this->actingAs($user)
+            ->get(route('likes.store', ['type' => 'blog', 'id' => $blog->id]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
+
+        $this->assertFalse($like->fresh()->trashed());
+
+        Notification::assertNotSentTo(
+            [$user], NewLikeNotification::class
+        );
+    }
+
+    public function testTooltip()
+    {
+        $like = Like::factory()->create();
+
+        $likeable = $like->likeable;
+
+        $response = $this->get(route('likes.tooltip', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
+            ->assertOk();
+
+        $this->assertStringContainsString($like->create_user->userName, $response->getContent());
+    }
+
+    public function testTooltipIfUserDeleted()
+    {
+        $like = Like::factory()->create();
+
+        $like->create_user->delete();
+
+        $response = $this->get(route('likes.tooltip', ['type' => $like->likeable_type, 'id' => $like->likeable_id]))
+            ->assertOk();
+
+        $this->assertStringContainsString(__('user.deleted'), $response->getContent());
+    }
 }

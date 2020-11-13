@@ -26,10 +26,10 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography newQuery()
  * @method static Builder|AuthorBiography onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorBiography whereDeletedAt($value)
@@ -45,55 +45,55 @@ use Stevebauman\Purify\Facades\Purify;
  */
 class AuthorBiography extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $fillable = [
-		'text',
-		'author_id'
-	];
+    protected $fillable = [
+        'text',
+        'author_id'
+    ];
 
-	protected $dates = [
-		'user_edited_at'
-	];
+    protected $dates = [
+        'user_edited_at'
+    ];
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author', 'author_id', 'id');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author', 'author_id', 'id');
+    }
 
-	public function edit_user()
-	{
-		return $this->hasOne('App\User', 'id', 'edit_user_id');
-	}
+    public function edit_user()
+    {
+        return $this->hasOne('App\User', 'id', 'edit_user_id');
+    }
 
-	public function getTextAttribute($value)
-	{
-		/*
-		$value = preg_replace_callback('/\<img(.*)\>/iuU', function ($m) {
-			$s = $m[1];
-			if (preg_match('/(.*)class(?:[[:space:]]*)=(?:[[:space:]]*)"([^\"]*)"(.*)/iu', $s, $m)) {
-				return '<img '.$m[1].' class="img-responsive '.$m[2].'" ' . $m[3] . '>';
-			}
-			else {
-				return '<img class="img-responsive" ' . $s . '>';
-			}
-		}, $value);
+    public function getTextAttribute($value)
+    {
+        /*
+        $value = preg_replace_callback('/\<img(.*)\>/iuU', function ($m) {
+            $s = $m[1];
+            if (preg_match('/(.*)class(?:[[:space:]]*)=(?:[[:space:]]*)"([^\"]*)"(.*)/iu', $s, $m)) {
+                return '<img '.$m[1].' class="img-responsive '.$m[2].'" ' . $m[3] . '>';
+            }
+            else {
+                return '<img class="img-responsive" ' . $s . '>';
+            }
+        }, $value);
   */
-		return $value;
-	}
+        return $value;
+    }
 
-	public function setTextAttribute($value)
-	{
-		$value = trim($value);
+    public function setTextAttribute($value)
+    {
+        $value = trim($value);
 
-		$configuration = [
-			'Attr.EnableID' => true,
-			'HTML.Allowed' =>
-				'div,p,span,h1,h2,h3,h4,h5,h6,a[href|name],img[width|height|src|alt],blockquote,strong,em,sub,sup,*[class|style|id],dl,dt,dd,' .
-				'table[summary],caption,col,colgroup,tbody,td[abbr],tfoot,th[abbr],thead,tr,hr'
-		];
+        $configuration = [
+            'Attr.EnableID' => true,
+            'HTML.Allowed' =>
+                'div,p,span,h1,h2,h3,h4,h5,h6,a[href|name],img[width|height|src|alt],blockquote,strong,em,sub,sup,*[class|style|id],dl,dt,dd,' .
+                'table[summary],caption,col,colgroup,tbody,td[abbr],tfoot,th[abbr],thead,tr,hr'
+        ];
 
-		$this->attributes['text'] = Purify::clean($value, array_merge(config('purify.settings'), $configuration));
-	}
+        $this->attributes['text'] = Purify::clean($value, array_merge(config('purify.settings'), $configuration));
+    }
 
 }

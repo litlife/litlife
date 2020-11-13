@@ -44,11 +44,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment newQuery()
  * @method static Builder|Attachment onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment parametersIn($var, $array)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereBookId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereContentType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attachment whereCreateUserId($value)
@@ -70,112 +70,115 @@ use Illuminate\Support\Carbon;
  */
 class Attachment extends Model
 {
-	use SoftDeletes;
-	use ImageResizable;
-	use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
+    use UserCreate;
 
-	public $source;
-	public $visible = [
-		'id',
-		'book_id',
-		'name',
-		'content_type',
-		'size',
-		'type',
-		'parameters',
-		'created_at',
-		'updated_at',
-		'deleted_at',
-		'create_user_id',
-		'sha256_hash'
-	];
-	public $content;
-	public $filePath;
-	public $folder = '_ba';
-	protected $casts = [
-		'parameters' => 'array'
-	];
+    public $source;
+    public $visible = [
+        'id',
+        'book_id',
+        'name',
+        'content_type',
+        'size',
+        'type',
+        'parameters',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'create_user_id',
+        'sha256_hash'
+    ];
+    public $content;
+    public $filePath;
+    public $folder = '_ba';
+    protected $casts = [
+        'parameters' => 'array'
+    ];
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book')->any();
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book')->any();
+    }
 
-	public function scopeInBook($query, $bookId)
-	{
-		return $query->where('book_id', '=', $bookId);
-	}
+    public function scopeInBook($query, $bookId)
+    {
+        return $query->where('book_id', '=', $bookId);
+    }
 
-	public function setContentTypeAttribute($value)
-	{
-		$value = trim($value);
+    public function setContentTypeAttribute($value)
+    {
+        $value = trim($value);
 
-		if ($value == '')
-			throw new Exception('content-type вложения не должен быть пустым');
+        if ($value == '') {
+            throw new Exception('content-type вложения не должен быть пустым');
+        }
 
-		$this->attributes['content_type'] = $value;
-	}
+        $this->attributes['content_type'] = $value;
+    }
 
-	public function getPathToFileAttribute()
-	{
-		$model = &$this;
+    public function getPathToFileAttribute()
+    {
+        $model = &$this;
 
-		return getPath($model->book_id) . '/' . $model->folder . '/' . $model->name;
-	}
+        return getPath($model->book_id) . '/' . $model->folder . '/' . $model->name;
+    }
 
-	public function scopeParametersIn($query, $var, $array)
-	{
-		$array = (array)$array;
+    public function scopeParametersIn($query, $var, $array)
+    {
+        $array = (array)$array;
 
-		return $query->where(function ($query) use ($var, $array) {
-			foreach ($array as $value) {
-				$query->orWhereRaw('"parameters"::jsonb @> ?', [json_encode([$var => $value])]);
-			}
-		});
-	}
+        return $query->where(function ($query) use ($var, $array) {
+            foreach ($array as $value) {
+                $query->orWhereRaw('"parameters"::jsonb @> ?', [json_encode([$var => $value])]);
+            }
+        });
+    }
 
-	public function getWidth()
-	{
-		return empty($this->parameters['w']) ? null : $this->parameters['w'];
-	}
+    public function getWidth()
+    {
+        return empty($this->parameters['w']) ? null : $this->parameters['w'];
+    }
 
-	public function getHeight()
-	{
-		return empty($this->parameters['h']) ? null : $this->parameters['h'];
-	}
+    public function getHeight()
+    {
+        return empty($this->parameters['h']) ? null : $this->parameters['h'];
+    }
 
-	public function addParameter($key, $value)
-	{
-		if (!empty($key)) {
-			$arr = $this->parameters ?? [];
-			$arr[$key] = $value;
-			$this->parameters = $arr;
-		}
-	}
+    public function addParameter($key, $value)
+    {
+        if (!empty($key)) {
+            $arr = $this->parameters ?? [];
+            $arr[$key] = $value;
+            $this->parameters = $arr;
+        }
+    }
 
-	public function getParameter($key)
-	{
-		if (isset($this->parameters[$key]))
-			return $this->parameters[$key];
-		else
-			return null;
-	}
+    public function getParameter($key)
+    {
+        if (isset($this->parameters[$key])) {
+            return $this->parameters[$key];
+        } else {
+            return null;
+        }
+    }
 
-	public function isExists()
-	{
-		return $this->exists();
-	}
+    public function isExists()
+    {
+        return $this->exists();
+    }
 
-	public function isCover()
-	{
-		return (boolean)($this->book->cover_id == $this->id);
-	}
+    public function isCover()
+    {
+        return (boolean)($this->book->cover_id == $this->id);
+    }
 
-	public function scopeWhereSha256Hash($query, $hash)
-	{
-		if (is_array($hash))
-			return $query->whereIn('sha256_hash', $hash);
-		else
-			return $query->where('sha256_hash', $hash);
-	}
+    public function scopeWhereSha256Hash($query, $hash)
+    {
+        if (is_array($hash)) {
+            return $query->whereIn('sha256_hash', $hash);
+        } else {
+            return $query->where('sha256_hash', $hash);
+        }
+    }
 }

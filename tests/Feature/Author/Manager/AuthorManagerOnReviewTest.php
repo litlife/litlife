@@ -9,72 +9,66 @@ use Tests\TestCase;
 
 class AuthorManagerOnReviewTest extends TestCase
 {
-	public function testSeeAuthorIsNotPublished()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testSeeAuthorIsNotPublished()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states('on_review')
-			->create();
+        $manager = Manager::factory()->sent_for_review()->create();
 
-		$author = $manager->manageable;
-		$author->statusPrivate();
-		$author->save();
+        $author = $manager->manageable;
+        $author->statusPrivate();
+        $author->save();
 
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertDontSeeText(__('manager.the_author_is_not_published'));
-	}
+        $this->actingAs($admin)
+            ->get(route('managers.on_check'))
+            ->assertOk()
+            ->assertDontSeeText(__('manager.the_author_is_not_published'));
+    }
 
-	public function testIfAuthorDeleted()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testIfAuthorDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states(['author', 'on_review'])
-			->create();
+        $manager = Manager::factory()
+            ->character_author()
+            ->sent_for_review()
+            ->create();
 
-		$author = $manager->manageable;
-		$author->statusAccepted();
-		$author->save();
+        $author = $manager->manageable;
+        $author->statusAccepted();
+        $author->save();
 
-		$author->delete();
+        $author->delete();
 
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertSeeText(__('manager.the_author_is_deleted'));
+        $this->actingAs($admin)
+            ->get(route('managers.on_check'))
+            ->assertOk()
+            ->assertSeeText(__('manager.the_author_is_deleted'));
 
-		$author->forceDelete();
+        $author->forceDelete();
 
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertDontSeeText(__('manager.the_author_is_deleted'));
-	}
+        $this->actingAs($admin)
+            ->get(route('managers.on_check'))
+            ->assertOk()
+            ->assertDontSeeText(__('manager.the_author_is_deleted'));
+    }
 
-	public function testDontShowPrivate()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testDontShowPrivate()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$manager = factory(Manager::class)
-			->states(['author', 'private'])
-			->create();
+        $manager = Manager::factory()
+            ->character_author()
+            ->private()
+            ->create();
 
-		$author = $manager->manageable;
-		$author->first_name = Str::random(10);
-		$author->save();
+        $author = $manager->manageable;
+        $author->first_name = Str::random(10);
+        $author->save();
 
-		$this->actingAs($admin)
-			->get(route('managers.on_check'))
-			->assertOk()
-			->assertDontSeeText($author->first_name);
-	}
+        $this->actingAs($admin)
+            ->get(route('managers.on_check'))
+            ->assertOk()
+            ->assertDontSeeText($author->first_name);
+    }
 }

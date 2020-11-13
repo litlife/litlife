@@ -38,10 +38,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto newQuery()
  * @method static Builder|UserPhoto onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereCreator(\App\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPhoto whereDeletedAt($value)
@@ -60,35 +60,35 @@ use Illuminate\Support\Carbon;
  */
 class UserPhoto extends Model
 {
-	use SoftDeletes;
-	use ImageResizable;
-	use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
+    use UserCreate;
 
 
-	const CREATE_USER_ID = 'user_id';
-	public $folder = '_user';
-	public $source;
-	protected $casts = [
-		'parameters' => 'object'
-	];
+    const CREATE_USER_ID = 'user_id';
+    public $folder = '_user';
+    public $source;
+    protected $casts = [
+        'parameters' => 'object'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function setPathToFileAttribute($path_to_file)
-	{
-		$this->path_to_file = $path_to_file;
-	}
+    public function setPathToFileAttribute($path_to_file)
+    {
+        $this->path_to_file = $path_to_file;
+    }
 
-	public function getWidth()
-	{
-		return empty($this->parameters->w) ? null : $this->parameters->w;
-	}
+    public function getWidth()
+    {
+        return empty($this->parameters->w) ? null : $this->parameters->w;
+    }
 
-	public function getHeight()
-	{
-		return empty($this->parameters->h) ? null : $this->parameters->h;
-	}
+    public function getHeight()
+    {
+        return empty($this->parameters->h) ? null : $this->parameters->h;
+    }
 }

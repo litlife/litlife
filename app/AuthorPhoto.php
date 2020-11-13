@@ -42,10 +42,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto newQuery()
  * @method static Builder|AuthorPhoto onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorPhoto whereCreatedAt($value)
@@ -67,25 +67,25 @@ use Illuminate\Support\Carbon;
  */
 class AuthorPhoto extends Model
 {
-	use SoftDeletes;
-	use ImageResizable;
-	use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
+    use UserCreate;
 
-	public $folder = '_author';
-	public $source;
+    public $folder = '_author';
+    public $source;
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author');
+    }
 
-	public function getWidth()
-	{
-		return $this->width;
-	}
+    public function getWidth()
+    {
+        return $this->width;
+    }
 
-	public function getHeight()
-	{
-		return $this->height;
-	}
+    public function getHeight()
+    {
+        return $this->height;
+    }
 }

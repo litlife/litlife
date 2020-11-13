@@ -22,10 +22,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User $create_user
  * @method static Builder|CommentVote newModelQuery()
  * @method static Builder|CommentVote newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|CommentVote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|CommentVote whereCommentId($value)
  * @method static Builder|CommentVote whereCreateUserId($value)
  * @method static Builder|CommentVote whereCreatedAt($value)
@@ -38,10 +38,10 @@ use Illuminate\Support\Carbon;
  */
 class CommentVote extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	function comment()
-	{
-		return $this->belongsTo('App\Comment');
-	}
+    function comment()
+    {
+        return $this->belongsTo('App\Comment');
+    }
 }

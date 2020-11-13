@@ -8,32 +8,29 @@ use Tests\TestCase;
 
 class BookFileGetNameForBookFileTest extends TestCase
 {
-	public function testNameForBookFile()
-	{
-		$book = factory(Book::class)
-			->states('without_any_authors')
-			->create(['title' => 'Название книги']);
+    public function testNameForBookFile()
+    {
+        $book = Book::factory()->without_any_authors()->create(['title' => 'Название книги']);
 
-		$this->assertEquals('Название книги', $book->getNameForBookFile());
+        $this->assertEquals('Название книги', $book->getNameForBookFile());
 
-		$author = factory(Author::class)
-			->create([
-				'first_name' => 'Имя',
-				'last_name' => 'Фамилия',
-				'middle_name' => 'Отчество',
-				'nickname' => 'Ник'
-			]);
+        $author = Author::factory()->create([
+            'first_name' => 'Имя',
+            'last_name' => 'Фамилия',
+            'middle_name' => 'Отчество',
+            'nickname' => 'Ник'
+        ]);
 
-		$book->writers()->sync([$author->id]);
-		$book->translators()->sync([$author->id]);
-		$book->refresh();
+        $book->writers()->sync([$author->id]);
+        $book->translators()->sync([$author->id]);
+        $book->refresh();
 
-		$this->assertEquals('Фамилия Имя Ник Название книги', $book->getNameForBookFile());
+        $this->assertEquals('Фамилия Имя Ник Название книги', $book->getNameForBookFile());
 
-		$book->redaction = 5;
-		$book->save();
-		$book->refresh();
+        $book->redaction = 5;
+        $book->save();
+        $book->refresh();
 
-		$this->assertEquals('Фамилия Имя Ник Название книги r5', $book->getNameForBookFile());
-	}
+        $this->assertEquals('Фамилия Имя Ник Название книги r5', $book->getNameForBookFile());
+    }
 }

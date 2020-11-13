@@ -45,13 +45,13 @@ use Litlife\Url\Url;
  * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
  * @method static Builder|Image onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Image pHash($hash)
  * @method static \Illuminate\Database\Eloquent\Builder|Image query()
  * @method static \Illuminate\Database\Eloquent\Builder|Image setSize($height)
  * @method static \Illuminate\Database\Eloquent\Builder|Image sha256Hash($hash)
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreator(\App\User $user)
@@ -72,59 +72,60 @@ use Litlife\Url\Url;
  */
 class Image extends Model
 {
-	use UserCreate;
-	use SoftDeletes;
-	use ImageResizable;
+    use UserCreate;
+    use SoftDeletes;
+    use ImageResizable;
 
-	public $folder = '_i';
-	public $img;
-	public $source;
+    public $folder = '_i';
+    public $img;
+    public $source;
 
-	protected $appends = ['fullUrlSized', 'url'];
+    protected $appends = ['fullUrlSized', 'url'];
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	public function scopeSetSize($width, $height)
-	{
-		$this->maxWidth = $width;
-		$this->maxHeight = $height;
-	}
+    public function scopeSetSize($width, $height)
+    {
+        $this->maxWidth = $width;
+        $this->maxHeight = $height;
+    }
 
-	public function scopeSha256Hash($query, $hash)
-	{
-		return $query->where('sha256_hash', $hash);
-	}
+    public function scopeSha256Hash($query, $hash)
+    {
+        return $query->where('sha256_hash', $hash);
+    }
 
-	public function scopeMd5Hash($query, $hash)
-	{
-		return $query->where('md5', $hash);
-	}
+    public function scopeMd5Hash($query, $hash)
+    {
+        return $query->where('md5', $hash);
+    }
 
-	public function scopePHash($query, $hash)
-	{
-		return $query->where('phash', $hash);
-	}
-	/*
-	public function getWidthAttribute($query)
-	{
+    public function scopePHash($query, $hash)
+    {
+        return $query->where('phash', $hash);
+    }
 
-	}
+    /*
+    public function getWidthAttribute($query)
+    {
 
-	public function getHeightAttribute($query)
-	{
+    }
 
-	}
-	*/
+    public function getHeightAttribute($query)
+    {
 
-	public function getDirname()
-	{
-		$idDirname = new IdDirname($this->id);
+    }
+    */
 
-		$url = (new Url)->withDirname('images/' . implode('/', $idDirname->getDirnameArrayEncoded()));
+    public function getDirname()
+    {
+        $idDirname = new IdDirname($this->id);
 
-		return $url->getPath();
-	}
+        $url = (new Url)->withDirname('images/' . implode('/', $idDirname->getDirnameArrayEncoded()));
+
+        return $url->getPath();
+    }
 }

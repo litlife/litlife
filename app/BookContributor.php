@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class BookContributor extends Pivot
 {
-	public $table = 'book_contributors';
+    public $table = 'book_contributors';
 
-	public $timestamps = true;
+    public $timestamps = true;
 }

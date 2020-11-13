@@ -26,10 +26,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote newQuery()
  * @method static Builder|AdminNote onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereAdminNoteableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdminNote whereCreateUserId($value)
@@ -46,19 +46,19 @@ use Illuminate\Support\Carbon;
  */
 class AdminNote extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'text'
-	];
+    protected $fillable = [
+        'text'
+    ];
 
-	protected $dates = [
-		'user_edited_at'
-	];
+    protected $dates = [
+        'user_edited_at'
+    ];
 
-	public function admin_noteable()
-	{
-		return $this->morphTo();
-	}
+    public function admin_noteable()
+    {
+        return $this->morphTo();
+    }
 }

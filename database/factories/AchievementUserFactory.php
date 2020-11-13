@@ -1,18 +1,31 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\AchievementUser::class, function (Faker $faker) {
+use App\Achievement;
+use App\AchievementUser;
+use App\User;
 
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'achievement_id' => function () {
-			return factory(App\Achievement::class)->create()->id;
-		},
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-	];
-});
+class AchievementUserFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AchievementUser::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'achievement_id' => Achievement::factory(),
+            'create_user_id' => User::factory()
+        ];
+    }
+}

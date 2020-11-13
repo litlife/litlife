@@ -8,33 +8,33 @@ use Tests\TestCase;
 
 class ForumDeletePolicyTest extends TestCase
 {
-	public function testCanIfHasPermissions()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->delete_forum_forum = true;
-		$admin->push();
+    public function testCanIfHasPermissions()
+    {
+        $admin = User::factory()->create();
+        $admin->group->delete_forum_forum = true;
+        $admin->push();
 
-		$forum = factory(Forum::class)->create();
+        $forum = Forum::factory()->create();
 
-		$this->assertTrue($admin->can('delete', $forum));
+        $this->assertTrue($admin->can('delete', $forum));
 
-		$forum->delete();
+        $forum->delete();
 
-		$this->assertTrue($admin->can('restore', $forum));
-	}
+        $this->assertTrue($admin->can('restore', $forum));
+    }
 
-	public function testCantIfDoesntHavePermissions()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->delete_forum_forum = false;
-		$admin->push();
+    public function testCantIfDoesntHavePermissions()
+    {
+        $admin = User::factory()->create();
+        $admin->group->delete_forum_forum = false;
+        $admin->push();
 
-		$forum = factory(Forum::class)->create();
+        $forum = Forum::factory()->create();
 
-		$this->assertFalse($admin->can('delete', $forum));
+        $this->assertFalse($admin->can('delete', $forum));
 
-		$forum->delete();
+        $forum->delete();
 
-		$this->assertFalse($admin->can('restore', $forum));
-	}
+        $this->assertFalse($admin->can('restore', $forum));
+    }
 }

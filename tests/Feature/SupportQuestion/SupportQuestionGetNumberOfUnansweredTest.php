@@ -7,11 +7,10 @@ use Tests\TestCase;
 
 class SupportQuestionGetNumberOfUnansweredTest extends TestCase
 {
-	public function test()
-	{
-		$user = factory(User::class)
-			->create();
+    public function test()
+    {
+        $user = User::factory()->create();
 
-		$this->assertIsInt($user->getNumberInProgressQuestions());
-	}
+        $this->assertIsInt($user->getNumberInProgressQuestions());
+    }
 }

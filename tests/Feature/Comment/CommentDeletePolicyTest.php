@@ -7,14 +7,12 @@ use Tests\TestCase;
 
 class CommentDeletePolicyTest extends TestCase
 {
-	public function testAlwaysCanUpdateIfCommentPrivate()
-	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+    public function testAlwaysCanUpdateIfCommentPrivate()
+    {
+        $comment = Comment::factory()->private()->create();
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		$this->assertTrue($user->can('delete', $comment));
-	}
+        $this->assertTrue($user->can('delete', $comment));
+    }
 }

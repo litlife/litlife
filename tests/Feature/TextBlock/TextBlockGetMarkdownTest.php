@@ -7,14 +7,12 @@ use Tests\TestCase;
 
 class TextBlockGetMarkdownTest extends TestCase
 {
-	public function test()
-	{
-		$html = '<strong>strong</strong> <a href="https://example.com">link</a>';
+    public function test()
+    {
+        $html = '<strong>strong</strong> <a href="https://example.com">link</a>';
 
-		$textBlock = factory(TextBlock::class)
-			->states('show_for_all')
-			->create(['text' => $html]);
+        $textBlock = TextBlock::factory()->show_for_all()->create(['text' => $html]);
 
-		$this->assertEquals('**strong** [link](https://example.com)', $textBlock->getMarkdown());
-	}
+        $this->assertEquals('**strong** [link](https://example.com)', $textBlock->getMarkdown());
+    }
 }

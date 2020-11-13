@@ -7,33 +7,31 @@ use Tests\TestCase;
 
 class BookmarkFolderEditTest extends TestCase
 {
-	public function testEditHttp()
-	{
-		$folder = factory(BookmarkFolder::class)
-			->create();
+    public function testEditHttp()
+    {
+        $folder = BookmarkFolder::factory()->create();
 
-		$this->actingAs($folder->create_user)
-			->get(route('bookmark_folders.edit', $folder))
-			->assertOk()
-			->assertSeeText($folder->title);
-	}
+        $this->actingAs($folder->create_user)
+            ->get(route('bookmark_folders.edit', $folder))
+            ->assertOk()
+            ->assertSeeText($folder->title);
+    }
 
-	public function testUpdateHttp()
-	{
-		$folder = factory(BookmarkFolder::class)
-			->create();
+    public function testUpdateHttp()
+    {
+        $folder = BookmarkFolder::factory()->create();
 
-		$title = $this->faker->realText(100);
+        $title = $this->faker->realText(100);
 
-		$this->actingAs($folder->create_user)
-			->patch(route('bookmark_folders.update', $folder), [
-				'title' => $title
-			])
-			->assertRedirect()
-			->assertSessionHas(['success' => __('common.data_saved')]);
+        $this->actingAs($folder->create_user)
+            ->patch(route('bookmark_folders.update', $folder), [
+                'title' => $title
+            ])
+            ->assertRedirect()
+            ->assertSessionHas(['success' => __('common.data_saved')]);
 
-		$folder->refresh();
+        $folder->refresh();
 
-		$this->assertEquals($title, $folder->title);
-	}
+        $this->assertEquals($title, $folder->title);
+    }
 }

@@ -14,8 +14,11 @@ use App\Traits\NestedItems;
 use App\Traits\UserAgentTrait;
 use App\Traits\UserCreate;
 use Awobaz\Compoships\Compoships;
+use Eloquent;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -34,9 +37,9 @@ use Illuminate\Support\Facades\Cache;
  * @property int $children_count
  * @property int $hide_from_top
  * @property int|null $parent_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property string|null $user_edited_at Время когда пользователь отредактировал
  * @property string $commentable_type
  * @property int $level
@@ -87,14 +90,14 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment notTransferred()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment onlyChecked()
- * @method static \Illuminate\Database\Query\Builder|Comment onlyTrashed()
+ * @method static Builder|Comment onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orDescendants($ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderByOriginFirstAndLatest($commentable)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Comment private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment private()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment query()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment roots()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment sentOnReview()
@@ -135,337 +138,346 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVote($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVoteDown($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVoteUp($value)
- * @method static \Illuminate\Database\Query\Builder|Comment withTrashed()
+ * @method static Builder|Comment withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment withUnchecked()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment withoutCheckedScope()
- * @method static \Illuminate\Database\Query\Builder|Comment withoutTrashed()
- * @mixin \Eloquent
+ * @method static Builder|Comment withoutTrashed()
+ * @mixin Eloquent
  */
 class Comment extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
-	use NestedItems;
-	use UserAgentTrait;
-	use CharactersCountTrait;
-	use Compoships;
-	use ExternalLinks;
-	use BBCodeable;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
+    use NestedItems;
+    use UserAgentTrait;
+    use CharactersCountTrait;
+    use Compoships;
+    use ExternalLinks;
+    use BBCodeable;
 
-	protected $fillable = [
-		'bb_text'
-	];
+    const BB_CODE_COLUMN = 'bb_text';
+    const HTML_COLUMN = 'text';
+    protected $fillable = [
+        'bb_text'
+    ];
+    protected $attributes = [
+        'status' => StatusEnum::Accepted
+    ];
+    protected $perPage = 15;
 
-	protected $attributes = [
-		'status' => StatusEnum::Accepted
-	];
+    public static function boot()
+    {
+        parent::boot();
 
-	protected $perPage = 15;
+        //static::addGlobalScope(new CheckedScope);
+        //static::addGlobalScope(new NotConnectedScope);
+    }
 
-	const BB_CODE_COLUMN = 'bb_text';
-	const HTML_COLUMN = 'text';
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::CommentsOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	public static function boot()
-	{
-		parent::boot();
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::CommentsOnModerationCount])->pull('count');
+    }
 
-		//static::addGlobalScope(new CheckedScope);
-		//static::addGlobalScope(new NotConnectedScope);
-	}
+    static function cachedCountRefresh()
+    {
+        Cache::forever('comments_count_refresh', true);
+    }
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::CommentsOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    public function scopeAny($query)
+    {
+        return $query->withoutGlobalScope(CheckedScope::class)->withTrashed();
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::CommentsOnModerationCount])->pull('count');
-	}
+    public function scopeFulltextSearch($query, $searchText)
+    {
+        $Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
 
-	static function cachedCountRefresh()
-	{
-		Cache::forever('comments_count_refresh', true);
-	}
+        $s = '';
 
-	public function scopeAny($query)
-	{
-		return $query->withoutGlobalScope(CheckedScope::class)->withTrashed();
-	}
+        if ($Ar) {
+            $s = "to_tsvector('english', \"text\" )  ";
+            $s .= " @@ to_tsquery('english', quote_literal(quote_literal(?)))";
 
-	public function scopeFulltextSearch($query, $searchText)
-	{
-		$Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
+            return $query->whereRaw($s, [implode('+', $Ar)]);
+        }
+    }
 
-		$s = '';
+    public function scopeAuthor($query, $author)
+    {
+        return $query->whereRaw('"commentable_type" = \'book\' AND ' .
+            ' ("commentable_id" IN (select "id" FROM "books" left join "book_authors" on ("id" = "book_id") where "author_id" = \'' . $author->id . '\') OR' .
+            ' "commentable_id" IN (select "id" FROM "books" left join "book_translators" on ("id" = "book_id") where "translator_id" = \'' . $author->id . '\') )');
+    }
 
-		if ($Ar) {
-			$s = "to_tsvector('english', \"text\" )  ";
-			$s .= " @@ to_tsquery('english', quote_literal(quote_literal(?)))";
+    public function scopeSequence($query, $sequence)
+    {
+        return $query->whereRaw('"commentable_id" IN (select "id" FROM "books" ' .
+            'left join "book_sequences" on ("id" = "book_id") where "sequence_id" = \'' . $sequence->id . '\')');
+    }
 
-			return $query->whereRaw($s, [implode('+', $Ar)]);
-		}
-	}
+    function user()
+    {
+        return $this->belongsTo('App\User', 'create_user_id', 'id');
+    }
 
-	public function scopeAuthor($query, $author)
-	{
-		return $query->whereRaw('"commentable_type" = \'book\' AND ' .
-			' ("commentable_id" IN (select "id" FROM "books" left join "book_authors" on ("id" = "book_id") where "author_id" = \'' . $author->id . '\') OR' .
-			' "commentable_id" IN (select "id" FROM "books" left join "book_translators" on ("id" = "book_id") where "translator_id" = \'' . $author->id . '\') )');
-	}
+    public function commentable()
+    {
+        return $this->morphTo()->any();
+    }
 
-	public function scopeSequence($query, $sequence)
-	{
-		return $query->whereRaw('"commentable_id" IN (select "id" FROM "books" ' .
-			'left join "book_sequences" on ("id" = "book_id") where "sequence_id" = \'' . $sequence->id . '\')');
-	}
+    public function complaints()
+    {
+        return $this->morphMany('App\Complain', 'complainable');
+    }
 
-	function user()
-	{
-		return $this->belongsTo('App\User', 'create_user_id', 'id');
-	}
+    public function scopeVoid($query)
+    {
+        return $query;
+    }
 
-	public function commentable()
-	{
-		return $this->morphTo()->any();
-	}
+    public function setBBTextAttribute($value)
+    {
+        $this->setBBCode($value);
+        $this->attributes['external_images_downloaded'] = false;
+        $this->refreshCharactersCount();
+    }
 
-	public function complaints()
-	{
-		return $this->morphMany('App\Complain', 'complainable');
-	}
+    public function setTextAttribute($value)
+    {
+        $this->setHtml($value);
+        $this->attributes['external_images_downloaded'] = false;
+        $this->refreshCharactersCount();
+    }
 
-	public function scopeVoid($query)
-	{
-		return $query;
-	}
+    public function getTextAttribute($value)
+    {
+        $value = preg_replace_callback("/((?:<\\/?\\w+)(?:\\s+\\w+(?:\\s*=\\s*(?:\\\".*?\\\"|'.*?'|[^'\\\">\\s]+)?)+\\s*|\\s*)\\/?>)([^<]*)?/",
+            function ($matches) {
+                return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
+            }, $value);
 
-	public function setBBTextAttribute($value)
-	{
-		$this->setBBCode($value);
-		$this->attributes['external_images_downloaded'] = false;
-		$this->refreshCharactersCount();
-	}
+        $value = preg_replace_callback("/^([^<>]*)(<?)/i", function ($matches) {
+            return str_replace("  ", "&#160; ", $matches[1]) . $matches[2];
+        }, $value);
+        $value = preg_replace_callback("/(>)([^<>]*)$/i", function ($matches) {
+            return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
+        }, $value);
 
-	public function setTextAttribute($value)
-	{
-		$this->setHtml($value);
-		$this->attributes['external_images_downloaded'] = false;
-		$this->refreshCharactersCount();
-	}
+        return $value;
+    }
 
-	public function getTextAttribute($value)
-	{
-		$value = preg_replace_callback("/((?:<\\/?\\w+)(?:\\s+\\w+(?:\\s*=\\s*(?:\\\".*?\\\"|'.*?'|[^'\\\">\\s]+)?)+\\s*|\\s*)\\/?>)([^<]*)?/", function ($matches) {
-			return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
-		}, $value);
+    public function scopeShowOnHomePage($query)
+    {
+        return $query->where('hide_from_top', false);
+    }
 
-		$value = preg_replace_callback("/^([^<>]*)(<?)/i", function ($matches) {
-			return str_replace("  ", "&#160; ", $matches[1]) . $matches[2];
-		}, $value);
-		$value = preg_replace_callback("/(>)([^<>]*)$/i", function ($matches) {
-			return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
-		}, $value);
+    public function updateVotes()
+    {
+        $this->vote_up = $this->votes()->where('vote', '>', '0')->count();
+        //$this->vote_down = $this->votes()->where('vote', '<', '0')->count();
+        //$this->vote = $this->vote_up - $this->vote_down;
+        $this->vote = $this->vote_up;
+        $this->save();
+    }
 
-		return $value;
-	}
+    public function votes()
+    {
+        return $this->hasMany('App\CommentVote', 'comment_id', 'id');
+    }
 
-	public function scopeShowOnHomePage($query)
-	{
-		return $query->where('hide_from_top', false);
-	}
+    public function getShareTitle()
+    {
+        if ($this->isBookType()) {
+            if (!empty($this->originCommentable)) {
+                $book_title = ' "' . $this->originCommentable->title . '" - ' . implode(', ',
+                        $this->originCommentable->getAuthorsWithType('writers')->pluck('name_helper')->toArray()) . '';
+            } else {
+                $book_title = '';
+            }
 
-	public function updateVotes()
-	{
-		$this->vote_up = $this->votes()->where('vote', '>', '0')->count();
-		//$this->vote_down = $this->votes()->where('vote', '<', '0')->count();
-		//$this->vote = $this->vote_up - $this->vote_down;
-		$this->vote = $this->vote_up;
-		$this->save();
-	}
+            return __('comment.comment_from_user_for_book', [
+                'user_name' => optional($this->create_user)->userName,
+                'book_title' => $book_title
+            ]);
+        } elseif ($this->isCollectionType()) {
+            return __('comment.comment_from_user_for_collection', [
+                'user_name' => optional($this->create_user)->userName,
+                'collection_title' => optional($this->originCommentable)->title
+            ]);
+        }
+    }
 
-	public function votes()
-	{
-		return $this->hasMany('App\CommentVote', 'comment_id', 'id');
-	}
+    public function isBookType()
+    {
+        return $this->getCommentableModelName() == 'Book';
+    }
 
-	public function getShareTitle()
-	{
-		if ($this->isBookType()) {
-			if (!empty($this->originCommentable))
-				$book_title = ' "' . $this->originCommentable->title . '" - ' . implode(', ', $this->originCommentable->getAuthorsWithType('writers')->pluck('name_helper')->toArray()) . '';
-			else
-				$book_title = '';
+    public function getCommentableModelName()
+    {
+        return ltrim(Relation::getMorphedModel($this->commentable_type), "App\\");
+    }
 
-			return __('comment.comment_from_user_for_book', [
-				'user_name' => optional($this->create_user)->userName,
-				'book_title' => $book_title
-			]);
-		} elseif ($this->isCollectionType()) {
-			return __('comment.comment_from_user_for_collection', [
-				'user_name' => optional($this->create_user)->userName,
-				'collection_title' => optional($this->originCommentable)->title
-			]);
-		}
-	}
+    public function isCollectionType()
+    {
+        return $this->getCommentableModelName() == 'Collection';
+    }
 
-	public function isBookType()
-	{
-		return $this->getCommentableModelName() == 'Book';
-	}
+    public function getShareDescription()
+    {
+        return mb_substr(strip_tags($this->text), 0, 200);
+    }
 
-	public function getCommentableModelName()
-	{
-		return ltrim(Relation::getMorphedModel($this->commentable_type), "App\\");
-	}
+    public function isCreateUserAuthorOfBook()
+    {
+        if ($this->commentable instanceof Book) {
+            $manager = $this->commentable->getManagerAssociatedWithUser($this->create_user);
 
-	public function isCollectionType()
-	{
-		return $this->getCommentableModelName() == 'Collection';
-	}
+            if (optional($manager)->character == 'author') {
+                return true;
+            }
+        }
 
-	public function getShareDescription()
-	{
-		return mb_substr(strip_tags($this->text), 0, 200);
-	}
+        return false;
+    }
 
-	public function isCreateUserAuthorOfBook()
-	{
-		if ($this->commentable instanceof Book) {
-			$manager = $this->commentable->getManagerAssociatedWithUser($this->create_user);
+    public function scopeBookType($query)
+    {
+        return $query->where('commentable_type', 'book');
+    }
 
-			if (optional($manager)->character == 'author') {
-				return true;
-			}
-		}
+    public function userBookVote()
+    {
+        return $this->hasOne('App\BookVote', ['book_id', 'create_user_id'], ['commentable_id', 'create_user_id']);
+    }
 
-		return false;
-	}
+    public function isMustBeSentForReview()
+    {
+        if (!empty($this->create_user->on_moderate)) {
+            return true;
+        }
 
-	public function scopeBookType($query)
-	{
-		return $query->where('commentable_type', 'book');
-	}
+        if ($this->{$this->getCharactersCountColumn()} > 3) {
+            if ($this->getUpperCaseLettersPercent($this->getContent()) > config('litlife.max_number_of_capital_letters')) {
+                return true;
+            }
+        }
 
-	public function userBookVote()
-	{
-		return $this->hasOne('App\BookVote', ['book_id', 'create_user_id'], ['commentable_id', 'create_user_id']);
-	}
+        if (($this->create_user->comment_count + $this->create_user->forum_message_count) < 10) {
+            if ($this->getExternalLinksCount($this->getContent()) > 0) {
+                return true;
+            }
+        }
 
-	public function isMustBeSentForReview()
-	{
-		if (!empty($this->create_user->on_moderate))
-			return true;
+        if (!empty($this->commentable) and $this->isBookType()) {
 
-		if ($this->{$this->getCharactersCountColumn()} > 3) {
-			if ($this->getUpperCaseLettersPercent($this->getContent()) > config('litlife.max_number_of_capital_letters'))
-				return true;
-		}
+            $settings = Variable::where('name', 'settings')
+                ->first();
 
-		if (($this->create_user->comment_count + $this->create_user->forum_message_count) < 10) {
-			if ($this->getExternalLinksCount($this->getContent()) > 0)
-				return true;
-		}
+            if (!empty($settings)) {
+                $words = $settings->value['check_words_in_comments'] ?? [];
 
-		if (!empty($this->commentable) and $this->isBookType()) {
+                foreach ((array)$words as $word) {
+                    if (mb_stripos($this->bb_text, $word)) {
+                        return true;
+                    }
+                }
+            }
 
-			$settings = Variable::where('name', 'settings')
-				->first();
+            // если в тексте есть email, то отправляем комментарий на проверку
+            if (preg_match('/(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){255,})(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){65,}@)(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22))(?:\.(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\]))/iD',
+                $this->bb_text)) {
+                return true;
+            }
+        }
 
-			if (!empty($settings)) {
-				$words = $settings->value['check_words_in_comments'] ?? [];
+        return false;
+    }
 
-				foreach ((array)$words as $word) {
-					if (mb_stripos($this->bb_text, $word))
-						return true;
-				}
-			}
+    public function getContent()
+    {
+        return $this->text;
+    }
 
-			// если в тексте есть email, то отправляем комментарий на проверку
-			if (preg_match('/(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){255,})(?!(?:(?:\x22?\x5C[\x00-\x7E]\x22?)|(?:\x22?[^\x5C\x22]\x22?)){65,}@)(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22))(?:\.(?:(?:[\x21\x23-\x27\x2A\x2B\x2D\x2F-\x39\x3D\x3F\x5E-\x7E]+)|(?:\x22(?:[\x01-\x08\x0B\x0C\x0E-\x1F\x21\x23-\x5B\x5D-\x7F]|(?:\x5C[\x00-\x7F]))*\x22)))*@(?:(?:(?!.*[^.]{64,})(?:(?:(?:xn--)?[a-z0-9]+(?:-[a-z0-9]+)*\.){1,126}){1,}(?:(?:[a-z][a-z0-9]*)|(?:(?:xn--)[a-z0-9]+))(?:-[a-z0-9]+)*)|(?:\[(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){7})|(?:(?!(?:.*[a-f0-9][:\]]){7,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,5})?)))|(?:(?:IPv6:(?:(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){5}:)|(?:(?!(?:.*[a-f0-9]:){5,})(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3})?::(?:[a-f0-9]{1,4}(?::[a-f0-9]{1,4}){0,3}:)?)))?(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))(?:\.(?:(?:25[0-5])|(?:2[0-4][0-9])|(?:1[0-9]{2})|(?:[1-9]?[0-9]))){3}))\]))/iD', $this->bb_text))
-				return true;
-		}
+    public function isMustBeHideFromTop()
+    {
+        if (!empty($this->commentable) and $this->isBookType()) {
+            $settings = Variable::disableCache()->where('name', 'settings')
+                ->first();
 
-		return false;
-	}
+            $genre_ids = $settings->value['genres_books_comments_hide_from_home_page'] ?? [];
 
-	public function getContent()
-	{
-		return $this->text;
-	}
+            $genres = $this->commentable->genres->whereIn('id', $genre_ids);
 
-	public function isMustBeHideFromTop()
-	{
-		if (!empty($this->commentable) and $this->isBookType()) {
-			$settings = Variable::disableCache()->where('name', 'settings')
-				->first();
+            if (!empty($genres) and count($genres) > 0) {
+                return true;
+            }
+        }
 
-			$genre_ids = $settings->value['genres_books_comments_hide_from_home_page'] ?? [];
+        return false;
+    }
 
-			$genres = $this->commentable->genres->whereIn('id', $genre_ids);
+    public function getCreateUserBookAuthor()
+    {
+        if ($this->originCommentable instanceof Book) {
+            $authors = $this->originCommentable->getAuthorsManagerAssociatedWithUser($this->create_user);
 
-			if (!empty($genres) and count($genres) > 0)
-				return true;
-		}
+            if ($authors->isEmpty()) {
+                return null;
+            }
 
-		return false;
-	}
+            $authors = $authors->sortBy(function ($author, $key) {
+                switch ($author->pivot->type) {
+                    case '0';
+                        return 0;
+                        break;
+                    case '1';
+                        return 1;
+                        break;
+                    case '2';
+                        return 3;
+                        break;
+                    case '3';
+                        return 5;
+                        break;
+                    case '4';
+                        return 4;
+                        break;
+                }
+            });
 
-	public function getCreateUserBookAuthor()
-	{
-		if ($this->originCommentable instanceof Book) {
-			$authors = $this->originCommentable->getAuthorsManagerAssociatedWithUser($this->create_user);
+            if ($authors->isNotEmpty()) {
+                return $authors->first();
+            }
+        }
 
-			if ($authors->isEmpty())
-				return null;
+        return null;
+    }
 
-			$authors = $authors->sortBy(function ($author, $key) {
-				switch ($author->pivot->type) {
-					case '0';
-						return 0;
-						break;
-					case '1';
-						return 1;
-						break;
-					case '2';
-						return 3;
-						break;
-					case '3';
-						return 5;
-						break;
-					case '4';
-						return 4;
-						break;
-				}
-			});
+    public function scopeNotTransferred($query)
+    {
+        return $query->whereColumn('commentable_id', 'origin_commentable_id');
+    }
 
-			if ($authors->isNotEmpty())
-				return $authors->first();
-		}
+    public function scopeTransferred($query)
+    {
+        return $query->whereColumn('commentable_id', '!=', 'origin_commentable_id');
+    }
 
-		return null;
-	}
+    public function originCommentable()
+    {
+        return $this->morphTo(null, 'commentable_type', 'origin_commentable_id', 'id')->any();
+    }
 
-	public function scopeNotTransferred($query)
-	{
-		return $query->whereColumn('commentable_id', 'origin_commentable_id');
-	}
-
-	public function scopeTransferred($query)
-	{
-		return $query->whereColumn('commentable_id', '!=', 'origin_commentable_id');
-	}
-
-	public function originCommentable()
-	{
-		return $this->morphTo(null, 'commentable_type', 'origin_commentable_id', 'id')->any();
-	}
-
-	public function scopeOrderByOriginFirstAndLatest($query, $commentable)
-	{
-		return $query->orderByRaw('"origin_commentable_id" = \'' . intval($commentable->id) . '\' desc, "created_at" desc');
-	}
+    public function scopeOrderByOriginFirstAndLatest($query, $commentable)
+    {
+        return $query->orderByRaw('"origin_commentable_id" = \'' . intval($commentable->id) . '\' desc, "created_at" desc');
+    }
 }

@@ -11,105 +11,100 @@ use Tests\TestCase;
 
 class UserShowTest extends TestCase
 {
-	public function testProfile()
-	{
-		$user = factory(User::class)->create()->fresh();
+    public function testProfile()
+    {
+        $user = User::factory()->create()->fresh();
 
-		$this->get(route('profile', compact('user')))
-			->assertOk();
-	}
+        $this->get(route('profile', compact('user')))
+            ->assertOk();
+    }
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testShowHttpWrongIdParam()
-	{
-		$this->get(route('profile', ['user' => Str::random(8)]))
-			->assertNotFound();
-	}
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testShowHttpWrongIdParam()
+    {
+        $this->get(route('profile', ['user' => Str::random(8)]))
+            ->assertNotFound();
+    }
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
-	public function testShowDeletedProfileWithBlogMessagesFixed()
-	{
-		$user = factory(User::class)
-			->create();
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testShowDeletedProfileWithBlogMessagesFixed()
+    {
+        $user = User::factory()->create();
 
-		$blog = factory(Blog::class)->create();
-		$blog->create_user_id = $user->id;
-		$blog->blog_user_id = $user->id;
-		$blog->save();
-		$blog->refresh();
-		$blog->fix();
+        $blog = Blog::factory()->create();
+        $blog->create_user_id = $user->id;
+        $blog->blog_user_id = $user->id;
+        $blog->save();
+        $blog->refresh();
+        $blog->fix();
 
-		$user->delete();
+        $user->delete();
 
-		$this->get(route('profile', compact('user')))
-			->assertNotFound();
-	}
+        $this->get(route('profile', compact('user')))
+            ->assertNotFound();
+    }
 
-	public function testFixedBlogPostLikeAuth()
-	{
-		$blog = factory(Blog::class)->states('fixed')->create();
+    public function testFixedBlogPostLikeAuth()
+    {
+        $blog = Blog::factory()->fixed()->create();
 
-		$like = factory(Like::class)->create([
-			'likeable_type' => 'blog',
-			'likeable_id' => $blog->id
-		]);
+        $like = Like::factory()->create([
+            'likeable_type' => 'blog',
+            'likeable_id' => $blog->id
+        ]);
 
-		$blog->refresh();
+        $blog->refresh();
 
-		$this->assertTrue($blog->isFixed());
-		$this->assertEquals(1, $blog->like_count);
+        $this->assertTrue($blog->isFixed());
+        $this->assertEquals(1, $blog->like_count);
 
-		$response = $this->get(route('profile', ['user' => $blog->create_user]))
-			->assertOk()
-			->assertViewHas('top_blog_record', $blog);
+        $response = $this->get(route('profile', ['user' => $blog->create_user]))
+            ->assertOk()
+            ->assertViewHas('top_blog_record', $blog);
 
-		$top_blog_record = $response->viewData('top_blog_record');
-		$this->assertEquals(0, $top_blog_record->likes->count());
+        $top_blog_record = $response->viewData('top_blog_record');
+        $this->assertEquals(0, $top_blog_record->likes->count());
 
-		$response = $this->actingAs($like->create_user)
-			->get(route('profile', ['user' => $blog->create_user]))
-			->assertOk()
-			->assertViewHas('top_blog_record', $blog);
+        $response = $this->actingAs($like->create_user)
+            ->get(route('profile', ['user' => $blog->create_user]))
+            ->assertOk()
+            ->assertViewHas('top_blog_record', $blog);
 
-		$top_blog_record = $response->viewData('top_blog_record');
-		$this->assertEquals(1, $top_blog_record->likes->count());
-	}
+        $top_blog_record = $response->viewData('top_blog_record');
+        $this->assertEquals(1, $top_blog_record->likes->count());
+    }
 
-	public function testSeeEmailIfShowInProfile()
-	{
-		$email = factory(UserEmail::class)
-			->states('show_in_profile')
-			->create();
+    public function testSeeEmailIfShowInProfile()
+    {
+        $email = UserEmail::factory()->show_in_profile()->create();
 
-		$user = $email->user;
+        $user = $email->user;
 
-		$this->assertTrue($email->isShowInProfile());
+        $this->assertTrue($email->isShowInProfile());
 
-		$this->get(route('profile', $user))
-			->assertOk()
-			->assertSeeText($email->email);
-	}
+        $this->get(route('profile', $user))
+            ->assertOk()
+            ->assertSeeText($email->email);
+    }
 
-	public function testDontSeeEmailIfDontShowInProfile()
-	{
-		$email = factory(UserEmail::class)
-			->states('dont_show_in_profile')
-			->create();
+    public function testDontSeeEmailIfDontShowInProfile()
+    {
+        $email = UserEmail::factory()->dont_show_in_profile()->create();
 
-		$user = $email->user;
+        $user = $email->user;
 
-		$this->assertFalse($email->isShowInProfile());
+        $this->assertFalse($email->isShowInProfile());
 
-		$this->get(route('profile', $user))
-			->assertOk()
-			->assertDontSeeText($email->email);
-	}
+        $this->get(route('profile', $user))
+            ->assertOk()
+            ->assertDontSeeText($email->email);
+    }
 }

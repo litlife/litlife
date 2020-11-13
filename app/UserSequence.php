@@ -20,10 +20,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User|null $user
  * @method static Builder|UserSequence newModelQuery()
  * @method static Builder|UserSequence newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserSequence query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserSequence whereCreatedAt($value)
  * @method static Builder|UserSequence whereId($value)
  * @method static Builder|UserSequence whereSequenceId($value)
@@ -33,43 +33,46 @@ use Illuminate\Support\Carbon;
  */
 class UserSequence extends Model
 {
-	protected $fillable = [
-		'sequence_id'
-	];
+    protected $fillable = [
+        'sequence_id'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			if (empty($model->user_id))
-				$model->user_id = auth()->id();
-		});
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            if (empty($model->user_id)) {
+                $model->user_id = auth()->id();
+            }
+        });
 
-		static::Deleted(function ($model) {
-			UpdateUserFavoriteSequencesCount::dispatch($model->user);
+        static::Deleted(function ($model) {
+            UpdateUserFavoriteSequencesCount::dispatch($model->user);
 
-			if (!empty($model->sequence))
-				$model->sequence->addedToFavoritesUsersCountRefresh();
-		});
+            if (!empty($model->sequence)) {
+                $model->sequence->addedToFavoritesUsersCountRefresh();
+            }
+        });
 
-		static::Saved(function ($model) {
-			UpdateUserFavoriteSequencesCount::dispatch($model->user);
+        static::Saved(function ($model) {
+            UpdateUserFavoriteSequencesCount::dispatch($model->user);
 
-			if (!empty($model->sequence))
-				$model->sequence->addedToFavoritesUsersCountRefresh();
-		});
+            if (!empty($model->sequence)) {
+                $model->sequence->addedToFavoritesUsersCountRefresh();
+            }
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	public function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id')
-			->any();
-	}
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id')
+            ->any();
+    }
 
-	public function sequence()
-	{
-		return $this->belongsTo('App\Sequence', 'sequence_id', 'id')
-			->any();
-	}
+    public function sequence()
+    {
+        return $this->belongsTo('App\Sequence', 'sequence_id', 'id')
+            ->any();
+    }
 }

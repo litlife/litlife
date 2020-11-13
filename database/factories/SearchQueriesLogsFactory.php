@@ -1,12 +1,28 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\SearchQueriesLogs;
-use Faker\Generator as Faker;
+use App\SearchQueriesLog;
+use Illuminate\Support\Str;
 
-$factory->define(SearchQueriesLogs::class, function (Faker $faker) {
-	return [
-		'query_text' => \Illuminate\Support\Str::random(10)
-	];
-});
+class SearchQueriesLogsFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = SearchQueriesLog::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'query_text' => Str::random(10)
+        ];
+    }
+}

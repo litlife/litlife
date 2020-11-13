@@ -21,10 +21,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User $user
  * @method static Builder|UserSocialAccount newModelQuery()
  * @method static Builder|UserSocialAccount newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserSocialAccount query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserSocialAccount whereAccessToken($value)
  * @method static Builder|UserSocialAccount whereCreatedAt($value)
  * @method static Builder|UserSocialAccount whereId($value)
@@ -37,19 +37,19 @@ use Illuminate\Support\Carbon;
  */
 class UserSocialAccount extends Model
 {
-	protected $casts = [
-		'parameters' => 'object'
-	];
+    protected $casts = [
+        'parameters' => 'object'
+    ];
 
-	protected $fillable = [
-		'provider_user_id',
-		'provider',
-		'access_token',
-		'parameters'
-	];
+    protected $fillable = [
+        'provider_user_id',
+        'provider',
+        'access_token',
+        'parameters'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

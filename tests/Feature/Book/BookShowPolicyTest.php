@@ -8,36 +8,30 @@ use Tests\TestCase;
 
 class BookShowPolicyTest extends TestCase
 {
-	public function testCanViewIfAccepted()
-	{
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create();
+    public function testCanViewIfAccepted()
+    {
+        $book = Book::factory()->accepted()->with_create_user()->create();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->assertTrue($user->can('view', $book));
-	}
+        $this->assertTrue($user->can('view', $book));
+    }
 
-	public function testCanViewIfBookPrivateAndUserCreator()
-	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+    public function testCanViewIfBookPrivateAndUserCreator()
+    {
+        $book = Book::factory()->private()->with_create_user()->create();
 
-		$user = $book->create_user;
+        $user = $book->create_user;
 
-		$this->assertTrue($user->can('view', $book));
-	}
+        $this->assertTrue($user->can('view', $book));
+    }
 
-	public function testCantViewIfBookPrivateAndUserNotCreator()
-	{
-		$book = factory(Book::class)
-			->states('private', 'with_create_user')
-			->create();
+    public function testCantViewIfBookPrivateAndUserNotCreator()
+    {
+        $book = Book::factory()->private()->with_create_user()->create();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('view', $book));
-	}
+        $this->assertFalse($user->can('view', $book));
+    }
 }

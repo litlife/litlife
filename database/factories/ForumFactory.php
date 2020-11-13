@@ -1,38 +1,67 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use App\Forum;
+use App\Topic;
+use App\User;
 use Illuminate\Support\Str;
 
-$factory->define(App\Forum::class, function (Faker $faker) {
+class ForumFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Forum::class;
 
-	return [
-		'name' => $faker->realText(70) . ' ' . Str::random(20),
-		'description' => $faker->realText(200),
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'min_message_count' => rand(0, 20),
-		'private' => false
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->realText(70).' '.Str::random(20),
+            'description' => $this->faker->realText(200),
+            'create_user_id' => User::factory(),
+            'min_message_count' => rand(0, 20),
+            'private' => false
+        ];
+    }
 
-$factory->afterMakingState(App\Forum::class, 'private', function (\App\Forum $forum, $faker) {
-	$forum->private = true;
-});
+    public function private()
+    {
+        return $this->afterMaking(function (Forum $forum) {
+            $forum->private = true;
+        })->afterCreating(function (Forum $forum) {
+            //
+        });
+    }
 
-$factory->afterCreatingState(App\Forum::class, 'with_topic', function (\App\Forum $forum, $faker) {
+    public function with_topic()
+    {
+        return $this->afterMaking(function (Forum $forum) {
+            //
+        })->afterCreating(function (Forum $forum) {
+            $topic = Topic::factory()
+                ->make();
 
-	$topic = factory(\App\Topic::class)
-		->make();
+            $forum->topics()->save($topic);
+        });
+    }
 
-	$forum->topics()->save($topic);
-});
+    public function with_user_access()
+    {
+        return $this->afterMaking(function (Forum $forum) {
+            //
+        })->afterCreating(function (Forum $forum) {
+            $user = User::factory()->create();
 
-$factory->afterCreatingState(App\Forum::class, 'with_user_access', function (\App\Forum $forum, $faker) {
-
-	$user = factory(\App\User::class)
-		->create();
-
-	$forum->users_with_access()->sync([$user->id]);
-	$forum->refresh();
-});
+            $forum->users_with_access()->sync([$user->id]);
+            $forum->refresh();
+        });
+    }
+}

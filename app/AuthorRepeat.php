@@ -25,10 +25,10 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat newQuery()
  * @method static Builder|AuthorRepeat onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AuthorRepeat whereCreatedAt($value)
@@ -43,28 +43,28 @@ use Illuminate\Support\Facades\Cache;
  */
 class AuthorRepeat extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'comment'
-	];
+    protected $fillable = [
+        'comment'
+    ];
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags(['author_repeat_on_moderation_count'])->remember('count', 3600, function () {
-			return self::count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags(['author_repeat_on_moderation_count'])->remember('count', 3600, function () {
+            return self::count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags(['author_repeat_on_moderation_count'])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags(['author_repeat_on_moderation_count'])->pull('count');
+    }
 
-	public function authors()
-	{
-		return $this->belongsToMany('App\Author', 'author_repeat_pivots')
-			->notMerged();
-	}
+    public function authors()
+    {
+        return $this->belongsToMany('App\Author', 'author_repeat_pivots')
+            ->notMerged();
+    }
 }

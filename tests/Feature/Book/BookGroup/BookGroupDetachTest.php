@@ -15,521 +15,477 @@ use Tests\TestCase;
 
 class BookGroupDetachTest extends TestCase
 {
-	public function testDetachBook()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$this->assertEquals(1, $mainBook->editions_count);
-		$this->assertEquals(1, $minorBook->editions_count);
-
-		BookUngroupJob::dispatch($minorBook);
+    public function testDetachBook()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
-
-		$this->assertNull($mainBook->main_book_id);
-		$this->assertNull($mainBook->editions_count);
-		$this->assertNull($minorBook->connected_at);
-		$this->assertNull($minorBook->connect_user_id);
-
-		$this->assertNull($minorBook->main_book_id);
-		$this->assertNull($minorBook->editions_count);
-		$this->assertNull($minorBook->connected_at);
-		$this->assertNull($minorBook->connect_user_id);
-	}
+        $minorBook = $mainBook->groupedBooks()->first();
 
-	public function testDetachBookWithStatus()
-	{
-		$mainBook = factory(Book::class)
-			->create();
-
-		$book = factory(Book::class)->create();
-		$book->main_book_id = $mainBook->id;
-		$book->save();
-
-		$status = factory(BookStatus::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'origin_book_id' => $book->id,
-				'status' => 'readed'
-			]);
-
-		BookUngroupJob::dispatch($book);
-
-		$status->refresh();
-
-		$this->assertEquals($status->book_id, $book->id);
-		$this->assertEquals($status->origin_book_id, $status->origin_book_id);
-		$this->assertEquals($status->origin_book_id, $status->book_id);
-	}
-
-	public function testDetachBookWithVote()
-	{
-		$mainBook = factory(Book::class)
-			->create();
-
-		$book = factory(Book::class)->create();
-		$book->main_book_id = $mainBook->id;
-		$book->save();
+        $this->assertEquals(1, $mainBook->editions_count);
+        $this->assertEquals(1, $minorBook->editions_count);
 
-		$vote = factory(BookVote::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'origin_book_id' => $book->id
-			]);
+        BookUngroupJob::dispatch($minorBook);
 
-		BookUngroupJob::dispatch($book);
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$vote->refresh();
-
-		$this->assertEquals($vote->book_id, $book->id);
-		$this->assertEquals($vote->origin_book_id, $vote->origin_book_id);
-		$this->assertEquals($vote->origin_book_id, $vote->book_id);
-	}
-
-	public function testDetachBookWithTwoStatus()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
+        $this->assertNull($mainBook->main_book_id);
+        $this->assertNull($mainBook->editions_count);
+        $this->assertNull($minorBook->connected_at);
+        $this->assertNull($minorBook->connect_user_id);
 
-		$user = factory(User::class)->create();
-
-		$status = factory(BookStatus::class)
-			->create([
-				'user_id' => $user->id,
-				'book_id' => $mainBook->id,
-				'origin_book_id' => $minorBook->id,
-				'status' => 'readed'
-			]);
-
-		$status2 = factory(BookStatus::class)
-			->create([
-				'user_id' => $user->id,
-				'book_id' => $minorBook->id,
-				'origin_book_id' => $mainBook->id,
-				'status' => 'read_now'
-			]);
+        $this->assertNull($minorBook->main_book_id);
+        $this->assertNull($minorBook->editions_count);
+        $this->assertNull($minorBook->connected_at);
+        $this->assertNull($minorBook->connect_user_id);
+    }
 
-		$status2->refresh();
+    public function testDetachBookWithStatus()
+    {
+        $mainBook = Book::factory()->create();
 
-		BookUngroupJob::dispatch($minorBook);
+        $book = Book::factory()->create();
+        $book->main_book_id = $mainBook->id;
+        $book->save();
 
-		$status->refresh();
-		$status2->refresh();
+        $status = BookStatus::factory()->create([
+            'book_id' => $mainBook->id,
+            'origin_book_id' => $book->id,
+            'status' => 'readed'
+        ]);
 
-		$this->assertEquals($mainBook->id, $status->book_id);
-		$this->assertEquals($minorBook->id, $status->origin_book_id);
+        BookUngroupJob::dispatch($book);
 
-		$this->assertEquals($minorBook->id, $status2->book_id);
-		$this->assertEquals($mainBook->id, $status2->origin_book_id);
-	}
+        $status->refresh();
 
-	public function testDetachBookWithTwoVotes()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $this->assertEquals($status->book_id, $book->id);
+        $this->assertEquals($status->origin_book_id, $status->origin_book_id);
+        $this->assertEquals($status->origin_book_id, $status->book_id);
+    }
 
-		$minorBook = $mainBook->groupedBooks()->first();
+    public function testDetachBookWithVote()
+    {
+        $mainBook = Book::factory()->create();
 
-		$user = factory(User::class)->create();
+        $book = Book::factory()->create();
+        $book->main_book_id = $mainBook->id;
+        $book->save();
 
-		$vote = factory(BookVote::class)
-			->create([
-				'create_user_id' => $user->id,
-				'book_id' => $mainBook->id,
-				'origin_book_id' => $minorBook->id,
-			]);
+        $vote = BookVote::factory()->create([
+            'book_id' => $mainBook->id,
+            'origin_book_id' => $book->id
+        ]);
 
-		$vote2 = factory(BookVote::class)
-			->create([
-				'create_user_id' => $user->id,
-				'book_id' => $minorBook->id,
-				'origin_book_id' => $mainBook->id,
-			]);
+        BookUngroupJob::dispatch($book);
 
-		BookUngroupJob::dispatch($minorBook);
+        $vote->refresh();
 
-		$vote->refresh();
-		$vote2->refresh();
+        $this->assertEquals($vote->book_id, $book->id);
+        $this->assertEquals($vote->origin_book_id, $vote->origin_book_id);
+        $this->assertEquals($vote->origin_book_id, $vote->book_id);
+    }
 
-		$this->assertEquals($mainBook->id, $vote->book_id);
-		$this->assertEquals($minorBook->id, $vote->origin_book_id);
+    public function testDetachBookWithTwoStatus()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$this->assertEquals($minorBook->id, $vote2->book_id);
-		$this->assertEquals($mainBook->id, $vote2->origin_book_id);
-	}
+        $minorBook = $mainBook->groupedBooks()->first();
 
-	public function testDetachBookWithTwoKeywords()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $user = User::factory()->create();
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $status = BookStatus::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $mainBook->id,
+            'origin_book_id' => $minorBook->id,
+            'status' => 'readed'
+        ]);
 
-		$user = factory(User::class)->create();
+        $status2 = BookStatus::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $minorBook->id,
+            'origin_book_id' => $mainBook->id,
+            'status' => 'read_now'
+        ]);
 
-		$keyword = factory(Keyword::class)->create();
+        $status2->refresh();
 
-		$bookKeyword = factory(BookKeyword::class)
-			->create([
-				'keyword_id' => $keyword->id,
-				'book_id' => $mainBook->id,
-				'origin_book_id' => $minorBook->id,
-			]);
+        BookUngroupJob::dispatch($minorBook);
 
-		$bookKeyword2 = factory(BookKeyword::class)
-			->create([
-				'keyword_id' => $keyword->id,
-				'book_id' => $minorBook->id,
-				'origin_book_id' => $mainBook->id,
-			]);
+        $status->refresh();
+        $status2->refresh();
 
-		BookUngroupJob::dispatch($minorBook);
+        $this->assertEquals($mainBook->id, $status->book_id);
+        $this->assertEquals($minorBook->id, $status->origin_book_id);
 
-		$bookKeyword->refresh();
-		$bookKeyword2->refresh();
+        $this->assertEquals($minorBook->id, $status2->book_id);
+        $this->assertEquals($mainBook->id, $status2->origin_book_id);
+    }
 
-		$this->assertEquals($mainBook->id, $bookKeyword->book_id);
-		$this->assertEquals($minorBook->id, $bookKeyword->origin_book_id);
+    public function testDetachBookWithTwoVotes()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$this->assertEquals($minorBook->id, $bookKeyword2->book_id);
-		$this->assertEquals($mainBook->id, $bookKeyword2->origin_book_id);
-	}
+        $minorBook = $mainBook->groupedBooks()->first();
 
-	public function testDetachHttp()
-	{
-		$user = factory(User::class)->create()->fresh();
-		$user->group->connect_books = true;
-		$user->push();
+        $user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_two_minor_books')
-			->create();
+        $vote = BookVote::factory()->create([
+            'create_user_id' => $user->id,
+            'book_id' => $mainBook->id,
+            'origin_book_id' => $minorBook->id,
+        ]);
 
-		$minorBooks = $mainBook->groupedBooks()->get();
-		$minorBook = $minorBooks[0];
-		$minorBook2 = $minorBooks[1];
+        $vote2 = BookVote::factory()->create([
+            'create_user_id' => $user->id,
+            'book_id' => $minorBook->id,
+            'origin_book_id' => $mainBook->id,
+        ]);
 
-		$response = $this->actingAs($user)
-			->followingRedirects()
-			->get(route('books.group.detach', ['book' => $minorBook2->id]))
-			->assertOk()
-			->assertSeeText(__('book_group.ungrouped'));
+        BookUngroupJob::dispatch($minorBook);
 
-		$mainBook->refresh();
-		$minorBook->refresh();
-		$minorBook2->refresh();
+        $vote->refresh();
+        $vote2->refresh();
 
-		$this->assertEquals(1, $mainBook->editions_count);
+        $this->assertEquals($mainBook->id, $vote->book_id);
+        $this->assertEquals($minorBook->id, $vote->origin_book_id);
 
-		$this->assertTrue($mainBook->isInGroup());
-		$this->assertTrue($mainBook->isMainInGroup());
+        $this->assertEquals($minorBook->id, $vote2->book_id);
+        $this->assertEquals($mainBook->id, $vote2->origin_book_id);
+    }
 
-		$this->assertTrue($minorBook->isInGroup());
-		$this->assertFalse($minorBook->isMainInGroup());
+    public function testDetachBookWithTwoKeywords()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$this->assertFalse($minorBook2->isInGroup());
-		$this->assertFalse($minorBook2->isMainInGroup());
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$this->assertNull($minorBook2->connect_user_id);
-		$this->assertNull($minorBook2->connected_at);
-	}
+        $user = User::factory()->create();
 
-	public function testVoteCountersUpdated()
-	{
-		$user = factory(User::class)->create();
+        $keyword = Keyword::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $bookKeyword = BookKeyword::factory()->create([
+            'keyword_id' => $keyword->id,
+            'book_id' => $mainBook->id,
+            'origin_book_id' => $minorBook->id,
+        ]);
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $bookKeyword2 = BookKeyword::factory()->create([
+            'keyword_id' => $keyword->id,
+            'book_id' => $minorBook->id,
+            'origin_book_id' => $mainBook->id,
+        ]);
 
-		$vote = factory(BookVote::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'vote' => 7
-			]);
+        BookUngroupJob::dispatch($minorBook);
 
-		$vote2 = factory(BookVote::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'vote' => 5
-			]);
+        $bookKeyword->refresh();
+        $bookKeyword2->refresh();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $this->assertEquals($mainBook->id, $bookKeyword->book_id);
+        $this->assertEquals($minorBook->id, $bookKeyword->origin_book_id);
 
-		$minorBook->refresh();
+        $this->assertEquals($minorBook->id, $bookKeyword2->book_id);
+        $this->assertEquals($mainBook->id, $bookKeyword2->origin_book_id);
+    }
 
-		BookUngroupJob::dispatch($minorBook);
+    public function testDetachHttp()
+    {
+        $user = User::factory()->create()->fresh();
+        $user->group->connect_books = true;
+        $user->push();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $mainBook = Book::factory()->with_two_minor_books()->create();
 
-		$this->assertEquals(7, $mainBook->vote_average);
-		$this->assertEquals(1, $mainBook->user_vote_count);
+        $minorBooks = $mainBook->groupedBooks()->get();
+        $minorBook = $minorBooks[0];
+        $minorBook2 = $minorBooks[1];
 
-		$this->assertEquals(5, $minorBook->vote_average);
-		$this->assertEquals(1, $minorBook->user_vote_count);
+        $response = $this->actingAs($user)
+            ->followingRedirects()
+            ->get(route('books.group.detach', ['book' => $minorBook2->id]))
+            ->assertOk()
+            ->assertSeeText(__('book_group.ungrouped'));
 
-		$vote->refresh();
-		$vote2->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
+        $minorBook2->refresh();
 
-		$this->assertEquals(1, $vote->create_user->book_rate_count);
-		$this->assertEquals(1, $vote2->create_user->book_rate_count);
-	}
+        $this->assertEquals(1, $mainBook->editions_count);
 
-	public function testReadStatusCountersUpdated()
-	{
-		$user = factory(User::class)->create();
+        $this->assertTrue($mainBook->isInGroup());
+        $this->assertTrue($mainBook->isMainInGroup());
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $this->assertTrue($minorBook->isInGroup());
+        $this->assertFalse($minorBook->isMainInGroup());
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $this->assertFalse($minorBook2->isInGroup());
+        $this->assertFalse($minorBook2->isMainInGroup());
 
-		$status = factory(BookStatus::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'status' => 'read_now'
-			]);
+        $this->assertNull($minorBook2->connect_user_id);
+        $this->assertNull($minorBook2->connected_at);
+    }
 
-		$status2 = factory(BookStatus::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'status' => 'read_later'
-			]);
+    public function testVoteCountersUpdated()
+    {
+        $user = User::factory()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$minorBook->refresh();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		BookUngroupJob::dispatch($minorBook);
+        $vote = BookVote::factory()->create([
+            'book_id' => $mainBook->id,
+            'vote' => 7
+        ]);
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $vote2 = BookVote::factory()->create([
+            'book_id' => $minorBook->id,
+            'vote' => 5
+        ]);
 
-		$this->assertEquals(0, $mainBook->user_read_count);
-		$this->assertEquals(1, $mainBook->user_read_now_count);
+        BookGroupJob::dispatch($mainBook, $minorBook);
 
-		$this->assertEquals(1, $minorBook->user_read_later_count);
-		$this->assertEquals(0, $minorBook->user_read_now_count);
+        $minorBook->refresh();
 
-		$status->refresh();
-		$status2->refresh();
+        BookUngroupJob::dispatch($minorBook);
 
-		$this->assertEquals(0, $status->user->book_read_later_count);
-		$this->assertEquals(1, $status->user->book_read_now_count);
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$this->assertEquals(1, $status2->user->book_read_later_count);
-		$this->assertEquals(0, $status2->user->book_read_now_count);
-	}
+        $this->assertEquals(7, $mainBook->vote_average);
+        $this->assertEquals(1, $mainBook->user_vote_count);
 
-	public function testUpdateCountersImmediatelyTrue()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $this->assertEquals(5, $minorBook->vote_average);
+        $this->assertEquals(1, $minorBook->user_vote_count);
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $vote->refresh();
+        $vote2->refresh();
 
-		$status = factory(BookStatus::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'status' => 'read_now'
-			]);
+        $this->assertEquals(1, $vote->create_user->book_rate_count);
+        $this->assertEquals(1, $vote2->create_user->book_rate_count);
+    }
 
-		$status2 = factory(BookStatus::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'status' => 'read_later'
-			]);
+    public function testReadStatusCountersUpdated()
+    {
+        $user = User::factory()->create();
 
-		BookUngroupJob::dispatch($minorBook, false);
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$status->refresh();
-		$status2->refresh();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$this->assertTrue($status->user->refresh_counters);
-		$this->assertTrue($status2->user->refresh_counters);
-	}
+        $status = BookStatus::factory()->create([
+            'book_id' => $mainBook->id,
+            'status' => 'read_now'
+        ]);
 
-	public function testUpdateCountersImmediatelyFalse()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $status2 = BookStatus::factory()->create([
+            'book_id' => $minorBook->id,
+            'status' => 'read_later'
+        ]);
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        BookGroupJob::dispatch($mainBook, $minorBook);
 
-		$status = factory(BookStatus::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'status' => 'read_now'
-			]);
+        $minorBook->refresh();
 
-		$status2 = factory(BookStatus::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'status' => 'read_later'
-			]);
+        BookUngroupJob::dispatch($minorBook);
 
-		BookUngroupJob::dispatch($minorBook);
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$status->refresh();
-		$status2->refresh();
+        $this->assertEquals(0, $mainBook->user_read_count);
+        $this->assertEquals(1, $mainBook->user_read_now_count);
 
-		$this->assertNull($status->user->refresh_counters);
-		$this->assertNull($status2->user->refresh_counters);
-	}
+        $this->assertEquals(1, $minorBook->user_read_later_count);
+        $this->assertEquals(0, $minorBook->user_read_now_count);
 
-	public function testBookWithTwoComments()
-	{
-		$mainBook = factory(Book::class)
-			->create();
+        $status->refresh();
+        $status2->refresh();
 
-		$minorBook = factory(Book::class)
-			->create();
+        $this->assertEquals(0, $status->user->book_read_later_count);
+        $this->assertEquals(1, $status->user->book_read_now_count);
 
-		$comment = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $mainBook->id]);
+        $this->assertEquals(1, $status2->user->book_read_later_count);
+        $this->assertEquals(0, $status2->user->book_read_now_count);
+    }
 
-		$comment2 = factory(Comment::class)
-			->states('book')
-			->create(['commentable_id' => $minorBook->id]);
+    public function testUpdateCountersImmediatelyTrue()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
-		BookUngroupJob::dispatch($minorBook);
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$comment->refresh();
-		$comment2->refresh();
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $status = BookStatus::factory()->create([
+            'book_id' => $mainBook->id,
+            'status' => 'read_now'
+        ]);
 
-		$this->assertEquals($mainBook->id, $comment->commentable_id);
-		$this->assertEquals($mainBook->id, $comment->origin_commentable_id);
+        $status2 = BookStatus::factory()->create([
+            'book_id' => $minorBook->id,
+            'status' => 'read_later'
+        ]);
 
-		$this->assertEquals($minorBook->id, $comment2->commentable_id);
-		$this->assertEquals($minorBook->id, $comment2->origin_commentable_id);
+        BookUngroupJob::dispatch($minorBook, false);
 
-		$this->assertEquals(1, $mainBook->comment_count);
-		$this->assertEquals(1, $minorBook->comment_count);
-	}
+        $status->refresh();
+        $status2->refresh();
 
-	public function testEditionsCount()
-	{
-		$mainBook = factory(Book::class)
-			->create()->fresh();
+        $this->assertTrue($status->user->refresh_counters);
+        $this->assertTrue($status2->user->refresh_counters);
+    }
 
-		$minorBook = factory(Book::class)
-			->create()->fresh();
+    public function testUpdateCountersImmediatelyFalse()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $status = BookStatus::factory()->create([
+            'book_id' => $mainBook->id,
+            'status' => 'read_now'
+        ]);
 
-		BookUngroupJob::dispatch($minorBook);
+        $status2 = BookStatus::factory()->create([
+            'book_id' => $minorBook->id,
+            'status' => 'read_later'
+        ]);
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        BookUngroupJob::dispatch($minorBook);
 
-		$this->assertNull($mainBook->main_book_id);
-		$this->assertNull($mainBook->editions_count);
+        $status->refresh();
+        $status2->refresh();
 
-		$this->assertNull($minorBook->main_book_id);
-		$this->assertNull($minorBook->editions_count);
-	}
+        $this->assertNull($status->user->refresh_counters);
+        $this->assertNull($status2->user->refresh_counters);
+    }
 
-	public function testTwoMinorBooks()
-	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
-		$minorBook2 = factory(Book::class)->create();
+    public function testBookWithTwoComments()
+    {
+        $mainBook = Book::factory()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
-		BookGroupJob::dispatch($mainBook, $minorBook2);
+        $minorBook = Book::factory()->create();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
-		$minorBook2->refresh();
+        $comment = Comment::factory()->book()->create(['commentable_id' => $mainBook->id]);
 
-		$this->assertTrue($mainBook->isMainInGroup());
-		$this->assertTrue($minorBook->isInGroup());
-		$this->assertTrue($minorBook2->isInGroup());
+        $comment2 = Comment::factory()->book()->create(['commentable_id' => $minorBook->id]);
 
-		BookUngroupJob::dispatch($minorBook2);
+        BookGroupJob::dispatch($mainBook, $minorBook);
+        BookUngroupJob::dispatch($minorBook);
 
-		$mainBook->refresh();
-		$minorBook->refresh();
-		$minorBook2->refresh();
+        $comment->refresh();
+        $comment2->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$this->assertNull($mainBook->main_book_id);
-		$this->assertEquals(1, $mainBook->editions_count);
+        $this->assertEquals($mainBook->id, $comment->commentable_id);
+        $this->assertEquals($mainBook->id, $comment->origin_commentable_id);
 
-		$this->assertEquals($mainBook->id, $minorBook->main_book_id);
-		$this->assertEquals(1, $minorBook->editions_count);
+        $this->assertEquals($minorBook->id, $comment2->commentable_id);
+        $this->assertEquals($minorBook->id, $comment2->origin_commentable_id);
 
-		$this->assertNull($minorBook2->main_book_id);
-		$this->assertNull($minorBook2->editions_count);
-	}
+        $this->assertEquals(1, $mainBook->comment_count);
+        $this->assertEquals(1, $minorBook->comment_count);
+    }
 
-	public function testDetachOnRestoreMinorBookIfMainBookIsDeleted()
-	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+    public function testEditionsCount()
+    {
+        $mainBook = Book::factory()->create()->fresh();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $minorBook = Book::factory()->create()->fresh();
 
-		$minorBook->delete();
-		$mainBook->delete();
+        BookGroupJob::dispatch($mainBook, $minorBook);
 
-		$minorBook->refresh();
-		$mainBook->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$minorBook->restore();
+        BookUngroupJob::dispatch($minorBook);
 
-		$minorBook->refresh();
-		$mainBook->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$this->assertFalse($minorBook->trashed());
-		$this->assertFalse($minorBook->isInGroup());
-		$this->assertNull($minorBook->main_book_id);
-		$this->assertNull($minorBook->editions_count);
-	}
+        $this->assertNull($mainBook->main_book_id);
+        $this->assertNull($mainBook->editions_count);
 
-	public function testDetachOnRestoreMinorBookIfMainBookIsForceDeleted()
-	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+        $this->assertNull($minorBook->main_book_id);
+        $this->assertNull($minorBook->editions_count);
+    }
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+    public function testTwoMinorBooks()
+    {
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+        $minorBook2 = Book::factory()->create();
 
-		$minorBook->delete();
-		$mainBook->forceDelete();
+        BookGroupJob::dispatch($mainBook, $minorBook);
+        BookGroupJob::dispatch($mainBook, $minorBook2);
 
-		$minorBook->refresh();
-		$mainBook->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
+        $minorBook2->refresh();
 
-		$minorBook->restore();
+        $this->assertTrue($mainBook->isMainInGroup());
+        $this->assertTrue($minorBook->isInGroup());
+        $this->assertTrue($minorBook2->isInGroup());
 
-		$minorBook->refresh();
-		$mainBook->refresh();
+        BookUngroupJob::dispatch($minorBook2);
 
-		$this->assertFalse($minorBook->trashed());
-		$this->assertFalse($minorBook->isInGroup());
-		$this->assertNull($minorBook->main_book_id);
-		$this->assertNull($minorBook->editions_count);
-	}
+        $mainBook->refresh();
+        $minorBook->refresh();
+        $minorBook2->refresh();
+
+        $this->assertNull($mainBook->main_book_id);
+        $this->assertEquals(1, $mainBook->editions_count);
+
+        $this->assertEquals($mainBook->id, $minorBook->main_book_id);
+        $this->assertEquals(1, $minorBook->editions_count);
+
+        $this->assertNull($minorBook2->main_book_id);
+        $this->assertNull($minorBook2->editions_count);
+    }
+
+    public function testDetachOnRestoreMinorBookIfMainBookIsDeleted()
+    {
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $minorBook->delete();
+        $mainBook->delete();
+
+        $minorBook->refresh();
+        $mainBook->refresh();
+
+        $minorBook->restore();
+
+        $minorBook->refresh();
+        $mainBook->refresh();
+
+        $this->assertFalse($minorBook->trashed());
+        $this->assertFalse($minorBook->isInGroup());
+        $this->assertNull($minorBook->main_book_id);
+        $this->assertNull($minorBook->editions_count);
+    }
+
+    public function testDetachOnRestoreMinorBookIfMainBookIsForceDeleted()
+    {
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $minorBook->delete();
+        $mainBook->forceDelete();
+
+        $minorBook->refresh();
+        $mainBook->refresh();
+
+        $minorBook->restore();
+
+        $minorBook->refresh();
+        $mainBook->refresh();
+
+        $this->assertFalse($minorBook->trashed());
+        $this->assertFalse($minorBook->isInGroup());
+        $this->assertNull($minorBook->main_book_id);
+        $this->assertNull($minorBook->editions_count);
+    }
 }

@@ -36,10 +36,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase notCanceled()
  * @method static Builder|UserPurchase onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase whereBuyerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase whereCanceledAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPurchase whereCreatedAt($value)
@@ -57,85 +57,86 @@ use Illuminate\Support\Carbon;
  */
 class UserPurchase extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $dates = [
-		'created_at',
-		'updated_at',
-		'deleted_at',
-		'canceled_at'
-	];
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'canceled_at'
+    ];
 
-	public function buyer()
-	{
-		return $this->belongsTo('App\User', 'buyer_user_id');
-	}
+    public function buyer()
+    {
+        return $this->belongsTo('App\User', 'buyer_user_id');
+    }
 
-	public function seller()
-	{
-		return $this->belongsTo('App\User', 'seller_user_id');
-	}
+    public function seller()
+    {
+        return $this->belongsTo('App\User', 'seller_user_id');
+    }
 
-	public function purchasable()
-	{
-		return $this->morphTo();
-	}
+    public function purchasable()
+    {
+        return $this->morphTo();
+    }
 
-	public function transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable');
-	}
+    public function transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable');
+    }
 
-	public function buyer_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::buy);
-	}
+    public function buyer_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::buy);
+    }
 
-	public function seller_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::sell);
-	}
+    public function seller_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::sell);
+    }
 
-	public function commission_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::comission);
-	}
+    public function commission_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::comission);
+    }
 
-	public function referer_buyer_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::comission_referer_buyer);
-	}
+    public function referer_buyer_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::comission_referer_buyer);
+    }
 
-	public function referer_seller_transaction()
-	{
-		return $this->morphOne('App\UserPaymentTransaction', 'operable')
-			->where('type', TransactionType::comission_referer_seller);
-	}
+    public function referer_seller_transaction()
+    {
+        return $this->morphOne('App\UserPaymentTransaction', 'operable')
+            ->where('type', TransactionType::comission_referer_seller);
+    }
 
-	public function isBook()
-	{
-		if ($this->purchasable_type == 'book')
-			return true;
-		else
-			return false;
-	}
+    public function isBook()
+    {
+        if ($this->purchasable_type == 'book') {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function cancel()
-	{
-		$this->canceled_at = now();
-	}
+    public function cancel()
+    {
+        $this->canceled_at = now();
+    }
 
-	public function isCanceled(): bool
-	{
-		return (bool)$this->canceled_at;
-	}
+    public function isCanceled(): bool
+    {
+        return (bool)$this->canceled_at;
+    }
 
-	public function scopeNotCanceled($query)
-	{
-		return $query->whereNull('canceled_at');
-	}
+    public function scopeNotCanceled($query)
+    {
+        return $query->whereNull('canceled_at');
+    }
 }

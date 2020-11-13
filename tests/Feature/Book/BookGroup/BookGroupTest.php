@@ -15,761 +15,699 @@ use Tests\TestCase;
 
 class BookGroupTest extends TestCase
 {
-	public function testIndex()
-	{
-		$user = factory(User::class)->create()->fresh();
-		$user->group->connect_books = true;
-		$user->push();
-
-		$book = factory(Book::class)->create();
-		$book->statusAccepted();
-		$book->push();
-
-		$response = $this->actingAs($user)
-			->get(route('books.editions.edit', ['book' => $book]))
-			->assertSessionHasNoErrors()
-			->assertOk();
-	}
-
-	public function testNotDeleteMainBookVoteFromSameGroup()
-	{
-		$user = factory(User::class)->create();
-		$user->group->vote_for_book = true;
-		$user->push();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$vote = factory(BookVote::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'create_user_id' => $user->id,
-				'vote' => 3
-			]);
-
-		$other_user_vote = factory(BookVote::class)
-			->create(['book_id' => $mainBook->id, 'vote' => 6]);
-
-		$vote2 = factory(BookVote::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'create_user_id' => $user->id,
-				'vote' => 5
-			]);
-
-		$response = $this->actingAs($user)
-			->get(route('books.vote', [
-				'book' => $minorBook,
-				'vote' => 6
-			]))
-			->assertRedirect();
-
-		$vote->refresh();
-		$vote2->refresh();
-
-		$this->assertEquals(6, $vote->vote);
-		$this->assertEquals($mainBook->id, $vote->book_id);
-		$this->assertEquals($vote2->book_id, $vote2->origin_book_id);
-		$this->assertFalse($vote->is($vote2));
-		$this->assertFalse($vote->trashed());
-		$this->assertFalse($vote2->trashed());
-		$this->assertFalse($other_user_vote->trashed());
-	}
-
-	public function testDeleteMinorBookVoteFromSameGroup()
-	{
-		$user = factory(User::class)->create();
-		$user->group->vote_for_book = true;
-		$user->push();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$vote = factory(BookVote::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'create_user_id' => $user->id,
-				'vote' => 3
-			]);
-
-		$other_user_vote = factory(BookVote::class)
-			->create(['book_id' => $mainBook->id, 'vote' => 6]);
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$vote2 = factory(BookVote::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'create_user_id' => $user->id,
-				'vote' => 5
-			]);
-
-		$response = $this->actingAs($user)
-			->get(route('books.vote', [
-				'book' => $mainBook,
-				'vote' => 6
-			]))
-			->assertRedirect();
-
-		$vote->refresh();
-		$vote2->refresh();
+    public function testIndex()
+    {
+        $user = User::factory()->create()->fresh();
+        $user->group->connect_books = true;
+        $user->push();
+
+        $book = Book::factory()->create();
+        $book->statusAccepted();
+        $book->push();
+
+        $response = $this->actingAs($user)
+            ->get(route('books.editions.edit', ['book' => $book]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
+    }
+
+    public function testNotDeleteMainBookVoteFromSameGroup()
+    {
+        $user = User::factory()->create();
+        $user->group->vote_for_book = true;
+        $user->push();
+
+        $mainBook = Book::factory()->with_minor_book()->create();
+
+        $minorBook = $mainBook->groupedBooks()->first();
+
+        $vote = BookVote::factory()->create([
+            'book_id' => $mainBook->id,
+            'create_user_id' => $user->id,
+            'vote' => 3
+        ]);
+
+        $other_user_vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 6]);
+
+        $vote2 = BookVote::factory()->create([
+            'book_id' => $minorBook->id,
+            'create_user_id' => $user->id,
+            'vote' => 5
+        ]);
+
+        $response = $this->actingAs($user)
+            ->get(route('books.vote', [
+                'book' => $minorBook,
+                'vote' => 6
+            ]))
+            ->assertRedirect();
+
+        $vote->refresh();
+        $vote2->refresh();
+
+        $this->assertEquals(6, $vote->vote);
+        $this->assertEquals($mainBook->id, $vote->book_id);
+        $this->assertEquals($vote2->book_id, $vote2->origin_book_id);
+        $this->assertFalse($vote->is($vote2));
+        $this->assertFalse($vote->trashed());
+        $this->assertFalse($vote2->trashed());
+        $this->assertFalse($other_user_vote->trashed());
+    }
+
+    public function testDeleteMinorBookVoteFromSameGroup()
+    {
+        $user = User::factory()->create();
+        $user->group->vote_for_book = true;
+        $user->push();
+
+        $mainBook = Book::factory()->with_minor_book()->create();
+
+        $vote = BookVote::factory()->create([
+            'book_id' => $mainBook->id,
+            'create_user_id' => $user->id,
+            'vote' => 3
+        ]);
+
+        $other_user_vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 6]);
+
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$this->assertEquals(6, $vote->vote);
-		$this->assertFalse($vote->is($vote2));
-		$this->assertFalse($vote->trashed());
-		$this->assertFalse($vote2->trashed());
-		$this->assertFalse($other_user_vote->trashed());
-	}
+        $vote2 = BookVote::factory()->create([
+            'book_id' => $minorBook->id,
+            'create_user_id' => $user->id,
+            'vote' => 5
+        ]);
 
-	public function testUpdateBookRating()
-	{
-		$mainBook = factory(Book::class)
-			->create();
+        $response = $this->actingAs($user)
+            ->get(route('books.vote', [
+                'book' => $mainBook,
+                'vote' => 6
+            ]))
+            ->assertRedirect();
+
+        $vote->refresh();
+        $vote2->refresh();
+
+        $this->assertEquals(6, $vote->vote);
+        $this->assertFalse($vote->is($vote2));
+        $this->assertFalse($vote->trashed());
+        $this->assertFalse($vote2->trashed());
+        $this->assertFalse($other_user_vote->trashed());
+    }
 
-		$minorBook = factory(Book::class)
-			->create();
+    public function testUpdateBookRating()
+    {
+        $mainBook = Book::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['book_id' => $mainBook->id, 'vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['book_id' => $minorBook->id, 'vote' => 3]);
+        $minorBook = Book::factory()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 7]);
+        $vote2 = BookVote::factory()->create(['book_id' => $minorBook->id, 'vote' => 3]);
 
-		UpdateBookRating::dispatch($mainBook);
+        BookGroupJob::dispatch($mainBook, $minorBook);
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        UpdateBookRating::dispatch($mainBook);
 
-		$this->assertEquals(5, $mainBook->vote_average);
-		$this->assertEquals(5, $minorBook->vote_average);
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$this->assertEquals(2, $mainBook->user_vote_count);
-		$this->assertEquals(2, $minorBook->user_vote_count);
+        $this->assertEquals(5, $mainBook->vote_average);
+        $this->assertEquals(5, $minorBook->vote_average);
 
-		$this->assertEquals(2, $minorBook->average_rating_for_period->day_votes_count);
-		$this->assertEquals(2, $minorBook->average_rating_for_period->week_votes_count);
-		$this->assertEquals(2, $minorBook->average_rating_for_period->month_votes_count);
-		$this->assertEquals(2, $minorBook->average_rating_for_period->quarter_votes_count);
-		$this->assertEquals(2, $minorBook->average_rating_for_period->year_votes_count);
+        $this->assertEquals(2, $mainBook->user_vote_count);
+        $this->assertEquals(2, $minorBook->user_vote_count);
 
-		$this->assertEquals($mainBook->in_rating, $minorBook->in_rating);
-		$this->assertEquals($mainBook->rate_info, $minorBook->rate_info);
+        $this->assertEquals(2, $minorBook->average_rating_for_period->day_votes_count);
+        $this->assertEquals(2, $minorBook->average_rating_for_period->week_votes_count);
+        $this->assertEquals(2, $minorBook->average_rating_for_period->month_votes_count);
+        $this->assertEquals(2, $minorBook->average_rating_for_period->quarter_votes_count);
+        $this->assertEquals(2, $minorBook->average_rating_for_period->year_votes_count);
 
-		$this->assertEquals(1, $minorBook->rate_info[7]['count']);
-		$this->assertEquals(1, $minorBook->rate_info[3]['count']);
+        $this->assertEquals($mainBook->in_rating, $minorBook->in_rating);
+        $this->assertEquals($mainBook->rate_info, $minorBook->rate_info);
 
-		$this->assertEquals(1, $mainBook->rate_info[7]['count']);
-		$this->assertEquals(1, $mainBook->rate_info[3]['count']);
+        $this->assertEquals(1, $minorBook->rate_info[7]['count']);
+        $this->assertEquals(1, $minorBook->rate_info[3]['count']);
 
-		$this->assertEquals($mainBook->male_vote_count, $minorBook->male_vote_count);
-		$this->assertEquals($mainBook->female_vote_count, $minorBook->female_vote_count);
-		$this->assertEquals($mainBook->male_vote_percent, $minorBook->male_vote_percent);
-		$this->assertEquals($mainBook->refresh_rating, $minorBook->refresh_rating);
+        $this->assertEquals(1, $mainBook->rate_info[7]['count']);
+        $this->assertEquals(1, $mainBook->rate_info[3]['count']);
 
-		$this->assertEquals($mainBook->average_rating_for_period->day_vote_average, $minorBook->average_rating_for_period->day_vote_average);
-		$this->assertEquals($mainBook->average_rating_for_period->day_votes_count, $minorBook->average_rating_for_period->day_votes_count);
-		$this->assertEquals($mainBook->average_rating_for_period->day_rating, $minorBook->average_rating_for_period->day_rating);
+        $this->assertEquals($mainBook->male_vote_count, $minorBook->male_vote_count);
+        $this->assertEquals($mainBook->female_vote_count, $minorBook->female_vote_count);
+        $this->assertEquals($mainBook->male_vote_percent, $minorBook->male_vote_percent);
+        $this->assertEquals($mainBook->refresh_rating, $minorBook->refresh_rating);
 
-		$this->assertEquals($mainBook->average_rating_for_period->week_vote_average, $minorBook->average_rating_for_period->week_vote_average);
-		$this->assertEquals($mainBook->average_rating_for_period->week_votes_count, $minorBook->average_rating_for_period->week_votes_count);
-		$this->assertEquals($mainBook->average_rating_for_period->week_rating, $minorBook->average_rating_for_period->week_rating);
+        $this->assertEquals($mainBook->average_rating_for_period->day_vote_average, $minorBook->average_rating_for_period->day_vote_average);
+        $this->assertEquals($mainBook->average_rating_for_period->day_votes_count, $minorBook->average_rating_for_period->day_votes_count);
+        $this->assertEquals($mainBook->average_rating_for_period->day_rating, $minorBook->average_rating_for_period->day_rating);
 
-		$this->assertEquals($mainBook->average_rating_for_period->month_vote_average, $minorBook->average_rating_for_period->month_vote_average);
-		$this->assertEquals($mainBook->average_rating_for_period->month_votes_count, $minorBook->average_rating_for_period->month_votes_count);
-		$this->assertEquals($mainBook->average_rating_for_period->month_rating, $minorBook->average_rating_for_period->month_rating);
+        $this->assertEquals($mainBook->average_rating_for_period->week_vote_average, $minorBook->average_rating_for_period->week_vote_average);
+        $this->assertEquals($mainBook->average_rating_for_period->week_votes_count, $minorBook->average_rating_for_period->week_votes_count);
+        $this->assertEquals($mainBook->average_rating_for_period->week_rating, $minorBook->average_rating_for_period->week_rating);
 
-		$this->assertEquals($mainBook->average_rating_for_period->quarter_vote_average, $minorBook->average_rating_for_period->quarter_vote_average);
-		$this->assertEquals($mainBook->average_rating_for_period->quarter_votes_count, $minorBook->average_rating_for_period->quarter_votes_count);
-		$this->assertEquals($mainBook->average_rating_for_period->quarter_rating, $minorBook->average_rating_for_period->quarter_rating);
+        $this->assertEquals($mainBook->average_rating_for_period->month_vote_average, $minorBook->average_rating_for_period->month_vote_average);
+        $this->assertEquals($mainBook->average_rating_for_period->month_votes_count, $minorBook->average_rating_for_period->month_votes_count);
+        $this->assertEquals($mainBook->average_rating_for_period->month_rating, $minorBook->average_rating_for_period->month_rating);
 
-		$this->assertEquals($mainBook->average_rating_for_period->year_vote_average, $minorBook->average_rating_for_period->year_vote_average);
-		$this->assertEquals($mainBook->average_rating_for_period->year_votes_count, $minorBook->average_rating_for_period->year_votes_count);
-		$this->assertEquals($mainBook->average_rating_for_period->year_rating, $minorBook->average_rating_for_period->year_rating);
-	}
+        $this->assertEquals($mainBook->average_rating_for_period->quarter_vote_average, $minorBook->average_rating_for_period->quarter_vote_average);
+        $this->assertEquals($mainBook->average_rating_for_period->quarter_votes_count, $minorBook->average_rating_for_period->quarter_votes_count);
+        $this->assertEquals($mainBook->average_rating_for_period->quarter_rating, $minorBook->average_rating_for_period->quarter_rating);
 
-	public function testUpdateBookRatingIfMainBookAverageRatingForPeriodNotExists()
-	{
-		$mainBook = factory(Book::class)
-			->create();
+        $this->assertEquals($mainBook->average_rating_for_period->year_vote_average, $minorBook->average_rating_for_period->year_vote_average);
+        $this->assertEquals($mainBook->average_rating_for_period->year_votes_count, $minorBook->average_rating_for_period->year_votes_count);
+        $this->assertEquals($mainBook->average_rating_for_period->year_rating, $minorBook->average_rating_for_period->year_rating);
+    }
 
-		$minorBook = factory(Book::class)
-			->create();
+    public function testUpdateBookRatingIfMainBookAverageRatingForPeriodNotExists()
+    {
+        $mainBook = Book::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['book_id' => $mainBook->id, 'vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['book_id' => $minorBook->id, 'vote' => 3]);
+        $minorBook = Book::factory()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $vote = BookVote::factory()->create(['book_id' => $mainBook->id, 'vote' => 7]);
+        $vote2 = BookVote::factory()->create(['book_id' => $minorBook->id, 'vote' => 3]);
 
-		$mainBook->average_rating_for_period->forceDelete();
+        BookGroupJob::dispatch($mainBook, $minorBook);
 
-		UpdateBookRating::dispatch($minorBook);
+        $mainBook->average_rating_for_period->forceDelete();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        UpdateBookRating::dispatch($minorBook);
 
-		$this->assertEquals(5, $mainBook->vote_average);
-		$this->assertEquals(5, $minorBook->vote_average);
-		/*
-				$this->assertEquals(2, $mainBook->user_vote_count);
-				$this->assertEquals(2, $minorBook->user_vote_count);
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-				$this->assertEquals(2, $minorBook->average_rating_for_period->day_votes_count);
-				$this->assertEquals(2, $minorBook->average_rating_for_period->week_votes_count);
-				$this->assertEquals(2, $minorBook->average_rating_for_period->month_votes_count);
-				$this->assertEquals(2, $minorBook->average_rating_for_period->quarter_votes_count);
-				$this->assertEquals(2, $minorBook->average_rating_for_period->year_votes_count);
+        $this->assertEquals(5, $mainBook->vote_average);
+        $this->assertEquals(5, $minorBook->vote_average);
+        /*
+                $this->assertEquals(2, $mainBook->user_vote_count);
+                $this->assertEquals(2, $minorBook->user_vote_count);
 
-				$this->assertEquals($mainBook->in_rating, $minorBook->in_rating);
-				$this->assertEquals($mainBook->rate_info, $minorBook->rate_info);
+                $this->assertEquals(2, $minorBook->average_rating_for_period->day_votes_count);
+                $this->assertEquals(2, $minorBook->average_rating_for_period->week_votes_count);
+                $this->assertEquals(2, $minorBook->average_rating_for_period->month_votes_count);
+                $this->assertEquals(2, $minorBook->average_rating_for_period->quarter_votes_count);
+                $this->assertEquals(2, $minorBook->average_rating_for_period->year_votes_count);
 
-				$this->assertEquals(1, $minorBook->rate_info[7]['count']);
-				$this->assertEquals(1, $minorBook->rate_info[3]['count']);
+                $this->assertEquals($mainBook->in_rating, $minorBook->in_rating);
+                $this->assertEquals($mainBook->rate_info, $minorBook->rate_info);
 
-				$this->assertEquals(1, $mainBook->rate_info[7]['count']);
-				$this->assertEquals(1, $mainBook->rate_info[3]['count']);
+                $this->assertEquals(1, $minorBook->rate_info[7]['count']);
+                $this->assertEquals(1, $minorBook->rate_info[3]['count']);
 
-				$this->assertEquals($mainBook->male_vote_count, $minorBook->male_vote_count);
-				$this->assertEquals($mainBook->female_vote_count, $minorBook->female_vote_count);
-				$this->assertEquals($mainBook->male_vote_percent, $minorBook->male_vote_percent);
-				$this->assertEquals($mainBook->refresh_rating, $minorBook->refresh_rating);
+                $this->assertEquals(1, $mainBook->rate_info[7]['count']);
+                $this->assertEquals(1, $mainBook->rate_info[3]['count']);
 
-				$this->assertEquals($mainBook->average_rating_for_period->day_vote_average, $minorBook->average_rating_for_period->day_vote_average);
-				$this->assertEquals($mainBook->average_rating_for_period->day_votes_count, $minorBook->average_rating_for_period->day_votes_count);
-				$this->assertEquals($mainBook->average_rating_for_period->day_rating, $minorBook->average_rating_for_period->day_rating);
+                $this->assertEquals($mainBook->male_vote_count, $minorBook->male_vote_count);
+                $this->assertEquals($mainBook->female_vote_count, $minorBook->female_vote_count);
+                $this->assertEquals($mainBook->male_vote_percent, $minorBook->male_vote_percent);
+                $this->assertEquals($mainBook->refresh_rating, $minorBook->refresh_rating);
 
-				$this->assertEquals($mainBook->average_rating_for_period->week_vote_average, $minorBook->average_rating_for_period->week_vote_average);
-				$this->assertEquals($mainBook->average_rating_for_period->week_votes_count, $minorBook->average_rating_for_period->week_votes_count);
-				$this->assertEquals($mainBook->average_rating_for_period->week_rating, $minorBook->average_rating_for_period->week_rating);
+                $this->assertEquals($mainBook->average_rating_for_period->day_vote_average, $minorBook->average_rating_for_period->day_vote_average);
+                $this->assertEquals($mainBook->average_rating_for_period->day_votes_count, $minorBook->average_rating_for_period->day_votes_count);
+                $this->assertEquals($mainBook->average_rating_for_period->day_rating, $minorBook->average_rating_for_period->day_rating);
 
-				$this->assertEquals($mainBook->average_rating_for_period->month_vote_average, $minorBook->average_rating_for_period->month_vote_average);
-				$this->assertEquals($mainBook->average_rating_for_period->month_votes_count, $minorBook->average_rating_for_period->month_votes_count);
-				$this->assertEquals($mainBook->average_rating_for_period->month_rating, $minorBook->average_rating_for_period->month_rating);
+                $this->assertEquals($mainBook->average_rating_for_period->week_vote_average, $minorBook->average_rating_for_period->week_vote_average);
+                $this->assertEquals($mainBook->average_rating_for_period->week_votes_count, $minorBook->average_rating_for_period->week_votes_count);
+                $this->assertEquals($mainBook->average_rating_for_period->week_rating, $minorBook->average_rating_for_period->week_rating);
 
-				$this->assertEquals($mainBook->average_rating_for_period->quarter_vote_average, $minorBook->average_rating_for_period->quarter_vote_average);
-				$this->assertEquals($mainBook->average_rating_for_period->quarter_votes_count, $minorBook->average_rating_for_period->quarter_votes_count);
-				$this->assertEquals($mainBook->average_rating_for_period->quarter_rating, $minorBook->average_rating_for_period->quarter_rating);
+                $this->assertEquals($mainBook->average_rating_for_period->month_vote_average, $minorBook->average_rating_for_period->month_vote_average);
+                $this->assertEquals($mainBook->average_rating_for_period->month_votes_count, $minorBook->average_rating_for_period->month_votes_count);
+                $this->assertEquals($mainBook->average_rating_for_period->month_rating, $minorBook->average_rating_for_period->month_rating);
 
-				$this->assertEquals($mainBook->average_rating_for_period->year_vote_average, $minorBook->average_rating_for_period->year_vote_average);
-				$this->assertEquals($mainBook->average_rating_for_period->year_votes_count, $minorBook->average_rating_for_period->year_votes_count);
-				$this->assertEquals($mainBook->average_rating_for_period->year_rating, $minorBook->average_rating_for_period->year_rating);
-			*/
-	}
+                $this->assertEquals($mainBook->average_rating_for_period->quarter_vote_average, $minorBook->average_rating_for_period->quarter_vote_average);
+                $this->assertEquals($mainBook->average_rating_for_period->quarter_votes_count, $minorBook->average_rating_for_period->quarter_votes_count);
+                $this->assertEquals($mainBook->average_rating_for_period->quarter_rating, $minorBook->average_rating_for_period->quarter_rating);
 
-	public function testSeeUserVoted()
-	{
-		$user = factory(User::class)->create();
+                $this->assertEquals($mainBook->average_rating_for_period->year_vote_average, $minorBook->average_rating_for_period->year_vote_average);
+                $this->assertEquals($mainBook->average_rating_for_period->year_votes_count, $minorBook->average_rating_for_period->year_votes_count);
+                $this->assertEquals($mainBook->average_rating_for_period->year_rating, $minorBook->average_rating_for_period->year_rating);
+            */
+    }
 
-		$vote = factory(BookVote::class)->create(['vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['vote' => 3]);
+    public function testSeeUserVoted()
+    {
+        $user = User::factory()->create();
 
-		$book = $vote->book;
-		$book2 = $vote2->book;
+        $vote = BookVote::factory()->create(['vote' => 7]);
+        $vote2 = BookVote::factory()->create(['vote' => 3]);
 
-		BookGroupJob::dispatch($book, $book2);
+        $book = $vote->book;
+        $book2 = $vote2->book;
 
-		$this->actingAs($user)
-			->get(route('books.votes', ['book' => $book]))
-			->assertOk()
-			->assertSeeText($vote->create_user->nick)
-			->assertSeeText($vote2->create_user->nick);
+        BookGroupJob::dispatch($book, $book2);
 
-		$this->actingAs($user)
-			->get(route('books.votes', ['book' => $book2]))
-			->assertOk()
-			->assertSeeText($vote->create_user->nick)
-			->assertSeeText($vote2->create_user->nick);
-	}
+        $this->actingAs($user)
+            ->get(route('books.votes', ['book' => $book]))
+            ->assertOk()
+            ->assertSeeText($vote->create_user->nick)
+            ->assertSeeText($vote2->create_user->nick);
 
-	public function testBookVotesRelation()
-	{
-		$user = factory(User::class)->create();
+        $this->actingAs($user)
+            ->get(route('books.votes', ['book' => $book2]))
+            ->assertOk()
+            ->assertSeeText($vote->create_user->nick)
+            ->assertSeeText($vote2->create_user->nick);
+    }
 
-		$group = factory(BookGroup::class)->create();
+    public function testBookVotesRelation()
+    {
+        $user = User::factory()->create();
 
-		$vote = factory(BookVote::class)->create(['vote' => 7]);
-		$vote2 = factory(BookVote::class)->create(['vote' => 3]);
+        $group = BookGroup::factory()->create();
 
-		$book = $vote->book;
-		$book2 = $vote2->book;
+        $vote = BookVote::factory()->create(['vote' => 7]);
+        $vote2 = BookVote::factory()->create(['vote' => 3]);
 
-		$group->addBook($book);
-		$group->addBook($book2);
+        $book = $vote->book;
+        $book2 = $vote2->book;
 
-		$votes = $group->bookVotes()->orderBy('vote', 'desc')->get();
+        $group->addBook($book);
+        $group->addBook($book2);
 
-		$this->assertEquals(2, $votes->count());
-		$this->assertEquals(7, $votes[0]->vote);
-		$this->assertEquals(3, $votes[1]->vote);
-		$this->assertTrue($vote->is($votes[0]));
-		$this->assertTrue($vote2->is($votes[1]));
-	}
+        $votes = $group->bookVotes()->orderBy('vote', 'desc')->get();
 
-	public function testNotDeleteAllOtherReadStatusForBooksFromSameGroup()
-	{
-		$user = factory(User::class)->create();
-		$user->group->vote_for_book = true;
-		$user->push();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$status = factory(BookStatus::class)
-			->create([
-				'book_id' => $mainBook->id,
-				'user_id' => $user->id,
-				'status' => 'readed'
-			]);
-
-		//$other_user_status = factory(BookStatus::class)->create(['book_id' => $mainBook->id, 'status' => 'read_later']);
+        $this->assertEquals(2, $votes->count());
+        $this->assertEquals(7, $votes[0]->vote);
+        $this->assertEquals(3, $votes[1]->vote);
+        $this->assertTrue($vote->is($votes[0]));
+        $this->assertTrue($vote2->is($votes[1]));
+    }
 
-		$status2 = factory(BookStatus::class)
-			->create([
-				'book_id' => $minorBook->id,
-				'user_id' => $user->id,
-				'status' => 'not_read'
-			]);
-
-		$response = $this->actingAs($user)
-			->get(route('books.read_status.store', [
-				'book' => $minorBook,
-				'code' => 'read_now'
-			]))
-			->assertRedirect();
-
-		$status->refresh();
-		$status2->refresh();
-		//$this->assertDatabaseMissing('book_statuses', ['id' => $status2->id]);
-
-		$this->assertEquals(1, $mainBook->statuses()->where('user_id', $user->id)->count());
+    public function testNotDeleteAllOtherReadStatusForBooksFromSameGroup()
+    {
+        $user = User::factory()->create();
+        $user->group->vote_for_book = true;
+        $user->push();
 
-		$this->assertEquals('read_now', $status->status);
-		$this->assertEquals('not_read', $status2->status);
-		$this->assertEquals($mainBook->id, $status->book_id);
-		$this->assertEquals($minorBook->id, $status->origin_book_id);
-	}
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-	public function testIsInGroup()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $status = BookStatus::factory()->create([
+            'book_id' => $mainBook->id,
+            'user_id' => $user->id,
+            'status' => 'readed'
+        ]);
 
-		$this->assertTrue($mainBook->isInGroup());
-		$this->assertTrue($minorBook->isInGroup());
-	}
+        //$other_user_status = BookStatus::factory()->create(['book_id' => $mainBook->id, 'status' => 'read_later']);
 
-	public function testVoteForMinorBook()
-	{
-		$user = factory(User::class)->create();
-		$user->group->vote_for_book = true;
-		$user->push();
+        $status2 = BookStatus::factory()->create([
+            'book_id' => $minorBook->id,
+            'user_id' => $user->id,
+            'status' => 'not_read'
+        ]);
 
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+        $response = $this->actingAs($user)
+            ->get(route('books.read_status.store', [
+                'book' => $minorBook,
+                'code' => 'read_now'
+            ]))
+            ->assertRedirect();
 
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$response = $this->actingAs($user)
-			->get(route('books.vote', [
-				'book' => $minorBook->id,
-				'vote' => 5
-			]))
-			->assertRedirect();
-
-		$vote = $mainBook->votes()->first();
-
-		$this->assertNotNull($vote);
-
-		$this->assertEquals($mainBook->id, $vote->book_id);
-		$this->assertEquals($minorBook->id, $vote->origin_book_id);
-		$this->assertEquals(5, $vote->vote);
-	}
-
-	public function testUpdateVoteForMinorBook()
-	{
-		$user = factory(User::class)->create();
-		$user->group->vote_for_book = true;
-		$user->push();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$vote = factory(BookVote::class)
-			->create([
-				'create_user_id' => $user->id,
-				'book_id' => $mainBook->id,
-				'vote' => 2
-			]);
-
-		$response = $this->actingAs($user)
-			->get(route('books.vote', [
-				'book' => $minorBook->id,
-				'vote' => 7
-			]))
-			->assertRedirect();
-
-		$vote->refresh();
-
-		$this->assertEquals(7, $vote->vote);
-		$this->assertEquals($minorBook->id, $vote->origin_book_id);
-		$this->assertEquals($mainBook->id, $vote->book_id);
-	}
-
-	public function testBookStatusForMinorBook()
-	{
-		$user = factory(User::class)
-			->create();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$response = $this->actingAs($user)
-			->get(route('books.read_status.store', [
-				'book' => $minorBook,
-				'code' => 'read_later'
-			]))
-			->assertRedirect();
-
-		$status = $mainBook->users_read_statuses()->first();
-
-		$this->assertEquals($mainBook->id, $status->book_id);
-		$this->assertEquals($minorBook->id, $status->origin_book_id);
-
-		$this->assertEquals(0, $minorBook->users_read_statuses()->count());
-		$this->assertEquals(1, $mainBook->users_read_statuses()->count());
-
-		$this->assertEquals('read_later', $status->status);
-	}
-
-	public function testUpdateBookStatusForMinorBook()
-	{
-		$user = factory(User::class)
-			->create();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()
-			->first();
-
-		$status = factory(BookStatus::class)
-			->create([
-				'user_id' => $user->id,
-				'book_id' => $mainBook->id,
-				'status' => 'read_now'
-			]);
-
-		$response = $this->actingAs($user)
-			->get(route('books.read_status.store', [
-				'book' => $minorBook,
-				'code' => 'read_later'
-			]))
-			->assertRedirect();
-
-		$status->refresh();
-
-		$this->assertEquals('read_later', $status->status);
-		$this->assertEquals($mainBook->id, $status->book_id);
-		$this->assertEquals($minorBook->id, $status->origin_book_id);
-	}
-
-	public function testGroupTwoBooks()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
-
-		$mainBook = factory(Book::class)
-			->create();
-
-		$minorBook = factory(Book::class)
-			->create();
-
-		$minorBook2 = factory(Book::class)
-			->create();
-
-		$response = $this->actingAs($user)
-			->post(route('books.group.attach', ['book' => $mainBook]),
-				[
-					'edition_id' => $minorBook->id
-				])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$minorBook->refresh();
-		$mainBook->refresh();
-
-		$this->assertTrue($minorBook->isInGroup());
-		$this->assertEquals($mainBook->id, $minorBook->main_book_id);
-		$this->assertEquals(1, $mainBook->editions_count);
-
-		$response = $this->actingAs($user)
-			->post(route('books.group.attach', ['book' => $mainBook]),
-				[
-					'edition_id' => $minorBook2->id
-				])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-
-		$minorBook2->refresh();
-		$mainBook->refresh();
-
-		$this->assertTrue($minorBook2->isInGroup());
-		$this->assertEquals($mainBook->id, $minorBook2->main_book_id);
-		$this->assertEquals(2, $mainBook->editions_count);
-	}
-
-	public function testBookThatIsAttachedToMustBeTheMainOne()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
-
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
-
-		$minorBook = $mainBook->groupedBooks()->first();
-
-		$book = factory(Book::class)
-			->create();
-
-		$response = $this->actingAs($user)
-			->post(route('books.group.attach', ['book' => $minorBook]),
-				[
-					'edition_id' => $book->id
-				])
-			->assertSessionHasErrors(['edition_id' => __('book_group.the_book_that_is_attached_to_must_be_the_main_one')])
-			->assertRedirect();
-	}
-
-	public function testIsAttachedToBook()
-	{
-		$mainBook = factory(Book::class)->create();
-
-		$minorBook = factory(Book::class)->create();
-
-		$this->assertFalse($mainBook->isAttachedToBook($minorBook));
-		$this->assertFalse($minorBook->isAttachedToBook($mainBook));
-
-		BookGroupJob::dispatch($mainBook, $minorBook);
-
-		$mainBook->refresh();
-		$minorBook->refresh();
-
-		$this->assertFalse($mainBook->isAttachedToBook($minorBook));
-		$this->assertTrue($minorBook->isAttachedToBook($mainBook));
-	}
-
-	public function testSetGetEditionsCount()
-	{
-		$book = factory(Book::class)->create();
-		$book->editions_count = 1;
-		$book->save();
-
-		$this->assertEquals(1, $book->editions_count);
-
-		$book->editions_count = null;
-		$book->main_book_id = null;
-		$book->connected_at = null;
-		$book->connect_user_id = null;
-		$book->save();
-		$book->refresh();
-
-		$this->assertEquals(null, $book->editions_count);
-	}
-
-	public function testCantDeleteMainBookInGroup()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
-
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
-
-		BookGroupJob::dispatch($mainBook, $minorBook);
-
-		$response = $this->actingAs($user)
-			->get(route('books.delete', $mainBook))
-			->assertRedirect();
-		var_dump(session('errors'));
-		$this->assertSessionHasErrors(__('book.you_cannot_delete_a_book_while_it_is_the_main_edition'));
-	}
-
-	public function testDeleteMinorBookAndRestoreInGroup()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $status->refresh();
+        $status2->refresh();
+        //$this->assertDatabaseMissing('book_statuses', ['id' => $status2->id]);
 
-		$mainBook = factory(Book::class)
-			->create();
-
-		$minorBook = factory(Book::class)
-			->states('with_create_user')
-			->create();
+        $this->assertEquals(1, $mainBook->statuses()->where('user_id', $user->id)->count());
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $this->assertEquals('read_now', $status->status);
+        $this->assertEquals('not_read', $status2->status);
+        $this->assertEquals($mainBook->id, $status->book_id);
+        $this->assertEquals($minorBook->id, $status->origin_book_id);
+    }
 
-		$response = $this->actingAs($user)
-			->get(route('books.delete', $minorBook))
-			->assertRedirect();
-		//var_dump(session('errors'));
-		$response->assertSessionHas(['success' => __('book.deleted')]);
+    public function testIsInGroup()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$this->assertTrue($minorBook->trashed());
-		$this->assertEquals(null, $mainBook->editions_count);
-		$this->assertEquals(null, $minorBook->editions_count);
+        $this->assertTrue($mainBook->isInGroup());
+        $this->assertTrue($minorBook->isInGroup());
+    }
 
-		$response = $this->actingAs($user)
-			->get(route('books.restore', $minorBook))
-			->assertRedirect();
+    public function testVoteForMinorBook()
+    {
+        $user = User::factory()->create();
+        $user->group->vote_for_book = true;
+        $user->push();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$this->assertFalse($minorBook->trashed());
-		$this->assertEquals(1, $mainBook->editions_count);
-		$this->assertEquals(1, $minorBook->editions_count);
-	}
+        $minorBook = $mainBook->groupedBooks()->first();
 
-	public function testBookShowIsOkIfMainBookIsDeleted()
-	{
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+        $response = $this->actingAs($user)
+            ->get(route('books.vote', [
+                'book' => $minorBook->id,
+                'vote' => 5
+            ]))
+            ->assertRedirect();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $vote = $mainBook->votes()->first();
 
-		$minorBook->delete();
-		$mainBook->delete();
+        $this->assertNotNull($vote);
 
-		$this->get(route('books.show', $minorBook))
-			->assertNotFound();
-	}
+        $this->assertEquals($mainBook->id, $vote->book_id);
+        $this->assertEquals($minorBook->id, $vote->origin_book_id);
+        $this->assertEquals(5, $vote->vote);
+    }
 
-	public function testUngroupMinorBookOnRestoreIfMainBookIsDeleted()
-	{
-		$user = factory(User::class)
-			->states('admin')->create();
+    public function testUpdateVoteForMinorBook()
+    {
+        $user = User::factory()->create();
+        $user->group->vote_for_book = true;
+        $user->push();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$minorBook->delete();
-		$mainBook->delete();
+        $vote = BookVote::factory()->create([
+            'create_user_id' => $user->id,
+            'book_id' => $mainBook->id,
+            'vote' => 2
+        ]);
 
-		$this->actingAs($user)
-			->get(route('books.restore', $minorBook))
-			->assertRedirect();
+        $response = $this->actingAs($user)
+            ->get(route('books.vote', [
+                'book' => $minorBook->id,
+                'vote' => 7
+            ]))
+            ->assertRedirect();
 
-		$minorBook->refresh();
+        $vote->refresh();
 
-		$this->assertFalse($minorBook->isInGroup());
-		$this->assertEquals(null, $minorBook->main_book_id);
-		$this->assertEquals(null, $minorBook->editions_count);
-	}
+        $this->assertEquals(7, $vote->vote);
+        $this->assertEquals($minorBook->id, $vote->origin_book_id);
+        $this->assertEquals($mainBook->id, $vote->book_id);
+    }
 
-	public function testDeleteOkIfMainBookIsDeleted()
-	{
-		$user = factory(User::class)
-			->states('admin')->create();
+    public function testBookStatusForMinorBook()
+    {
+        $user = User::factory()->create();
 
-		$mainBook = factory(Book::class)
-			->create();
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$minorBook = factory(Book::class)
-			->states('with_create_user')
-			->create();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $response = $this->actingAs($user)
+            ->get(route('books.read_status.store', [
+                'book' => $minorBook,
+                'code' => 'read_later'
+            ]))
+            ->assertRedirect();
 
-		$mainBook->delete();
+        $status = $mainBook->users_read_statuses()->first();
 
-		$this->actingAs($user)
-			->get(route('books.delete', $minorBook))
-			->assertRedirect();
+        $this->assertEquals($mainBook->id, $status->book_id);
+        $this->assertEquals($minorBook->id, $status->origin_book_id);
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $this->assertEquals(0, $minorBook->users_read_statuses()->count());
+        $this->assertEquals(1, $mainBook->users_read_statuses()->count());
 
-		$this->assertTrue($minorBook->trashed());
-	}
+        $this->assertEquals('read_later', $status->status);
+    }
 
-	public function testOriginAdded()
-	{
-		$status = factory(BookStatus::class)
-			->create(['status' => 'readed']);
+    public function testUpdateBookStatusForMinorBook()
+    {
+        $user = User::factory()->create();
 
-		$this->assertEquals($status->book_id, $status->origin_book_id);
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$vote = factory(BookVote::class)
-			->create();
+        $minorBook = $mainBook->groupedBooks()
+            ->first();
 
-		$this->assertEquals($vote->book_id, $vote->origin_book_id);
+        $status = BookStatus::factory()->create([
+            'user_id' => $user->id,
+            'book_id' => $mainBook->id,
+            'status' => 'read_now'
+        ]);
 
-		$keyword = factory(Keyword::class)
-			->create();
+        $response = $this->actingAs($user)
+            ->get(route('books.read_status.store', [
+                'book' => $minorBook,
+                'code' => 'read_later'
+            ]))
+            ->assertRedirect();
 
-		$this->assertEquals($keyword->book_id, $keyword->origin_book_id);
+        $status->refresh();
 
-		$comment = factory(Comment::class)
-			->create();
+        $this->assertEquals('read_later', $status->status);
+        $this->assertEquals($mainBook->id, $status->book_id);
+        $this->assertEquals($minorBook->id, $status->origin_book_id);
+    }
 
-		$this->assertEquals($comment->commentable_id, $comment->origin_commentable_id);
-	}
+    public function testGroupTwoBooks()
+    {
+        $user = User::factory()->admin()->create();
 
-	public function testBookListRedirectToMainEdition()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $mainBook = Book::factory()->create();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+        $minorBook = Book::factory()->create();
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $minorBook2 = Book::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.editions.index', ['book' => $minorBook->id]))
-			->assertRedirect(route('books.editions.index', ['book' => $mainBook->id]));
-	}
+        $response = $this->actingAs($user)
+            ->post(route('books.group.attach', ['book' => $mainBook]),
+                [
+                    'edition_id' => $minorBook->id
+                ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-	public function testSeeMinorBookInEditionsIndex()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $minorBook->refresh();
+        $mainBook->refresh();
 
-		$mainBook = factory(Book::class)->create();
-		$minorBook = factory(Book::class)->create();
+        $this->assertTrue($minorBook->isInGroup());
+        $this->assertEquals($mainBook->id, $minorBook->main_book_id);
+        $this->assertEquals(1, $mainBook->editions_count);
 
-		BookGroupJob::dispatch($mainBook, $minorBook);
+        $response = $this->actingAs($user)
+            ->post(route('books.group.attach', ['book' => $mainBook]),
+                [
+                    'edition_id' => $minorBook2->id
+                ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$this->actingAs($user)
-			->get(route('books.editions.index', ['book' => $mainBook->id]))
-			->assertOk()
-			->assertSeeText($minorBook->title);
-	}
+        $minorBook2->refresh();
+        $mainBook->refresh();
+
+        $this->assertTrue($minorBook2->isInGroup());
+        $this->assertEquals($mainBook->id, $minorBook2->main_book_id);
+        $this->assertEquals(2, $mainBook->editions_count);
+    }
+
+    public function testBookThatIsAttachedToMustBeTheMainOne()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->with_minor_book()->create();
+
+        $minorBook = $mainBook->groupedBooks()->first();
+
+        $book = Book::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->post(route('books.group.attach', ['book' => $minorBook]),
+                [
+                    'edition_id' => $book->id
+                ])
+            ->assertSessionHasErrors(['edition_id' => __('book_group.the_book_that_is_attached_to_must_be_the_main_one')])
+            ->assertRedirect();
+    }
+
+    public function testIsAttachedToBook()
+    {
+        $mainBook = Book::factory()->create();
+
+        $minorBook = Book::factory()->create();
+
+        $this->assertFalse($mainBook->isAttachedToBook($minorBook));
+        $this->assertFalse($minorBook->isAttachedToBook($mainBook));
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $mainBook->refresh();
+        $minorBook->refresh();
+
+        $this->assertFalse($mainBook->isAttachedToBook($minorBook));
+        $this->assertTrue($minorBook->isAttachedToBook($mainBook));
+    }
+
+    public function testSetGetEditionsCount()
+    {
+        $book = Book::factory()->create();
+        $book->editions_count = 1;
+        $book->save();
+
+        $this->assertEquals(1, $book->editions_count);
+
+        $book->editions_count = null;
+        $book->main_book_id = null;
+        $book->connected_at = null;
+        $book->connect_user_id = null;
+        $book->save();
+        $book->refresh();
+
+        $this->assertEquals(null, $book->editions_count);
+    }
+
+    public function testCantDeleteMainBookInGroup()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $response = $this->actingAs($user)
+            ->get(route('books.delete', $mainBook))
+            ->assertRedirect();
+        var_dump(session('errors'));
+        $this->assertSessionHasErrors(__('book.you_cannot_delete_a_book_while_it_is_the_main_edition'));
+    }
+
+    public function testDeleteMinorBookAndRestoreInGroup()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->create();
+
+        $minorBook = Book::factory()->with_create_user()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $response = $this->actingAs($user)
+            ->get(route('books.delete', $minorBook))
+            ->assertRedirect();
+        //var_dump(session('errors'));
+        $response->assertSessionHas(['success' => __('book.deleted')]);
+
+        $mainBook->refresh();
+        $minorBook->refresh();
+
+        $this->assertTrue($minorBook->trashed());
+        $this->assertEquals(null, $mainBook->editions_count);
+        $this->assertEquals(null, $minorBook->editions_count);
+
+        $response = $this->actingAs($user)
+            ->get(route('books.restore', $minorBook))
+            ->assertRedirect();
+
+        $mainBook->refresh();
+        $minorBook->refresh();
+
+        $this->assertFalse($minorBook->trashed());
+        $this->assertEquals(1, $mainBook->editions_count);
+        $this->assertEquals(1, $minorBook->editions_count);
+    }
+
+    public function testBookShowIsOkIfMainBookIsDeleted()
+    {
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $minorBook->delete();
+        $mainBook->delete();
+
+        $this->get(route('books.show', $minorBook))
+            ->assertNotFound();
+    }
+
+    public function testUngroupMinorBookOnRestoreIfMainBookIsDeleted()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $minorBook->delete();
+        $mainBook->delete();
+
+        $this->actingAs($user)
+            ->get(route('books.restore', $minorBook))
+            ->assertRedirect();
+
+        $minorBook->refresh();
+
+        $this->assertFalse($minorBook->isInGroup());
+        $this->assertEquals(null, $minorBook->main_book_id);
+        $this->assertEquals(null, $minorBook->editions_count);
+    }
+
+    public function testDeleteOkIfMainBookIsDeleted()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->create();
+
+        $minorBook = Book::factory()->with_create_user()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $mainBook->delete();
+
+        $this->actingAs($user)
+            ->get(route('books.delete', $minorBook))
+            ->assertRedirect();
+
+        $mainBook->refresh();
+        $minorBook->refresh();
+
+        $this->assertTrue($minorBook->trashed());
+    }
+
+    public function testOriginAdded()
+    {
+        $status = BookStatus::factory()->create(['status' => 'readed']);
+
+        $this->assertEquals($status->book_id, $status->origin_book_id);
+
+        $vote = BookVote::factory()->create();
+
+        $this->assertEquals($vote->book_id, $vote->origin_book_id);
+
+        $keyword = Keyword::factory()->create();
+
+        $this->assertEquals($keyword->book_id, $keyword->origin_book_id);
+
+        $comment = Comment::factory()->create();
+
+        $this->assertEquals($comment->commentable_id, $comment->origin_commentable_id);
+    }
+
+    public function testBookListRedirectToMainEdition()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $this->actingAs($user)
+            ->get(route('books.editions.index', ['book' => $minorBook->id]))
+            ->assertRedirect(route('books.editions.index', ['book' => $mainBook->id]));
+    }
+
+    public function testSeeMinorBookInEditionsIndex()
+    {
+        $user = User::factory()->admin()->create();
+
+        $mainBook = Book::factory()->create();
+        $minorBook = Book::factory()->create();
+
+        BookGroupJob::dispatch($mainBook, $minorBook);
+
+        $this->actingAs($user)
+            ->get(route('books.editions.index', ['book' => $mainBook->id]))
+            ->assertOk()
+            ->assertSeeText($minorBook->title);
+    }
 }

@@ -1,15 +1,30 @@
 <?php
 
-use App\User;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\UserSequence::class, function (Faker $faker) {
-	return [
-		'user_id' => function () {
-			return factory(User::class)->create()->id;
-		},
-		'sequence_id' => function () {
-			return factory(\App\Sequence::class)->create()->id;
-		},
-	];
-});
+use App\Sequence;
+use App\User;
+use App\UserSequence;
+
+class UserSequenceFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserSequence::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'sequence_id' => Sequence::factory()
+        ];
+    }
+}

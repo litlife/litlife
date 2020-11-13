@@ -88,17 +88,17 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Post onlyChecked()
  * @method static Builder|Post onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Post orDescendants($ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Post orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Post orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Post private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Post private()
  * @method static \Illuminate\Database\Eloquent\Builder|Post query()
  * @method static \Illuminate\Database\Eloquent\Builder|Post roots()
  * @method static \Illuminate\Database\Eloquent\Builder|Post sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Post unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Post unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCharactersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereChildrenCount($value)
@@ -135,260 +135,260 @@ use Illuminate\Support\Facades\Cache;
  */
 class Post extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
-	use NestedItems;
-	use LatestOldestWithIDTrait;
-	use UserAgentTrait;
-	use Likeable;
-	use CharactersCountTrait;
-	use ExternalLinks;
-	use BBCodeable;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
+    use NestedItems;
+    use LatestOldestWithIDTrait;
+    use UserAgentTrait;
+    use Likeable;
+    use CharactersCountTrait;
+    use ExternalLinks;
+    use BBCodeable;
 
-	public $rules = [
-		'bb_text' => 'required'
-	];
+    const BB_CODE_COLUMN = 'bb_text';
+    const HTML_COLUMN = 'html_text';
+    public $rules = [
+        'bb_text' => 'required'
+    ];
+    protected $attributes = [
+        'status' => StatusEnum::Accepted
+    ];
+    protected $fillable = [
+        'bb_text'
+    ];
+    protected $except = [
+        'ip'
+    ];
+    protected $dates = [
+        'user_edited_at'
+    ];
+    protected $appends = ['text'];
+    protected $perPage = 10;
 
-	protected $attributes = [
-		'status' => StatusEnum::Accepted
-	];
+    public static function boot()
+    {
+        parent::boot();
 
-	protected $fillable = [
-		'bb_text'
-	];
+        //static::addGlobalScope(new CheckedScope);
+        //static::addGlobalScope(new NotConnectedScope);
+    }
 
-	protected $except = [
-		'ip'
-	];
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::PostsOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	protected $dates = [
-		'user_edited_at'
-	];
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::PostsOnModerationCount])->pull('count');
+    }
 
-	protected $appends = ['text'];
+    static function cachedCountRefresh()
+    {
+        Cache::forever('posts_count_refresh', true);
+    }
 
-	protected $perPage = 10;
+    public function scopeAny($query)
+    {
+        return $query->withoutGlobalScope(CheckedScope::class)->withTrashed();
+    }
 
-	const BB_CODE_COLUMN = 'bb_text';
-	const HTML_COLUMN = 'html_text';
+    public function scopeFulltextSearch($query, $searchText)
+    {
+        $Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
 
-	public static function boot()
-	{
-		parent::boot();
+        $s = '';
 
-		//static::addGlobalScope(new CheckedScope);
-		//static::addGlobalScope(new NotConnectedScope);
-	}
+        if ($Ar) {
+            $s = "to_tsvector('english', \"html_text\" )  ";
+            $s .= " @@ to_tsquery('english', quote_literal(quote_literal(?)))";
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::PostsOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+            return $query->whereRaw($s, [implode('+', $Ar)]);
+        }
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::PostsOnModerationCount])->pull('count');
-	}
+    public function create_user()
+    {
+        return $this->belongsTo('App\User', $this->getCreateUserIdColumn(), 'id')
+            ->any()
+            ->with("avatar");
+    }
 
-	static function cachedCountRefresh()
-	{
-		Cache::forever('posts_count_refresh', true);
-	}
+    public function topic()
+    {
+        return $this->belongsTo('App\Topic')->any();
+    }
 
-	public function scopeAny($query)
-	{
-		return $query->withoutGlobalScope(CheckedScope::class)->withTrashed();
-	}
+    public function forum()
+    {
+        return $this->belongsTo('App\Forum')->any();
+    }
 
-	public function scopeFulltextSearch($query, $searchText)
-	{
-		$Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
+    public function edit_user()
+    {
+        return $this->hasOne('App\User', 'id', 'edit_user_id');
+    }
 
-		$s = '';
+    public function complaints()
+    {
+        return $this->morphMany('App\Complain', 'complainable');
+    }
 
-		if ($Ar) {
-			$s = "to_tsvector('english', \"html_text\" )  ";
-			$s .= " @@ to_tsquery('english', quote_literal(quote_literal(?)))";
+    public function parent()
+    {
+        return $this->hasOne('App\Post', 'id', 'edit_user_id');
+    }
 
-			return $query->whereRaw($s, [implode('+', $Ar)]);
-		}
-	}
+    public function setBBTextAttribute($value)
+    {
+        $this->setBBCode($value);
+        $this->attributes['external_images_downloaded'] = false;
+        $this->refreshCharactersCount();
+    }
 
-	public function create_user()
-	{
-		return $this->belongsTo('App\User', $this->getCreateUserIdColumn(), 'id')
-			->any()
-			->with("avatar");
-	}
+    public function setHtmlTextAttribute($value)
+    {
+        $this->setHtml($value);
+        $this->attributes['external_images_downloaded'] = false;
+        $this->refreshCharactersCount();
+    }
 
-	public function topic()
-	{
-		return $this->belongsTo('App\Topic')->any();
-	}
+    public function getTextAttribute()
+    {
+        $value = $this->attributes['html_text'];
 
-	public function forum()
-	{
-		return $this->belongsTo('App\Forum')->any();
-	}
+        $value = preg_replace_callback("/((?:<\\/?\\w+)(?:\\s+\\w+(?:\\s*=\\s*(?:\\\".*?\\\"|'.*?'|[^'\\\">\\s]+)?)+\\s*|\\s*)\\/?>)([^<]*)?/",
+            function ($matches) {
+                return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
+            }, $value);
 
-	public function edit_user()
-	{
-		return $this->hasOne('App\User', 'id', 'edit_user_id');
-	}
+        $value = preg_replace_callback("/^([^<>]*)(<?)/i", function ($matches) {
+            return str_replace("  ", "&#160; ", $matches[1]) . $matches[2];
+        }, $value);
+        $value = preg_replace_callback("/(>)([^<>]*)$/i", function ($matches) {
+            return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
+        }, $value);
 
-	public function complaints()
-	{
-		return $this->morphMany('App\Complain', 'complainable');
-	}
+        return $value;
+    }
 
-	public function parent()
-	{
-		return $this->hasOne('App\Post', 'id', 'edit_user_id');
-	}
+    public function fix()
+    {
+        $this->topic->top_post_id = $this->id;
+        $this->topic->save();
+    }
 
-	public function setBBTextAttribute($value)
-	{
-		$this->setBBCode($value);
-		$this->attributes['external_images_downloaded'] = false;
-		$this->refreshCharactersCount();
-	}
+    public function unfix()
+    {
+        $this->topic->top_post_id = null;
+        $this->topic->save();
+    }
 
-	public function setHtmlTextAttribute($value)
-	{
-		$this->setHtml($value);
-		$this->attributes['external_images_downloaded'] = false;
-		$this->refreshCharactersCount();
-	}
+    public function isFixed()
+    {
+        if (!empty($this->topic->top_post_id) and $this->id == $this->topic->top_post_id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public function getTextAttribute()
-	{
-		$value = $this->attributes['html_text'];
+    public function getTopicPage($posts_on_page = null)
+    {
+        $post = $this->root;
 
-		$value = preg_replace_callback("/((?:<\\/?\\w+)(?:\\s+\\w+(?:\\s*=\\s*(?:\\\".*?\\\"|'.*?'|[^'\\\">\\s]+)?)+\\s*|\\s*)\\/?>)([^<]*)?/", function ($matches) {
-			return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
-		}, $value);
+        if (empty($post)) {
+            $post = $this;
+        }
 
-		$value = preg_replace_callback("/^([^<>]*)(<?)/i", function ($matches) {
-			return str_replace("  ", "&#160; ", $matches[1]) . $matches[2];
-		}, $value);
-		$value = preg_replace_callback("/(>)([^<>]*)$/i", function ($matches) {
-			return $matches[1] . str_replace("  ", "&#160; ", $matches[2]);
-		}, $value);
+        if (empty($post->topic)) {
+            return false;
+        } else {
+            $topic = $post->topic;
+        }
 
-		return $value;
-	}
+        $top_post = empty($topic->top_post_id) ? null : $topic->top_post;
 
-	public function fix()
-	{
-		$this->topic->top_post_id = $this->id;
-		$this->topic->save();
-	}
+        $count = $topic->posts()
+            ->roots()
+            ->when($top_post, function ($query) use ($top_post) {
+                return $query->where('id', '!=', $top_post->id);
+            })
+            ->when($topic->post_desc, function ($query) use ($post) {
+                return $query->where('id', '>=', $post->id);
+            }, function ($query) use ($post) {
+                return $query->where('id', '<=', $post->id);
+            })
+            ->count();
 
-	public function unfix()
-	{
-		$this->topic->top_post_id = null;
-		$this->topic->save();
-	}
+        $posts_on_page = $posts_on_page ?? $this->getPerPage();
 
-	public function isFixed()
-	{
-		if (!empty($this->topic->top_post_id) and $this->id == $this->topic->top_post_id)
-			return true;
-		else
-			return false;
-	}
+        return intval(ceil($count / $posts_on_page));
+    }
 
-	public function getTopicPage($posts_on_page = null)
-	{
-		$post = $this->root;
+    public function scopeWithUserAccessToForums($query)
+    {
+        return $query->join('topics', 'topics.id', '=', 'posts.topic_id')
+            ->join('forums', 'forums.id', '=', 'posts.forum_id')
+            ->leftJoin('users_access_to_forums', function ($join) {
+                $join->on('users_access_to_forums.forum_id', '=', 'posts.forum_id')
+                    ->where('users_access_to_forums.user_id', auth()->id());
+            })->where(function ($query) {
+                $query->where('forums.private', false)
+                    ->orWhere(function ($query) {
+                        $query->where('forums.private', true)
+                            ->whereNotNull('users_access_to_forums.user_id');
+                    });
+            });
+    }
 
-		if (empty($post))
-			$post = $this;
+    public function getShareTitle()
+    {
+        return __('post.post_on_forum_from_user_in_topic', [
+            'user_name' => optional($this->create_user)->userName,
+            'topic_title' => optional($this->topic)->name
+        ]);
+    }
 
-		if (empty($post->topic))
-			return false;
-		else
-			$topic = $post->topic;
+    public function getShareDescription()
+    {
+        $s = mb_substr($this->text, 0, 500);
+        $s = html_entity_decode(strip_tags($s));
+        $s = preg_replace('/([[:space:]]+)/iu', ' ', $s);
+        return trim(mb_substr($s, 0, 400));
+    }
 
-		$top_post = empty($topic->top_post_id) ? null : $topic->top_post;
+    public function isEdited()
+    {
+        return (bool)$this->user_edited_at;
+    }
 
-		$count = $topic->posts()
-			->roots()
-			->when($top_post, function ($query) use ($top_post) {
-				return $query->where('id', '!=', $top_post->id);
-			})
-			->when($topic->post_desc, function ($query) use ($post) {
-				return $query->where('id', '>=', $post->id);
-			}, function ($query) use ($post) {
-				return $query->where('id', '<=', $post->id);
-			})
-			->count();
+    public function isMustBeSentForReview()
+    {
+        if (!empty($this->create_user->on_moderate)) {
+            return true;
+        }
 
-		$posts_on_page = $posts_on_page ?? $this->getPerPage();
+        if ($this->{$this->getCharactersCountColumn()} > 3) {
+            if ($this->getUpperCaseLettersPercent($this->getContent()) > config('litlife.max_number_of_capital_letters')) {
+                return true;
+            }
+        }
 
-		return intval(ceil($count / $posts_on_page));
-	}
+        if (($this->create_user->comment_count + $this->create_user->forum_message_count) < 10) {
+            if ($this->getExternalLinksCount($this->getContent()) > 0) {
+                return true;
+            }
+        }
 
-	public function scopeWithUserAccessToForums($query)
-	{
-		return $query->join('topics', 'topics.id', '=', 'posts.topic_id')
-			->join('forums', 'forums.id', '=', 'posts.forum_id')
-			->leftJoin('users_access_to_forums', function ($join) {
-				$join->on('users_access_to_forums.forum_id', '=', 'posts.forum_id')
-					->where('users_access_to_forums.user_id', auth()->id());
-			})->where(function ($query) {
-				$query->where('forums.private', false)
-					->orWhere(function ($query) {
-						$query->where('forums.private', true)
-							->whereNotNull('users_access_to_forums.user_id');
-					});
-			});
-	}
+        return false;
+    }
 
-	public function getShareTitle()
-	{
-		return __('post.post_on_forum_from_user_in_topic', [
-			'user_name' => optional($this->create_user)->userName,
-			'topic_title' => optional($this->topic)->name
-		]);
-	}
-
-	public function getShareDescription()
-	{
-		$s = mb_substr($this->text, 0, 500);
-		$s = html_entity_decode(strip_tags($s));
-		$s = preg_replace('/([[:space:]]+)/iu', ' ', $s);
-		return trim(mb_substr($s, 0, 400));
-	}
-
-	public function isEdited()
-	{
-		return (bool)$this->user_edited_at;
-	}
-
-	public function isMustBeSentForReview()
-	{
-		if (!empty($this->create_user->on_moderate))
-			return true;
-
-		if ($this->{$this->getCharactersCountColumn()} > 3) {
-			if ($this->getUpperCaseLettersPercent($this->getContent()) > config('litlife.max_number_of_capital_letters'))
-				return true;
-		}
-
-		if (($this->create_user->comment_count + $this->create_user->forum_message_count) < 10) {
-			if ($this->getExternalLinksCount($this->getContent()) > 0)
-				return true;
-		}
-
-		return false;
-	}
-
-	public function getContent()
-	{
-		return $this->html_text;
-	}
+    public function getContent()
+    {
+        return $this->html_text;
+    }
 }

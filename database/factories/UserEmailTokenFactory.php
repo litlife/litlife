@@ -1,12 +1,29 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\UserEmailToken::class, function (Faker $faker) {
-	return [
-		'user_email_id' => function () {
-			return factory(App\UserEmail::class)->create()->id;
-		},
-		'token' => uniqid()
-	];
-});
+use App\UserEmail;
+use App\UserEmailToken;
+
+class UserEmailTokenFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserEmailToken::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_email_id' => UserEmail::factory(),
+            'token' => uniqid()
+        ];
+    }
+}

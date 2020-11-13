@@ -10,49 +10,44 @@ use Tests\TestCase;
 
 class BookDisplayAdsPolicyTest extends TestCase
 {
-	public function testDisplayAdsForPurchasedBooksPolicy()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testDisplayAdsForPurchasedBooksPolicy()
+    {
+        $user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$this->assertTrue($user->can('display_ads', $book));
+        $this->assertTrue($user->can('display_ads', $book));
 
-		$this->assertTrue((new User)->can('display_ads', $book));
+        $this->assertTrue((new User)->can('display_ads', $book));
 
-		$purchase = factory(UserPurchase::class)
-			->create([
-				'buyer_user_id' => $user->id,
-				'purchasable_type' => 'book',
-				'purchasable_id' => $book->id
-			]);
+        $purchase = UserPurchase::factory()->create([
+            'buyer_user_id' => $user->id,
+            'purchasable_type' => 'book',
+            'purchasable_id' => $book->id
+        ]);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertFalse($user->can('display_ads', $book));
-	}
+        $this->assertFalse($user->can('display_ads', $book));
+    }
 
-	public function testDontDisplayAdsIfBookOnSale()
-	{
-		$book = factory(Book::class)
-			->states('on_sale', 'with_section')
-			->create();
+    public function testDontDisplayAdsIfBookOnSale()
+    {
+        $book = Book::factory()->on_sale()->with_section()->create();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('display_ads', $book));
-		$this->assertFalse(Gate::forUser(new User)->allows('display_ads', $book));
-		$this->assertFalse(Gate::allows('display_ads', $book));
+        $this->assertFalse($user->can('display_ads', $book));
+        $this->assertFalse(Gate::forUser(new User)->allows('display_ads', $book));
+        $this->assertFalse(Gate::allows('display_ads', $book));
 
-		$chapter = $book->sections()->chapter()->first();
+        $chapter = $book->sections()->chapter()->first();
 
-		$page = $chapter->pages()->first();
+        $page = $chapter->pages()->first();
 
-		$this->assertFalse($user->can('display_ads', $page));
-		$this->assertFalse(Gate::forUser(new User)->allows('display_ads', $page));
-		$this->assertFalse(Gate::allows('display_ads', $page));
-	}
+        $this->assertFalse($user->can('display_ads', $page));
+        $this->assertFalse(Gate::forUser(new User)->allows('display_ads', $page));
+        $this->assertFalse(Gate::allows('display_ads', $page));
+    }
 
 }

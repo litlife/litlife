@@ -23,8 +23,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Award newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Award newQuery()
  * @method static Builder|Award onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Award query()
  * @method static \Illuminate\Database\Eloquent\Builder|Award searchPartWord($textOrArray)
  * @method static \Illuminate\Database\Eloquent\Builder|Award similaritySearch($searchText)
@@ -43,36 +43,36 @@ use Illuminate\Support\Carbon;
  */
 class Award extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description'];
 
-	public function scopeVoid($query)
-	{
-		return $query;
-	}
+    public function scopeVoid($query)
+    {
+        return $query;
+    }
 
-	public function scopeSimilaritySearch($query, $searchText)
-	{
-		$query->selectRaw("*, similarity(title, ?) AS rank", [$searchText]);
+    public function scopeSimilaritySearch($query, $searchText)
+    {
+        $query->selectRaw("*, similarity(title, ?) AS rank", [$searchText]);
 
-		$query->whereRaw("title % ?", [$searchText]);
+        $query->whereRaw("title % ?", [$searchText]);
 
-		$query->orderBy("rank", 'desc');
+        $query->orderBy("rank", 'desc');
 
-		return $query;
-	}
+        return $query;
+    }
 
-	public function scopeSearchPartWord($query, $textOrArray)
-	{
-		if (is_array($textOrArray)) {
-			foreach ($textOrArray as $keyword) {
-				$keywords[] = preg_quote(trim($keyword));
-			}
-			return $query->whereRaw('"title" ~* ?', ['(' . implode('|', $keywords) . ')']);
-		} else {
-			return $query->whereRaw('"title" ~* ?', ['' . preg_quote($textOrArray) . '']);
-		}
-	}
+    public function scopeSearchPartWord($query, $textOrArray)
+    {
+        if (is_array($textOrArray)) {
+            foreach ($textOrArray as $keyword) {
+                $keywords[] = preg_quote(trim($keyword));
+            }
+            return $query->whereRaw('"title" ~* ?', ['(' . implode('|', $keywords) . ')']);
+        } else {
+            return $query->whereRaw('"title" ~* ?', ['' . preg_quote($textOrArray) . '']);
+        }
+    }
 }

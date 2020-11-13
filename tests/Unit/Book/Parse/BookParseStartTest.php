@@ -8,43 +8,43 @@ use PHPUnit\Framework\TestCase;
 
 class BookParseStartTest extends TestCase
 {
-	public function testFilled()
-	{
-		$now = Carbon::now();
+    public function testFilled()
+    {
+        $now = Carbon::now();
 
-		$parse = new BookParse;
-		$parse->waited_at = $now;
-		$parse->started_at = $now;
-		$parse->succeed_at = $now;
-		$parse->failed_at = $now;
-		$parse->parse_errors = ['errors'];
+        $parse = new BookParse;
+        $parse->waited_at = $now;
+        $parse->started_at = $now;
+        $parse->succeed_at = $now;
+        $parse->failed_at = $now;
+        $parse->parse_errors = ['errors'];
 
-		$parse->start();
+        $parse->start();
 
-		$this->assertNotNull($parse->waited_at);
-		$this->assertNotNull($parse->started_at);
-		$this->assertNull($parse->succeed_at);
-		$this->assertNull($parse->failed_at);
-		$this->assertNull($parse->parse_errors);
-	}
+        $this->assertNotNull($parse->waited_at);
+        $this->assertNotNull($parse->started_at);
+        $this->assertNull($parse->succeed_at);
+        $this->assertNull($parse->failed_at);
+        $this->assertNull($parse->parse_errors);
+    }
 
-	public function testEmpty()
-	{
-		$now = Carbon::now();
+    public function testEmpty()
+    {
+        $now = Carbon::now();
 
-		$parse = new BookParse;
-		$parse->waited_at = null;
-		$parse->started_at = null;
-		$parse->succeed_at = null;
-		$parse->failed_at = null;
-		$parse->parse_errors = null;
+        $parse = new BookParse;
+        $parse->waited_at = null;
+        $parse->started_at = null;
+        $parse->succeed_at = null;
+        $parse->failed_at = null;
+        $parse->parse_errors = null;
 
-		$parse->start();
+        $parse->start();
 
-		$this->assertNull($parse->waited_at);
-		$this->assertNotNull($parse->started_at);
-		$this->assertNull($parse->succeed_at);
-		$this->assertNull($parse->failed_at);
-		$this->assertNull($parse->parse_errors);
-	}
+        $this->assertNull($parse->waited_at);
+        $this->assertNotNull($parse->started_at);
+        $this->assertNull($parse->succeed_at);
+        $this->assertNull($parse->failed_at);
+        $this->assertNull($parse->parse_errors);
+    }
 }

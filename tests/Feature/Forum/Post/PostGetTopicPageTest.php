@@ -8,108 +8,118 @@ use Tests\TestCase;
 
 class PostGetTopicPageTest extends TestCase
 {
-	public function test()
-	{
-		$topic = factory(Topic::class)->create([
-			'post_desc' => true
-		]);
+    public function test()
+    {
+        $topic = Topic::factory()->create([
+            'post_desc' => true
+        ]);
 
-		$posts_on_page = 3;
+        $posts_on_page = 3;
 
-		$posts_count = round($posts_on_page * 1.5);
+        $posts_count = round($posts_on_page * 1.5);
 
-		$posts = factory(Post::class, $posts_count)
-			->create(['topic_id' => $topic->id]);
+        $posts = Post::factory()
+            ->count($posts_count)
+            ->create(['topic_id' => $topic->id]);
 
-		$posts = $topic->postsOrderedBySetting()->get();
+        $posts = $topic->postsOrderedBySetting()->get();
 
-		foreach ($posts as $number => $post) {
-			//dump($post->id.' '.$post->getTopicPage($posts_on_page));
+        foreach ($posts as $number => $post) {
+            //dump($post->id.' '.$post->getTopicPage($posts_on_page));
 
-			$number++;
+            $number++;
 
-			if ($number <= $posts_on_page)
-				$this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            if ($number <= $posts_on_page) {
+                $this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            }
 
-			if ($number > $posts_on_page)
-				$this->assertEquals(2, $post->getTopicPage($posts_on_page));
-		}
+            if ($number > $posts_on_page) {
+                $this->assertEquals(2, $post->getTopicPage($posts_on_page));
+            }
+        }
 
-		// post desc
+        // post desc
 
-		$topic->post_desc = false;
-		$topic->push();
+        $topic->post_desc = false;
+        $topic->push();
 
-		$posts = $topic->postsOrderedBySetting()->get();
+        $posts = $topic->postsOrderedBySetting()->get();
 
-		foreach ($posts as $number => $post) {
-			//dump($post->id.' '.$post->getTopicPage($posts_on_page));
+        foreach ($posts as $number => $post) {
+            //dump($post->id.' '.$post->getTopicPage($posts_on_page));
 
-			$number++;
+            $number++;
 
-			if ($number <= $posts_on_page)
-				$this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            if ($number <= $posts_on_page) {
+                $this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            }
 
-			if ($number > $posts_on_page)
-				$this->assertEquals(2, $post->getTopicPage($posts_on_page));
-		}
-	}
+            if ($number > $posts_on_page) {
+                $this->assertEquals(2, $post->getTopicPage($posts_on_page));
+            }
+        }
+    }
 
-	public function testIfPostFixed()
-	{
-		$topic = factory(Topic::class)->create([
-			'post_desc' => true
-		]);
+    public function testIfPostFixed()
+    {
+        $topic = Topic::factory()->create([
+            'post_desc' => true
+        ]);
 
-		$posts_on_page = 3;
+        $posts_on_page = 3;
 
-		$posts_count = round($posts_on_page * 2);
+        $posts_count = round($posts_on_page * 2);
 
-		$posts = factory(Post::class, $posts_count)
-			->create(['topic_id' => $topic->id]);
+        $posts = Post::factory()
+            ->count($posts_count)
+            ->create(['topic_id' => $topic->id]);
 
-		// fix post
+        // fix post
 
-		$fixed_post = $topic->posts()->inRandomOrder()->first();
-		$fixed_post->fix();
+        $fixed_post = $topic->posts()->inRandomOrder()->first();
+        $fixed_post->fix();
 
-		$this->assertTrue($fixed_post->isFixed());
+        $this->assertTrue($fixed_post->isFixed());
 
-		// posts desc order
+        // posts desc order
 
-		$posts = $topic->postsOrderedBySetting()
-			->where('id', '!=', $fixed_post->id)
-			->get();
+        $posts = $topic->postsOrderedBySetting()
+            ->where('id', '!=', $fixed_post->id)
+            ->get();
 
-		foreach ($posts as $number => $post) {
-			//dump($post->id.' '.$post->getTopicPage($posts_on_page));
+        foreach ($posts as $number => $post) {
+            //dump($post->id.' '.$post->getTopicPage($posts_on_page));
 
-			$number++;
+            $number++;
 
-			if ($number <= $posts_on_page)
-				$this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            if ($number <= $posts_on_page) {
+                $this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            }
 
-			if ($number > $posts_on_page)
-				$this->assertEquals(2, $post->getTopicPage($posts_on_page));
-		}
+            if ($number > $posts_on_page) {
+                $this->assertEquals(2, $post->getTopicPage($posts_on_page));
+            }
+        }
 
-		// posts asc order
+        // posts asc order
 
-		$topic->post_desc = false;
-		$topic->push();
+        $topic->post_desc = false;
+        $topic->push();
 
-		$posts = $topic->postsOrderedBySetting()
-			->where('id', '!=', $fixed_post->id)
-			->get();
+        $posts = $topic->postsOrderedBySetting()
+            ->where('id', '!=', $fixed_post->id)
+            ->get();
 
-		foreach ($posts as $number => $post) {
-			$number++;
+        foreach ($posts as $number => $post) {
+            $number++;
 
-			if ($number <= $posts_on_page)
-				$this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            if ($number <= $posts_on_page) {
+                $this->assertEquals(1, $post->getTopicPage($posts_on_page));
+            }
 
-			if ($number > $posts_on_page)
-				$this->assertEquals(2, $post->getTopicPage($posts_on_page));
-		}
-	}
+            if ($number > $posts_on_page) {
+                $this->assertEquals(2, $post->getTopicPage($posts_on_page));
+            }
+        }
+    }
 }

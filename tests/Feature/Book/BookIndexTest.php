@@ -6,9 +6,9 @@ use Tests\TestCase;
 
 class BookIndexTest extends TestCase
 {
-	public function testIndexHttp()
-	{
-		$this->get(route('books'))
-			->assertOk();
-	}
+    public function testIndexHttp()
+    {
+        $this->get(route('books'))
+            ->assertOk();
+    }
 }

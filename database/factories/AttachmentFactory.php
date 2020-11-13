@@ -1,33 +1,49 @@
 <?php
 
-use App\Enums\StatusEnum;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Attachment::class, function (Faker $faker) {
+use App\Attachment;
+use App\Book;
 
-	return [
-		'book_id' => function () {
-			return factory(App\Book::class)->create(['status' => StatusEnum::Private])->id;
-		},
-		'name' => 'test.jpg',
-		'content_type' => 'image/jpeg',
-		'size' => '18964',
-		'type' => 'image',
-		'created_at' => now(),
-		'updated_at' => now(),
-	];
-});
+class AttachmentFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Attachment::class;
 
-$factory->afterMaking(App\Attachment::class, function ($attachment, $faker) {
-	$attachment->openImage(__DIR__ . '/../../tests/Feature/images/test.jpeg');
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'book_id' => Book::factory()->private(),
+            'name' => 'test.jpg',
+            'content_type' => 'image/jpeg',
+            'size' => '18964',
+            'type' => 'image',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
+    }
 
-$factory->afterCreating(App\Attachment::class, function ($attachment, $faker) {
+    public function configure()
+    {
+        return $this->afterMaking(function (Attachment $attachment) {
+            $attachment->openImage(__DIR__.'/../../tests/Feature/images/test.jpeg');
+        });
+    }
 
-
-});
-
-$factory->afterCreatingState(App\Attachment::class, 'cover', function ($attachment, $faker) {
-	$attachment->book->cover_id = $attachment->id;
-	$attachment->push();
-});
+    public function cover()
+    {
+        return $this->afterCreating(function (Attachment $attachment) {
+            $attachment->book->cover_id = $attachment->id;
+            $attachment->push();
+        });
+    }
+}

@@ -31,24 +31,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class FailedJobs extends Authenticatable
 {
 
-	protected $table = 'failed_jobs';
+    protected $table = 'failed_jobs';
 
-	function __construct()
-	{
-		$this->preg = preg_quote('\"App' . chr(92) . '\Book\";s:2:\"id\";i:') . '([0-9]+);';
-	}
+    function __construct()
+    {
+        $this->preg = preg_quote('\"App' . chr(92) . '\Book\";s:2:\"id\";i:') . '([0-9]+);';
+    }
 
-	// приходится использовать вот такой костыльный костыль чтобы найти запись которая принадлежит определенной книге
+    // приходится использовать вот такой костыльный костыль чтобы найти запись которая принадлежит определенной книге
 
-	public function scopeInBook($query, $bookId)
-	{
-		//return $query->whereRaw('"payload" ~* ' . "'" . preg_quote($s) . "'");
-		return $query->whereRaw("substring(\"payload\" from '" . $this->preg . "') = '" . $bookId . "'");
-	}
+    public function scopeInBook($query, $bookId)
+    {
+        //return $query->whereRaw('"payload" ~* ' . "'" . preg_quote($s) . "'");
+        return $query->whereRaw("substring(\"payload\" from '" . $this->preg . "') = '" . $bookId . "'");
+    }
 
-	public function book()
-	{
-		return $this->hasOne('App\Book')->whereRaw("substring(\"payload\" from '" . $this->preg . "') = book.b_id");
-	}
+    public function book()
+    {
+        return $this->hasOne('App\Book')->whereRaw("substring(\"payload\" from '" . $this->preg . "') = book.b_id");
+    }
 
 }

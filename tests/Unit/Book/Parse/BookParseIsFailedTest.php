@@ -8,58 +8,58 @@ use PHPUnit\Framework\TestCase;
 
 class BookParseIsFailedTest extends TestCase
 {
-	public function testFalseIfAllNull()
-	{
-		$parse = new BookParse;
-		$parse->waited_at = null;
-		$parse->started_at = null;
-		$parse->failed_at = null;
-		$parse->succeed_at = null;
+    public function testFalseIfAllNull()
+    {
+        $parse = new BookParse;
+        $parse->waited_at = null;
+        $parse->started_at = null;
+        $parse->failed_at = null;
+        $parse->succeed_at = null;
 
-		$this->assertFalse($parse->isFailed());
-	}
+        $this->assertFalse($parse->isFailed());
+    }
 
-	public function testFalseIfWaitedNotNull()
-	{
-		$parse = new BookParse;
-		$parse->waited_at = Carbon::now();
-		$parse->started_at = null;
-		$parse->failed_at = null;
-		$parse->succeed_at = null;
+    public function testFalseIfWaitedNotNull()
+    {
+        $parse = new BookParse;
+        $parse->waited_at = Carbon::now();
+        $parse->started_at = null;
+        $parse->failed_at = null;
+        $parse->succeed_at = null;
 
-		$this->assertFalse($parse->isFailed());
-	}
+        $this->assertFalse($parse->isFailed());
+    }
 
-	public function testFalseIfStartedNotNull()
-	{
-		$parse = new BookParse;
-		$parse->waited_at = Carbon::now();
-		$parse->started_at = Carbon::now();
-		$parse->failed_at = null;
-		$parse->succeed_at = null;
+    public function testFalseIfStartedNotNull()
+    {
+        $parse = new BookParse;
+        $parse->waited_at = Carbon::now();
+        $parse->started_at = Carbon::now();
+        $parse->failed_at = null;
+        $parse->succeed_at = null;
 
-		$this->assertFalse($parse->isFailed());
-	}
+        $this->assertFalse($parse->isFailed());
+    }
 
-	public function testTrueIfFailedNotNull()
-	{
-		$parse = new BookParse;
-		$parse->waited_at = Carbon::now();
-		$parse->started_at = null;
-		$parse->failed_at = Carbon::now();
-		$parse->succeed_at = null;
+    public function testTrueIfFailedNotNull()
+    {
+        $parse = new BookParse;
+        $parse->waited_at = Carbon::now();
+        $parse->started_at = null;
+        $parse->failed_at = Carbon::now();
+        $parse->succeed_at = null;
 
-		$this->assertTrue($parse->isFailed());
-	}
+        $this->assertTrue($parse->isFailed());
+    }
 
-	public function testFalseIfSucceedNotNull()
-	{
-		$parse = new BookParse;
-		$parse->waited_at = Carbon::now();
-		$parse->started_at = null;
-		$parse->failed_at = null;
-		$parse->succeed_at = Carbon::now();
+    public function testFalseIfSucceedNotNull()
+    {
+        $parse = new BookParse;
+        $parse->waited_at = Carbon::now();
+        $parse->started_at = null;
+        $parse->failed_at = null;
+        $parse->succeed_at = Carbon::now();
 
-		$this->assertFalse($parse->isFailed());
-	}
+        $this->assertFalse($parse->isFailed());
+    }
 }

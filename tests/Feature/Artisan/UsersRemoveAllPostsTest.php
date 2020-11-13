@@ -10,42 +10,42 @@ use Tests\TestCase;
 
 class UsersRemoveAllPostsTest extends TestCase
 {
-	public function testWallPosts()
-	{
-		$blog = factory(Blog::class)->create();
+    public function testWallPosts()
+    {
+        $blog = Blog::factory()->create();
 
-		$user = $blog->create_user;
+        $user = $blog->create_user;
 
-		Artisan::call('user:remove_all_posts', ['user_id' => $user->id]);
+        Artisan::call('user:remove_all_posts', ['user_id' => $user->id]);
 
-		$blog->refresh();
+        $blog->refresh();
 
-		$this->assertTrue($blog->trashed());
-	}
+        $this->assertTrue($blog->trashed());
+    }
 
-	public function testComments()
-	{
-		$comment = factory(Comment::class)->create();
+    public function testComments()
+    {
+        $comment = Comment::factory()->create();
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		Artisan::call('user:remove_all_posts', ['user_id' => $user->id]);
+        Artisan::call('user:remove_all_posts', ['user_id' => $user->id]);
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertTrue($comment->trashed());
-	}
+        $this->assertTrue($comment->trashed());
+    }
 
-	public function testPosts()
-	{
-		$post = factory(Post::class)->create();
+    public function testPosts()
+    {
+        $post = Post::factory()->create();
 
-		$user = $post->create_user;
+        $user = $post->create_user;
 
-		Artisan::call('user:remove_all_posts', ['user_id' => $user->id]);
+        Artisan::call('user:remove_all_posts', ['user_id' => $user->id]);
 
-		$post->refresh();
+        $post->refresh();
 
-		$this->assertTrue($post->trashed());
-	}
+        $this->assertTrue($post->trashed());
+    }
 }

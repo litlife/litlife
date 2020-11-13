@@ -8,8 +8,10 @@ use App\Traits\Commentable;
 use App\Traits\FavoritableTrait;
 use App\Traits\Likeable;
 use App\Traits\UserCreate;
+use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 /**
@@ -30,9 +32,9 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @property int|null $added_to_favorites_users_count Количество раз добавлена в избранное
  * @property int|null $views_count Количество просмотров
  * @property int|null $like_count Количество лайков
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property string|null $latest_updates_at Дата последних обновлений в подборке
  * @property int|null $status Кто видит подборку
  * @property string|null $status_changed_at Дата изменения поля кто видит подборку
@@ -75,19 +77,19 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Collection onlyChecked()
  * @method static \Illuminate\Database\Query\Builder|Collection onlyTrashed()
  * @method static Builder|Collection orderByBooksCount()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static Builder|Collection orderByLikesCount()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|Collection orderStatusChangedAsc()
  * @method static Builder|Collection orderStatusChangedDesc()
- * @method static Builder|Collection private ()
+ * @method static Builder|Collection private()
  * @method static Builder|Collection query()
  * @method static Builder|Collection seeEveryone()
  * @method static Builder|Collection sentOnReview()
  * @method static Builder|Collection unaccepted()
  * @method static Builder|Collection unchecked()
  * @method static Builder|Collection userSees($user)
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|Collection whereAddedToFavoritesUsersCount($value)
  * @method static Builder|Collection whereBooksCount($value)
  * @method static Builder|Collection whereCommentsCount($value)
@@ -119,294 +121,293 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
  * @method static Builder|Collection withUnchecked()
  * @method static Builder|Collection withoutCheckedScope()
  * @method static \Illuminate\Database\Query\Builder|Collection withoutTrashed()
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 class Collection extends Model
 {
-	use UserCreate;
-	use SoftDeletes;
-	use Likeable;
-	use Commentable;
-	use CheckedItems;
-	use HasRelationships;
-	use FavoritableTrait;
+    use UserCreate;
+    use SoftDeletes;
+    use Likeable;
+    use Commentable;
+    use CheckedItems;
+    use HasRelationships;
+    use FavoritableTrait;
 
-	public $fillable = [
-		'title',
-		'description',
-		'status',
-		'who_can_add',
-		'who_can_comment',
-		'url',
-		'url_title'
-	];
+    const ADDED_TO_FAVORITES_USERS_COUNT_COLUMN_NAME = 'added_to_favorites_users_count';
+    const FAVORITABLE_PIVOT_TABLE = 'user_favorite_collections';
+    public $fillable = [
+        'title',
+        'description',
+        'status',
+        'who_can_add',
+        'who_can_comment',
+        'url',
+        'url_title'
+    ];
+    protected $visible = [
+        'id',
+        'title',
+        'description',
+        'status',
+        'who_can_add',
+        'who_can_comment',
+        'url',
+        'url_title',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'like_count'
+    ];
 
-	protected $visible = [
-		'id',
-		'title',
-		'description',
-		'status',
-		'who_can_add',
-		'who_can_comment',
-		'url',
-		'url_title',
-		'created_at',
-		'updated_at',
-		'deleted_at',
-		'like_count'
-	];
+    /*
+        protected $casts = [
+            'books_count' => 'integer',
+            'comments_count' => 'integer',
+            'added_to_favorites_users_count' => 'integer',
+            'views_count' => 'integer'
+        ];
+        */
 
-	const ADDED_TO_FAVORITES_USERS_COUNT_COLUMN_NAME = 'added_to_favorites_users_count';
-	const FAVORITABLE_PIVOT_TABLE = 'user_favorite_collections';
+    public function scopeAcceptedOrBelongsToUser($query, $user)
+    {
+        if (isset($user)) {
+            return $query->accepted()
+                ->orWhere($this->getTable() . '.create_user_id', $user->id)
+                ->orWhereHas('collectionUser', function (Builder $query) use ($user) {
+                    $query->select('id')
+                        ->where('user_id', $user->id);
+                });
+        } else {
+            return $query->accepted();
+        }
+    }
 
-	/*
-		protected $casts = [
-			'books_count' => 'integer',
-			'comments_count' => 'integer',
-			'added_to_favorites_users_count' => 'integer',
-			'views_count' => 'integer'
-		];
-		*/
+    public function scopeWhereUserCanAddBooks($query, User $user)
+    {
+        return $query->where('who_can_add', UserAccountPermissionValues::everyone)
+            ->orWhere($this->getTable() . '.create_user_id', $user->id)
+            ->orWhereHas('collectionUser', function (Builder $query) use ($user) {
+                $query->select('id')
+                    ->where('user_id', $user->id)
+                    ->where('can_add_books', true);
+            });
+    }
 
-	public function scopeAcceptedOrBelongsToUser($query, $user)
-	{
-		if (isset($user)) {
-			return $query->accepted()
-				->orWhere($this->getTable() . '.create_user_id', $user->id)
-				->orWhereHas('collectionUser', function (Builder $query) use ($user) {
-					$query->select('id')
-						->where('user_id', $user->id);
-				});
-		} else {
-			return $query->accepted();
-		}
-	}
+    public function scopeFulltextSearch($query, $searchText)
+    {
+        $searchText = replaceSimilarSymbols($searchText);
 
-	public function scopeWhereUserCanAddBooks($query, User $user)
-	{
-		return $query->where('who_can_add', UserAccountPermissionValues::everyone)
-			->orWhere($this->getTable() . '.create_user_id', $user->id)
-			->orWhereHas('collectionUser', function (Builder $query) use ($user) {
-				$query->select('id')
-					->where('user_id', $user->id)
-					->where('can_add_books', true);
-			});
-	}
+        $Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
 
-	public function scopeFulltextSearch($query, $searchText)
-	{
-		$searchText = replaceSimilarSymbols($searchText);
+        $s = '';
 
-		$Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
+        if ($Ar) {
+            $s = "to_tsvector('english', \"title\") ";
+            $s .= " @@ to_tsquery(quote_literal(quote_literal(?)) || ':*')";
 
-		$s = '';
+            return $query->whereRaw($s, implode('+', $Ar));
+        }
 
-		if ($Ar) {
-			$s = "to_tsvector('english', \"title\") ";
-			$s .= " @@ to_tsquery(quote_literal(quote_literal(?)) || ':*')";
+        return $query;
+    }
 
-			return $query->whereRaw($s, implode('+', $Ar));
-		}
+    /*
+        public function books()
+        {
+            return $this->belongsToMany('App\Book', 'collected_books')
+                ->withPivot('number', 'comment', 'create_user_id')
+                ->withTimestamps();
+        }
+    */
 
-		return $query;
-	}
+    public function collectionUser()
+    {
+        return $this->hasMany('App\CollectionUser');
+    }
 
-	/*
-		public function books()
-		{
-			return $this->belongsToMany('App\Book', 'collected_books')
-				->withPivot('number', 'comment', 'create_user_id')
-				->withTimestamps();
-		}
-	*/
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	public function collectionUser()
-	{
-		return $this->hasMany('App\CollectionUser');
-	}
+    public function setWhoCanSeeAttribute($value)
+    {
+        $this->attributes['who_can_see'] = UserAccountPermissionValues::getValue($value);
+    }
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function setWhoCanAddAttribute($value)
+    {
+        $this->attributes['who_can_add'] = UserAccountPermissionValues::getValue($value);
+    }
 
-	public function setWhoCanSeeAttribute($value)
-	{
-		$this->attributes['who_can_see'] = UserAccountPermissionValues::getValue($value);
-	}
+    public function setWhoCanCommentAttribute($value)
+    {
+        $this->attributes['who_can_comment'] = UserAccountPermissionValues::getValue($value);
+    }
 
-	public function setWhoCanAddAttribute($value)
-	{
-		$this->attributes['who_can_add'] = UserAccountPermissionValues::getValue($value);
-	}
+    public function refreshBooksCount()
+    {
+        $this->books_count = $this->books()->count();
+    }
 
-	public function setWhoCanCommentAttribute($value)
-	{
-		$this->attributes['who_can_comment'] = UserAccountPermissionValues::getValue($value);
-	}
+    public function books()
+    {
+        return $this->hasManyDeep(Book::class, [CollectedBook::class],
+            ['collection_id', 'id'], ['id', 'book_id'])
+            ->withIntermediate('App\CollectedBook', ['create_user_id', 'number', 'comment']);
+    }
 
-	public function refreshBooksCount()
-	{
-		$this->books_count = $this->books()->count();
-	}
+    public function collected()
+    {
+        return $this->hasMany('App\CollectedBook');
+    }
 
-	public function collected()
-	{
-		return $this->hasMany('App\CollectedBook');
-	}
+    /*
+        public function getWhoCanAddAttribute($value)
+        {
+            return \App\Enums\UserAccountPermissionValues::getKey($value);
+        }
+        */
 
-	public function books()
-	{
-		return $this->hasManyDeep(Book::class, [CollectedBook::class],
-			['collection_id', 'id'], ['id', 'book_id'])
-			->withIntermediate('App\CollectedBook', ['create_user_id', 'number', 'comment']);
-	}
+    public function getBooksCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	/*
-		public function getWhoCanAddAttribute($value)
-		{
-			return \App\Enums\UserAccountPermissionValues::getKey($value);
-		}
-		*/
+    public function getCommentsCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function getBooksCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function getAddedToFavoritesUsersCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function getCommentsCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function getViewsCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function getAddedToFavoritesUsersCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function getUsersCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function getViewsCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function viewsIncrement()
+    {
+        $this->views_count++;
+        $this->save();
+    }
 
-	public function getUsersCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function usersAddedToFavoritesPivot()
+    {
+        return $this->hasMany('App\UserFavoriteCollection');
+    }
 
-	public function viewsIncrement()
-	{
-		$this->views_count++;
-		$this->save();
-	}
+    public function refreshUsersAddedToFavoritesCount()
+    {
+        $this->added_to_favorites_users_count = $this->usersAddedToFavorites()->count();
+    }
 
-	public function usersAddedToFavoritesPivot()
-	{
-		return $this->hasMany('App\UserFavoriteCollection');
-	}
+    public function usersAddedToFavorites()
+    {
+        return $this->belongsToMany('App\User',
+            'user_favorite_collections',
+            'collection_id',
+            'user_id');
+    }
 
-	public function refreshUsersAddedToFavoritesCount()
-	{
-		$this->added_to_favorites_users_count = $this->usersAddedToFavorites()->count();
-	}
+    public function authUserAddedToFavorites()
+    {
+        return $this->usersAddedToFavorites()
+            ->where('user_favorite_collections.user_id', auth()->id());
+    }
 
-	public function usersAddedToFavorites()
-	{
-		return $this->belongsToMany('App\User',
-			'user_favorite_collections',
-			'collection_id',
-			'user_id');
-	}
+    public function scopeSeeEveryone($query)
+    {
+        return $query->accepted();
+    }
 
-	public function authUserAddedToFavorites()
-	{
-		return $this->usersAddedToFavorites()
-			->where('user_favorite_collections.user_id', auth()->id());
-	}
+    public function scopeUserSees($query, $user)
+    {
+        return $query->acceptedOrBelongsToUser($user);
+    }
 
-	public function scopeSeeEveryone($query)
-	{
-		return $query->accepted();
-	}
+    public function getShareTitle()
+    {
+        $title = __('collection.collection') . ' "' . $this->title . '"';
 
-	public function scopeUserSees($query, $user)
-	{
-		return $query->acceptedOrBelongsToUser($user);
-	}
+        if ($this->books_count) {
+            $title .= ' - ' . $this->books_count . ' ' . mb_strtolower(trans_choice('collection.books', $this->books_count));
+        }
 
-	public function getShareTitle()
-	{
-		$title = __('collection.collection') . ' "' . $this->title . '"';
+        return $title;
+    }
 
-		if ($this->books_count)
-			$title .= ' - ' . $this->books_count . ' ' . mb_strtolower(trans_choice('collection.books', $this->books_count));
+    public function getShareDescription()
+    {
+        return mb_substr(strip_tags($this->description), 0, 200);
+    }
 
-		return $title;
-	}
+    public function getShareImage()
+    {
+        return null;
+    }
 
-	public function getShareDescription()
-	{
-		return mb_substr(strip_tags($this->description), 0, 200);
-	}
+    public function getShareUrl()
+    {
+        return route('collections.show', $this);
+    }
 
-	public function getShareImage()
-	{
-		return null;
-	}
+    public function getShareTooltip()
+    {
+        return __('collection.share_a_collection');
+    }
 
-	public function getShareUrl()
-	{
-		return route('collections.show', $this);
-	}
+    public function eventNotificationSubscriptions()
+    {
+        return $this->morphMany('App\UserSubscriptionsEventNotification', 'eventable');
+    }
 
-	public function getShareTooltip()
-	{
-		return __('collection.share_a_collection');
-	}
+    public function latest_books()
+    {
+        return $this->belongsToMany('App\Book', 'collected_books')
+            ->withPivot('created_at')
+            ->orderBy('pivot_created_at', 'desc');
+    }
 
-	public function eventNotificationSubscriptions()
-	{
-		return $this->morphMany('App\UserSubscriptionsEventNotification', 'eventable');
-	}
+    public function complaints()
+    {
+        return $this->morphMany('App\Complain', 'complainable');
+    }
 
-	public function latest_books()
-	{
-		return $this->belongsToMany('App\Book', 'collected_books')
-			->withPivot('created_at')
-			->orderBy('pivot_created_at', 'desc');
-	}
+    public function refreshUsersCount()
+    {
+        $this->users_count = $this->users()->count() + 1;
+    }
 
-	public function complaints()
-	{
-		return $this->morphMany('App\Complain', 'complainable');
-	}
+    public function users()
+    {
+        return $this->belongsToMany('App\User', 'collection_users')
+            ->withPivot('can_edit',
+                'can_add_books',
+                'can_remove_books',
+                'can_edit_books_description',
+                'can_comment')
+            ->withTimestamps()
+            ->wherePivot('deleted_at', null);
+    }
 
-	public function refreshUsersCount()
-	{
-		$this->users_count = $this->users()->count() + 1;
-	}
+    public function scopeOrderByLikesCount($query)
+    {
+        return $query->orderByWithNulls('like_count', 'desc', 'last')
+            ->orderBy('id', 'desc');
+    }
 
-	public function users()
-	{
-		return $this->belongsToMany('App\User', 'collection_users')
-			->withPivot('can_edit',
-				'can_add_books',
-				'can_remove_books',
-				'can_edit_books_description',
-				'can_comment')
-			->withTimestamps()
-			->wherePivot('deleted_at', null);
-	}
-
-	public function scopeOrderByLikesCount($query)
-	{
-		return $query->orderByWithNulls('like_count', 'desc', 'last')
-			->orderBy('id', 'desc');
-	}
-
-	public function scopeOrderByBooksCount($query)
-	{
-		return $query->orderByWithNulls('books_count', 'desc', 'last')
-			->orderBy('id', 'desc');
-	}
+    public function scopeOrderByBooksCount($query)
+    {
+        return $query->orderByWithNulls('books_count', 'desc', 'last')
+            ->orderBy('id', 'desc');
+    }
 }

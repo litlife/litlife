@@ -7,11 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 class MessageRecepientIDTest extends TestCase
 {
-	public function test()
-	{
-		$message = new Message();
-		$message->recepient_id = 100;
+    public function test()
+    {
+        $message = new Message();
+        $message->recepient_id = 100;
 
-		$this->assertEquals(100, $message->recepient_id);
-	}
+        $this->assertEquals(100, $message->recepient_id);
+    }
 }

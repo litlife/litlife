@@ -8,40 +8,36 @@ use Tests\TestCase;
 
 class PostUnFixPolicyTest extends TestCase
 {
-	public function testCanIfHasPermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->forum_post_manage = true;
-		$user->push();
+    public function testCanIfHasPermission()
+    {
+        $user = User::factory()->create();
+        $user->group->forum_post_manage = true;
+        $user->push();
 
-		$post = factory(Post::class)
-			->states('fixed')
-			->create();
+        $post = Post::factory()->fixed()->create();
 
-		$this->assertTrue($user->can('unfix', $post));
-	}
+        $this->assertTrue($user->can('unfix', $post));
+    }
 
-	public function testCantIfDoesntHavePermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->forum_post_manage = false;
-		$user->push();
+    public function testCantIfDoesntHavePermission()
+    {
+        $user = User::factory()->create();
+        $user->group->forum_post_manage = false;
+        $user->push();
 
-		$post = factory(Post::class)
-			->states('fixed')
-			->create();
+        $post = Post::factory()->fixed()->create();
 
-		$this->assertFalse($user->can('unfix', $post));
-	}
+        $this->assertFalse($user->can('unfix', $post));
+    }
 
-	public function testCantIfUnFixed()
-	{
-		$user = factory(User::class)->create();
-		$user->group->forum_post_manage = true;
-		$user->push();
+    public function testCantIfUnFixed()
+    {
+        $user = User::factory()->create();
+        $user->group->forum_post_manage = true;
+        $user->push();
 
-		$post = factory(Post::class)->create();
+        $post = Post::factory()->create();
 
-		$this->assertFalse($user->can('unfix', $post));
-	}
+        $this->assertFalse($user->can('unfix', $post));
+    }
 }

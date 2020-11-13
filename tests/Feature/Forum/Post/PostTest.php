@@ -8,54 +8,53 @@ use Tests\TestCase;
 
 class PostTest extends TestCase
 {
-	public function testFulltextSearch()
-	{
-		$author = Post::FulltextSearch('Время&—&детство!')->get();
+    public function testFulltextSearch()
+    {
+        $author = Post::FulltextSearch('Время&—&детство!')->get();
 
-		$this->assertTrue(true);
-	}
+        $this->assertTrue(true);
+    }
 
-	public function testBBEmpty()
-	{
-		$post = factory(Post::class)
-			->create();
+    public function testBBEmpty()
+    {
+        $post = Post::factory()->create();
 
-		$this->expectException(QueryException::class);
+        $this->expectException(QueryException::class);
 
-		$post->bb_text = '';
-		$post->save();
-	}
+        $post->bb_text = '';
+        $post->save();
+    }
 
-	/*
-		public function testIsSamePostExists()
-		{
-			$user = factory(User::class)->create();
+    /*
+        public function testIsSamePostExists()
+        {
+            $user = User::factory()->create();
 
-			$topic = factory(Topic::class)->create();
+            $topic = Topic::factory()->create();
 
-			$text = $this->faker->realText(100);
+            $text = $this->faker->realText(100);
 
-			$this->actingAs($user)
-				->post(route('posts.store', ['topic' => $topic->id]), [
-					'bb_text' => $text
-				])
-				->assertSessionHasNoErrors()
-				->assertRedirect();
+            $this->actingAs($user)
+                ->post(route('posts.store', ['topic' => $topic->id]), [
+                    'bb_text' => $text
+                ])
+                ->assertSessionHasNoErrors()
+                ->assertRedirect();
 
-			$this->actingAs($user)
-				->post(route('posts.store', ['topic' => $topic->id]), [
-					'bb_text' => $text
-				])
-				->assertSessionHasNoErrors()
-				->assertRedirect();
+            $this->actingAs($user)
+                ->post(route('posts.store', ['topic' => $topic->id]), [
+                    'bb_text' => $text
+                ])
+                ->assertSessionHasNoErrors()
+                ->assertRedirect();
 
-			$this->actingAs($user)
-				->post(route('posts.store', ['topic' => $topic->id]), [
-					'bb_text' => $text
-				])
-				->assertSessionHasErrors(['bb_text' => __('post.you_leave_same_posts')]);
-		}
-		*/
+            $this->actingAs($user)
+                ->post(route('posts.store', ['topic' => $topic->id]), [
+                    'bb_text' => $text
+                ])
+                ->assertSessionHasErrors(['bb_text' => __('post.you_leave_same_posts')]);
+        }
+        */
 
 
 }

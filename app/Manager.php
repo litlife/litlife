@@ -59,17 +59,17 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Manager onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager onlyChecked()
  * @method static Builder|Manager onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Manager orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Manager private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Manager private()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager query()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager sentOnReviewAndManageableNotPrivateAndNotOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCanSale($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCharacter($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Manager whereCheckUserId($value)
@@ -97,101 +97,102 @@ use Illuminate\Support\Facades\Cache;
  */
 class Manager extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
 
-	protected $attributes =
-		[
-			'status' => StatusEnum::OnReview
-		];
+    protected $attributes =
+        [
+            'status' => StatusEnum::OnReview
+        ];
 
-	protected $fillable = [
-		'user_id'
-	];
+    protected $fillable = [
+        'user_id'
+    ];
 
-	protected $dates = [
-		'status_changed_at'
-	];
+    protected $dates = [
+        'status_changed_at'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			$model->autoAssociateAuthUser();
-		});
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            $model->autoAssociateAuthUser();
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::ManagersOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReviewAndManageableNotPrivateAndNotOnReview()->count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::ManagersOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReviewAndManageableNotPrivateAndNotOnReview()->count();
+        });
+    }
 
-	public function scopeSentOnReviewAndManageableNotPrivateAndNotOnReview($query)
-	{
-		return $query->sentOnReview()
-			->whereHasMorph('manageable', ['App\Author'], function (\Illuminate\Database\Eloquent\Builder $query) {
-				$query->whereStatusNot('Private')
-					->whereStatusNot('OnReview');
-			});
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::ManagersOnModerationCount])->pull('count');
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::ManagersOnModerationCount])->pull('count');
-	}
+    public function scopeSentOnReviewAndManageableNotPrivateAndNotOnReview($query)
+    {
+        return $query->sentOnReview()
+            ->whereHasMorph('manageable', ['App\Author'], function (\Illuminate\Database\Eloquent\Builder $query) {
+                $query->whereStatusNot('Private')
+                    ->whereStatusNot('OnReview');
+            });
+    }
 
-	/**
-	 * Get all of the owning commentable models.
-	 */
-	public function manageable()
-	{
-		return $this->morphTo();
-	}
+    /**
+     * Get all of the owning commentable models.
+     */
+    public function manageable()
+    {
+        return $this->morphTo();
+    }
 
-	public function saleRequests()
-	{
-		return $this->hasMany('App\AuthorSaleRequest', 'manager_id');
-	}
+    public function saleRequests()
+    {
+        return $this->hasMany('App\AuthorSaleRequest', 'manager_id');
+    }
 
-	public function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id');
-	}
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
 
-	public function check_user()
-	{
-		return $this->hasOne('App\User');
-	}
+    public function check_user()
+    {
+        return $this->hasOne('App\User');
+    }
 
-	public function getProfitPercentAttribute($value)
-	{
-		if (empty($value))
-			return 100 - config('litlife.comission');
+    public function getProfitPercentAttribute($value)
+    {
+        if (empty($value)) {
+            return 100 - config('litlife.comission');
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
-	public function isAuthorCharacter()
-	{
-		return $this->character == 'author';
-	}
+    public function isAuthorCharacter()
+    {
+        return $this->character == 'author';
+    }
 
-	public function isEditorCharacter()
-	{
-		return $this->character == 'editor';
-	}
+    public function isEditorCharacter()
+    {
+        return $this->character == 'editor';
+    }
 
-	public function scopeAuthors($query)
-	{
-		return $query->where('character', 'author');
-	}
+    public function scopeAuthors($query)
+    {
+        return $query->where('character', 'author');
+    }
 
-	public function scopeEditors($query)
-	{
-		return $query->where('character', 'editor');
-	}
+    public function scopeEditors($query)
+    {
+        return $query->where('character', 'editor');
+    }
 }

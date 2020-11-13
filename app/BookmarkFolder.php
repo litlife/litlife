@@ -24,10 +24,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder newQuery()
  * @method static Builder|BookmarkFolder onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereBookmarkCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|BookmarkFolder whereCreatedAt($value)
@@ -42,35 +42,35 @@ use Illuminate\Support\Carbon;
  */
 class BookmarkFolder extends Model
 {
-	use UserCreate;
-	use SoftDeletes;
+    use UserCreate;
+    use SoftDeletes;
 
-	protected $fillable = [
-		'title',
-		'folder_id'
-	];
+    protected $fillable = [
+        'title',
+        'folder_id'
+    ];
 
-	protected $visible = [
-		'id',
-		'title',
-		'created_at',
-		'updated_at',
-		'deleted_at'
-	];
+    protected $visible = [
+        'id',
+        'title',
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($bookmarkFolder) {
+    public static function boot()
+    {
+        static::Creating(function ($bookmarkFolder) {
 
-			$bookmarkFolder->autoAssociateAuthUser();
+            $bookmarkFolder->autoAssociateAuthUser();
 
-		});
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	public function bookmarks()
-	{
-		return $this->hasMany('App\Bookmark', 'folder_id', 'id');
-	}
+    public function bookmarks()
+    {
+        return $this->hasMany('App\Bookmark', 'folder_id', 'id');
+    }
 }

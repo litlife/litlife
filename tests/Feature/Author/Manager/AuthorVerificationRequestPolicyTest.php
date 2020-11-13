@@ -8,87 +8,67 @@ use Tests\TestCase;
 
 class AuthorVerificationRequestPolicyTest extends TestCase
 {
-	public function testFalseIfAuthorPrivate()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testFalseIfAuthorPrivate()
+    {
+        $user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('private')
-			->create();
+        $author = Author::factory()->private()->create();
 
-		$this->assertTrue($user->can('verficationRequest', $author));
-	}
+        $this->assertTrue($user->can('verficationRequest', $author));
+    }
 
-	public function testFalseIfAuthorHasAuthorManager()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testFalseIfAuthorHasAuthorManager()
+    {
+        $user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('with_author_manager')
-			->create();
+        $author = Author::factory()->with_author_manager()->create();
 
-		$this->assertFalse($user->can('verficationRequest', $author));
-	}
+        $this->assertFalse($user->can('verficationRequest', $author));
+    }
 
-	public function testTrueIfAuthorAccepted()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testTrueIfAuthorAccepted()
+    {
+        $user = User::factory()->admin()->create();
 
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+        $author = Author::factory()->accepted()->create();
 
-		$this->assertTrue($user->can('verficationRequest', $author));
-	}
+        $this->assertTrue($user->can('verficationRequest', $author));
+    }
 
-	public function testFalseIfNotPermissions()
-	{
-		$user = factory(User::class)->create();
-		$user->group->author_editor_request = false;
-		$user->push();
+    public function testFalseIfNotPermissions()
+    {
+        $user = User::factory()->create();
+        $user->group->author_editor_request = false;
+        $user->push();
 
-		$author = factory(Author::class)
-			->states('accepted')
-			->create();
+        $author = Author::factory()->accepted()->create();
 
-		$this->assertFalse($user->can('verficationRequest', $author));
-	}
+        $this->assertFalse($user->can('verficationRequest', $author));
+    }
 
-	public function testFalseIfRequestOnReview()
-	{
-		$author = factory(Author::class)
-			->states('with_author_manager_on_review')
-			->create();
+    public function testFalseIfRequestOnReview()
+    {
+        $author = Author::factory()->with_author_manager_sent_for_review()->create();
 
-		$manager = $author->managers()->first();
-		$user = $manager->user;
-		$user->group->author_editor_request = true;
-		$user->push();
+        $manager = $author->managers()->first();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
 
-		$this->assertFalse($user->can('verficationRequest', $author));
-	}
+        $this->assertFalse($user->can('verficationRequest', $author));
+    }
 
-	public function testTrueIfOtherUserRequestOnReview()
-	{
-		$author = factory(Author::class)
-			->states('with_author_manager_on_review')
-			->create();
+    public function testTrueIfOtherUserRequestOnReview()
+    {
+        $author = Author::factory()->with_author_manager_sent_for_review()->create();
 
-		$manager = $author->managers()->first();
-		$user = $manager->user;
-		$user->group->author_editor_request = true;
-		$user->push();
+        $manager = $author->managers()->first();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $user = User::factory()->admin()->create();
 
-		$this->assertTrue($user->can('verficationRequest', $author));
-	}
+        $this->assertTrue($user->can('verficationRequest', $author));
+    }
 }

@@ -8,19 +8,17 @@ use Tests\TestCase;
 
 class BookRefreshPrivateChaptersCountTest extends TestCase
 {
-	public function testRefreshPrivateChaptersCount()
-	{
-		$book = factory(Book::class)->create();
+    public function testRefreshPrivateChaptersCount()
+    {
+        $book = Book::factory()->create();
 
-		$section = factory(Section::class)->states('private')
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->private()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)->states('private')
-			->create(['book_id' => $book->id]);
+        $section2 = Section::factory()->private()->create(['book_id' => $book->id]);
 
-		$book->refreshPrivateChaptersCount();
-		$book->save();
+        $book->refreshPrivateChaptersCount();
+        $book->save();
 
-		$this->assertEquals(2, $book->private_chapters_count);
-	}
+        $this->assertEquals(2, $book->private_chapters_count);
+    }
 }

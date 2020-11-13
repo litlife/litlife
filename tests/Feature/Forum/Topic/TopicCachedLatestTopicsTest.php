@@ -8,26 +8,26 @@ use Tests\TestCase;
 
 class TopicCachedLatestTopicsTest extends TestCase
 {
-	public function testCachedLatestTopicsPublicScopeAttached()
-	{
-		$post = factory(Post::class)
-			->create();
+    public function testCachedLatestTopicsPublicScopeAttached()
+    {
+        $post = Post::factory()->create();
 
-		$topic = $post->topic;
-		$forum = $topic->forum;
+        $topic = $post->topic;
+        $forum = $topic->forum;
 
-		Topic::refreshLatestTopics();
-		$topics = Topic::cachedLatestTopics();
+        Topic::refreshLatestTopics();
+        $topics = Topic::cachedLatestTopics();
 
-		$this->assertEquals($topic->id, $topics->first()->id);
+        $this->assertEquals($topic->id, $topics->first()->id);
 
-		$forum->private = true;
-		$forum->save();
+        $forum->private = true;
+        $forum->save();
 
-		Topic::refreshLatestTopics();
-		$topics = Topic::cachedLatestTopics();
+        Topic::refreshLatestTopics();
+        $topics = Topic::cachedLatestTopics();
 
-		if (!empty($topics->first()))
-			$this->assertNotEquals($topic->id, $topics->first()->id);
-	}
+        if (!empty($topics->first())) {
+            $this->assertNotEquals($topic->id, $topics->first()->id);
+        }
+    }
 }

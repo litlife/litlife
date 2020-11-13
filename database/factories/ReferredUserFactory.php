@@ -1,20 +1,31 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\ReferredUser;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use App\User;
 
-$factory->define(ReferredUser::class, function (Faker $faker) {
-	return [
-		'referred_by_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'referred_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'comission_buy_book' => rand(1, 10),
-		'comission_sell_book' => rand(1, 10)
-	];
-});
+class ReferredUserFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ReferredUser::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'referred_by_user_id' => User::factory(),
+            'referred_user_id' => User::factory(),
+            'comission_buy_book' => rand(1, 10),
+            'comission_sell_book' => rand(1, 10)
+        ];
+    }
+}

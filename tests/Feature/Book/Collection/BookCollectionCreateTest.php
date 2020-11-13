@@ -9,39 +9,34 @@ use Tests\TestCase;
 
 class BookCollectionCreateTest extends TestCase
 {
-	public function test()
-	{
-		$book = factory(Book::class)
-			->create();
+    public function test()
+    {
+        $book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.collections.create', ['book' => $book]))
-			->assertOk()
-			->assertViewHas('book', $book)
-			->assertViewHas('collection', null);
-	}
+        $this->actingAs($user)
+            ->get(route('books.collections.create', ['book' => $book]))
+            ->assertOk()
+            ->assertViewHas('book', $book)
+            ->assertViewHas('collection', null);
+    }
 
-	public function testHasOldCollectionId()
-	{
-		$book = factory(Book::class)
-			->create();
+    public function testHasOldCollectionId()
+    {
+        $book = Book::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$collection = factory(Collection::class)
-			->create();
+        $collection = Collection::factory()->create();
 
-		$this->actingAs($user)
-			->withOldInput('collection_id', $collection->id)
-			->get(route('books.collections.create', ['book' => $book]), [
-				'collection_id' => $collection->id
-			])
-			->assertOk()
-			->assertViewHas('book', $book)
-			->assertViewHas('collection', $collection);
-	}
+        $this->actingAs($user)
+            ->withOldInput('collection_id', $collection->id)
+            ->get(route('books.collections.create', ['book' => $book]), [
+                'collection_id' => $collection->id
+            ])
+            ->assertOk()
+            ->assertViewHas('book', $book)
+            ->assertViewHas('collection', $collection);
+    }
 }

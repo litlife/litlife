@@ -8,28 +8,26 @@ use Tests\TestCase;
 
 class ForumGroupDeletePolicyTest extends TestCase
 {
-	public function testIfUserHasPermission()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->forum_group_handle = true;
-		$admin->push();
+    public function testIfUserHasPermission()
+    {
+        $admin = User::factory()->create();
+        $admin->group->forum_group_handle = true;
+        $admin->push();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+        $forumGroup = ForumGroup::factory()->create();
 
-		$this->assertTrue($admin->can('delete', $forumGroup));
-	}
+        $this->assertTrue($admin->can('delete', $forumGroup));
+    }
 
-	public function testIfUserDoesntHavePermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->forum_group_handle = false;
-		$user->push();
+    public function testIfUserDoesntHavePermission()
+    {
+        $user = User::factory()->create();
+        $user->group->forum_group_handle = false;
+        $user->push();
 
-		$forumGroup = factory(ForumGroup::class)
-			->create();
+        $forumGroup = ForumGroup::factory()->create();
 
-		$this->assertFalse($user->can('delete', $forumGroup));
-	}
+        $this->assertFalse($user->can('delete', $forumGroup));
+    }
 
 }

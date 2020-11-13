@@ -1,56 +1,110 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Enums\TopicLabelEnum;
+use App\Forum;
+use App\Post;
 use App\Topic;
-use Faker\Generator as Faker;
+use App\User;
 use Illuminate\Support\Str;
 
-$factory->define(App\Topic::class, function (Faker $faker) {
+class TopicFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Topic::class;
 
-	return [
-		'name' => $faker->realText(70) . ' ' . Str::random(20),
-		'description' => $faker->realText(100),
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'forum_id' => function () {
-			return factory(App\Forum::class)->create()->id;
-		},
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->realText(70).' '.Str::random(20),
+            'description' => $this->faker->realText(100),
+            'create_user_id' => User::factory(),
+            'forum_id' => Forum::factory(),
+        ];
+    }
 
-$factory->afterMakingState(App\Topic::class, 'idea_implemented', function (Topic $topic, $faker) {
-	$topic->label = TopicLabelEnum::IdeaImplemented;
-});
+    public function idea_implemented()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->label = TopicLabelEnum::IdeaImplemented;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\Topic::class, 'idea_on_review', function (Topic $topic, $faker) {
-	$topic->label = TopicLabelEnum::IdeaOnReview;
-});
+        });
+    }
 
-$factory->afterMakingState(App\Topic::class, 'idea_rejected', function (Topic $topic, $faker) {
-	$topic->label = TopicLabelEnum::IdeaRejected;
-});
+    public function idea_on_review()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->label = TopicLabelEnum::IdeaOnReview;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\Topic::class, 'idea_in_progress', function (Topic $topic, $faker) {
-	$topic->label = TopicLabelEnum::IdeaInProgress;
-});
+        });
+    }
 
-$factory->afterMakingState(App\Topic::class, 'archived', function (Topic $topic, $faker) {
-	$topic->archive();
-});
+    public function idea_rejected()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->label = TopicLabelEnum::IdeaRejected;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\Topic::class, 'closed', function (Topic $topic, $faker) {
-	$topic->close();
-});
+        });
+    }
 
-$factory->afterCreatingState(App\Topic::class, 'with_post', function (Topic $topic, $faker) {
-	$post = factory(\App\Post::class)->make();
-	$topic->posts()->save($post);
-});
+    public function idea_in_progress()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->label = TopicLabelEnum::IdeaInProgress;
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\Topic::class, 'with_fixed_post', function (Topic $topic, $faker) {
-	$post = factory(\App\Post::class)->make();
-	$topic->posts()->save($post);
-	$post->fix();
-});
+        });
+    }
 
+    public function archived()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->archive();
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function closed()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->close();
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function with_post()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+            $post = Post::factory()->make();
+            $item->posts()->save($post);
+        });
+    }
+
+    public function with_fixed_post()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+            $post = Post::factory()->make();
+            $item->posts()->save($post);
+            $post->fix();
+        });
+    }
+}

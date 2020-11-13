@@ -8,41 +8,34 @@ use Tests\TestCase;
 
 class PostApprovePolicyTest extends TestCase
 {
-	public function testCanIfHasPermission()
-	{
-		$post = factory(Post::class)
-			->states('sent_for_review')
-			->create();
+    public function testCanIfHasPermission()
+    {
+        $post = Post::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
-		$user->group->check_post_comments = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->check_post_comments = true;
+        $user->push();
 
-		$this->assertTrue($user->can('approve', $post));
-	}
+        $this->assertTrue($user->can('approve', $post));
+    }
 
-	public function testCantIfDoesntHavePermission()
-	{
-		$post = factory(Post::class)
-			->states('sent_for_review')
-			->create();
+    public function testCantIfDoesntHavePermission()
+    {
+        $post = Post::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
-		$user->group->check_post_comments = false;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->check_post_comments = false;
+        $user->push();
 
-		$this->assertFalse($user->can('approve', $post));
-	}
+        $this->assertFalse($user->can('approve', $post));
+    }
 
-	public function testCantIfPostNotOnReview()
-	{
-		$post = factory(Post::class)
-			->create();
+    public function testCantIfPostNotOnReview()
+    {
+        $post = Post::factory()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $user = User::factory()->admin()->create();
 
-		$this->assertFalse($user->can('approve', $post));
-	}
+        $this->assertFalse($user->can('approve', $post));
+    }
 }

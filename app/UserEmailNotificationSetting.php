@@ -28,10 +28,10 @@ use Illuminate\Support\Carbon;
  * @property bool $db_comment_vote_up
  * @method static Builder|UserEmailNotificationSetting newModelQuery()
  * @method static Builder|UserEmailNotificationSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserEmailNotificationSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserEmailNotificationSetting whereCommentReply($value)
  * @method static Builder|UserEmailNotificationSetting whereCreatedAt($value)
  * @method static Builder|UserEmailNotificationSetting whereDbBookFinishParse($value)
@@ -53,75 +53,75 @@ use Illuminate\Support\Carbon;
 class UserEmailNotificationSetting extends Model
 {
 
-	protected $primaryKey = 'user_id';
-	protected $guarded = ['user_id', 'created_at', 'updated_at'];
+    protected $primaryKey = 'user_id';
+    protected $guarded = ['user_id', 'created_at', 'updated_at'];
 
-	protected $attributes =
-		[
-			'private_message' => true,  // OnMessageComing
-			'forum_reply' => true,      // OnForumAnswerComing
-			'wall_message' => true,     // OnNewMessageOnWall
-			'comment_reply' => true,    // OnCommentAnswerComing
-			'wall_reply' => true,        // OnBlogMessageAnswerComing
-			'news' => true,             // News
+    protected $attributes =
+        [
+            'private_message' => true,  // OnMessageComing
+            'forum_reply' => true,      // OnForumAnswerComing
+            'wall_message' => true,     // OnNewMessageOnWall
+            'comment_reply' => true,    // OnCommentAnswerComing
+            'wall_reply' => true,        // OnBlogMessageAnswerComing
+            'news' => true,             // News
 
-			'db_forum_reply' => true,
-			'db_wall_message' => true,
-			'db_comment_reply' => true,
-			'db_wall_reply' => true,
-			'db_book_finish_parse' => true,
-			'db_like' => true,
-			'db_comment_vote_up' => true
-		];
+            'db_forum_reply' => true,
+            'db_wall_message' => true,
+            'db_comment_reply' => true,
+            'db_wall_reply' => true,
+            'db_book_finish_parse' => true,
+            'db_like' => true,
+            'db_comment_vote_up' => true
+        ];
 
-	protected $casts = [
-		'private_message' => 'boolean',
-		'forum_reply' => 'boolean',
-		'wall_message' => 'boolean',
-		'comment_reply' => 'boolean',
-		'wall_reply' => 'boolean',
-		'news' => 'boolean',
+    protected $casts = [
+        'private_message' => 'boolean',
+        'forum_reply' => 'boolean',
+        'wall_message' => 'boolean',
+        'comment_reply' => 'boolean',
+        'wall_reply' => 'boolean',
+        'news' => 'boolean',
 
-		'db_forum_reply' => 'boolean',
-		'db_wall_message' => 'boolean',
-		'db_comment_reply' => 'boolean',
-		'db_wall_reply' => 'boolean',
-		'db_book_finish_parse' => 'boolean',
-		'db_like' => 'boolean',
-		'db_comment_vote_up' => 'boolean'
-	];
+        'db_forum_reply' => 'boolean',
+        'db_wall_message' => 'boolean',
+        'db_comment_reply' => 'boolean',
+        'db_wall_reply' => 'boolean',
+        'db_book_finish_parse' => 'boolean',
+        'db_like' => 'boolean',
+        'db_comment_vote_up' => 'boolean'
+    ];
 
-	protected $fillable = [
-		'private_message',
-		'forum_reply',
-		'comment_reply',
-		'wall_message',
-		'wall_reply',
-		'news',
+    protected $fillable = [
+        'private_message',
+        'forum_reply',
+        'comment_reply',
+        'wall_message',
+        'wall_reply',
+        'news',
 
-		'db_forum_reply',
-		'db_wall_message',
-		'db_comment_reply',
-		'db_wall_reply',
-		'db_like',
-		'db_book_finish_parse',
-		'db_comment_vote_up'
-	];
+        'db_forum_reply',
+        'db_wall_message',
+        'db_comment_reply',
+        'db_wall_reply',
+        'db_like',
+        'db_book_finish_parse',
+        'db_comment_vote_up'
+    ];
 
-	function __construct(array $attributes = [])
-	{
-		parent::__construct($attributes);
-	}
+    function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
-	public function getFillableAll()
-	{
-		$array = [];
+    public function getFillableAll()
+    {
+        $array = [];
 
-		foreach ($this->getFillable() as $attribute) {
-			$array[$attribute] = $this->attributes[$attribute];
-		}
+        foreach ($this->getFillable() as $attribute) {
+            $array[$attribute] = $this->attributes[$attribute];
+        }
 
-		return $array;
-		//return array_diff_key($this->getAttributes(), array_flip($this->getGuarded()));
-	}
+        return $array;
+        //return array_diff_key($this->getAttributes(), array_flip($this->getGuarded()));
+    }
 }

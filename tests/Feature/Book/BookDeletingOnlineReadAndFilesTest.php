@@ -8,165 +8,162 @@ use Tests\TestCase;
 
 class BookDeletingOnlineReadAndFilesTest extends TestCase
 {
-	public function testDeleteBookFile()
-	{
-		$book = factory(Book::class)->states('with_accepted_file')->create();
+    public function testDeleteBookFile()
+    {
+        $book = Book::factory()->with_accepted_file()->create();
 
-		$file = $book->files()->first();
+        $file = $book->files()->first();
 
-		$this->assertEquals(1, $book->files_count);
+        $this->assertEquals(1, $book->files_count);
 
-		$book->deletingOnlineReadAndFiles();
+        $book->deletingOnlineReadAndFiles();
 
-		$file->refresh();
-		$book->refresh();
+        $file->refresh();
+        $book->refresh();
 
-		$this->assertTrue($file->trashed());
-		$this->assertEquals(0, $book->files_count);
-	}
+        $this->assertTrue($file->trashed());
+        $this->assertEquals(0, $book->files_count);
+    }
 
-	public function testDeleteSections()
-	{
-		$book = factory(Book::class)->states('with_section')->create();
+    public function testDeleteSections()
+    {
+        $book = Book::factory()->with_section()->create();
 
-		$book->refresh();
+        $book->refresh();
 
-		$section = $book->sections()->first();
+        $section = $book->sections()->first();
 
-		$this->assertEquals(1, $book->sections_count);
-		$this->assertNotEmpty($book->page_count);
+        $this->assertEquals(1, $book->sections_count);
+        $this->assertNotEmpty($book->page_count);
 
-		$book->deletingOnlineReadAndFiles();
+        $book->deletingOnlineReadAndFiles();
 
-		$section->refresh();
-		$book->refresh();
+        $section->refresh();
+        $book->refresh();
 
-		$this->assertTrue($section->trashed());
-		$this->assertEquals(0, $book->sections_count);
-		$this->assertEquals(0, $book->page_count);
-	}
+        $this->assertTrue($section->trashed());
+        $this->assertEquals(0, $book->sections_count);
+        $this->assertEquals(0, $book->page_count);
+    }
 
-	public function testDeleteNotes()
-	{
-		$book = factory(Book::class)->states('with_note')->create();
+    public function testDeleteNotes()
+    {
+        $book = Book::factory()->with_note()->create();
 
-		$note = $book->sections()->notes()->first();
+        $note = $book->sections()->notes()->first();
 
-		$this->assertEquals(1, $book->notes_count);
+        $this->assertEquals(1, $book->notes_count);
 
-		$book->deletingOnlineReadAndFiles();
+        $book->deletingOnlineReadAndFiles();
 
-		$note->refresh();
-		$book->refresh();
+        $note->refresh();
+        $book->refresh();
 
-		$this->assertTrue($note->trashed());
-		$this->assertEquals(0, $book->notes_count);
-	}
+        $this->assertTrue($note->trashed());
+        $this->assertEquals(0, $book->notes_count);
+    }
 
-	public function testDeleteAttachmentsButNotCover()
-	{
-		$book = factory(Book::class)->states('with_cover', 'with_attachment')->create();
+    public function testDeleteAttachmentsButNotCover()
+    {
+        $book = Book::factory()->with_cover()->with_attachment()->create();
 
-		$cover = $book->cover;
-		$attachment = $book->attachments()->where('id', '!=', $cover->id)->first();
+        $cover = $book->cover;
+        $attachment = $book->attachments()->where('id', '!=', $cover->id)->first();
 
-		$this->assertFalse($cover->is($attachment));
+        $this->assertFalse($cover->is($attachment));
 
-		$this->assertEquals(2, $book->attachments_count);
+        $this->assertEquals(2, $book->attachments_count);
 
-		$book->deletingOnlineReadAndFiles();
+        $book->deletingOnlineReadAndFiles();
 
-		$attachment->refresh();
-		$book->refresh();
-		$cover->refresh();
+        $attachment->refresh();
+        $book->refresh();
+        $cover->refresh();
 
-		$this->assertFalse($cover->trashed());
-		$this->assertTrue($attachment->trashed());
-		$this->assertEquals(1, $book->attachments_count);
-	}
+        $this->assertFalse($cover->trashed());
+        $this->assertTrue($attachment->trashed());
+        $this->assertEquals(1, $book->attachments_count);
+    }
 
-	public function testDisableAccess()
-	{
-		$book = factory(Book::class)
-			->states('with_read_and_download_access')
-			->create();
+    public function testDisableAccess()
+    {
+        $book = Book::factory()->with_read_and_download_access()->create();
 
-		$this->assertTrue($book->isReadAccess());
-		$this->assertTrue($book->isDownloadAccess());
+        $this->assertTrue($book->isReadAccess());
+        $this->assertTrue($book->isDownloadAccess());
 
-		$book->deletingOnlineReadAndFiles();
-		$book->refresh();
+        $book->deletingOnlineReadAndFiles();
+        $book->refresh();
 
-		$this->assertFalse($book->isReadAccess());
-		$this->assertFalse($book->isDownloadAccess());
-	}
+        $this->assertFalse($book->isReadAccess());
+        $this->assertFalse($book->isDownloadAccess());
+    }
 
-	public function testRouteDeletingOnlineReadAndFilesIsOk()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testRouteDeletingOnlineReadAndFilesIsOk()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$user = factory(User::class)->states('admin')->create();
+        $user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)->states('with_section')
-			->create();
+        $book = Book::factory()->with_section()->create();
 
-		$section = $book->sections()->first();
+        $section = $book->sections()->first();
 
-		$this->actingAs($user)
-			->get(route('books.deleting_online_read_and_files', $book))
-			->assertRedirect(route('books.show', $book))
-			->assertSessionHas(['success' => __('book.removed_all_files_chapters_footnotes_and_images_of_the_book')]);
+        $this->actingAs($user)
+            ->get(route('books.deleting_online_read_and_files', $book))
+            ->assertRedirect(route('books.show', $book))
+            ->assertSessionHas(['success' => __('book.removed_all_files_chapters_footnotes_and_images_of_the_book')]);
 
-		$section->refresh();
+        $section->refresh();
 
-		$this->assertTrue($section->trashed());
+        $this->assertTrue($section->trashed());
 
-		$activity = $book->activities()->first();
+        $activity = $book->activities()->first();
 
-		$this->assertEquals(1, $book->activities()->count());
-		$this->assertEquals('deleting_online_read_and_files', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $this->assertEquals(1, $book->activities()->count());
+        $this->assertEquals('deleting_online_read_and_files', $activity->description);
+        $this->assertEquals($user->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 
-	public function testDeletingOnlineReadAndFilesPolicy()
-	{
-		$user = factory(User::class)->create();
+    public function testDeletingOnlineReadAndFilesPolicy()
+    {
+        $user = User::factory()->create();
 
-		$book = factory(Book::class)->create();
+        $book = Book::factory()->create();
 
-		$this->assertFalse($user->can('deletingOnlineReadAndFiles', $book));
+        $this->assertFalse($user->can('deletingOnlineReadAndFiles', $book));
 
-		$user->group->deleting_online_read_and_files = true;
-		$user->push();
-		$user->refresh();
+        $user->group->deleting_online_read_and_files = true;
+        $user->push();
+        $user->refresh();
 
-		$this->assertTrue($user->can('deletingOnlineReadAndFiles', $book));
-	}
+        $this->assertTrue($user->can('deletingOnlineReadAndFiles', $book));
+    }
 
-	public function testToNewOnlineReadFormat()
-	{
-		$book = factory(Book::class)->create();
-		$book->online_read_new_format = false;
-		$book->save();
+    public function testToNewOnlineReadFormat()
+    {
+        $book = Book::factory()->create();
+        $book->online_read_new_format = false;
+        $book->save();
 
-		$book->deletingOnlineReadAndFiles();
+        $book->deletingOnlineReadAndFiles();
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertTrue($book->online_read_new_format);
-	}
+        $this->assertTrue($book->online_read_new_format);
+    }
 
-	public function testDontDeleteAnnotation()
-	{
-		$book = factory(Book::class)->states('with_annotation')->create();
+    public function testDontDeleteAnnotation()
+    {
+        $book = Book::factory()->with_annotation()->create();
 
-		$annotation = $book->annotation;
+        $annotation = $book->annotation;
 
-		$book->deletingOnlineReadAndFiles();
+        $book->deletingOnlineReadAndFiles();
 
-		$annotation->refresh();
+        $annotation->refresh();
 
-		$this->assertFalse($annotation->trashed());
-	}
+        $this->assertFalse($annotation->trashed());
+    }
 }

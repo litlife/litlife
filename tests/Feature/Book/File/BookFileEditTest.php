@@ -9,89 +9,75 @@ use Tests\TestCase;
 
 class BookFileEditTest extends TestCase
 {
-	public function testUpdateHttp()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testUpdateHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+        $admin = User::factory()->admin()->create();
 
-		$file = factory(BookFile::class)->states('txt')->create();
+        $file = BookFile::factory()->txt()->create();
 
-		$comment = $this->faker->realText(200);
-		$number = rand(1, 100);
+        $comment = $this->faker->realText(200);
+        $number = rand(1, 100);
 
-		$this->actingAs($admin)
-			->followingRedirects()
-			->patch(route('books.files.update', ['book' => $file->book, 'file' => $file->id]), [
-				'comment' => $comment,
-				'number' => $number
-			])
-			->assertOk()
-			->assertSeeText(__('common.data_saved'));
+        $this->actingAs($admin)
+            ->followingRedirects()
+            ->patch(route('books.files.update', ['book' => $file->book, 'file' => $file->id]), [
+                'comment' => $comment,
+                'number' => $number
+            ])
+            ->assertOk()
+            ->assertSeeText(__('common.data_saved'));
 
-		$file->refresh();
+        $file->refresh();
 
-		$this->assertEquals($comment, $file->comment);
-		$this->assertEquals($number, $file->number);
+        $this->assertEquals($comment, $file->comment);
+        $this->assertEquals($number, $file->number);
 
-		$this->assertEquals(1, $file->activities()->count());
-		$activity = $file->activities()->first();
-		$this->assertEquals('updated', $activity->description);
-		$this->assertEquals($admin->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $this->assertEquals(1, $file->activities()->count());
+        $activity = $file->activities()->first();
+        $this->assertEquals('updated', $activity->description);
+        $this->assertEquals($admin->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 
-	public function testCommentIsRequiredIfOtherFileWithSameExtensionExists()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testCommentIsRequiredIfOtherFileWithSameExtensionExists()
+    {
+        $user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+        $file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 
-		$file2 = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+        $file2 = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 
-		$this->actingAs($user)
-			->patch(route('books.files.update', compact('book', 'file')),
-				[
-					'comment' => ''
-				]
-			)
-			->assertSessionHasErrors(['comment' => __('validation.required', ['attribute' => __('book_file.comment')])])
-			->assertRedirect();
-	}
+        $this->actingAs($user)
+            ->patch(route('books.files.update', compact('book', 'file')),
+                [
+                    'comment' => ''
+                ]
+            )
+            ->assertSessionHasErrors(['comment' => __('validation.required', ['attribute' => __('book_file.comment')])])
+            ->assertRedirect();
+    }
 
-	public function testCommentIsNotRequiredIfOtherFileWithDifferentExtensionExists()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testCommentIsNotRequiredIfOtherFileWithDifferentExtensionExists()
+    {
+        $user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$file = factory(BookFile::class)
-			->states('odt')
-			->create(['book_id' => $book->id]);
+        $file = BookFile::factory()->odt()->create(['book_id' => $book->id]);
 
-		$file2 = factory(BookFile::class)
-			->states('txt')
-			->create(['book_id' => $book->id]);
+        $file2 = BookFile::factory()->txt()->create(['book_id' => $book->id]);
 
-		$this->actingAs($user)
-			->patch(route('books.files.update', compact('book', 'file')),
-				[
-					'comment' => ''
-				]
-			)
-			->assertSessionHasNoErrors()
-			->assertRedirect();
-	}
+        $this->actingAs($user)
+            ->patch(route('books.files.update', compact('book', 'file')),
+                [
+                    'comment' => ''
+                ]
+            )
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
+    }
 }

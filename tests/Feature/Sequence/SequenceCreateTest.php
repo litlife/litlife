@@ -8,40 +8,38 @@ use Tests\TestCase;
 
 class SequenceCreateTest extends TestCase
 {
-	public function testCreate()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testCreate()
+    {
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('sequences.create'))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('sequences.create'))
+            ->assertOk();
+    }
 
-	public function testStoreHttp()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testStoreHttp()
+    {
+        $user = User::factory()->create();
 
-		$name = $this->faker->realText(100);
-		$description = $this->faker->realText(100);
+        $name = $this->faker->realText(100);
+        $description = $this->faker->realText(100);
 
-		$response = $this->actingAs($user)
-			->post(route('sequences.store'),
-				[
-					'name' => $name,
-					'description' => $description
-				]);
+        $response = $this->actingAs($user)
+            ->post(route('sequences.store'),
+                [
+                    'name' => $name,
+                    'description' => $description
+                ]);
 
-		//dump(session('errors'));
+        //dump(session('errors'));
 
-		$response->assertSessionHasNoErrors()
-			->assertRedirect();
+        $response->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$sequence = $user->created_sequences()->first();
+        $sequence = $user->created_sequences()->first();
 
-		$this->assertEquals($name, $sequence->name);
-		$this->assertEquals($description, $sequence->description);
-		$this->assertEquals(StatusEnum::Private, $sequence->status);
-	}
+        $this->assertEquals($name, $sequence->name);
+        $this->assertEquals($description, $sequence->description);
+        $this->assertEquals(StatusEnum::Private, $sequence->status);
+    }
 }

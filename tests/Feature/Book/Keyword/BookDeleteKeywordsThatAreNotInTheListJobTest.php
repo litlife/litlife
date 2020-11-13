@@ -9,42 +9,36 @@ use Tests\TestCase;
 
 class BookDeleteKeywordsThatAreNotInTheListJobTest extends TestCase
 {
-	public function testRemoveThatNotInList()
-	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+    public function testRemoveThatNotInList()
+    {
+        $book = Book::factory()->with_writer()->with_keyword()->create();
 
-		BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, []);
+        BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, []);
 
-		$this->assertEquals(0, $book->book_keywords()->count());
-	}
+        $this->assertEquals(0, $book->book_keywords()->count());
+    }
 
-	public function testDontRemoveThatInList()
-	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+    public function testDontRemoveThatInList()
+    {
+        $book = Book::factory()->with_writer()->with_keyword()->create();
 
-		BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, [$book->book_keywords()->first()->keyword->text]);
+        BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, [$book->book_keywords()->first()->keyword->text]);
 
-		$this->assertEquals(1, $book->book_keywords()->count());
-	}
+        $this->assertEquals(1, $book->book_keywords()->count());
+    }
 
-	public function testDeleteBookKeywordIfKeywordDeleted()
-	{
-		$book = factory(Book::class)
-			->states('with_writer', 'with_keyword')
-			->create();
+    public function testDeleteBookKeywordIfKeywordDeleted()
+    {
+        $book = Book::factory()->with_writer()->with_keyword()->create();
 
-		$book_keyword = $book->book_keywords()->first();
-		$keyword = $book_keyword->keyword;
-		$keyword->delete();
+        $book_keyword = $book->book_keywords()->first();
+        $keyword = $book_keyword->keyword;
+        $keyword->delete();
 
-		$text = Str::random(8);
+        $text = Str::random(8);
 
-		BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, [$text]);
+        BookDeleteKeywordsThatAreNotInTheListJob::dispatch($book, [$text]);
 
-		$this->assertEquals(0, $book->book_keywords()->count());
-	}
+        $this->assertEquals(0, $book->book_keywords()->count());
+    }
 }

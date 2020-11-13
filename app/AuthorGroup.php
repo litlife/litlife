@@ -22,10 +22,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\User|null $create_user
  * @method static Builder|AuthorGroup newModelQuery()
  * @method static Builder|AuthorGroup newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorGroup query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|AuthorGroup whereCount($value)
  * @method static Builder|AuthorGroup whereCreateUserId($value)
  * @method static Builder|AuthorGroup whereCreatedAt($value)
@@ -38,10 +38,10 @@ use Illuminate\Support\Carbon;
  */
 class AuthorGroup extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	function authors()
-	{
-		return $this->hasMany('App\Author', 'group_id');
-	}
+    function authors()
+    {
+        return $this->hasMany('App\Author', 'group_id');
+    }
 }

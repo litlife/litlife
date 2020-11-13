@@ -29,11 +29,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup newQuery()
  * @method static Builder|ForumGroup onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup orderBySettings()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ForumGroup whereCreator(\App\User $user)
@@ -49,42 +49,43 @@ use Illuminate\Support\Carbon;
  */
 class ForumGroup extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'name'
-	];
+    protected $fillable = [
+        'name'
+    ];
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	public function forums()
-	{
-		return $this->hasMany('App\Forum');
-	}
+    public function forums()
+    {
+        return $this->hasMany('App\Forum');
+    }
 
-	public function scopeOrderBySettings($query)
-	{
-		if (!empty($this->getSort()))
-			return $query->orderByField('id', $this->getSort());
-		else
-			return $query;
-	}
+    public function scopeOrderBySettings($query)
+    {
+        if (!empty($this->getSort())) {
+            return $query->orderByField('id', $this->getSort());
+        } else {
+            return $query;
+        }
+    }
 
-	public function getSort()
-	{
-		$order = optional(Variable::where('name', VariablesEnum::getValue('ForumGroupSort'))
-			->first())
-			->value;
+    public function getSort()
+    {
+        $order = optional(Variable::where('name', VariablesEnum::getValue('ForumGroupSort'))
+            ->first())
+            ->value;
 
-		return $order;
-	}
+        return $order;
+    }
 
-	public function image()
-	{
-		return $this->hasOne('App\Image', 'id', 'image_id');
-	}
+    public function image()
+    {
+        return $this->hasOne('App\Image', 'id', 'image_id');
+    }
 }

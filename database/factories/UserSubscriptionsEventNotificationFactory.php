@@ -1,39 +1,58 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
 use App\Collection;
 use App\Enums\UserSubscriptionsEventNotificationType;
+use App\User;
 use App\UserSubscriptionsEventNotification;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-$factory->define(UserSubscriptionsEventNotification::class, function (Faker $faker) {
+class UserSubscriptionsEventNotificationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserSubscriptionsEventNotification::class;
 
-	return [
-		'notifiable_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		}
-	];
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'notifiable_user_id' => User::factory()
+        ];
+    }
 
-});
+    public function collection()
+    {
+        return $this->afterMaking(function ($item) {
+            $collection = Collection::factory()->create();
 
-$factory->afterMakingState(App\UserSubscriptionsEventNotification::class, 'collection', function (UserSubscriptionsEventNotification $subscription, $faker) {
+            foreach (Relation::morphMap() as $alias => $model) {
+                if ($model == 'App\Collection') {
+                    break;
+                }
+            }
 
-	$collection = factory(Collection::class)
-		->create();
+            $item->eventable_type = $alias;
+            $item->eventable_id = $collection->id;
+        })->afterCreating(function ($item) {
 
-	foreach (Relation::morphMap() as $alias => $model) {
-		if ($model == 'App\Collection') {
-			break;
-		}
-	}
+        });
+    }
 
-	$subscription->eventable_type = $alias;
-	$subscription->eventable_id = $collection->id;
-});
+    public function new_comment()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->event_type = UserSubscriptionsEventNotificationType::NewComment;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserSubscriptionsEventNotification::class, 'new_comment', function (UserSubscriptionsEventNotification $subscription, $faker) {
-	$subscription->event_type = UserSubscriptionsEventNotificationType::NewComment;
-});
+        });
+    }
+}

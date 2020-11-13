@@ -10,159 +10,149 @@ use Tests\TestCase;
 
 class SurveyTest extends TestCase
 {
-	public function testIndexRoute()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testIndexRoute()
+    {
+        $user = User::factory()->admin()->create();
 
-		$this->actingAs($user)
-			->get(route('surveys.index'))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('surveys.index'))
+            ->assertOk();
+    }
 
-	public function testCreateRouteIsOk()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testCreateRouteIsOk()
+    {
+        $user = User::factory()->create();
 
-		Carbon::setTestNow(now()->addWeek()->addMinute());
+        Carbon::setTestNow(now()->addWeek()->addMinute());
 
-		$this->actingAs($user)
-			->get(route('surveys.create'))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('surveys.create'))
+            ->assertOk();
+    }
 
-	public function testStoreRouteIsOk()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testStoreRouteIsOk()
+    {
+        $user = User::factory()->create();
 
-		Carbon::setTestNow(now()->addWeek()->addMinute());
+        Carbon::setTestNow(now()->addWeek()->addMinute());
 
-		$str = $this->faker->realText(100);
-		$str2 = $this->faker->realText(200);
-		$what_file_formats_do_you_download = ['fb2', 'epub'];
+        $str = $this->faker->realText(100);
+        $str2 = $this->faker->realText(200);
+        $what_file_formats_do_you_download = ['fb2', 'epub'];
 
-		$this->actingAs($user)
-			->post(route('surveys.store'), [
-				'what_you_need_on_our_site' => $str,
-				'what_do_you_like_on_the_site' => $str2,
-				'what_file_formats_do_you_download' => $what_file_formats_do_you_download
-			])
-			->assertSessionHasNoErrors()
-			->assertOk()
-			->assertSeeText(__('survey.your_responses_were_saved_successfully'));
+        $this->actingAs($user)
+            ->post(route('surveys.store'), [
+                'what_you_need_on_our_site' => $str,
+                'what_do_you_like_on_the_site' => $str2,
+                'what_file_formats_do_you_download' => $what_file_formats_do_you_download
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertOk()
+            ->assertSeeText(__('survey.your_responses_were_saved_successfully'));
 
-		$survey = $user->surveys()->first();
+        $survey = $user->surveys()->first();
 
-		$this->assertNotNull($survey);
+        $this->assertNotNull($survey);
 
-		$this->assertEquals($str, $survey->what_you_need_on_our_site);
-		$this->assertEquals($str2, $survey->what_do_you_like_on_the_site);
-		$this->assertEquals($what_file_formats_do_you_download, $survey->what_file_formats_do_you_download);
-		$this->assertTrue($survey->isUserCreator($user));
-	}
+        $this->assertEquals($str, $survey->what_you_need_on_our_site);
+        $this->assertEquals($str2, $survey->what_do_you_like_on_the_site);
+        $this->assertEquals($what_file_formats_do_you_download, $survey->what_file_formats_do_you_download);
+        $this->assertTrue($survey->isUserCreator($user));
+    }
 
-	public function testCreateGuest()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testCreateGuest()
+    {
+        $user = User::factory()->create();
 
-		$url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
+        $url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
 
-		$this->get($url)
-			->assertOk()
-			->assertSeeText(__('survey.do_you_read_books_or_download_them'));
-	}
+        $this->get($url)
+            ->assertOk()
+            ->assertSeeText(__('survey.do_you_read_books_or_download_them'));
+    }
 
-	public function testStoreGuest()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testStoreGuest()
+    {
+        $user = User::factory()->create();
 
-		$url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
+        $url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
 
-		$str = $this->faker->realText(100);
-		$str2 = $this->faker->realText(200);
-		$what_file_formats_do_you_download = ['fb2', 'epub'];
+        $str = $this->faker->realText(100);
+        $str2 = $this->faker->realText(200);
+        $what_file_formats_do_you_download = ['fb2', 'epub'];
 
-		$this->followingRedirects()
-			->post($url, [
-				'what_you_need_on_our_site' => $str,
-				'what_do_you_like_on_the_site' => $str2,
-				'what_file_formats_do_you_download' => $what_file_formats_do_you_download
-			])
-			->assertSessionHasNoErrors()
-			->assertOk()
-			->assertSeeText(__('survey.your_responses_were_saved_successfully'));
+        $this->followingRedirects()
+            ->post($url, [
+                'what_you_need_on_our_site' => $str,
+                'what_do_you_like_on_the_site' => $str2,
+                'what_file_formats_do_you_download' => $what_file_formats_do_you_download
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertOk()
+            ->assertSeeText(__('survey.your_responses_were_saved_successfully'));
 
-		$survey = $user->surveys()->first();
+        $survey = $user->surveys()->first();
 
-		$this->assertNotNull($survey);
+        $this->assertNotNull($survey);
 
-		$this->assertEquals($str, $survey->what_you_need_on_our_site);
-		$this->assertEquals($str2, $survey->what_do_you_like_on_the_site);
-		$this->assertEquals($what_file_formats_do_you_download, $survey->what_file_formats_do_you_download);
-		$this->assertTrue($survey->isUserCreator($user));
-	}
+        $this->assertEquals($str, $survey->what_you_need_on_our_site);
+        $this->assertEquals($str2, $survey->what_do_you_like_on_the_site);
+        $this->assertEquals($what_file_formats_do_you_download, $survey->what_file_formats_do_you_download);
+        $this->assertTrue($survey->isUserCreator($user));
+    }
 
-	public function testCreateGuestRedirectIfAuth()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testCreateGuestRedirectIfAuth()
+    {
+        $user = User::factory()->create();
 
-		$url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
+        $url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
 
-		$this->actingAs($user)
-			->get($url)
-			->assertRedirect(route('surveys.create'));
-	}
+        $this->actingAs($user)
+            ->get($url)
+            ->assertRedirect(route('surveys.create'));
+    }
 
-	public function testStoreGuestRedirectIfAuth()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testStoreGuestRedirectIfAuth()
+    {
+        $user = User::factory()->create();
 
-		$url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
+        $url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
 
-		$this->actingAs($user)
-			->post($url)
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('surveys.store'));
-	}
+        $this->actingAs($user)
+            ->post($url)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('surveys.store'));
+    }
 
-	public function testSurveyGuestCreateRouteSeeSurveySavedIfExists()
-	{
-		$survey = factory(UserSurvey::class)
-			->create();
+    public function testSurveyGuestCreateRouteSeeSurveySavedIfExists()
+    {
+        $survey = UserSurvey::factory()->create();
 
-		$user = $survey->create_user;
+        $user = $survey->create_user;
 
-		$url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
+        $url = URL::signedRoute('surveys.guest.create', ['user' => $user->id]);
 
-		$this->get($url)
-			->assertOk()
-			->assertSeeText(__('survey.your_responses_were_saved_successfully'));
+        $this->get($url)
+            ->assertOk()
+            ->assertSeeText(__('survey.your_responses_were_saved_successfully'));
 
-		$url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
+        $url = URL::signedRoute('surveys.guest.store', ['user' => $user->id]);
 
-		$this->post($url)
-			->assertOk()
-			->assertSeeText(__('survey.your_responses_were_saved_successfully'));
-	}
+        $this->post($url)
+            ->assertOk()
+            ->assertSeeText(__('survey.your_responses_were_saved_successfully'));
+    }
 
-	public function testSurveyCreateShowSurveySaved()
-	{
-		$survey = factory(UserSurvey::class)
-			->create();
+    public function testSurveyCreateShowSurveySaved()
+    {
+        $survey = UserSurvey::factory()->create();
 
-		$user = $survey->create_user;
+        $user = $survey->create_user;
 
-		$this->actingAs($user)
-			->get(route('surveys.create'))
-			->assertOk()
-			->assertSeeText(__('survey.your_responses_were_saved_successfully'));
+        $this->actingAs($user)
+            ->get(route('surveys.create'))
+            ->assertOk()
+            ->assertSeeText(__('survey.your_responses_were_saved_successfully'));
 
-	}
+    }
 }

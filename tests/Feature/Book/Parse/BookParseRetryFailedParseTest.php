@@ -8,22 +8,22 @@ use Tests\TestCase;
 
 class BookParseRetryFailedParseTest extends TestCase
 {
-	public function testRetryFailedParseHttp()
-	{
-		$admin = factory(User::class)->states('admin')->create();
+    public function testRetryFailedParseHttp()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$parse = factory(BookParse::class)->states('failed')->create();
+        $parse = BookParse::factory()->failed()->create();
 
-		$book = $parse->book;
+        $book = $parse->book;
 
-		$this->actingAs($admin)
-			->get(route('books.retry_failed_parse', ['book' => $book]))
-			->assertRedirect();
+        $this->actingAs($admin)
+            ->get(route('books.retry_failed_parse', ['book' => $book]))
+            ->assertRedirect();
 
-		$book->refresh();
-		$parse = $book->parse;
+        $book->refresh();
+        $parse = $book->parse;
 
-		$this->assertTrue($parse->isWait());
-		$this->assertEquals($admin->id, $parse->create_user->id);
-	}
+        $this->assertTrue($parse->isWait());
+        $this->assertEquals($admin->id, $parse->create_user->id);
+    }
 }

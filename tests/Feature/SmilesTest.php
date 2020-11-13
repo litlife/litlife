@@ -13,129 +13,126 @@ use Tests\TestCase;
 
 class SmilesTest extends TestCase
 {
-	public function testArtisan()
-	{
-		Carbon::setTestNow(Carbon::create(2020, 12, 31));
+    public function testArtisan()
+    {
+        Carbon::setTestNow(Carbon::create(2020, 12, 31));
 
-		Variable::updateOrCreate(
-			['name' => VariablesEnum::SmilesJsonUrl],
-			['value' => null]
-		);
+        Variable::updateOrCreate(
+            ['name' => VariablesEnum::SmilesJsonUrl],
+            ['value' => null]
+        );
 
-		$path = Variable::where('name', VariablesEnum::SmilesJsonUrl)->first();
+        $path = Variable::where('name', VariablesEnum::SmilesJsonUrl)->first();
 
-		$this->assertNull($path->value);
+        $this->assertNull($path->value);
 
-		Storage::fake(config('filesystems.default'));
+        Storage::fake(config('filesystems.default'));
 
-		Artisan::call('smile:create_json_file');
+        Artisan::call('smile:create_json_file');
 
-		$this->assertTrue(Storage::exists('smiles/list.json'));
+        $this->assertTrue(Storage::exists('smiles/list.json'));
 
-		$path = Variable::where('name', VariablesEnum::SmilesJsonUrl)->first();
+        $path = Variable::where('name', VariablesEnum::SmilesJsonUrl)->first();
 
-		$this->assertNotNull($path->value);
-		$this->assertRegExp('/smiles\/list\.json\?id\=([A-z0-9]{32})$/iu', $path->value);
+        $this->assertNotNull($path->value);
+        $this->assertRegExp('/smiles\/list\.json\?id\=([A-z0-9]{32})$/iu', $path->value);
 
-		$string = Storage::get('smiles/list.json');
+        $string = Storage::get('smiles/list.json');
 
-		preg_match('/^\/\*\*\/jsonp\((.*)\)$/iu', $string, $match);
+        preg_match('/^\/\*\*\/jsonp\((.*)\)$/iu', $string, $match);
 
-		$array = json_decode($match[1]);
+        $array = json_decode($match[1]);
 
-		$this->assertNotNull($array);
-		$this->assertIsArray($array);
-	}
+        $this->assertNotNull($array);
+        $this->assertIsArray($array);
+    }
 
-	public function testIsIncludeSmilesForNewYear()
-	{
-		Carbon::setTestNow(Carbon::create(2020, 12, 05));
+    public function testIsIncludeSmilesForNewYear()
+    {
+        Carbon::setTestNow(Carbon::create(2020, 12, 05));
 
-		$class = new Smile();
-		$this->assertFalse($class->isIncludeSmilesForNewYear());
+        $class = new Smile();
+        $this->assertFalse($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 12, 10));
+        Carbon::setTestNow(Carbon::create(2020, 12, 10));
 
-		$this->assertTrue($class->isIncludeSmilesForNewYear());
+        $this->assertTrue($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 12, 31));
+        Carbon::setTestNow(Carbon::create(2020, 12, 31));
 
-		$this->assertTrue($class->isIncludeSmilesForNewYear());
+        $this->assertTrue($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 01, 01));
+        Carbon::setTestNow(Carbon::create(2020, 01, 01));
 
-		$this->assertTrue($class->isIncludeSmilesForNewYear());
+        $this->assertTrue($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 01, 10));
+        Carbon::setTestNow(Carbon::create(2020, 01, 10));
 
-		$this->assertTrue($class->isIncludeSmilesForNewYear());
+        $this->assertTrue($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 01, 16));
+        Carbon::setTestNow(Carbon::create(2020, 01, 16));
 
-		$this->assertFalse($class->isIncludeSmilesForNewYear());
+        $this->assertFalse($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 01, 30));
+        Carbon::setTestNow(Carbon::create(2020, 01, 30));
 
-		$this->assertFalse($class->isIncludeSmilesForNewYear());
+        $this->assertFalse($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 02, 10));
+        Carbon::setTestNow(Carbon::create(2020, 02, 10));
 
-		$this->assertFalse($class->isIncludeSmilesForNewYear());
+        $this->assertFalse($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 03, 20));
+        Carbon::setTestNow(Carbon::create(2020, 03, 20));
 
-		$this->assertFalse($class->isIncludeSmilesForNewYear());
+        $this->assertFalse($class->isIncludeSmilesForNewYear());
 
-		Carbon::setTestNow(Carbon::create(2020, 06, 01));
+        Carbon::setTestNow(Carbon::create(2020, 06, 01));
 
-		$this->assertFalse($class->isIncludeSmilesForNewYear());
-	}
+        $this->assertFalse($class->isIncludeSmilesForNewYear());
+    }
 
-	public function testConsiderTimeScope()
-	{
-		Carbon::setTestNow(Carbon::create(2020, 01, 01));
+    public function testConsiderTimeScope()
+    {
+        Carbon::setTestNow(Carbon::create(2020, 01, 01));
 
-		$smile_for_new_year = factory(Smile::class)
-			->states('for_new_year')
-			->create();
+        $smile_for_new_year = Smile::factory()->for_new_year()->create();
 
-		$smile = factory(Smile::class)
-			->create();
+        $smile = Smile::factory()->create();
 
-		$this->assertNotNull(Smile::considerTime()->find($smile_for_new_year->id));
-		$this->assertNotNull(Smile::considerTime()->find($smile->id));
+        $this->assertNotNull(Smile::considerTime()->find($smile_for_new_year->id));
+        $this->assertNotNull(Smile::considerTime()->find($smile->id));
 
-		Carbon::setTestNow(Carbon::create(2020, 06, 06));
+        Carbon::setTestNow(Carbon::create(2020, 06, 06));
 
-		$this->assertNull(Smile::considerTime()->find($smile_for_new_year->id));
-		$this->assertNotNull(Smile::considerTime()->find($smile->id));
-	}
+        $this->assertNull(Smile::considerTime()->find($smile_for_new_year->id));
+        $this->assertNotNull(Smile::considerTime()->find($smile->id));
+    }
 
-	/*
-		public function testGetSmiles()
-		{
-			Carbon::setTestNow(Carbon::create(2020, 01, 01));
+    /*
+        public function testGetSmiles()
+        {
+            Carbon::setTestNow(Carbon::create(2020, 01, 01));
 
-			$class = new SmilesCreateJsonFile();
+            $class = new SmilesCreateJsonFile();
 
-			dd($class->getSmiles());
-		}
-		*/
+            dd($class->getSmiles());
+        }
+        */
 
-	public function testHomeIfSmilesUrlNotFound()
-	{
-		Variable::where('name', VariablesEnum::SmilesJsonUrl)
-			->delete();
+    public function testHomeIfSmilesUrlNotFound()
+    {
+        Variable::where('name', VariablesEnum::SmilesJsonUrl)
+            ->delete();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('home'))
-			->assertOk();
-	}
+        $this->actingAs($user)
+            ->get(route('home'))
+            ->assertOk();
+    }
 
-	public function clearSmiles()
-	{
-		Smile::truncate();
-	}
+    public function clearSmiles()
+    {
+        Smile::truncate();
+    }
 }

@@ -8,50 +8,46 @@ use Tests\TestCase;
 
 class BookmarkDeleteTest extends TestCase
 {
-	public function testDeleteHttp()
-	{
-		$bookmark = factory(Bookmark::class)
-			->create();
+    public function testDeleteHttp()
+    {
+        $bookmark = Bookmark::factory()->create();
 
-		$response = $this->actingAs($bookmark->create_user)
-			->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
-			->assertStatus(200);
+        $response = $this->actingAs($bookmark->create_user)
+            ->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
+            ->assertStatus(200);
 
-		$bookmark->refresh();
+        $bookmark->refresh();
 
-		$response->assertJson($bookmark->toArray());
+        $response->assertJson($bookmark->toArray());
 
-		$this->assertTrue($bookmark->trashed());
-	}
+        $this->assertTrue($bookmark->trashed());
+    }
 
-	public function testRestoreHttp()
-	{
-		$bookmark = factory(Bookmark::class)
-			->create();
+    public function testRestoreHttp()
+    {
+        $bookmark = Bookmark::factory()->create();
 
-		$bookmark->delete();
+        $bookmark->delete();
 
-		$response = $this->actingAs($bookmark->create_user)
-			->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
-			->assertStatus(200);
+        $response = $this->actingAs($bookmark->create_user)
+            ->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
+            ->assertStatus(200);
 
-		$bookmark->refresh();
+        $bookmark->refresh();
 
-		$response->assertJson($bookmark->toArray());
+        $response->assertJson($bookmark->toArray());
 
-		$this->assertFalse($bookmark->trashed());
-	}
+        $this->assertFalse($bookmark->trashed());
+    }
 
-	public function testDeleteOtherUser()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testDeleteOtherUser()
+    {
+        $user = User::factory()->create();
 
-		$bookmark = factory(Bookmark::class)
-			->create();
+        $bookmark = Bookmark::factory()->create();
 
-		$response = $this->actingAs($user)
-			->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
-			->assertForbidden();
-	}
+        $response = $this->actingAs($user)
+            ->delete(route('bookmarks.destroy', ['bookmark' => $bookmark->id]))
+            ->assertForbidden();
+    }
 }

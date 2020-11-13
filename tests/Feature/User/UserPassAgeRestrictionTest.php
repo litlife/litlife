@@ -8,23 +8,21 @@ use Tests\TestCase;
 
 class UserPassAgeRestrictionTest extends TestCase
 {
-	public function testSetCookiePassAgeRestriction()
-	{
-		$age = 12;
+    public function testSetCookiePassAgeRestriction()
+    {
+        $age = 12;
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$book = factory(Book::class)
-			->create(['age' => 18]);
+        $book = Book::factory()->create(['age' => 18]);
 
-		$name = 'can_pass_age';
+        $name = 'can_pass_age';
 
-		$this->actingAs($user)
-			->get(route('user_pass_age_restriction', ['age' => $age]))
-			->assertOk()
-			->assertJson([$name => $age])
-			->assertCookie($name, $age)
-			->assertCookieNotExpired($name);
-	}
+        $this->actingAs($user)
+            ->get(route('user_pass_age_restriction', ['age' => $age]))
+            ->assertOk()
+            ->assertJson([$name => $age])
+            ->assertCookie($name, $age)
+            ->assertCookieNotExpired($name);
+    }
 }

@@ -1,97 +1,115 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Book;
 use App\BookFile;
 use App\BookFileDownloadLog;
 use App\Enums\StatusEnum;
-use Faker\Generator as Faker;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(App\BookFile::class, function (Faker $faker) {
-	return [
-		'name' => uniqid() . '.txt',
-		'format' => 'txt',
-		'book_id' => function () {
-			return factory(App\Book::class)->create()->id;
-		},
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'size' => rand(1245, 345346),
-		'file_size' => rand(1245, 345346),
-		'md5' => $faker->md5,
-		'status' => StatusEnum::Accepted
-	];
-});
+class BookFileFactory extends Factory
+{
+    use CheckedItems;
 
-$factory->afterMaking(App\BookFile::class, function (BookFile $file, $faker) {
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookFile::class;
 
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => uniqid().'.txt',
+            'format' => 'txt',
+            'book_id' => Book::factory(),
+            'create_user_id' => User::factory(),
+            'size' => rand(1245, 345346),
+            'file_size' => rand(1245, 345346),
+            'md5' => $this->faker->md5,
+            'status' => StatusEnum::Accepted
+        ];
+    }
 
-$factory->afterMakingState(App\BookFile::class, 'private', function (BookFile $file, $faker) {
-	$file->statusPrivate();
-});
+    public function txt()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            //$file->name = $file->book->name_for_book_file;
+            $tmp = tmpfile();
+            fwrite($tmp, 'text text text');
+            $file->open($tmp, 'txt');
 
-$factory->afterMakingState(App\BookFile::class, 'accepted', function (BookFile $file, $faker) {
-	$file->statusAccepted();
-});
+            $file->format = 'txt';
+        });
+    }
 
-$factory->afterMakingState(App\BookFile::class, 'sent_for_review', function (BookFile $file, $faker) {
-	$file->statusSentForReview();
-});
+    public function odt()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            $string = 'text text text';
 
-$factory->afterMakingState(App\BookFile::class, 'txt', function (BookFile $file, $faker) {
+            $stream = tmpfile();
+            fwrite($stream, $string);
 
-	//$file->name = $file->book->name_for_book_file;
-	$tmp = tmpfile();
-	fwrite($tmp, 'text text text');
-	$file->open($tmp, 'txt');
+            $file->open($stream, 'odt');
+        });
+    }
 
-	$file->format = 'txt';
-});
+    public function fb2()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            $string = 'text text text';
 
-$factory->afterMakingState(App\BookFile::class, 'odt', function (BookFile $file, $faker) {
+            $stream = tmpfile();
+            fwrite($stream, $string);
 
-	$string = 'text text text';
+            $file->open($stream, 'fb2');
+        });
+    }
 
-	$stream = tmpfile();
-	fwrite($stream, $string);
+    public function zip()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            $file->zip = true;
+        });
+    }
 
-	$file->open($stream, 'odt');
-});
+    public function storage_public()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            $file->storage = 'public';
+        });
+    }
 
-$factory->afterMakingState(App\BookFile::class, 'fb2', function (BookFile $file, $faker) {
+    public function storage_private()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            $file->storage = 'private';
+        });
+    }
 
-	$string = 'text text text';
+    public function storage_old()
+    {
+        return $this->afterMaking(function (BookFile $file) {
+            $file->storage = 'old';
+        });
+    }
 
-	$stream = tmpfile();
-	fwrite($stream, $string);
+    public function with_download_log()
+    {
+        return $this->afterCreating(function (BookFile $file) {
+            $log = BookFileDownloadLog::factory()->create(['book_file_id' => $file->id]);
 
-	$file->open($stream, 'fb2');
-});
-
-$factory->afterMakingState(App\BookFile::class, 'zip', function (BookFile $file, $faker) {
-
-	$file->zip = true;
-});
-
-$factory->afterMakingState(App\BookFile::class, 'storage_public', function (BookFile $file, $faker) {
-	$file->storage = 'public';
-});
-
-$factory->afterMakingState(App\BookFile::class, 'storage_private', function (BookFile $file, $faker) {
-	$file->storage = 'private';
-});
-
-$factory->afterMakingState(App\BookFile::class, 'storage_old', function (BookFile $file, $faker) {
-	$file->storage = 'old';
-});
-
-$factory->afterCreatingState(App\BookFile::class, 'with_download_log', function (BookFile $file, $faker) {
-
-	$log = factory(BookFileDownloadLog::class)
-		->create(['book_file_id' => $file->id]);
-
-	$file->refreshDownloadCount();
-	$file->save();
-});
-
-
+            $file->refreshDownloadCount();
+            $file->save();
+        });
+    }
+}

@@ -10,251 +10,254 @@ use Tests\TestCase;
 
 class AuthorDetectLangTest extends TestCase
 {
-	public function testUpdateLang()
-	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+    public function testUpdateLang()
+    {
+        $author = Author::factory()
+            ->accepted()
+            ->create(['lang' => 'ES']);
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+        $book = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+        $book2 = Book::factory()
+            ->create(['ti_lb' => 'EN']);
 
-		$book3 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+        $book3 = Book::factory()
+            ->create(['ti_lb' => 'EN']);
 
-		$author->written_books()->sync([$book->id]);
-		$author->translated_books()->sync([$book2->id, $book3->id]);
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $author->written_books()->sync([$book->id]);
+        $author->translated_books()->sync([$book2->id, $book3->id]);
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('EN', $author->lang);
-	}
+        $this->assertEquals('EN', $author->lang);
+    }
 
-	public function testUpdateLang2()
-	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+    public function testUpdateLang2()
+    {
+        $author = Author::factory()
+            ->accepted()
+            ->create(['lang' => 'ES']);
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+        $book = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+        $book2 = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+        $book3 = Book::factory()
+            ->create(['ti_lb' => 'EN']);
 
-		$author->written_books()->sync([$book->id]);
-		$author->translated_books()->sync([$book2->id, $book3->id]);
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $author->written_books()->sync([$book->id]);
+        $author->translated_books()->sync([$book2->id, $book3->id]);
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $this->assertEquals('RU', $author->lang);
+    }
 
-	public function testUpdateLang3()
-	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+    public function testUpdateLang3()
+    {
+        $author = Author::factory()
+            ->accepted()
+            ->create(['lang' => 'ES']);
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+        $book = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		$book2 = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+        $book2 = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->create(['ti_lb' => 'EN']);
+        $book3 = Book::factory()
+            ->create(['ti_lb' => 'EN']);
 
-		$author->written_books()->sync([$book->id]);
-		$author->compiled_books()->sync([$book2->id, $book3->id]);
-		$author->edited_books()->sync([$book2->id, $book3->id]);
-		$author->illustrated_books()->sync([$book2->id, $book3->id]);
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $author->written_books()->sync([$book->id]);
+        $author->compiled_books()->sync([$book2->id, $book3->id]);
+        $author->edited_books()->sync([$book2->id, $book3->id]);
+        $author->illustrated_books()->sync([$book2->id, $book3->id]);
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $this->assertEquals('RU', $author->lang);
+    }
 
-	public function testUpdateLangWithoutBooks()
-	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+    public function testUpdateLangWithoutBooks()
+    {
+        $author = Author::factory()
+            ->accepted()
+            ->create(['lang' => 'ES']);
 
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('ES', $author->lang);
-	}
+        $this->assertEquals('ES', $author->lang);
+    }
 
-	public function testRefreshLangIfExists()
-	{
-		$author = factory(Author::class)
-			->create(['lang' => 'ES']);
+    public function testRefreshLangIfExists()
+    {
+        $author = Author::factory()
+            ->create(['lang' => 'ES']);
 
-		$this->assertEquals('ES', $author->lang);
+        $this->assertEquals('ES', $author->lang);
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
-		$author->written_books()->sync([$book->id]);
-		$author->updateLang();
-		$author->save();
-		$author->refresh();
+        $book = Book::factory()
+            ->create(['ti_lb' => 'RU']);
+        $author->written_books()->sync([$book->id]);
+        $author->updateLang();
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('ES', $author->lang);
+        $this->assertEquals('ES', $author->lang);
 
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $this->assertEquals('RU', $author->lang);
+    }
 
-	public function testIfLangIsNullWithoutBooks()
-	{
-		$author = factory(Author::class)
-			->create(['lang' => null]);
+    public function testIfLangIsNullWithoutBooks()
+    {
+        $author = Author::factory()
+            ->create(['lang' => null]);
 
-		$this->assertNull($author->lang);
+        $this->assertNull($author->lang);
 
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('', $author->lang);
-	}
+        $this->assertEquals('', $author->lang);
+    }
 
-	public function testIfLangIsNullWithBooks()
-	{
-		$author = factory(Author::class)
-			->create(['lang' => null]);
+    public function testIfLangIsNullWithBooks()
+    {
+        $author = Author::factory()
+            ->create(['lang' => null]);
 
-		$this->assertNull($author->lang);
+        $this->assertNull($author->lang);
 
-		$book = factory(Book::class)->create(['ti_lb' => 'RU']);
-		$author->written_books()->sync([$book->id]);
-		$author->save();
-		$author->refresh();
+        $book = Book::factory()->create(['ti_lb' => 'RU']);
+        $author->written_books()->sync([$book->id]);
+        $author->save();
+        $author->refresh();
 
-		$author->updateLang();
-		$author->save();
-		$author->refresh();
+        $author->updateLang();
+        $author->save();
+        $author->refresh();
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $this->assertEquals('RU', $author->lang);
+    }
 
-	public function testDetectCommand()
-	{
-		$author = factory(Author::class)
-			->create(['lang' => null]);
+    public function testDetectCommand()
+    {
+        $author = Author::factory()
+            ->create(['lang' => null]);
 
-		Artisan::call('author:detect_lang', ['limit' => 10]);
+        Artisan::call('author:detect_lang', ['limit' => 10]);
 
-		$author->refresh();
+        $author->refresh();
 
-		$this->assertNull($author->lang);
+        $this->assertNull($author->lang);
 
-		$book = factory(Book::class)->create(['ti_lb' => 'RU']);
-		$author->written_books()->sync([$book->id]);
-		$author->save();
-		UpdateAuthorBooksCount::dispatch($author);
-		$author->refresh();
-		$this->assertEquals(1, $author->books_count);
+        $book = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		Artisan::call('author:detect_lang', ['limit' => 10]);
+        $author->written_books()->sync([$book->id]);
+        $author->save();
+        UpdateAuthorBooksCount::dispatch($author);
+        $author->refresh();
+        $this->assertEquals(1, $author->books_count);
 
-		$author->refresh();
+        Artisan::call('author:detect_lang', ['limit' => 10]);
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $author->refresh();
 
-	public function testIfAuthorPrivateAndBookPrivate()
-	{
-		$author = factory(Author::class)
-			->states('private')
-			->create(['lang' => 'ES']);
+        $this->assertEquals('RU', $author->lang);
+    }
 
-		$book = factory(Book::class)
-			->create(['ti_lb' => 'RU']);
+    public function testIfAuthorPrivateAndBookPrivate()
+    {
+        $author = Author::factory()
+            ->private()
+            ->create(['lang' => 'ES']);
 
-		$book2 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+        $book = Book::factory()
+            ->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+        $book2 = Book::factory()
+            ->private()
+            ->create(['ti_lb' => 'EN']);
 
-		$author->written_books()->sync([$book->id]);
-		$author->translated_books()->sync([$book2->id, $book3->id]);
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $book3 = Book::factory()
+            ->private()
+            ->create(['ti_lb' => 'EN']);
 
-		$this->assertEquals('EN', $author->lang);
-	}
+        $author->written_books()->sync([$book->id]);
+        $author->translated_books()->sync([$book2->id, $book3->id]);
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-	public function testIfAuthorAcceptedAndBooksPrivate()
-	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+        $this->assertEquals('EN', $author->lang);
+    }
 
-		$book = factory(Book::class)
-			->states('accepted')
-			->create(['ti_lb' => 'RU']);
+    public function testIfAuthorAcceptedAndBooksPrivate()
+    {
+        $author = Author::factory()
+            ->accepted()
+            ->create(['lang' => 'ES']);
 
-		$book2 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+        $book = Book::factory()
+            ->accepted()
+            ->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+        $book2 = Book::factory()
+            ->private()
+            ->create(['ti_lb' => 'EN']);
 
-		$author->written_books()->sync([$book->id]);
-		$author->translated_books()->sync([$book2->id, $book3->id]);
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $book3 = Book::factory()
+            ->private()
+            ->create(['ti_lb' => 'EN']);
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $author->written_books()->sync([$book->id]);
+        $author->translated_books()->sync([$book2->id, $book3->id]);
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
 
-	public function testIfAuthorAcceptedAndBooksSentForReview()
-	{
-		$author = factory(Author::class)
-			->states('accepted')
-			->create(['lang' => 'ES']);
+        $this->assertEquals('RU', $author->lang);
+    }
 
-		$book = factory(Book::class)
-			->states('sent_for_review')
-			->create(['ti_lb' => 'RU']);
+    public function testIfAuthorAcceptedAndBooksSentForReview()
+    {
+        $author = Author::factory()
+            ->accepted()
+            ->create(['lang' => 'ES']);
 
-		$book2 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+        $book = Book::factory()
+            ->sent_for_review()
+            ->create(['ti_lb' => 'RU']);
 
-		$book3 = factory(Book::class)
-			->states('private')
-			->create(['ti_lb' => 'EN']);
+        $book2 = Book::factory()
+            ->private()
+            ->create(['ti_lb' => 'EN']);
 
-		$author->written_books()->sync([$book->id]);
-		$author->translated_books()->sync([$book2->id, $book3->id]);
-		$author->updateLang(true);
-		$author->save();
-		$author->refresh();
+        $book3 = Book::factory()
+            ->private()
+            ->create(['ti_lb' => 'EN']);
 
-		$this->assertEquals('RU', $author->lang);
-	}
+        $author->written_books()->sync([$book->id]);
+        $author->translated_books()->sync([$book2->id, $book3->id]);
+        $author->updateLang(true);
+        $author->save();
+        $author->refresh();
+
+        $this->assertEquals('RU', $author->lang);
+    }
 }
+

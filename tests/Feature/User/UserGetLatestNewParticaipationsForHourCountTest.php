@@ -9,84 +9,76 @@ use Tests\TestCase;
 
 class UserGetLatestNewParticaipationsForHourCountTest extends TestCase
 {
-	public function testLatestParticipationsForHourCount()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testLatestParticipationsForHourCount()
+    {
+        $user = User::factory()->create();
 
-		$user1 = factory(User::class)->create();
+        $user1 = User::factory()->create();
 
-		$message1 = factory(Message::class)
-			->create([
-				'create_user_id' => $user->id,
-				'recepient_id' => $user1->id
-			])->fresh();
+        $message1 = Message::factory()->create([
+            'create_user_id' => $user->id,
+            'recepient_id' => $user1->id
+        ])->fresh();
 
-		$this->assertEquals(1, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(1, $user->latest_new_particaipations_for_hour_count());
 
-		$user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
-		$message2 = factory(Message::class)
-			->create([
-				'create_user_id' => $user->id,
-				'recepient_id' => $user2->id
-			])->fresh();
+        $message2 = Message::factory()->create([
+            'create_user_id' => $user->id,
+            'recepient_id' => $user2->id
+        ])->fresh();
 
-		$this->assertEquals(2, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(2, $user->latest_new_particaipations_for_hour_count());
 
-		$user3 = factory(User::class)->create();
+        $user3 = User::factory()->create();
 
-		$message3 = factory(Message::class)
-			->create([
-				'create_user_id' => $user->id,
-				'recepient_id' => $user3->id
-			])->fresh();
+        $message3 = Message::factory()->create([
+            'create_user_id' => $user->id,
+            'recepient_id' => $user3->id
+        ])->fresh();
 
-		$this->assertEquals(3, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(3, $user->latest_new_particaipations_for_hour_count());
 
-		$message4 = factory(Message::class)
-			->create([
-				'create_user_id' => $user3->id,
-				'recepient_id' => $user->id
-			])->fresh();
+        $message4 = Message::factory()->create([
+            'create_user_id' => $user3->id,
+            'recepient_id' => $user->id
+        ])->fresh();
 
-		$this->assertEquals(2, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(2, $user->latest_new_particaipations_for_hour_count());
 
-		$message2->deleteForUser($user);
+        $message2->deleteForUser($user);
 
-		$this->assertEquals(1, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(1, $user->latest_new_particaipations_for_hour_count());
 
-		$time = now()->addHour()->addMinute();
+        $time = now()->addHour()->addMinute();
 
-		Carbon::setTestNow($time);
+        Carbon::setTestNow($time);
 
-		$this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
 
-		//
+        //
 
-		$message = factory(Message::class)
-			->create([
-				'create_user_id' => $user->id,
-				'recepient_id' => $user1
-			])->fresh();
+        $message = Message::factory()->create([
+            'create_user_id' => $user->id,
+            'recepient_id' => $user1
+        ])->fresh();
 
-		$this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
 
-		$message = factory(Message::class)
-			->create([
-				'create_user_id' => $user->id,
-				'recepient_id' => $user2
-			])->fresh();
+        $message = Message::factory()->create([
+            'create_user_id' => $user->id,
+            'recepient_id' => $user2
+        ])->fresh();
 
-		$this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
+        $this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
 
-		$message = factory(Message::class)
-			->create([
-				'create_user_id' => $user->id,
-				'recepient_id' => $user3
-			])->fresh();
+        $message = Message::factory()->create([
+            'create_user_id' => $user->id,
+            'recepient_id' => $user3
+        ])->fresh();
 
-		$this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
-	}
+        $this->assertEquals(0, $user->latest_new_particaipations_for_hour_count());
+    }
 
 }

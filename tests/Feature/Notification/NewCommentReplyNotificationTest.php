@@ -10,76 +10,70 @@ use Tests\TestCase;
 
 class NewCommentReplyNotificationTest extends TestCase
 {
-	public function setUp(): void
-	{
-		parent::setUp();
+    public function setUp(): void
+    {
+        parent::setUp();
 
-		Notification::fake();
-	}
+        Notification::fake();
+    }
 
-	public function testViaMail()
-	{
-		$comment = factory(Comment::class)
-			->create();
+    public function testViaMail()
+    {
+        $comment = Comment::factory()->create();
 
-		$user = factory(User::class)->states('with_confirmed_email')->create();
-		$user->email_notification_setting->comment_reply = true;
-		$user->email_notification_setting->db_comment_reply = false;
-		$user->push();
+        $user = User::factory()->with_confirmed_email()->create();
+        $user->email_notification_setting->comment_reply = true;
+        $user->email_notification_setting->db_comment_reply = false;
+        $user->push();
 
-		$notification = new NewCommentReplyNotification($comment);
+        $notification = new NewCommentReplyNotification($comment);
 
-		$this->assertEquals(['mail'], $notification->via($user));
-	}
+        $this->assertEquals(['mail'], $notification->via($user));
+    }
 
-	public function testViaDatabase()
-	{
-		$comment = factory(Comment::class)
-			->create();
+    public function testViaDatabase()
+    {
+        $comment = Comment::factory()->create();
 
-		$user = factory(User::class)->states('with_confirmed_email')->create();
-		$user->email_notification_setting->comment_reply = false;
-		$user->email_notification_setting->db_comment_reply = true;
-		$user->push();
+        $user = User::factory()->with_confirmed_email()->create();
+        $user->email_notification_setting->comment_reply = false;
+        $user->email_notification_setting->db_comment_reply = true;
+        $user->push();
 
-		$notification = new NewCommentReplyNotification($comment);
+        $notification = new NewCommentReplyNotification($comment);
 
-		$this->assertEquals(['database'], $notification->via($user));
-	}
+        $this->assertEquals(['database'], $notification->via($user));
+    }
 
-	public function testToArray()
-	{
-		$comment = factory(Comment::class)
-			->create();
+    public function testToArray()
+    {
+        $comment = Comment::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$notification = new NewCommentReplyNotification($comment);
+        $notification = new NewCommentReplyNotification($comment);
 
-		$data = $notification->toArray($user);
+        $data = $notification->toArray($user);
 
-		$this->assertEquals(__('notification.comment_reply.subject'), $data['title']);
-		$this->assertEquals(__('notification.comment_reply.line', ['userName' => $comment->create_user->userName]), $data['description']);
-		$this->assertEquals(route('comments.go', ['comment' => $comment]), $data['url']);
-	}
+        $this->assertEquals(__('notification.comment_reply.subject'), $data['title']);
+        $this->assertEquals(__('notification.comment_reply.line', ['userName' => $comment->create_user->userName]), $data['description']);
+        $this->assertEquals(route('comments.go', ['comment' => $comment]), $data['url']);
+    }
 
-	public function testToMail()
-	{
-		$comment = factory(Comment::class)
-			->create();
+    public function testToMail()
+    {
+        $comment = Comment::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$notification = new NewCommentReplyNotification($comment);
+        $notification = new NewCommentReplyNotification($comment);
 
-		$mail = $notification->toMail($user);
+        $mail = $notification->toMail($user);
 
-		$this->assertEquals(__('notification.comment_reply.subject'), $mail->subject);
-		$this->assertEquals(__('notification.comment_reply.line', ['userName' => $comment->create_user->userName]), $mail->introLines[0]);
+        $this->assertEquals(__('notification.comment_reply.subject'), $mail->subject);
+        $this->assertEquals(__('notification.comment_reply.line', ['userName' => $comment->create_user->userName]), $mail->introLines[0]);
 
-		$this->assertEquals(route('comments.go', ['comment' => $comment]), $mail->actionUrl);
-		$this->assertEquals(__('notification.comment_reply.action'), $mail->actionText);
-	}
+        $this->assertEquals(route('comments.go', ['comment' => $comment]), $mail->actionUrl);
+        $this->assertEquals(__('notification.comment_reply.action'), $mail->actionText);
+    }
 }

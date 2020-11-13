@@ -20,10 +20,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Variable disableCache()
  * @method static CachedBuilder|Variable newModelQuery()
  * @method static CachedBuilder|Variable newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static CachedBuilder|Variable query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|Variable whereCreatedAt($value)
  * @method static Builder|Variable whereId($value)
  * @method static Builder|Variable whereName($value)
@@ -34,21 +34,21 @@ use Illuminate\Support\Carbon;
  */
 class Variable extends Model
 {
-	use Cachable;
+    use Cachable;
 
-	public $rememberCacheTag = 'Variable';
-	protected $fillable = [
-		'name',
-		'value'
-	];
+    public $rememberCacheTag = 'Variable';
+    protected $fillable = [
+        'name',
+        'value'
+    ];
 
-	public function getValueAttribute($value)
-	{
-		return unserialize($value);
-	}
+    public function getValueAttribute($value)
+    {
+        return unserialize($value);
+    }
 
-	public function setValueAttribute($value)
-	{
-		$this->attributes['value'] = serialize($value);
-	}
+    public function setValueAttribute($value)
+    {
+        $this->attributes['value'] = serialize($value);
+    }
 }

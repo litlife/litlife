@@ -1,16 +1,32 @@
 <?php
 
-use App\User;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\UserSocialAccount::class, function (Faker $faker) {
-	return [
-		'user_id' => function () {
-			return factory(User::class)->create();
-		},
-		'provider_user_id' => rand(1, 10000000000),
-		'provider' => 'google',
-		'access_token' => $faker->linuxPlatformToken,
-		'parameters' => '{"id": "' . rand(1, 10000000000) . '"}'
-	];
-});
+use App\User;
+use App\UserSocialAccount;
+
+class UserSocialAccountFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserSocialAccount::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'provider_user_id' => rand(1, 10000000000),
+            'provider' => 'google',
+            'access_token' => $this->faker->linuxPlatformToken,
+            'parameters' => '{"id": "'.rand(1, 10000000000).'"}'
+        ];
+    }
+}

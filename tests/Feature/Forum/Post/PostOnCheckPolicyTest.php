@@ -8,21 +8,21 @@ use Tests\TestCase;
 
 class PostOnCheckPolicyTest extends TestCase
 {
-	public function testCanIfHasPermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->check_post_comments = true;
-		$user->push();
+    public function testCanIfHasPermission()
+    {
+        $user = User::factory()->create();
+        $user->group->check_post_comments = true;
+        $user->push();
 
-		$this->assertTrue($user->can('viewOnCheck', Post::class));
-	}
+        $this->assertTrue($user->can('viewOnCheck', Post::class));
+    }
 
-	public function testCantIfDoesntHavePermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->check_post_comments = false;
-		$user->push();
+    public function testCantIfDoesntHavePermission()
+    {
+        $user = User::factory()->create();
+        $user->group->check_post_comments = false;
+        $user->push();
 
-		$this->assertFalse($user->can('viewOnCheck', Post::class));
-	}
+        $this->assertFalse($user->can('viewOnCheck', Post::class));
+    }
 }

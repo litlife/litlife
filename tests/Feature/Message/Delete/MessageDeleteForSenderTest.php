@@ -9,315 +9,295 @@ use Tests\TestCase;
 
 class MessageDeleteForSenderTest extends TestCase
 {
-	public function testIfMessageNotViewed()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+    public function testIfMessageNotViewed()
+    {
+        $conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
-		$firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
-		$secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
+        $firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
+        $secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
 
-		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
+        $recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
-		$sender = $secondMessage->create_user;
-		$recepient = $recepientParticipation->user;
+        $sender = $secondMessage->create_user;
+        $recepient = $recepientParticipation->user;
 
-		$secondMessage->deleteForUser($sender);
-		$secondMessage->refresh();
+        $secondMessage->deleteForUser($sender);
+        $secondMessage->refresh();
 
-		$this->assertTrue($secondMessage->trashed());
+        $this->assertTrue($secondMessage->trashed());
 
-		$firstMessage->refresh();
+        $firstMessage->refresh();
 
-		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
+        $recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
-		$this->assertEquals(1, $recepientParticipation->new_messages_count);
-		$this->assertEquals(null, $recepientParticipation->latest_seen_message_id);
-		$this->assertEquals($firstMessage->id, $recepientParticipation->latest_message_id);
-		$this->assertEquals(1, $recepient->getNewMessagesCount());
+        $this->assertEquals(1, $recepientParticipation->new_messages_count);
+        $this->assertEquals(null, $recepientParticipation->latest_seen_message_id);
+        $this->assertEquals($firstMessage->id, $recepientParticipation->latest_message_id);
+        $this->assertEquals(1, $recepient->getNewMessagesCount());
 
-		$senderParticipation = $firstMessage->getSenderParticipation();
+        $senderParticipation = $firstMessage->getSenderParticipation();
 
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals($secondMessage->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals($firstMessage->id, $senderParticipation->latest_message_id);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
-	}
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals($secondMessage->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals($firstMessage->id, $senderParticipation->latest_message_id);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
+    }
 
-	public function testrIfMessageViewed()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_viewed_message')
-			->create();
+    public function testrIfMessageViewed()
+    {
+        $conversation = Conversation::factory()->with_two_viewed_message()->create();
 
-		$firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
-		$secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
+        $firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
+        $secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
 
-		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
+        $recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
-		$sender = $secondMessage->create_user;
-		$recepient = $recepientParticipation->user;
+        $sender = $secondMessage->create_user;
+        $recepient = $recepientParticipation->user;
 
-		$secondMessage->deleteForUser($sender);
-		$secondMessage->refresh();
+        $secondMessage->deleteForUser($sender);
+        $secondMessage->refresh();
 
-		$userDeletition = $secondMessage->user_deletetions()->first();
+        $userDeletition = $secondMessage->user_deletetions()->first();
 
-		$this->assertNotNull($userDeletition);
-		$this->assertEquals($userDeletition->user_id, $sender->id);
-		$this->assertEquals($userDeletition->message_id, $secondMessage->id);
-		$this->assertNotNull($userDeletition->deleted_at);
+        $this->assertNotNull($userDeletition);
+        $this->assertEquals($userDeletition->user_id, $sender->id);
+        $this->assertEquals($userDeletition->message_id, $secondMessage->id);
+        $this->assertNotNull($userDeletition->deleted_at);
 
-		$firstMessage->refresh();
+        $firstMessage->refresh();
 
-		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
+        $recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
-		$this->assertEquals(0, $recepientParticipation->new_messages_count);
-		$this->assertEquals($secondMessage->id, $recepientParticipation->latest_seen_message_id);
-		$this->assertEquals($secondMessage->id, $recepientParticipation->latest_message_id);
-		$this->assertEquals(0, $recepient->getNewMessagesCount());
+        $this->assertEquals(0, $recepientParticipation->new_messages_count);
+        $this->assertEquals($secondMessage->id, $recepientParticipation->latest_seen_message_id);
+        $this->assertEquals($secondMessage->id, $recepientParticipation->latest_message_id);
+        $this->assertEquals(0, $recepient->getNewMessagesCount());
 
-		$senderParticipation = $firstMessage->getSenderParticipation();
+        $senderParticipation = $firstMessage->getSenderParticipation();
 
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals($secondMessage->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals($firstMessage->id, $senderParticipation->latest_message_id);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
-	}
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals($secondMessage->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals($firstMessage->id, $senderParticipation->latest_message_id);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
+    }
 
-	public function testIfNotViewedAndItWasLatest()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_not_viewed_message')
-			->create();
+    public function testIfNotViewedAndItWasLatest()
+    {
+        $conversation = Conversation::factory()->with_not_viewed_message()->create();
 
-		$message = $conversation->messages()->first();
+        $message = $conversation->messages()->first();
 
-		$recepientParticipation = $message->getFirstRecepientParticipation();
+        $recepientParticipation = $message->getFirstRecepientParticipation();
 
-		$sender = $message->create_user;
-		$recepient = $recepientParticipation->user;
+        $sender = $message->create_user;
+        $recepient = $recepientParticipation->user;
 
-		$message->deleteForUser($sender);
-		$message->refresh();
+        $message->deleteForUser($sender);
+        $message->refresh();
 
-		$this->assertTrue($message->trashed());
+        $this->assertTrue($message->trashed());
 
-		$message->refresh();
+        $message->refresh();
 
-		$recepientParticipation = $message->getFirstRecepientParticipation();
+        $recepientParticipation = $message->getFirstRecepientParticipation();
 
-		$this->assertEquals(0, $recepientParticipation->new_messages_count);
-		$this->assertEquals(null, $recepientParticipation->latest_seen_message_id);
-		$this->assertEquals(null, $recepientParticipation->latest_message_id);
-		$this->assertEquals(0, $recepient->getNewMessagesCount());
+        $this->assertEquals(0, $recepientParticipation->new_messages_count);
+        $this->assertEquals(null, $recepientParticipation->latest_seen_message_id);
+        $this->assertEquals(null, $recepientParticipation->latest_message_id);
+        $this->assertEquals(0, $recepient->getNewMessagesCount());
 
-		$senderParticipation = $message->getSenderParticipation();
+        $senderParticipation = $message->getSenderParticipation();
 
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals(null, $senderParticipation->latest_message_id);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
-	}
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals(null, $senderParticipation->latest_message_id);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
+    }
 
-	public function testIfViewedAndItWasLatest()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_viewed_message')
-			->create();
+    public function testIfViewedAndItWasLatest()
+    {
+        $conversation = Conversation::factory()->with_viewed_message()->create();
 
-		$message = $conversation->messages()->first();
+        $message = $conversation->messages()->first();
 
-		$recepientParticipation = $message->getFirstRecepientParticipation();
+        $recepientParticipation = $message->getFirstRecepientParticipation();
 
-		$sender = $message->create_user;
-		$recepient = $recepientParticipation->user;
+        $sender = $message->create_user;
+        $recepient = $recepientParticipation->user;
 
-		$message->deleteForUser($sender);
-		$message->refresh();
+        $message->deleteForUser($sender);
+        $message->refresh();
 
-		$recepientParticipation = $message->getFirstRecepientParticipation();
-
-		$this->assertEquals(0, $recepientParticipation->new_messages_count);
-		$this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
-		$this->assertEquals($message->id, $recepientParticipation->latest_message_id);
-		$this->assertEquals(0, $recepient->getNewMessagesCount());
-
-		$senderParticipation = $message->getSenderParticipation();
+        $recepientParticipation = $message->getFirstRecepientParticipation();
 
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals(null, $senderParticipation->latest_message_id);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
-	}
-
-	public function testRouteIsOk()
-	{
-		$sender = factory(User::class)
-			->create();
+        $this->assertEquals(0, $recepientParticipation->new_messages_count);
+        $this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
+        $this->assertEquals($message->id, $recepientParticipation->latest_message_id);
+        $this->assertEquals(0, $recepient->getNewMessagesCount());
 
-		$recepient = factory(User::class)
-			->create();
+        $senderParticipation = $message->getSenderParticipation();
 
-		$message = factory(Message::class)
-			->states('not_viewed')
-			->create([
-				'create_user_id' => $sender->id,
-				'recepient_id' => $recepient->id
-			]);
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals(null, $senderParticipation->latest_message_id);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
+    }
 
-		// delete
-		$this->actingAs($sender)
-			->delete(route('messages.destroy', $message))
-			->assertOk();
+    public function testRouteIsOk()
+    {
+        $sender = User::factory()->create();
 
-		$this->assertFalse($message->isViewed());
+        $recepient = User::factory()->create();
 
-		$recepientParticipation = $recepient->participations()->first();
-		$this->assertEquals(0, $recepientParticipation->new_messages_count);
-		$this->assertNull($recepientParticipation->latest_message_id);
-		$this->assertNull($recepientParticipation->latest_seen_message_id);
-		$this->assertEquals(0, $recepient->getNewMessagesCount());
+        $message = Message::factory()->not_viewed()
+            ->create([
+                'create_user_id' => $sender->id,
+                'recepient_id' => $recepient->id
+            ]);
 
-		$senderParticipation = $sender->participations()->first();
-		$this->assertNull($senderParticipation->latest_message_id);
-		$this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
-	}
+        // delete
+        $this->actingAs($sender)
+            ->delete(route('messages.destroy', $message))
+            ->assertOk();
 
-	public function testRouteIsOkWithTwoMessages()
-	{
-		$conversation = factory(Conversation::class)
-			->states('with_two_not_viewed_message')
-			->create();
+        $this->assertFalse($message->isViewed());
 
-		$firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
-		$secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
+        $recepientParticipation = $recepient->participations()->first();
+        $this->assertEquals(0, $recepientParticipation->new_messages_count);
+        $this->assertNull($recepientParticipation->latest_message_id);
+        $this->assertNull($recepientParticipation->latest_seen_message_id);
+        $this->assertEquals(0, $recepient->getNewMessagesCount());
 
-		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
+        $senderParticipation = $sender->participations()->first();
+        $this->assertNull($senderParticipation->latest_message_id);
+        $this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
+    }
 
-		$sender = $secondMessage->create_user;
-		$recepient = $recepientParticipation->user;
+    public function testRouteIsOkWithTwoMessages()
+    {
+        $conversation = Conversation::factory()->with_two_not_viewed_message()->create();
 
-		$this->actingAs($sender)
-			->delete(route('messages.destroy', $secondMessage))
-			->assertOk();
+        $firstMessage = $conversation->messages()->orderBy('id', 'asc')->first();
+        $secondMessage = $conversation->messages()->orderBy('id', 'desc')->first();
 
-		$firstMessage->refresh();
+        $recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
-		$this->assertFalse($firstMessage->isViewed());
+        $sender = $secondMessage->create_user;
+        $recepient = $recepientParticipation->user;
 
-		$senderParticipation = $firstMessage->getSenderParticipation();
+        $this->actingAs($sender)
+            ->delete(route('messages.destroy', $secondMessage))
+            ->assertOk();
 
-		$this->assertEquals($firstMessage->id, $senderParticipation->latest_message_id);
-		$this->assertEquals($secondMessage->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
+        $firstMessage->refresh();
 
-		$recepientParticipation = $firstMessage->getFirstRecepientParticipation();
+        $this->assertFalse($firstMessage->isViewed());
 
-		$this->assertEquals($firstMessage->id, $recepientParticipation->latest_message_id);
-		$this->assertNull($recepientParticipation->latest_seen_message_id);
-		$this->assertEquals(1, $recepientParticipation->new_messages_count);
-		$this->assertEquals(1, $recepient->getNewMessagesCount());
-	}
+        $senderParticipation = $firstMessage->getSenderParticipation();
 
-	public function testViewedAndNotViewed()
-	{
-		$sender = factory(User::class)
-			->create();
+        $this->assertEquals($firstMessage->id, $senderParticipation->latest_message_id);
+        $this->assertEquals($secondMessage->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
 
-		$recepient = factory(User::class)
-			->create();
+        $recepientParticipation = $firstMessage->getFirstRecepientParticipation();
 
-		$message = factory(Message::class)
-			->states('viewed')
-			->create([
-				'create_user_id' => $recepient->id,
-				'recepient_id' => $sender->id
-			]);
+        $this->assertEquals($firstMessage->id, $recepientParticipation->latest_message_id);
+        $this->assertNull($recepientParticipation->latest_seen_message_id);
+        $this->assertEquals(1, $recepientParticipation->new_messages_count);
+        $this->assertEquals(1, $recepient->getNewMessagesCount());
+    }
 
-		$message2 = factory(Message::class)
-			->create([
-				'create_user_id' => $sender->id,
-				'recepient_id' => $recepient->id
-			]);
+    public function testViewedAndNotViewed()
+    {
+        $sender = User::factory()->create();
 
-		$this->assertTrue($message->isViewed());
-		$this->assertFalse($message2->isViewed());
+        $recepient = User::factory()->create();
 
-		$senderParticipation = $message->getSenderParticipation();
-		$senderParticipation->latest_seen_message_id = $message2->id;
-		$senderParticipation->save();
+        $message = Message::factory()->viewed()
+            ->create([
+                'create_user_id' => $recepient->id,
+                'recepient_id' => $sender->id
+            ]);
 
-		$recepientParticipation = $message->getFirstRecepientParticipation();
-		$recepientParticipation->latest_seen_message_id = $message->id;
-		$recepientParticipation->save();
+        $message2 = Message::factory()->create([
+            'create_user_id' => $sender->id,
+            'recepient_id' => $recepient->id
+        ]);
 
-		$this->assertEquals($message2->id, $senderParticipation->latest_seen_message_id);
-		$this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
+        $this->assertTrue($message->isViewed());
+        $this->assertFalse($message2->isViewed());
 
-		$message2->deleteForUser($sender);
+        $senderParticipation = $message->getSenderParticipation();
+        $senderParticipation->latest_seen_message_id = $message2->id;
+        $senderParticipation->save();
 
-		$recepientParticipation->updateNewMessagesCount();
-		$recepientParticipation->updateLatestMessage();
-		$recepientParticipation->save();
+        $recepientParticipation = $message->getFirstRecepientParticipation();
+        $recepientParticipation->latest_seen_message_id = $message->id;
+        $recepientParticipation->save();
 
-		$senderParticipation->updateNewMessagesCount();
-		$senderParticipation->updateLatestMessage();
-		$senderParticipation->save();
+        $this->assertEquals($message2->id, $senderParticipation->latest_seen_message_id);
+        $this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
 
-		$message->refresh();
-		$message2->refresh();
+        $message2->deleteForUser($sender);
 
-		$senderParticipation = $message->getSenderParticipation();
-		$recepientParticipation = $message->getFirstRecepientParticipation();
+        $recepientParticipation->updateNewMessagesCount();
+        $recepientParticipation->updateLatestMessage();
+        $recepientParticipation->save();
 
-		$this->assertEquals(0, $recepientParticipation->new_messages_count);
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
+        $senderParticipation->updateNewMessagesCount();
+        $senderParticipation->updateLatestMessage();
+        $senderParticipation->save();
 
-		$this->assertEquals($message->id, $recepientParticipation->latest_message_id);
-		$this->assertEquals($message->id, $senderParticipation->latest_message_id);
+        $message->refresh();
+        $message2->refresh();
 
-		$this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
-		$this->assertEquals($message2->id, $senderParticipation->latest_seen_message_id);
-	}
+        $senderParticipation = $message->getSenderParticipation();
+        $recepientParticipation = $message->getFirstRecepientParticipation();
 
-	public function testRouteIsOkViewed()
-	{
-		$sender = factory(User::class)
-			->create();
+        $this->assertEquals(0, $recepientParticipation->new_messages_count);
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
 
-		$recepient = factory(User::class)
-			->create();
+        $this->assertEquals($message->id, $recepientParticipation->latest_message_id);
+        $this->assertEquals($message->id, $senderParticipation->latest_message_id);
 
-		$message = factory(Message::class)
-			->states('viewed')
-			->create([
-				'create_user_id' => $sender->id,
-				'recepient_id' => $recepient->id
-			]);
+        $this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
+        $this->assertEquals($message2->id, $senderParticipation->latest_seen_message_id);
+    }
 
-		$this->actingAs($sender)
-			->delete(route('messages.destroy', $message))
-			->assertOk();
+    public function testRouteIsOkViewed()
+    {
+        $sender = User::factory()->create();
 
-		$senderParticipation = $sender->participations()->first();
+        $recepient = User::factory()->create();
 
-		$this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
-		$this->assertNull($senderParticipation->latest_message_id);
-		$this->assertTrue($message->isViewed());
-		$this->assertEquals(0, $senderParticipation->new_messages_count);
-		$this->assertEquals(0, $sender->getNewMessagesCount());
+        $message = Message::factory()->viewed()
+            ->create([
+                'create_user_id' => $sender->id,
+                'recepient_id' => $recepient->id
+            ]);
 
-		$recepientParticipation = $recepient->participations()->first();
+        $this->actingAs($sender)
+            ->delete(route('messages.destroy', $message))
+            ->assertOk();
 
-		$this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
-		$this->assertEquals($message->id, $recepientParticipation->latest_message_id);
-		$this->assertTrue($message->isViewed());
-		$this->assertEquals(0, $recepientParticipation->new_messages_count);
-		$this->assertEquals(0, $recepient->getNewMessagesCount());
-	}
+        $senderParticipation = $sender->participations()->first();
+
+        $this->assertEquals($message->id, $senderParticipation->latest_seen_message_id);
+        $this->assertNull($senderParticipation->latest_message_id);
+        $this->assertTrue($message->isViewed());
+        $this->assertEquals(0, $senderParticipation->new_messages_count);
+        $this->assertEquals(0, $sender->getNewMessagesCount());
+
+        $recepientParticipation = $recepient->participations()->first();
+
+        $this->assertEquals($message->id, $recepientParticipation->latest_seen_message_id);
+        $this->assertEquals($message->id, $recepientParticipation->latest_message_id);
+        $this->assertTrue($message->isViewed());
+        $this->assertEquals(0, $recepientParticipation->new_messages_count);
+        $this->assertEquals(0, $recepient->getNewMessagesCount());
+    }
 }

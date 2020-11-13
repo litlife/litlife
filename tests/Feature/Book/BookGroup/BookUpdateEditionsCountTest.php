@@ -7,49 +7,45 @@ use Tests\TestCase;
 
 class BookUpdateEditionsCountTest extends TestCase
 {
-	public function testUpdateMainBookEditionsCount()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+    public function testUpdateMainBookEditionsCount()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$mainBook->editions_count = null;
-		$mainBook->save();
+        $mainBook->editions_count = null;
+        $mainBook->save();
 
-		$minorBook->editions_count = null;
-		$minorBook->save();
+        $minorBook->editions_count = null;
+        $minorBook->save();
 
-		$mainBook->updateEditionsCount();
+        $mainBook->updateEditionsCount();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$this->assertEquals(1, $mainBook->editions_count);
-		$this->assertEquals(1, $minorBook->editions_count);
-	}
+        $this->assertEquals(1, $mainBook->editions_count);
+        $this->assertEquals(1, $minorBook->editions_count);
+    }
 
-	public function testUpdateMinorBookEditionsCount()
-	{
-		$mainBook = factory(Book::class)
-			->states('with_minor_book')
-			->create();
+    public function testUpdateMinorBookEditionsCount()
+    {
+        $mainBook = Book::factory()->with_minor_book()->create();
 
-		$minorBook = $mainBook->groupedBooks()->first();
+        $minorBook = $mainBook->groupedBooks()->first();
 
-		$mainBook->editions_count = null;
-		$mainBook->save();
+        $mainBook->editions_count = null;
+        $mainBook->save();
 
-		$minorBook->editions_count = null;
-		$minorBook->save();
+        $minorBook->editions_count = null;
+        $minorBook->save();
 
-		$minorBook->updateEditionsCount();
+        $minorBook->updateEditionsCount();
 
-		$mainBook->refresh();
-		$minorBook->refresh();
+        $mainBook->refresh();
+        $minorBook->refresh();
 
-		$this->assertEquals(1, $mainBook->editions_count);
-		$this->assertEquals(1, $minorBook->editions_count);
-	}
+        $this->assertEquals(1, $mainBook->editions_count);
+        $this->assertEquals(1, $minorBook->editions_count);
+    }
 }

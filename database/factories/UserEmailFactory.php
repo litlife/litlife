@@ -1,55 +1,116 @@
 <?php
 
+namespace Database\Factories;
+
+use App\User;
+use App\UserEmail;
 use Carbon\Carbon;
-use Faker\Generator as Faker;
 
-$factory->define(App\UserEmail::class, function (Faker $faker) {
+class UserEmailFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserEmail::class;
 
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->state('without_email')->create()->id;
-		},
-		'email' => uniqid() . '@' . uniqid() . '.com',
-		'confirm' => rand('0', '1'),
-		'show_in_profile' => rand('0', '1'),
-		'rescue' => rand('0', '1'),
-		'notice' => rand('0', '1')
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory()->without_email(),
+            'email' => uniqid().'@'.uniqid().'.com',
+            'confirm' => $this->faker->boolean(),
+            'show_in_profile' => $this->faker->boolean(),
+            'rescue' => $this->faker->boolean(),
+            'notice' => $this->faker->boolean()
+        ];
+    }
 
-$factory->afterMakingState(App\UserEmail::class, 'confirmed', function ($email, $faker) {
-	$email->confirm = true;
-});
+    public function confirmed()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->confirm = true;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserEmail::class, 'not_confirmed', function ($email, $faker) {
-	$email->confirm = false;
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserEmail::class, 'noticed', function ($email, $faker) {
-	$email->notice = true;
-});
+    public function not_confirmed()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->confirm = false;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserEmail::class, 'not_noticed', function ($email, $faker) {
-	$email->notice = false;
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserEmail::class, 'rescued', function ($email, $faker) {
-	$email->rescue = true;
-});
+    public function noticed()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->notice = true;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserEmail::class, 'not_rescued', function ($email, $faker) {
-	$email->rescue = false;
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserEmail::class, 'created_before_move_to_new_engine', function ($email, $faker) {
-	$email->created_at = Carbon::parse($email->getMoveToNewEngineDate())->subMonth();
-});
+    public function not_noticed()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->notice = false;
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserEmail::class, 'show_in_profile', function ($email, $faker) {
-	$email->show_in_profile = true;
-	$email->confirm = true;
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserEmail::class, 'dont_show_in_profile', function ($email, $faker) {
-	$email->show_in_profile = false;
-});
+    public function rescued()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->rescue = true;
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function not_rescued()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->rescue = false;
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function created_before_move_to_new_engine()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->created_at = Carbon::parse($item->getMoveToNewEngineDate())->subMonth();
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function show_in_profile()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->show_in_profile = true;
+            $item->confirm = true;
+        })->afterCreating(function ($item) {
+
+        });
+    }
+
+    public function dont_show_in_profile()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->show_in_profile = false;
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

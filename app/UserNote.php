@@ -28,10 +28,10 @@ use Stevebauman\Purify\Facades\Purify;
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote newQuery()
  * @method static Builder|UserNote onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereBbText($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserNote whereCreatedAt($value)
@@ -47,40 +47,41 @@ use Stevebauman\Purify\Facades\Purify;
  */
 class UserNote extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'bb_text'
-	];
+    protected $fillable = [
+        'bb_text'
+    ];
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	public function setBBTextAttribute($bb)
-	{
-		$bb = mb_substr($bb, 0, 1000000);
-		$bb = trim(replaceAsc194toAsc32($bb));
-		$bb = removeJsAdCode($bb);
+    public function setBBTextAttribute($bb)
+    {
+        $bb = mb_substr($bb, 0, 1000000);
+        $bb = trim(replaceAsc194toAsc32($bb));
+        $bb = removeJsAdCode($bb);
 
-		$html = (new BBCode)->toHtml($bb);
+        $html = (new BBCode)->toHtml($bb);
 
-		if (trim($html) == '')
-			$html = null;
+        if (trim($html) == '') {
+            $html = null;
+        }
 
-		$this->attributes['bb_text'] = $bb;
-		$this->attributes['text'] = $html;
-		$this->attributes['external_images_downloaded'] = false;
-	}
+        $this->attributes['bb_text'] = $bb;
+        $this->attributes['text'] = $html;
+        $this->attributes['external_images_downloaded'] = false;
+    }
 
-	public function setTextAttribute($value)
-	{
-		$value = trim(replaceAsc194toAsc32($value));
-		$value = removeJsAdCode($value);
-		$value = preg_replace("/<br(\ *)\/?>(\ *)<br(\ *)\/?>/iu", "\n\n", $value);
-		$this->attributes['text'] = @Purify::clean($value);
-		$this->attributes['external_images_downloaded'] = false;
-	}
+    public function setTextAttribute($value)
+    {
+        $value = trim(replaceAsc194toAsc32($value));
+        $value = removeJsAdCode($value);
+        $value = preg_replace("/<br(\ *)\/?>(\ *)<br(\ *)\/?>/iu", "\n\n", $value);
+        $this->attributes['text'] = @Purify::clean($value);
+        $this->attributes['external_images_downloaded'] = false;
+    }
 }

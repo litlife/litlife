@@ -11,112 +11,107 @@ use Tests\TestCase;
 
 class NotificationTest extends TestCase
 {
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
-	public function testViewCounter()
-	{
-		$notification = factory(DatabaseNotification::class)
-			->create();
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function testViewCounter()
+    {
+        $notification = DatabaseNotification::factory()->create();
 
-		$notifiable = $notification->notifiable;
+        $notifiable = $notification->notifiable;
 
-		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
+        $this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
 
-		$this->actingAs($notifiable)
-			->get(route('users.notifications.index', ['user' => $notifiable]))
-			->assertOk();
+        $this->actingAs($notifiable)
+            ->get(route('users.notifications.index', ['user' => $notifiable]))
+            ->assertOk();
 
-		$this->assertEquals(0, $notifiable->getUnreadNotificationsCount());
-	}
+        $this->assertEquals(0, $notifiable->getUnreadNotificationsCount());
+    }
 
-	public function testViewForbidden()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testViewForbidden()
+    {
+        $user = User::factory()->create();
 
-		$notification = factory(DatabaseNotification::class)
-			->create();
+        $notification = DatabaseNotification::factory()->create();
 
-		$notifiable = $notification->notifiable;
+        $notifiable = $notification->notifiable;
 
-		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
+        $this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
 
-		$this->actingAs($notifiable)
-			->get(route('users.notifications.index', ['user' => $user]))
-			->assertForbidden();
+        $this->actingAs($notifiable)
+            ->get(route('users.notifications.index', ['user' => $user]))
+            ->assertForbidden();
 
-		$this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
-	}
+        $this->assertEquals(1, $notifiable->getUnreadNotificationsCount());
+    }
 
-	public function testViewNothinfFound()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testViewNothinfFound()
+    {
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('users.notifications.index', ['user' => $user]))
-			->assertOk()
-			->assertSeeText(__('notification.nothing_found'));
-	}
+        $this->actingAs($user)
+            ->get(route('users.notifications.index', ['user' => $user]))
+            ->assertOk()
+            ->assertSeeText(__('notification.nothing_found'));
+    }
 
-	public function testRemoveOutdatedNotifications()
-	{
-		config(['litlife.delete_notifications_in_days' => 7]);
+    public function testRemoveOutdatedNotifications()
+    {
+        config(['litlife.delete_notifications_in_days' => 7]);
 
-		DatabaseNotification::truncate();
+        DatabaseNotification::truncate();
 
-		$this->assertEquals(0, DatabaseNotification::count());
+        $this->assertEquals(0, DatabaseNotification::count());
 
-		//NotificationFacade::fake();
+        //NotificationFacade::fake();
 
-		$like = factory(Like::class)
-			->create();
+        $like = Like::factory()->create();
 
-		$user = $like->likeable->create_user;
-		$user->email_notification_setting->db_like = true;
-		$user->push();
-		/*
-				NotificationFacade::assertSentTo(
-					$user,
-					NewLikeNotification::class,
-					function ($notification, $channels) use ($user, $like) {
+        $user = $like->likeable->create_user;
+        $user->email_notification_setting->db_like = true;
+        $user->push();
+        /*
+                NotificationFacade::assertSentTo(
+                    $user,
+                    NewLikeNotification::class,
+                    function ($notification, $channels) use ($user, $like) {
 
-						$this->assertEquals(['database'], $channels);
+                        $this->assertEquals(['database'], $channels);
 
-						$data = $notification->toArray($user);
+                        $data = $notification->toArray($user);
 
-						$this->assertEquals(__('notification.new_like_notification.blog.subject'), $data['title']);
-						$this->assertEquals(__('notification.new_like_notification.blog.line', ['userName' => $like->create_user->userName]), $data['description']);
+                        $this->assertEquals(__('notification.new_like_notification.blog.subject'), $data['title']);
+                        $this->assertEquals(__('notification.new_like_notification.blog.line', ['userName' => $like->create_user->userName]), $data['description']);
 
-						return $notification->like->id === $like->id;
-					}
-				);
-				*/
-		$notification = $user->notifications()->first();
+                        return $notification->like->id === $like->id;
+                    }
+                );
+                */
+        $notification = $user->notifications()->first();
 
-		$this->assertNotNull($notification);
-		$this->assertTrue($notification->unread());
+        $this->assertNotNull($notification);
+        $this->assertTrue($notification->unread());
 
-		$notification->markAsRead();
+        $notification->markAsRead();
 
-		$notification = $user->notifications()->first();
+        $notification = $user->notifications()->first();
 
-		$this->assertTrue($notification->read());
-		$this->assertNotNull($notification->read_at);
+        $this->assertTrue($notification->read());
+        $this->assertNotNull($notification->read_at);
 
-		Artisan::call('notifications:delete_outdated');
+        Artisan::call('notifications:delete_outdated');
 
-		$notification = $user->notifications()->first();
-		$this->assertNotNull($notification);
+        $notification = $user->notifications()->first();
+        $this->assertNotNull($notification);
 
-		Carbon::setTestNow(now()->addDays(7)->addHour());
+        Carbon::setTestNow(now()->addDays(7)->addHour());
 
-		Artisan::call('notifications:delete_outdated');
+        Artisan::call('notifications:delete_outdated');
 
-		$notification = $user->notifications()->first();
-		$this->assertNull($notification);
-	}
+        $notification = $user->notifications()->first();
+        $this->assertNull($notification);
+    }
 }

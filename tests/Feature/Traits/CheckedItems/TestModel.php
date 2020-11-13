@@ -7,5 +7,5 @@ use App\Traits\CheckedItems;
 
 class TestModel extends Model
 {
-	use CheckedItems;
+    use CheckedItems;
 }

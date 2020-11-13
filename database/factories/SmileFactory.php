@@ -1,17 +1,39 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Smile::class, function (Faker $faker) {
+use App\Smile;
 
-	return [
-		'name' => uniqid() . '.jpg',
-		'simple_form' => ':' . uniqid() . ':',
-		'description' => uniqid(),
-		'for' => null
-	];
-});
+class SmileFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Smile::class;
 
-$factory->afterMakingState(App\Smile::class, 'for_new_year', function ($smile, $faker) {
-	$smile->for = 'NewYear';
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => uniqid().'.jpg',
+            'simple_form' => ':'.uniqid().':',
+            'description' => uniqid(),
+            'for' => null
+        ];
+    }
+
+    public function for_new_year()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->for = 'NewYear';
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

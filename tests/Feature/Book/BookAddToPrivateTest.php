@@ -17,256 +17,246 @@ use Tests\TestCase;
 
 class BookAddToPrivateTest extends TestCase
 {
-	public function testForm()
-	{
-		$user = factory(User::class)
-			->create();
-		$user->group->check_books = true;
-		$user->group->add_book_without_check = true;
-		$user->push();
-
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
-
-		$response = $this->actingAs($user)
-			->get(route('books.add_to_private.form', $book))
-			->assertOk()
-			->assertSeeText(__('book.reason_for_removal_from_publication'))
-			->assertSeeText(__('book.remove_the_publication'));
-	}
-
-	public function testAddToPrivate()
-	{
-		config(['activitylog.enabled' => true]);
-
-		$user = factory(User::class)
-			->create();
-		$user->group->check_books = true;
-		$user->group->add_book_without_check = true;
-		$user->push();
-
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
-		$book->statusAccepted();
-		$book->save();
-
-		$book->authors()->detach();
-		$book->sequences()->detach();
-
-		$author = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$author->statusAccepted();
-		$author->save();
-
-		$illustrator = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$illustrator->statusAccepted();
-		$illustrator->save();
-
-		$translator = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$translator->statusAccepted();
-		$translator->save();
-
-		$translator2 = factory(Author::class)->create(['create_user_id' => $user->id]);
-		$translator2->statusSentForReview();
-		$translator2->save();
-
-		$book->writers()->sync([$author->id]);
-		$book->translators()->sync([$translator->id, $translator2->id]);
-		$book->illustrators()->sync([$illustrator->id]);
-
-		$sequence = factory(Sequence::class)->create(['create_user_id' => $user->id]);
-		$sequence->statusPrivate();
-		$sequence->save();
-		$book->sequences()->sync([$sequence->id]);
-		UpdateSequenceBooksCount::dispatch($sequence);
-
-		$this->assertEquals(1, $sequence->fresh()->book_count);
-
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
-		$book_file->statusAccepted();
-		$book_file->save();
-
-		$book_keyword = factory(BookKeyword::class)->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
-		$book_keyword->statusAccepted();
-		$book_keyword->save();
+    public function testForm()
+    {
+        $user = User::factory()->create();
+        $user->group->check_books = true;
+        $user->group->add_book_without_check = true;
+        $user->push();
+
+        $book = Book::factory()->accepted()->create();
+
+        $response = $this->actingAs($user)
+            ->get(route('books.add_to_private.form', $book))
+            ->assertOk()
+            ->assertSeeText(__('book.reason_for_removal_from_publication'))
+            ->assertSeeText(__('book.remove_the_publication'));
+    }
+
+    public function testAddToPrivate()
+    {
+        config(['activitylog.enabled' => true]);
+
+        $user = User::factory()->create();
+        $user->group->check_books = true;
+        $user->group->add_book_without_check = true;
+        $user->push();
+
+        $book = Book::factory()->create(['create_user_id' => $user->id]);
+        $book->statusAccepted();
+        $book->save();
+
+        $book->authors()->detach();
+        $book->sequences()->detach();
+
+        $author = Author::factory()->create(['create_user_id' => $user->id]);
+        $author->statusAccepted();
+        $author->save();
+
+        $illustrator = Author::factory()->create(['create_user_id' => $user->id]);
+        $illustrator->statusAccepted();
+        $illustrator->save();
+
+        $translator = Author::factory()->create(['create_user_id' => $user->id]);
+        $translator->statusAccepted();
+        $translator->save();
+
+        $translator2 = Author::factory()->create(['create_user_id' => $user->id]);
+        $translator2->statusSentForReview();
+        $translator2->save();
+
+        $book->writers()->sync([$author->id]);
+        $book->translators()->sync([$translator->id, $translator2->id]);
+        $book->illustrators()->sync([$illustrator->id]);
 
-		$this->assertTrue($user->can('addToPrivate', $book));
+        $sequence = Sequence::factory()->create(['create_user_id' => $user->id]);
+        $sequence->statusPrivate();
+        $sequence->save();
+        $book->sequences()->sync([$sequence->id]);
+        UpdateSequenceBooksCount::dispatch($sequence);
+
+        $this->assertEquals(1, $sequence->fresh()->book_count);
 
-		$reason = $this->faker->realText(100);
+        $book_file = BookFile::factory()->txt()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+        $book_file->statusAccepted();
+        $book_file->save();
 
-		$response = $this->followingRedirects()
-			->actingAs($user)
-			->post(route('books.add_to_private', $book), ['reason_for_removal_from_publication' => $reason]);
+        $book_keyword = BookKeyword::factory()->create(['book_id' => $book->id, 'create_user_id' => $user->id]);
+        $book_keyword->statusAccepted();
+        $book_keyword->save();
 
-		//dump(session('errors'));
-		$response->assertOk()
-			->assertSessionHasNoErrors()
-			->assertSeeText(__('book.rejected_and_sended_to_private'));
+        $this->assertTrue($user->can('addToPrivate', $book));
 
-		$sequence->refresh();
-		$book->refresh();
+        $reason = $this->faker->realText(100);
 
-		$this->assertEquals(StatusEnum::Private, $book->fresh()->status);
-		$this->assertEquals(StatusEnum::Accepted, $author->fresh()->status);
-		$this->assertEquals(StatusEnum::Accepted, $illustrator->fresh()->status);
-		$this->assertEquals(StatusEnum::Accepted, $translator->fresh()->status);
-		$this->assertEquals(StatusEnum::Private, $translator2->fresh()->status);
-		$this->assertEquals(StatusEnum::Private, $book_file->fresh()->status);
-		$this->assertEquals(StatusEnum::Private, $book_keyword->fresh()->status);
+        $response = $this->followingRedirects()
+            ->actingAs($user)
+            ->post(route('books.add_to_private', $book), ['reason_for_removal_from_publication' => $reason]);
 
-		$this->assertEquals(1, $sequence->book_count);
+        //dump(session('errors'));
+        $response->assertOk()
+            ->assertSessionHasNoErrors()
+            ->assertSeeText(__('book.rejected_and_sended_to_private'));
 
-		$this->assertEquals([$book_file->extension], $book->formats);
+        $sequence->refresh();
+        $book->refresh();
 
-		$this->actingAs($user)
-			->get(route('books.show', $book))
-			->assertOk()
-			->assertSeeText($author->name)
-			->assertSeeText($illustrator->name)
-			->assertSeeText($translator->name)
-			->assertSeeText($sequence->name)
-			->assertSeeText($book_keyword->name);
+        $this->assertEquals(StatusEnum::Private, $book->fresh()->status);
+        $this->assertEquals(StatusEnum::Accepted, $author->fresh()->status);
+        $this->assertEquals(StatusEnum::Accepted, $illustrator->fresh()->status);
+        $this->assertEquals(StatusEnum::Accepted, $translator->fresh()->status);
+        $this->assertEquals(StatusEnum::Private, $translator2->fresh()->status);
+        $this->assertEquals(StatusEnum::Private, $book_file->fresh()->status);
+        $this->assertEquals(StatusEnum::Private, $book_keyword->fresh()->status);
 
-		$this->assertEquals(1, $book->activities()->count());
-		$activity = $book->activities()->first();
-		$this->assertEquals('add_to_private', $activity->description);
-		$this->assertEquals($user->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-		$this->assertEquals($reason, $activity->getExtraProperty('reason'));
-	}
+        $this->assertEquals(1, $sequence->book_count);
 
-	public function testSeeBookAddToPrivateActivityLog()
-	{
-		config(['activitylog.enabled' => true]);
+        $this->assertEquals([$book_file->extension], $book->formats);
 
-		$admin = factory(User::class)->states('admin')->create();
+        $this->actingAs($user)
+            ->get(route('books.show', $book))
+            ->assertOk()
+            ->assertSeeText($author->name)
+            ->assertSeeText($illustrator->name)
+            ->assertSeeText($translator->name)
+            ->assertSeeText($sequence->name)
+            ->assertSeeText($book_keyword->name);
 
-		$book = factory(Book::class)->create();
+        $this->assertEquals(1, $book->activities()->count());
+        $activity = $book->activities()->first();
+        $this->assertEquals('add_to_private', $activity->description);
+        $this->assertEquals($user->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+        $this->assertEquals($reason, $activity->getExtraProperty('reason'));
+    }
 
-		$reason = $this->faker->realText(100);
+    public function testSeeBookAddToPrivateActivityLog()
+    {
+        config(['activitylog.enabled' => true]);
 
-		activity()
-			->performedOn($book)
-			->withProperties([
-				'reason' => $reason
-			])
-			->log('add_to_private');
+        $admin = User::factory()->admin()->create();
 
-		$activity = $book->activities()->first();
+        $book = Book::factory()->create();
 
-		$this->actingAs($admin)
-			->get(route('books.activity_logs', ['book' => $book]))
-			->assertOk()
-			->assertSeeText(__('activity_log.description_subject_type.book.add_to_private'))
-			->assertSeeText($reason);
-	}
+        $reason = $this->faker->realText(100);
 
-	public function testNotification()
-	{
-		config(['activitylog.enabled' => true]);
+        activity()
+            ->performedOn($book)
+            ->withProperties([
+                'reason' => $reason
+            ])
+            ->log('add_to_private');
 
-		Notification::fake();
+        $activity = $book->activities()->first();
 
-		$admin = factory(User::class)->states('admin')->create();
+        $this->actingAs($admin)
+            ->get(route('books.activity_logs', ['book' => $book]))
+            ->assertOk()
+            ->assertSeeText(__('activity_log.description_subject_type.book.add_to_private'))
+            ->assertSeeText($reason);
+    }
 
-		$book = factory(Book::class)->states('with_create_user')->create();
+    public function testNotification()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$reason = $this->faker->realText(100);
+        Notification::fake();
 
-		$this->assertTrue($admin->can('addToPrivate', $book));
+        $admin = User::factory()->admin()->create();
 
-		$response = $this->actingAs($admin)
-			->post(route('books.add_to_private', $book), ['reason_for_removal_from_publication' => $reason])
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('books.show', $book));
+        $book = Book::factory()->with_create_user()->create();
 
-		$book->refresh();
+        $reason = $this->faker->realText(100);
 
-		Notification::assertSentTo(
-			$book->create_user,
-			BookRemovedFromPublicationNotification::class,
-			function ($notification, $channels) use ($book, $reason) {
+        $this->assertTrue($admin->can('addToPrivate', $book));
 
-				$this->assertContains('database', $channels);
+        $response = $this->actingAs($admin)
+            ->post(route('books.add_to_private', $book), ['reason_for_removal_from_publication' => $reason])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('books.show', $book));
 
-				$array = $notification->toArray($book, $reason);
+        $book->refresh();
 
-				$this->assertEquals(__('notification.book_removed_from_publication.subject'), $array['title']);
+        Notification::assertSentTo(
+            $book->create_user,
+            BookRemovedFromPublicationNotification::class,
+            function ($notification, $channels) use ($book, $reason) {
 
-				$this->assertEquals(__('notification.book_removed_from_publication.line', [
-					'book_title' => $book->title,
-					'writers_names' => optional($book->writers()->first())->name,
-					'reason' => $reason
-				]), $array['description']);
+                $this->assertContains('database', $channels);
 
-				$this->assertEquals(route('books.show', $book), $array['url']);
+                $array = $notification->toArray($book, $reason);
 
-				return $notification->book->id == $book->id;
-			}
-		);
-	}
+                $this->assertEquals(__('notification.book_removed_from_publication.subject'), $array['title']);
 
-	public function testCantRemoveFromPrivateIfBookDeleted()
-	{
-		$admin = factory(User::class)->states('admin')->create();
+                $this->assertEquals(__('notification.book_removed_from_publication.line', [
+                    'book_title' => $book->title,
+                    'writers_names' => optional($book->writers()->first())->name,
+                    'reason' => $reason
+                ]), $array['description']);
 
-		$book = factory(Book::class)->create();
-		$book->delete();
+                $this->assertEquals(route('books.show', $book), $array['url']);
 
-		$this->assertFalse($admin->can('addToPrivate', $book));
-	}
+                return $notification->book->id == $book->id;
+            }
+        );
+    }
 
-	public function testRemoveTheNotVerifiedInTheVerificationCheck()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testCantRemoveFromPrivateIfBookDeleted()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('sent_for_review', 'with_create_user')
-			->create();
+        $book = Book::factory()->create();
+        $book->delete();
 
-		$manager = factory(Manager::class)
-			->states('on_review', 'character_author')
-			->create();
+        $this->assertFalse($admin->can('addToPrivate', $book));
+    }
 
-		$author = $manager->manageable;
-		$author->statusSentForReview();
-		$author->save();
+    public function testRemoveTheNotVerifiedInTheVerificationCheck()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$book->authors()->sync([$author->id]);
-		$book->save();
+        $book = Book::factory()->sent_for_review()->with_create_user()->create();
 
-		$this->assertTrue($author->isSentForReview());
-		$this->assertTrue($book->isSentForReview());
-		$this->assertTrue($manager->isSentForReview());
+        $manager = Manager::factory()->sent_for_review()->character_author()->create();
 
-		$response = $this->actingAs($admin)
-			->post(route('books.add_to_private', $book))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $author = $manager->manageable;
+        $author->statusSentForReview();
+        $author->save();
 
-		$manager->refresh();
+        $book->authors()->sync([$author->id]);
+        $book->save();
 
-		$this->assertTrue($manager->isPrivate());
-	}
+        $this->assertTrue($author->isSentForReview());
+        $this->assertTrue($book->isSentForReview());
+        $this->assertTrue($manager->isSentForReview());
 
-	public function testReturnToPrivateIfBookPurchased()
-	{
-		$user = factory(User::class)->create();
-		$user->group->check_books = true;
-		$user->push();
+        $response = $this->actingAs($admin)
+            ->post(route('books.add_to_private', $book))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$book = factory(Book::class)->create();
-		$book->bought_times_count = 0;
-		$book->push();
+        $manager->refresh();
 
-		$this->assertTrue($user->can('addToPrivate', $book));
+        $this->assertTrue($manager->isPrivate());
+    }
 
-		$book = factory(Book::class)->create();
-		$book->bought_times_count = 1;
-		$book->push();
+    public function testReturnToPrivateIfBookPurchased()
+    {
+        $user = User::factory()->create();
+        $user->group->check_books = true;
+        $user->push();
 
-		$this->assertFalse($user->can('addToPrivate', $book));
-	}
+        $book = Book::factory()->create();
+        $book->bought_times_count = 0;
+        $book->push();
+
+        $this->assertTrue($user->can('addToPrivate', $book));
+
+        $book = Book::factory()->create();
+        $book->bought_times_count = 1;
+        $book->push();
+
+        $this->assertFalse($user->can('addToPrivate', $book));
+    }
 
 }

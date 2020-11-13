@@ -10,72 +10,66 @@ use Tests\TestCase;
 
 class CollectionBookSearchTest extends TestCase
 {
-	public function testSearchById()
-	{
-		$collection = factory(Collection::class)
-			->states('accepted')
-			->create();
+    public function testSearchById()
+    {
+        $collection = Collection::factory()->accepted()->create();
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($user)
-			->ajax()
-			->get(route('collections.books.list', ['collection' => $collection, 'query' => $book->id]))
-			->assertOk()
-			->assertViewIs('collection.book.list')
-			->assertSeeText($book->title);
-	}
+        $this->actingAs($user)
+            ->ajax()
+            ->get(route('collections.books.list', ['collection' => $collection, 'query' => $book->id]))
+            ->assertOk()
+            ->assertViewIs('collection.book.list')
+            ->assertSeeText($book->title);
+    }
 
-	public function testSearchByIsbn()
-	{
-		$user = factory(User::class)->states('admin')->create();
+    public function testSearchByIsbn()
+    {
+        $user = User::factory()->admin()->create();
 
-		$title = uniqid();
-		$isbn = rand(100, 999) . '-' . rand(1, 9) . '-' . rand(100, 999) . '-' . rand(10000, 99999) . '-' . rand(1, 9);
+        $title = uniqid();
+        $isbn = rand(100, 999).'-'.rand(1, 9).'-'.rand(100, 999).'-'.rand(10000, 99999).'-'.rand(1, 9);
 
-		$collected = factory(CollectedBook::class)
-			->create();
+        $collected = CollectedBook::factory()->create();
 
-		$book = $collected->book;
-		$book->title = $title;
-		$book->pi_isbn = $isbn;
-		$book->save();
+        $book = $collected->book;
+        $book->title = $title;
+        $book->pi_isbn = $isbn;
+        $book->save();
 
-		$collection = factory(Collection::class)
-			->create();
+        $collection = Collection::factory()->create();
 
-		$this->actingAs($user)
-			->ajax()
-			->get(route('collections.books.list', ['collection' => $collection, 'query' => $isbn]))
-			->assertOk()
-			->assertSeeText($book->title)
-			->assertDontSeeText(__('In collection'));
-	}
+        $this->actingAs($user)
+            ->ajax()
+            ->get(route('collections.books.list', ['collection' => $collection, 'query' => $isbn]))
+            ->assertOk()
+            ->assertSeeText($book->title)
+            ->assertDontSeeText(__('In collection'));
+    }
 
-	public function testSearchByIsbnSeeBookInCollection()
-	{
-		$user = factory(User::class)->states('admin')->create();
+    public function testSearchByIsbnSeeBookInCollection()
+    {
+        $user = User::factory()->admin()->create();
 
-		$title = uniqid();
-		$isbn = rand(100, 999) . '-' . rand(1, 9) . '-' . rand(100, 999) . '-' . rand(10000, 99999) . '-' . rand(1, 9);
+        $title = uniqid();
+        $isbn = rand(100, 999).'-'.rand(1, 9).'-'.rand(100, 999).'-'.rand(10000, 99999).'-'.rand(1, 9);
 
-		$collected = factory(CollectedBook::class)
-			->create();
+        $collected = CollectedBook::factory()->create();
 
-		$collection = $collected->collection;
-		$book = $collected->book;
-		$book->title = $title;
-		$book->pi_isbn = $isbn;
-		$book->save();
+        $collection = $collected->collection;
+        $book = $collected->book;
+        $book->title = $title;
+        $book->pi_isbn = $isbn;
+        $book->save();
 
-		$this->actingAs($user)
-			->ajax()
-			->get(route('collections.books.list', ['collection' => $collection, 'query' => $isbn]))
-			->assertOk()
-			->assertSeeText($book->title)
-			->assertSeeText(__('In collection'));
-	}
+        $this->actingAs($user)
+            ->ajax()
+            ->get(route('collections.books.list', ['collection' => $collection, 'query' => $isbn]))
+            ->assertOk()
+            ->assertSeeText($book->title)
+            ->assertSeeText(__('In collection'));
+    }
 }

@@ -8,20 +8,18 @@ use Tests\TestCase;
 
 class AuthorManagerEditorTest extends TestCase
 {
-	public function testAuthorizationExceptionWithMessage()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testAuthorizationExceptionWithMessage()
+    {
+        $user = User::factory()->create();
 
-		$author = factory(Author::class)
-			->create();
+        $author = Author::factory()->create();
 
-		$response = $this->actingAs($user)
-			->get(route('authors.editor.request', $author))
-			->assertForbidden();
+        $response = $this->actingAs($user)
+            ->get(route('authors.editor.request', $author))
+            ->assertForbidden();
 
-		$exception = $response->original->getData()['exception'];
+        $exception = $response->original->getData()['exception'];
 
-		$this->assertEquals(__('Submission of new applications for editors authors is closed'), $exception->getMessage());
-	}
+        $this->assertEquals(__('Submission of new applications for editors authors is closed'), $exception->getMessage());
+    }
 }

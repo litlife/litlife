@@ -10,32 +10,32 @@ use Tests\TestCase;
 
 class RefreshLatestTopicsAtBottomTest extends TestCase
 {
-	public function testRefresh()
-	{
-		$post = factory(Post::class)
-			->create();
+    public function testRefresh()
+    {
+        $post = Post::factory()->create();
 
-		$topic = $post->topic;
+        $topic = $post->topic;
 
-		Artisan::call('refresh:latest_topics_at_bottom');
+        Artisan::call('refresh:latest_topics_at_bottom');
 
-		$latestTopics = Topic::cachedLatestTopics();
-		$this->assertEquals($topic->id, $latestTopics->first()->id);
+        $latestTopics = Topic::cachedLatestTopics();
+        $this->assertEquals($topic->id, $latestTopics->first()->id);
 
-		DB::table('topics')
-			->where('id', $topic->id)
-			->delete();
+        DB::table('topics')
+            ->where('id', $topic->id)
+            ->delete();
 
-		$latestTopics = Topic::cachedLatestTopics();
-		$this->assertEquals($topic->id, $latestTopics->first()->id);
+        $latestTopics = Topic::cachedLatestTopics();
+        $this->assertEquals($topic->id, $latestTopics->first()->id);
 
-		Artisan::call('refresh:latest_topics_at_bottom');
+        Artisan::call('refresh:latest_topics_at_bottom');
 
-		$latestTopics = Topic::cachedLatestTopics();
+        $latestTopics = Topic::cachedLatestTopics();
 
-		if (!empty($latestTopics->first()))
-			$this->assertNotEquals($topic->id, $latestTopics->first()->id);
-		else
-			$this->assertNull($latestTopics->first());
-	}
+        if (!empty($latestTopics->first())) {
+            $this->assertNotEquals($topic->id, $latestTopics->first()->id);
+        } else {
+            $this->assertNull($latestTopics->first());
+        }
+    }
 }

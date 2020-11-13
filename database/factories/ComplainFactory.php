@@ -1,70 +1,98 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Blog;
+use App\Book;
+use App\Comment;
 use App\Complain;
 use App\Enums\StatusEnum;
-use Faker\Generator as Faker;
+use App\Post;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 
-$factory->define(App\Complain::class, function (Faker $faker) {
+class ComplainFactory extends Factory
+{
+    use CheckedItems;
 
-	$text = $faker->realText(150);
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Complain::class;
 
-	return [
-		'complainable_id' => function () {
-			return factory(App\Comment::class)->create()->id;
-		},
-		'complainable_type' => 'comment',
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'text' => $text,
-		'status' => StatusEnum::OnReview
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $text = $this->faker->realText(150);
 
-$factory->state(App\Complain::class, 'comment', function ($faker) {
-	return [
-		'complainable_id' => function () {
-			return factory(App\Comment::class)->create()->id;
-		},
-		'complainable_type' => 'comment'
-	];
-});
+        return [
+            'complainable_id' => Comment::factory(),
+            'complainable_type' => 'comment',
+            'create_user_id' => User::factory(),
+            'text' => $text,
+            'status' => StatusEnum::OnReview
+        ];
+    }
 
-$factory->state(App\Complain::class, 'post', function ($faker) {
-	return [
-		'complainable_id' => function () {
-			return factory(App\Post::class)->create()->id;
-		},
-		'complainable_type' => 'post'
-	];
-});
+    public function comment()
+    {
+        return $this->afterMaking(function (Complain $complain) {
+            //
+        })->afterCreating(function (Complain $complain) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'complainable_id' => Comment::factory(),
+                'complainable_type' => 'comment'
+            ];
+        });
+    }
 
-$factory->state(App\Complain::class, 'wall_post', function ($faker) {
-	return [
-		'complainable_id' => function () {
-			return factory(App\Blog::class)->create()->id;
-		},
-		'complainable_type' => 'blog'
-	];
-});
+    public function post()
+    {
+        return $this->afterMaking(function (Complain $complain) {
+            //
+        })->afterCreating(function (Complain $complain) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'complainable_id' => Post::factory(),
+                'complainable_type' => 'post'
+            ];
+        });
+    }
 
-$factory->state(App\Complain::class, 'book', function ($faker) {
-	return [
-		'complainable_id' => function () {
-			return factory(App\Book::class)->create()->id;
-		},
-		'complainable_type' => 'book'
-	];
-});
+    public function wall_post()
+    {
+        return $this->afterMaking(function (Complain $complain) {
+            //
+        })->afterCreating(function (Complain $complain) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'complainable_id' => Blog::factory(),
+                'complainable_type' => 'blog'
+            ];
+        });
+    }
 
-$factory->afterMakingState(App\Complain::class, 'accepted', function (Complain $complain, $faker) {
-	$complain->statusAccepted();
-});
-
-$factory->afterMakingState(App\Complain::class, 'review_starts', function (Complain $complain, $faker) {
-	$complain->statusReviewStarts();
-});
-
-$factory->afterMakingState(App\Complain::class, 'sent_for_review', function (Complain $complain, $faker) {
-	$complain->statusSentForReview();
-});
+    public function book()
+    {
+        return $this->afterMaking(function (Complain $complain) {
+            //
+        })->afterCreating(function (Complain $complain) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'complainable_id' => Book::factory(),
+                'complainable_type' => 'book'
+            ];
+        });
+    }
+}

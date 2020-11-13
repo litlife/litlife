@@ -8,113 +8,99 @@ use Tests\TestCase;
 
 class SequenceBookNumbersTest extends TestCase
 {
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
-	public function testPageIsOk()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function testPageIsOk()
+    {
+        $user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->states('with_book')
-			->create();
+        $sequence = Sequence::factory()->with_book()->create();
 
-		$this->actingAs($user)
-			->get(route('sequences.book_numbers', $sequence))
-			->assertOk()
-			->assertSeeText(__('common.save'));
-	}
+        $this->actingAs($user)
+            ->get(route('sequences.book_numbers', $sequence))
+            ->assertOk()
+            ->assertSeeText(__('common.save'));
+    }
 
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
-	public function testStoreIsOk()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function testStoreIsOk()
+    {
+        $user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->states('with_two_books')
-			->create();
+        $sequence = Sequence::factory()->with_two_books()->create();
 
-		$books = $sequence->books()
-			->orderBy('id', 'asc')
-			->get();
+        $books = $sequence->books()
+            ->orderBy('id', 'asc')
+            ->get();
 
-		$book = $books->get(0);
-		$book2 = $books->get(1);
+        $book = $books->get(0);
+        $book2 = $books->get(1);
 
-		$array = [
-			'numbers' => [
-				$book->id => 3,
-				$book2->id => 4,
-			]
-		];
+        $array = [
+            'numbers' => [
+                $book->id => 3,
+                $book2->id => 4,
+            ]
+        ];
 
-		$this->actingAs($user)
-			->post(route('sequences.book_numbers_save', $sequence), $array)
-			->assertRedirect(route('sequences.book_numbers', $sequence))
-			->assertSessionHasNoErrors()
-			->assertSessionHas(['success' => __('sequence.book_numbers_in_the_series_have_been_successfully_changed')]);
+        $this->actingAs($user)
+            ->post(route('sequences.book_numbers_save', $sequence), $array)
+            ->assertRedirect(route('sequences.book_numbers', $sequence))
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas(['success' => __('sequence.book_numbers_in_the_series_have_been_successfully_changed')]);
 
-		$books = $sequence->books()
-			->orderBy('id', 'asc')
-			->get();
+        $books = $sequence->books()
+            ->orderBy('id', 'asc')
+            ->get();
 
-		$book = $books->get(0);
-		$book2 = $books->get(1);
+        $book = $books->get(0);
+        $book2 = $books->get(1);
 
-		$this->assertEquals(3, $book->pivot->number);
-		$this->assertEquals(4, $book2->pivot->number);
-	}
+        $this->assertEquals(3, $book->pivot->number);
+        $this->assertEquals(4, $book2->pivot->number);
+    }
 
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
-	public function testPageIfSequenceHasNoBooks()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function testPageIfSequenceHasNoBooks()
+    {
+        $user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->create();
+        $sequence = Sequence::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('sequences.book_numbers', $sequence))
-			->assertOk()
-			->assertSeeText(__('sequence.there_are_no_books_in_the_series'))
-			->assertSeeText(__('sequence.go_back_to_the_series_page'));
-	}
+        $this->actingAs($user)
+            ->get(route('sequences.book_numbers', $sequence))
+            ->assertOk()
+            ->assertSeeText(__('sequence.there_are_no_books_in_the_series'))
+            ->assertSeeText(__('sequence.go_back_to_the_series_page'));
+    }
 
-	/**
-	 * A basic feature test example.
-	 *
-	 * @return void
-	 */
-	public function testStoreIfSequenceHasNoBooks()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function testStoreIfSequenceHasNoBooks()
+    {
+        $user = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)
-			->create();
+        $sequence = Sequence::factory()->create();
 
-		$this->actingAs($user)
-			->post(route('sequences.book_numbers_save', $sequence))
-			->assertRedirect(route('sequences.book_numbers', $sequence))
-			->assertSessionHasNoErrors()
-			->assertSessionMissing(['success' => __('sequence.book_numbers_in_the_series_have_been_successfully_changed')]);
+        $this->actingAs($user)
+            ->post(route('sequences.book_numbers_save', $sequence))
+            ->assertRedirect(route('sequences.book_numbers', $sequence))
+            ->assertSessionHasNoErrors()
+            ->assertSessionMissing(['success' => __('sequence.book_numbers_in_the_series_have_been_successfully_changed')]);
 
-	}
+    }
 }

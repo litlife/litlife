@@ -1,246 +1,303 @@
 <?php
 
+namespace Database\Factories;
+
 use App\AchievementUser;
 use App\Enums\Gender;
 use App\ReferredUser;
 use App\User;
+use App\UserAuthLog;
 use App\UserEmail;
+use App\UserGroup;
 use App\UserPaymentDetail;
 use App\UserPaymentTransaction;
 use App\UserPhoto;
 use App\UserPurchase;
-use Faker\Generator as Faker;
 
-$factory->define(App\User::class, function (Faker $faker) {
-	static $password;
+class UserFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = User::class;
 
-	return [
-		'nick' => uniqid(),
-		'last_name' => preg_replace('/(\'|\"|ё)/iu', '', $faker->lastName),
-		'first_name' => preg_replace('/(\'|\"|ё)/iu', '', $faker->firstName),
-		'email' => $faker->unique()->safeEmail,
-		'password' => $password ?: $password = md0('password'),
-		'gender' => Gender::male,
-		'reg_ip' => $faker->ipv4,
-		'born_date' => $faker->date('Y-m-d', '-20 years'),
-		'city' => $faker->city
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        static $password;
 
-$factory->afterCreating(App\User::class, function ($user, $faker) {
+        return [
+            'nick' => uniqid(),
+            'last_name' => preg_replace('/(\'|\"|ё)/iu', '', $this->faker->lastName),
+            'first_name' => preg_replace('/(\'|\"|ё)/iu', '', $this->faker->firstName),
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => '' ?: $password = md0('password'),
+            'gender' => Gender::male,
+            'reg_ip' => $this->faker->ipv4,
+            'born_date' => $this->faker->date('Y-m-d', '-20 years'),
+            'city' => $this->faker->city
+        ];
+    }
 
-	$group = factory(App\UserGroup::class)
-		->state('user')
-		->create();
+    public function configure()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$user->groups()->attach($group);
+        })->afterCreating(function ($item) {
+            $group = UserGroup::factory()->user()->create();
 
-	$user->load('groups');
-});
+            $item->groups()->attach($group);
 
-$factory->afterCreatingState(App\User::class, 'with_user_group', function ($user, $faker) {
+            $item->load('groups');
+        });
+    }
 
-	$group = factory(App\UserGroup::class)
-		->state('user')
-		->create();
+    public function with_user_group()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$user->groups()->sync($group);
+        })->afterCreating(function ($item) {
+            $group = UserGroup::factory()->user()->create();
 
-	$user->load('groups');
-});
+            $item->groups()->sync($group);
 
-$factory->afterCreatingState(App\User::class, 'with_user_permissions', function ($user, $faker) {
+            $item->load('groups');
+        });
+    }
 
-	$user->group->manage_collections = true;
-	$user->group->blog = true;
-	$user->group->display_technical_information = false;
-	$user->group->admin_comment = false;
-	$user->group->author_editor_request = true;
-	$user->group->save();
+    public function with_user_permissions()
+    {
+        return $this->afterMaking(function ($item) {
 
-});
+        })->afterCreating(function ($item) {
+            $item->group->manage_collections = true;
+            $item->group->blog = true;
+            $item->group->display_technical_information = false;
+            $item->group->admin_comment = false;
+            $item->group->author_editor_request = true;
+            $item->group->save();
+        });
+    }
 
-$factory->afterCreatingState(App\User::class, 'without_email', function ($user, $faker) {
-	$user->emails()->delete();
-	$user->refreshConfirmedMailboxCount();
-	$user->save();
-});
+    public function without_email()
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'with_confirmed_email', function ($user, $faker) {
-	$email = factory(UserEmail::class)
-		->create([
-			'user_id' => $user->id,
-			'notice' => true,
-			'rescue' => true,
-			'show_in_profile' => true,
-			'confirm' => true
-		]);
-});
+        })->afterCreating(function ($item) {
+            $item->emails()->delete();
+            $item->refreshConfirmedMailboxCount();
+            $item->save();
+        });
+    }
 
-$factory->afterCreatingState(App\User::class, 'with_not_confirmed_email', function ($user, $faker) {
+    public function with_not_confirmed_email()
+    {
+        return $this->afterMaking(function ($item) {
 
-	foreach ($user->emails as $email) {
-		$email->delete();
-	}
+        })->afterCreating(function ($item) {
+            foreach ($item->emails as $email) {
+                $email->delete();
+            }
 
-	$email = factory(UserEmail::class)
-		->state('not_confirmed')
-		->create([
-			'user_id' => $user->id
-		]);
-});
+            $email = UserEmail::factory()
+                ->not_confirmed()
+                ->create([
+                    'user_id' => $item->id
+                ]);
+        });
+    }
 
-$factory->afterCreatingState(App\User::class, 'with_auth_log', function ($user, $faker) {
+    public function with_auth_log()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$auth_log = factory(App\UserAuthLog::class)
-		->create(['user_id' => $user->id]);
-});
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'administrator', function ($user, $faker) {
+            $auth_log = UserAuthLog::factory()
+                ->create(['user_id' => $item->id]);
 
-	$user->groups()->detach();
+        });
+    }
 
-	$group = factory(App\UserGroup::class)
-		->state('administrator')
-		->create();
+    public function administrator()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$user->groups()->attach($group);
-	$user->load('groups');
-});
+        })->afterCreating(function ($item) {
+            $item->groups()->detach();
 
-$factory->afterCreatingState(App\User::class, 'admin', function ($user, $faker) {
+            $group = UserGroup::factory()
+                ->administrator()
+                ->create();
 
-	$user->groups()->detach();
+            $item->groups()->attach($group);
+            $item->load('groups');
+        });
+    }
 
-	$group = factory(App\UserGroup::class)
-		->state('administrator')
-		->create();
+    public function admin()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$user->groups()->attach($group);
-	$user->load('groups');
-});
+        })->afterCreating(function ($item) {
+            $item->groups()->detach();
 
-$factory->afterCreatingState(App\User::class, 'with_thousand_money_on_balance', function ($user, $faker) {
-	/*
-		$transaction = new \App\UserPaymentTransaction;
-		$transaction->user_id = $user->id;
-		$transaction->sum = 1000;
-		$transaction->typeDeposit();
-		$transaction->
-		$transaction->save();
-		*/
+            $group = UserGroup::factory()
+                ->administrator()
+                ->create();
 
-	$payment = factory(UserPaymentTransaction::class)
-		->state('incoming')
-		->create(['sum' => 1000, 'user_id' => $user->id]);
+            $item->groups()->attach($group);
+            $item->load('groups');
+        });
+    }
 
-	$user->balance(true);
-});
+    public function withMoneyOnBalance($amount = 1000)
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'with_100_balance', function ($user, $faker) {
+        })->afterCreating(function ($item) use ($amount) {
+            $payment = UserPaymentTransaction::factory()
+                ->incoming()
+                ->create(['sum' => $amount, 'user_id' => $item->id]);
 
-	$payment = factory(UserPaymentTransaction::class)
-		->state('incoming')
-		->create(['sum' => 100, 'user_id' => $user->id]);
+            $item->balance(true);
+        });
+    }
 
-	$user->balance(true);
-});
+    public function withSelledBook($bookPrice = 1000)
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'with_200_balance', function ($user, $faker) {
+        })->afterCreating(function ($item) use ($bookPrice) {
+            $payment = UserPurchase::factory()
+                ->book()
+                ->create(['price' => $bookPrice, 'seller_user_id' => $item->id, 'site_commission' => 0]);
 
-	$payment = factory(UserPaymentTransaction::class)
-		->state('incoming')
-		->create(['sum' => 200, 'user_id' => $user->id]);
+            $item->balance(true);
+        });
+    }
 
-	$user->balance(true);
-});
+    public function with_wallet()
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'with_300_balance', function ($user, $faker) {
+        })->afterCreating(function ($item) {
+            $wallet = UserPaymentDetail::factory()
+                ->create(['user_id' => $item->id])
+                ->fresh();
+        });
+    }
 
-	$payment = factory(UserPaymentTransaction::class)
-		->state('incoming')
-		->create(['sum' => 300, 'user_id' => $user->id]);
+    public function with_purchased_book()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$user->balance(true);
-});
+        })->afterCreating(function ($item) {
+            $purchase = UserPurchase::factory()
+                ->book()
+                ->create(['buyer_user_id' => $item->id]);
+        });
+    }
 
-$factory->afterCreatingState(App\User::class, 'with_400_balance', function ($user, $faker) {
+    public function referred()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$payment = factory(UserPaymentTransaction::class)
-		->state('incoming')
-		->create(['sum' => 400, 'user_id' => $user->id]);
+        })->afterCreating(function ($item) {
+            $referred_by_user = User::factory()->with_confirmed_email()->create();
 
-	$user->balance(true);
-});
+            $referrer = ReferredUser::factory()
+                ->create([
+                    'referred_by_user_id' => $referred_by_user->id,
+                    'referred_user_id' => $item->id
+                ]);
 
+            $referred_by_user->refer_users_refresh();
+            $referred_by_user->save();
+            $referred_by_user->refresh();
+        });
+    }
 
-$factory->afterCreatingState(App\User::class, 'with_thousand_earned_money_on_balance', function ($user, $faker) {
+    public function with_confirmed_email()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$payment = factory(UserPurchase::class)
-		->state('book')
-		->create(['price' => 1000, 'seller_user_id' => $user->id, 'site_commission' => 0]);
+        })->afterCreating(function ($item) {
+            $email = UserEmail::factory()
+                ->create([
+                    'user_id' => $item->id,
+                    'notice' => true,
+                    'rescue' => true,
+                    'show_in_profile' => true,
+                    'confirm' => true
+                ]);
+        });
+    }
 
-	$user->balance(true);
-});
+    public function with_avatar()
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'with_wallet', function ($user, $faker) {
+        })->afterCreating(function ($item) {
 
-	$wallet = factory(UserPaymentDetail::class)
-		->create(['user_id' => $user->id])
-		->fresh();
-});
+            $photo = UserPhoto::factory()
+                ->create(['user_id' => $item->id]);
 
-$factory->afterCreatingState(App\User::class, 'with_purchased_book', function (User $user, $faker) {
+            $item->avatar_id = $photo->id;
+            $item->save();
+        });
+    }
 
-	$purchase = factory(UserPurchase::class)
-		->state('book')
-		->create(['buyer_user_id' => $user->id]);
-});
+    public function suspended()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->suspend();
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\User::class, 'referred', function (User $user, $faker) {
+        });
+    }
 
-	$referred_by_user = factory(User::class)
-		->states('with_confirmed_email')
-		->create();
+    public function with_achievement()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$referrer = factory(ReferredUser::class)
-		->create([
-			'referred_by_user_id' => $referred_by_user->id,
-			'referred_user_id' => $user->id
-		]);
+        })->afterCreating(function ($item) {
 
-	$referred_by_user->refer_users_refresh();
-	$referred_by_user->save();
-	$referred_by_user->refresh();
-});
+            $achievementUser = AchievementUser::factory()
+                ->create(['user_id' => $item->id]);
 
-$factory->afterCreatingState(App\User::class, 'with_avatar', function (User $user, $faker) {
+        });
+    }
 
-	$photo = factory(UserPhoto::class)
-		->create(['user_id' => $user->id]);
+    public function male()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$user->avatar_id = $photo->id;
-	$user->save();
-});
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\User::class, 'suspended', function (User $user, $faker) {
-	$user->suspend();
-});
+        })->state(function (array $attributes) {
+            return [
+                'gender' => 'male'
+            ];
+        });
+    }
 
-$factory->afterCreatingState(App\User::class, 'with_achievement', function (User $user, $faker) {
+    public function female()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$achievementUser = factory(AchievementUser::class)
-		->create(['user_id' => $user->id]);
-});
+        })->afterCreating(function ($item) {
 
-$factory->state(App\User::class, 'male', function ($faker) {
-	return [
-		'gender' => 'male'
-	];
-});
-
-$factory->state(App\User::class, 'female', function ($faker) {
-	return [
-		'gender' => 'female'
-	];
-});
+        })->state(function (array $attributes) {
+            return [
+                'gender' => 'female'
+            ];
+        });
+    }
+}

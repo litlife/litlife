@@ -1,12 +1,29 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\AuthorBiography::class, function (Faker $faker) {
-	return [
-		'author_id' => function () {
-			return factory(\App\Author::class)->create()->id;
-		},
-		'text' => $faker->realText(200),
-	];
-});
+use App\Author;
+use App\AuthorBiography;
+
+class AuthorBiographyFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AuthorBiography::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'author_id' => Author::factory(),
+            'text' => $this->faker->realText(200),
+        ];
+    }
+}

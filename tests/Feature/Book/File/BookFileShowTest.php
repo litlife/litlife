@@ -11,116 +11,118 @@ use Tests\TestCase;
 
 class BookFileShowTest extends TestCase
 {
-	public function testIfOnReview()
-	{
-		config(['litlife.disk_for_files' => 'public']);
+    public function testIfOnReview()
+    {
+        config(['litlife.disk_for_files' => 'public']);
 
-		$book = factory(Book::class)->create();
-		$book->statusSentForReview();
-		$book->save();
-		$book->refresh();
+        $book = Book::factory()->create();
+        $book->statusSentForReview();
+        $book->save();
+        $book->refresh();
 
-		$book_file = factory(BookFile::class)->states('txt')->create(['book_id' => $book->id]);
-		$book_file->statusSentForReview();
-		$book_file->save();
-		UpdateBookFilesCount::dispatch($book);
-		$book->refresh();
+        $book_file = BookFile::factory()->txt()->create(['book_id' => $book->id]);
+        $book_file->statusSentForReview();
+        $book_file->save();
+        UpdateBookFilesCount::dispatch($book);
+        $book->refresh();
 
-		$this->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertRedirect($book_file->url);
+        $this->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertRedirect($book_file->url);
 
-		$admin = factory(User::class)->create();
-		$admin->group->book_file_add_check = true;
-		$admin->push();
+        $admin = User::factory()->create();
+        $admin->group->book_file_add_check = true;
+        $admin->push();
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($admin)
-			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertRedirect($book_file->url);
+        $this->actingAs($admin)
+            ->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertRedirect($book_file->url);
 
-		$this->actingAs($user)
-			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertRedirect($book_file->url);
-	}
+        $this->actingAs($user)
+            ->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertRedirect($book_file->url);
+    }
 
-	public function testIfPrivate()
-	{
-		config(['litlife.disk_for_files' => 'public']);
+    public function testIfPrivate()
+    {
+        config(['litlife.disk_for_files' => 'public']);
 
-		$book = factory(Book::class)->states('with_create_user')->create();
-		$book->statusPrivate();
-		$book->save();
-		$book->refresh();
+        $book = Book::factory()->with_create_user()->create();
+        $book->statusPrivate();
+        $book->save();
+        $book->refresh();
 
-		$book_file = factory(BookFile::class)->states('txt')->create([
-			'book_id' => $book->id, 'create_user_id' => $book->create_user_id]);
-		$book_file->statusPrivate();
-		$book_file->save();
-		UpdateBookFilesCount::dispatch($book);
-		$book->refresh();
+        $book_file = BookFile::factory()
+            ->txt()
+            ->create([
+                'book_id' => $book->id,
+                'create_user_id' => $book->create_user_id
+            ]);
 
-		$this->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertStatus(404);
+        $book_file->statusPrivate();
+        $book_file->save();
+        UpdateBookFilesCount::dispatch($book);
+        $book->refresh();
 
-		$admin = factory(User::class)->create();
-		$admin->group->book_file_add_check = true;
-		$admin->push();
+        $this->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertStatus(404);
 
-		$user = factory(User::class)->create();
+        $admin = User::factory()->create();
+        $admin->group->book_file_add_check = true;
+        $admin->push();
 
-		$this->actingAs($admin)
-			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertStatus(404);
+        $user = User::factory()->create();
 
-		$this->actingAs($user)
-			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertStatus(404);
+        $this->actingAs($admin)
+            ->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertStatus(404);
 
-		$this->actingAs($book->create_user)
-			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertRedirect($book_file->url);
-	}
+        $this->actingAs($user)
+            ->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertStatus(404);
 
-	public function testXAccelRedirect()
-	{
-		$file = factory(BookFile::class)
-			->states('txt')
-			->create(['storage' => 'private']);
+        $this->actingAs($book->create_user)
+            ->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertRedirect($book_file->url);
+    }
 
-		$user = factory(User::class)->create();
+    public function testXAccelRedirect()
+    {
+        $file = BookFile::factory()->txt()->create();
 
-		$url = Storage::disk($file['storage'])
-			->url($file->dirname . '/' . rawurlencode($file->name));
+        $user = User::factory()->create();
 
-		$response = $this->actingAs($user)
-			->get(route('books.files.show', ['book' => $file->book, 'fileName' => $file->name]))
-			->assertOk()
-			->assertHeader('Content-Type', 'application/x-force-download')
-			->assertHeader('Content-Disposition', 'attachment; filename="' . $file->name . '"')
-			->assertHeader('X-Accel-Redirect', $url);
-	}
+        $url = Storage::disk($file['storage'])
+            ->url($file->dirname.'/'.rawurlencode($file->name));
 
-	public function testDownloadNameUrlEncode()
-	{
-		config(['litlife.disk_for_files' => 'public']);
+        $response = $this->actingAs($user)
+            ->get(route('books.files.show', ['book' => $file->book, 'fileName' => $file->name]))
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/x-force-download')
+            ->assertHeader('Content-Disposition', 'attachment; filename="'.$file->name.'"')
+            ->assertHeader('X-Accel-Redirect', $url);
+    }
 
-		$book = factory(Book::class)
-			->states('accepted', 'with_create_user')
-			->create(['title' => 'Сделаешь']);
+    public function testDownloadNameUrlEncode()
+    {
+        config(['litlife.disk_for_files' => 'public']);
 
-		$book_file = factory(BookFile::class)
-			->states('txt')
-			->create([
-				'book_id' => $book->id,
-				'create_user_id' => $book->create_user_id
-			]);
-		$book_file->save();
-		UpdateBookFilesCount::dispatch($book);
-		$book->refresh();
+        $book = Book::factory()->accepted()->with_create_user()->create(['title' => 'Сделаешь']);
 
-		$this->actingAs($book->create_user)
-			->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
-			->assertRedirect($book_file->url);
-	}
+        $book_file = BookFile::factory()
+            ->txt()
+            ->create([
+                'book_id' => $book->id,
+                'create_user_id' => $book->create_user_id
+            ]);
+
+        $book_file->save();
+        UpdateBookFilesCount::dispatch($book);
+        $book->refresh();
+
+        $this->actingAs($book->create_user)
+            ->get(route('books.files.show', ['book' => $book, 'fileName' => $book_file->name]))
+            ->assertRedirect($book_file->url);
+    }
 }

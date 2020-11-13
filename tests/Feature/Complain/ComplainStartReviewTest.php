@@ -8,25 +8,22 @@ use Tests\TestCase;
 
 class ComplainStartReviewTest extends TestCase
 {
-	public function testStartReviewHttp()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testStartReviewHttp()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')->create();
+        $complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$count = Complain::getCachedOnModerationCount();
+        $count = Complain::getCachedOnModerationCount();
 
-		$this->actingAs($admin)
-			->get(route('complains.start_review', $complain))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($admin)
+            ->get(route('complains.start_review', $complain))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$complain->refresh();
+        $complain->refresh();
 
-		$this->assertEquals($count, Complain::getCachedOnModerationCount());
-		$this->assertTrue($complain->isReviewStarts());
-	}
+        $this->assertEquals($count, Complain::getCachedOnModerationCount());
+        $this->assertTrue($complain->isReviewStarts());
+    }
 }

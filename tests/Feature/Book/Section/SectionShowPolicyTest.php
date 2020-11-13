@@ -11,178 +11,144 @@ use Tests\TestCase;
 
 class SectionShowPolicyTest extends TestCase
 {
-	public function testViewPolicyIfAllBookPaid()
-	{
-		$book = factory(Book::class)
-			->create(['price' => 100, 'free_sections_count' => 0]);
+    public function testViewPolicyIfAllBookPaid()
+    {
+        $book = Book::factory()->create(['price' => 100, 'free_sections_count' => 0]);
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section2 = Section::factory()->create(['book_id' => $book->id]);
 
-		$reader = factory(User::class)
-			->create();
+        $reader = User::factory()->create();
 
-		$this->assertFalse($reader->can('view', $section));
-		$this->assertFalse($reader->can('view', $section2));
-	}
+        $this->assertFalse($reader->can('view', $section));
+        $this->assertFalse($reader->can('view', $section2));
+    }
 
-	public function testViewPolicyIfTwoFirstSectionsFree()
-	{
-		$book = factory(Book::class)
-			->create(['price' => 100, 'free_sections_count' => 2]);
+    public function testViewPolicyIfTwoFirstSectionsFree()
+    {
+        $book = Book::factory()->create(['price' => 100, 'free_sections_count' => 2]);
 
-		$free_section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $free_section = Section::factory()->create(['book_id' => $book->id]);
 
-		$free_section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$free_section2->insertAfterNode($free_section);
+        $free_section2 = Section::factory()->create(['book_id' => $book->id]);
+        $free_section2->insertAfterNode($free_section);
 
-		$section3 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$section3->insertAfterNode($free_section2);
+        $section3 = Section::factory()->create(['book_id' => $book->id]);
+        $section3->insertAfterNode($free_section2);
 
-		$section4 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$section4->insertAfterNode($section3);
+        $section4 = Section::factory()->create(['book_id' => $book->id]);
+        $section4->insertAfterNode($section3);
 
-		$reader = factory(User::class)
-			->create();
+        $reader = User::factory()->create();
 
-		$this->assertTrue($reader->can('view', $free_section));
-		$this->assertTrue($reader->can('view', $free_section2));
-		$this->assertFalse($reader->can('view', $section3));
-		$this->assertFalse($reader->can('view', $section4));
-	}
+        $this->assertTrue($reader->can('view', $free_section));
+        $this->assertTrue($reader->can('view', $free_section2));
+        $this->assertFalse($reader->can('view', $section3));
+        $this->assertFalse($reader->can('view', $section4));
+    }
 
-	public function testViewPolicyIfTwoFirstSectionsFreeAndDescendants()
-	{
-		$book = factory(Book::class)
-			->create(['price' => 100, 'free_sections_count' => 2]);
+    public function testViewPolicyIfTwoFirstSectionsFreeAndDescendants()
+    {
+        $book = Book::factory()->create(['price' => 100, 'free_sections_count' => 2]);
 
-		$free_section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $free_section = Section::factory()->create(['book_id' => $book->id]);
 
-		$free_section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$free_section->appendNode($free_section2);
+        $free_section2 = Section::factory()->create(['book_id' => $book->id]);
+        $free_section->appendNode($free_section2);
 
-		$section3 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$free_section2->appendNode($section3);
+        $section3 = Section::factory()->create(['book_id' => $book->id]);
+        $free_section2->appendNode($section3);
 
-		$section4 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$section3->appendNode($section4);
+        $section4 = Section::factory()->create(['book_id' => $book->id]);
+        $section3->appendNode($section4);
 
-		$reader = factory(User::class)
-			->create();
+        $reader = User::factory()->create();
 
-		$this->assertTrue($reader->can('view', $free_section));
-		$this->assertTrue($reader->can('view', $free_section2));
-		$this->assertFalse($reader->can('view', $section3));
-		$this->assertFalse($reader->can('view', $section4));
-	}
+        $this->assertTrue($reader->can('view', $free_section));
+        $this->assertTrue($reader->can('view', $free_section2));
+        $this->assertFalse($reader->can('view', $section3));
+        $this->assertFalse($reader->can('view', $section4));
+    }
 
-	public function testPageViewPolicyIfFirstPageFreeAndUserBuyABook()
-	{
-		$book = factory(Book::class)
-			->create(['price' => 100, 'free_sections_count' => 0]);
+    public function testPageViewPolicyIfFirstPageFreeAndUserBuyABook()
+    {
+        $book = Book::factory()->create(['price' => 100, 'free_sections_count' => 0]);
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section2 = Section::factory()->create(['book_id' => $book->id]);
 
-		$reader = factory(User::class)
-			->create();
+        $reader = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
-				'buyer_user_id' => $reader->id,
-				'purchasable_type' => 'book',
-				'purchasable_id' => $book->id,
-			]);
+        $purchase = UserPurchase::factory()->create([
+            'buyer_user_id' => $reader->id,
+            'purchasable_type' => 'book',
+            'purchasable_id' => $book->id,
+        ]);
 
-		$this->assertTrue($reader->can('view', $section));
-		$this->assertTrue($reader->can('view', $section2));
-	}
+        $this->assertTrue($reader->can('view', $section));
+        $this->assertTrue($reader->can('view', $section2));
+    }
 
-	public function testPageViewPolicyIfSectionPaidAndUserAAuthor()
-	{
-		$author = factory(Author::class)
-			->states('with_author_manager', 'with_book_for_sale')
-			->create();
+    public function testPageViewPolicyIfSectionPaidAndUserAAuthor()
+    {
+        $author = Author::factory()->with_author_manager()->with_book_for_sale()->create();
 
-		$writer = $author->managers->first()->user;
-		$book = $author->books->first();
+        $writer = $author->managers->first()->user;
+        $book = $author->books->first();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->create(['book_id' => $book->id]);
 
-		$this->assertTrue($book->isForSale());
+        $this->assertTrue($book->isForSale());
 
-		$this->assertTrue($writer->can('view', $section));
-	}
+        $this->assertTrue($writer->can('view', $section));
+    }
 
-	public function testPageViewPolicyIfSectionPaidAndUserGuest()
-	{
-		$book = factory(Book::class)
-			->create(['price' => 100, 'free_sections_count' => 1]);
+    public function testPageViewPolicyIfSectionPaidAndUserGuest()
+    {
+        $book = Book::factory()->create(['price' => 100, 'free_sections_count' => 1]);
 
-		$free_section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $free_section = Section::factory()->create(['book_id' => $book->id]);
 
-		$section2 = factory(Section::class)
-			->create(['book_id' => $book->id]);
-		$free_section->appendNode($section2);
+        $section2 = Section::factory()->create(['book_id' => $book->id]);
+        $free_section->appendNode($section2);
 
-		$this->assertTrue((new User)->can('view', $free_section));
-		$this->assertFalse((new User)->can('view', $section2));
-	}
+        $this->assertTrue((new User)->can('view', $free_section));
+        $this->assertFalse((new User)->can('view', $section2));
+    }
 
-	public function testViewPolicyIfBookReadAccessClosed()
-	{
-		$book = factory(Book::class)
-			->create(['price' => 100, 'free_sections_count' => 1]);
-		$book->readAccessDisable();
-		$book->save();
+    public function testViewPolicyIfBookReadAccessClosed()
+    {
+        $book = Book::factory()->create(['price' => 100, 'free_sections_count' => 1]);
+        $book->readAccessDisable();
+        $book->save();
 
-		$section = factory(Section::class)
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->create(['book_id' => $book->id]);
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('view', $section));
-	}
+        $this->assertFalse($user->can('view', $section));
+    }
 
-	public function testViewPolicyIfBookPurchasedAndReadAccessClosed()
-	{
-		$book = factory(Book::class)
-			->states('with_section')
-			->create(['price' => 100, 'free_sections_count' => 1]);
-		$book->readAccessDisable();
-		$book->push();
-		$book->refresh();
+    public function testViewPolicyIfBookPurchasedAndReadAccessClosed()
+    {
+        $book = Book::factory()->with_section()->create();
+        $book->readAccessDisable();
+        $book->push();
+        $book->refresh();
 
-		$section = $book->sections()->first();
+        $section = $book->sections()->first();
 
-		$reader = factory(User::class)
-			->create();
+        $reader = User::factory()->create();
 
-		$purchase = factory(UserPurchase::class)
-			->create([
-				'buyer_user_id' => $reader->id,
-				'purchasable_type' => 'book',
-				'purchasable_id' => $section->book->id,
-			]);
+        $purchase = UserPurchase::factory()->create([
+            'buyer_user_id' => $reader->id,
+            'purchasable_type' => 'book',
+            'purchasable_id' => $section->book->id,
+        ]);
 
-		$this->assertFalse($reader->can('view', $section));
-	}
+        $this->assertFalse($reader->can('view', $section));
+    }
 
 }

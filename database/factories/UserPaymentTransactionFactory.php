@@ -1,6 +1,6 @@
 <?php
 
-/* @var $factory Factory */
+namespace Database\Factories;
 
 use App\Enums\PaymentStatusEnum;
 use App\User;
@@ -8,214 +8,267 @@ use App\UserIncomingPayment;
 use App\UserMoneyTransfer;
 use App\UserOutgoingPayment;
 use App\UserPaymentTransaction;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserPaymentTransaction::class, function (Faker $faker) {
+class UserPaymentTransactionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserPaymentTransaction::class;
 
-	$sum = rand(-100, 100);
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $sum = rand(-100, 100);
 
-	return [
-		'user_id' => function () {
-			return factory(User::class)
-				->create()->id;
-		},
-		'sum' => $sum,
-		'type' => 0,
-		'params' => [],
-		'status' => PaymentStatusEnum::Success,
-		'status_changed_at' => now()
-	];
-});
+        return [
+            'user_id' => User::factory(),
+            'sum' => $sum,
+            'type' => 0,
+            'params' => [],
+            'status' => PaymentStatusEnum::Success,
+            'status_changed_at' => now()
+        ];
+    }
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'incoming', function (UserPaymentTransaction $transaction, $faker) {
+    public function configure()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$payment = factory(UserIncomingPayment::class)
-		->create(['user_id' => $transaction->user_id]);
+        })->afterCreating(function ($item) {
+            $item->user->balance(true);
+            $item->user->frozen_balance(true);
+        });
+    }
 
-	$transaction->operable_type = 14;
-	$transaction->operable_id = $payment->id;
-	$transaction->typeDeposit();
-});
+    public function incoming()
+    {
+        return $this->afterMaking(function ($item) {
+            $payment = UserIncomingPayment::factory()->create(['user_id' => $item->user_id]);
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'outgoing', function (UserPaymentTransaction $transaction, $faker) {
+            $item->operable_type = 14;
+            $item->operable_id = $payment->id;
+            $item->typeDeposit();
+        })->afterCreating(function ($item) {
 
-	$payment = factory(UserOutgoingPayment::class)
-		->create(['user_id' => $transaction->user_id]);
+        });
+    }
 
-	$transaction->operable_type = 15;
-	$transaction->operable_id = $payment->id;
-	$transaction->typeWithdrawal();
-	$transaction->sum = -abs($transaction->sum);
-});
+    public function outgoing()
+    {
+        return $this->afterMaking(function ($item) {
+            $payment = UserOutgoingPayment::factory()->create(['user_id' => $item->user_id]);
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'success', function (UserPaymentTransaction $transaction, $faker) {
-	$transaction->statusSuccess();
-});
+            $item->operable_type = 15;
+            $item->operable_id = $payment->id;
+            $item->typeWithdrawal();
+            $item->sum = -abs($item->sum);
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'wait', function (UserPaymentTransaction $transaction, $faker) {
-	$transaction->statusWait();
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'processing', function (UserPaymentTransaction $transaction, $faker) {
-	$transaction->statusProcessing();
-});
+    public function success()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->statusSuccess();
+        })->afterCreating(function ($item) {
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'canceled', function (UserPaymentTransaction $transaction, $faker) {
-	$transaction->statusCanceled();
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'error', function (UserPaymentTransaction $transaction, $faker) {
-	$transaction->statusError();
-});
+    public function wait()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->statusWait();
+        })->afterCreating(function ($item) {
 
-$factory->afterCreating(App\UserPaymentTransaction::class, function (UserPaymentTransaction $transaction, $faker) {
-	$transaction->user->balance(true);
-	$transaction->user->frozen_balance(true);
-});
+        });
+    }
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'unitpay', function (UserPaymentTransaction $transaction, $faker) {
+    public function processing()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->statusProcessing();
+        })->afterCreating(function ($item) {
 
+        });
+    }
 
-});
+    public function canceled()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->statusCanceled();
+        })->afterCreating(function ($item) {
 
-$factory->afterCreatingState(App\UserPaymentTransaction::class, 'unitpay', function (UserPaymentTransaction $transaction, $faker) {
+        });
+    }
 
-	if ($transaction->isDeposit()) {
+    public function error()
+    {
+        return $this->afterMaking(function ($item) {
+            $item->statusError();
+        })->afterCreating(function ($item) {
 
-		if ($transaction->isStatusSuccess()) {
-			$payment_id = rand(1000, 100000);
+        });
+    }
 
-			$transaction->operable->params = [
-				'result' => [
-					'paymentId' => $payment_id,
-					'projectId' => config('unitpay.project_id'),
-					'account' => $transaction->id,
-					'payerSum' => $transaction->sum + 10,
-					'payerCurrency' => 'RUB',
-					'profit' => $transaction->sum,
-					'paymentType' => $transaction->operable->payment_type,
-					'orderSum' => $transaction->sum,
-					'orderCurrency' => 'RUB',
-					'date' => now()->toDateTimeString(),
-					'purse' => '1234123412341234',
-					'test' => '0'
-				]
-			];
-			$transaction->operable->save();
-		}
+    public function unitpay()
+    {
+        return $this->afterMaking(function ($item) {
 
-		if ($transaction->isStatusProcessing()) {
-			$payment_id = rand(1000, 100000);
+        })->afterCreating(function ($item) {
+            if ($item->isDeposit()) {
 
-			$transaction->operable->params = [
-				'result' => [
-					'paymentId' => $payment_id,
-					'projectId' => config('unitpay.project_id'),
-					'account' => $transaction->id,
-					'payerSum' => $transaction->sum + 10,
-					'payerCurrency' => 'RUB',
-					'profit' => $transaction->sum,
-					'paymentType' => $transaction->operable->payment_type,
-					'orderSum' => $transaction->sum,
-					'orderCurrency' => 'RUB',
-					'date' => now()->toDateTimeString()
-				]
-			];
-		}
+                if ($item->isStatusSuccess()) {
+                    $payment_id = rand(1000, 100000);
 
-		if ($transaction->isStatusError()) {
-			$payment_id = rand(1000, 100000);
+                    $item->operable->params = [
+                        'result' => [
+                            'paymentId' => $payment_id,
+                            'projectId' => config('unitpay.project_id'),
+                            'account' => $item->id,
+                            'payerSum' => $item->sum + 10,
+                            'payerCurrency' => 'RUB',
+                            'profit' => $item->sum,
+                            'paymentType' => $item->operable->payment_type,
+                            'orderSum' => $item->sum,
+                            'orderCurrency' => 'RUB',
+                            'date' => now()->toDateTimeString(),
+                            'purse' => '1234123412341234',
+                            'test' => '0'
+                        ]
+                    ];
+                    $item->operable->save();
+                }
 
-			$transaction->operable->params = [
-				'result' => [
-					'paymentId' => $payment_id,
-					'projectId' => config('unitpay.project_id'),
-					'account' => $transaction->id,
-					'payerSum' => $transaction->sum + 10,
-					'payerCurrency' => 'RUB',
-					'profit' => $transaction->sum,
-					'paymentType' => $transaction->operable->payment_type,
-					'orderSum' => $transaction->sum,
-					'orderCurrency' => 'RUB',
-					'date' => now()->toDateTimeString()
-				]
-			];
-		}
+                if ($item->isStatusProcessing()) {
+                    $payment_id = rand(1000, 100000);
 
-		if (!empty($transaction->operable->getParamsArray()['result']['paymentId'])) {
-			$transaction->operable->payment_id = $transaction->operable->getParamsArray()['result']['paymentId'];
-		}
+                    $item->operable->params = [
+                        'result' => [
+                            'paymentId' => $payment_id,
+                            'projectId' => config('unitpay.project_id'),
+                            'account' => $item->id,
+                            'payerSum' => $item->sum + 10,
+                            'payerCurrency' => 'RUB',
+                            'profit' => $item->sum,
+                            'paymentType' => $item->operable->payment_type,
+                            'orderSum' => $item->sum,
+                            'orderCurrency' => 'RUB',
+                            'date' => now()->toDateTimeString()
+                        ]
+                    ];
+                }
 
-		$transaction->sum = abs($transaction->sum);
-	}
+                if ($item->isStatusError()) {
+                    $payment_id = rand(1000, 100000);
 
-	if ($transaction->isWithdrawal()) {
-		$transaction->sum = -abs($transaction->sum);
+                    $item->operable->params = [
+                        'result' => [
+                            'paymentId' => $payment_id,
+                            'projectId' => config('unitpay.project_id'),
+                            'account' => $item->id,
+                            'payerSum' => $item->sum + 10,
+                            'payerCurrency' => 'RUB',
+                            'profit' => $item->sum,
+                            'paymentType' => $item->operable->payment_type,
+                            'orderSum' => $item->sum,
+                            'orderCurrency' => 'RUB',
+                            'date' => now()->toDateTimeString()
+                        ]
+                    ];
+                }
 
-		if ($transaction->isStatusSuccess()) {
-			$payment_id = rand(1000, 100000);
+                if (!empty($item->operable->getParamsArray()['result']['paymentId'])) {
+                    $item->operable->payment_id = $item->operable->getParamsArray()['result']['paymentId'];
+                }
 
-			$transaction->operable->params = [
-				'result' => [
-					'message' => 'Выплата произведена',
-					'payoutId' => rand(10000, 1000000000),
-					'status' => 'success',
-					'partnerBalance' => '1000.10',
-					'payoutCommission' => '0.45',
-					"partnerCommission" => "0.00",
-					'sum' => $transaction->sum,
-					'createDate' => '2019-08-26 13:30:54',
-					'completeDate' => '2019-08-26 13:30:55',
-					'transactionId' => uniqid()
-				]
-			];
-			$transaction->operable->save();
-		} elseif ($transaction->isStatusProcessing()) {
-			$payment_id = rand(1000, 100000);
+                $item->sum = abs($item->sum);
+            }
 
-			$transaction->operable->params = [
-				'result' => [
-					'message' => 'Выплата произведена',
-					'payoutId' => rand(10000, 1000000000),
-					'status' => 'not_completed',
-					'partnerBalance' => '1000.10',
-					'payoutCommission' => '0.45',
-					"partnerCommission" => "0.00",
-					'sum' => $transaction->sum,
-					'createDate' => '2019-08-26 13:30:54',
-					'completeDate' => '2019-08-26 13:30:55',
-					'transactionId' => uniqid()
-				]
-			];
-			$transaction->operable->save();
-		}
-	}
+            if ($item->isWithdrawal()) {
+                $item->sum = -abs($item->sum);
 
-	$transaction->operable->save();
-	$transaction->save();
-});
+                if ($item->isStatusSuccess()) {
+                    $payment_id = rand(1000, 100000);
 
+                    $item->operable->params = [
+                        'result' => [
+                            'message' => 'Выплата произведена',
+                            'payoutId' => rand(10000, 1000000000),
+                            'status' => 'success',
+                            'partnerBalance' => '1000.10',
+                            'payoutCommission' => '0.45',
+                            "partnerCommission" => "0.00",
+                            'sum' => $item->sum,
+                            'createDate' => '2019-08-26 13:30:54',
+                            'completeDate' => '2019-08-26 13:30:55',
+                            'transactionId' => uniqid()
+                        ]
+                    ];
+                    $item->operable->save();
+                } elseif ($item->isStatusProcessing()) {
+                    $payment_id = rand(1000, 100000);
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'transfer', function (UserPaymentTransaction $transaction, $faker) {
+                    $item->operable->params = [
+                        'result' => [
+                            'message' => 'Выплата произведена',
+                            'payoutId' => rand(10000, 1000000000),
+                            'status' => 'not_completed',
+                            'partnerBalance' => '1000.10',
+                            'payoutCommission' => '0.45',
+                            "partnerCommission" => "0.00",
+                            'sum' => $item->sum,
+                            'createDate' => '2019-08-26 13:30:54',
+                            'completeDate' => '2019-08-26 13:30:55',
+                            'transactionId' => uniqid()
+                        ]
+                    ];
+                    $item->operable->save();
+                }
+            }
 
-	$transfer = factory(UserMoneyTransfer::class)
-		->create(['sender_user_id' => $transaction->user_id]);
+            $item->operable->save();
+            $item->save();
+        });
+    }
 
-	$transaction->sum = -abs($transaction->sum);
-	$transaction->operable_type = 17;
-	$transaction->operable_id = $transfer->id;
-	$transaction->typeTransfer();
-});
+    public function transfer()
+    {
+        return $this->afterMaking(function ($item) {
 
-$factory->afterMakingState(App\UserPaymentTransaction::class, 'receipt', function (UserPaymentTransaction $transaction, $faker) {
+            $transfer = UserMoneyTransfer::factory()->create(['sender_user_id' => $item->user_id]);
 
-	$transfer = factory(UserMoneyTransfer::class)
-		->create(['recepient_user_id' => $transaction->user_id]);
+            $item->sum = -abs($item->sum);
+            $item->operable_type = 17;
+            $item->operable_id = $transfer->id;
+            $item->typeTransfer();
 
-	$transaction->sum = abs($transaction->sum);
-	$transaction->operable_type = 17;
-	$transaction->operable_id = $transfer->id;
-	$transaction->typeReceipt();
-});
+        })->afterCreating(function ($item) {
 
+        });
+    }
+
+    public function receipt()
+    {
+        return $this->afterMaking(function ($item) {
+
+            $transfer = UserMoneyTransfer::factory()->create(['recepient_user_id' => $item->user_id]);
+
+            $item->sum = abs($item->sum);
+            $item->operable_type = 17;
+            $item->operable_id = $transfer->id;
+            $item->typeReceipt();
+
+        })->afterCreating(function ($item) {
+
+        });
+    }
+}

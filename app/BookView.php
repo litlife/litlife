@@ -11,13 +11,13 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @method static Builder|BookView newModelQuery()
  * @method static Builder|BookView newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookView query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @mixin Eloquent
  */
 class BookView extends Model
 {
-	//
+    //
 }

@@ -9,152 +9,149 @@ use Tests\TestCase;
 
 class BookLabelSiAndPublishFieldsValidationTest extends TestCase
 {
-	public function testHasErrorOnUpdate()
-	{
-		$user = factory(User::class)
-			->states('admin')->create();
+    public function testHasErrorOnUpdate()
+    {
+        $user = User::factory()->admin()->create();
 
-		$book = factory(Book::class)
-			->states('with_genre')
-			->create();
+        $book = Book::factory()->with_genre()->create();
 
-		$post = [
-			'title' => $book->title,
-			'is_si' => true,
-			'genres' => [$book->genres()->first()->id],
-			'writers' => $book->writers()->any()->pluck('id')->toArray(),
-			'ti_lb' => 'RU',
-			'ti_olb' => 'RU',
-			'ready_status' => 'complete',
-			'pi_pub' => 'text'
-		];
+        $post = [
+            'title' => $book->title,
+            'is_si' => true,
+            'genres' => [$book->genres()->first()->id],
+            'writers' => $book->writers()->any()->pluck('id')->toArray(),
+            'ti_lb' => 'RU',
+            'ti_olb' => 'RU',
+            'ready_status' => 'complete',
+            'pi_pub' => 'text'
+        ];
 
-		$response = $this->actingAs($user)
-			->patch(route('books.update', $book), $post)
-			->assertRedirect();
-		//var_dump(session('errors'));
-		$response->assertSessionHasErrors([
-			'is_si' => __('book.if_the_book_is_marked_as_samizdat_then_the_fields_publisher_city_of_printing_year_of_printing_isbn_must_be_empty')
-		]);
-	}
+        $response = $this->actingAs($user)
+            ->patch(route('books.update', $book), $post)
+            ->assertRedirect();
+        //var_dump(session('errors'));
+        $response->assertSessionHasErrors([
+            'is_si' => __('book.if_the_book_is_marked_as_samizdat_then_the_fields_publisher_city_of_printing_year_of_printing_isbn_must_be_empty')
+        ]);
+    }
 
-	function testTrueIfSiTrueAndPublishFieldsNotEmpty()
-	{
-		$request = new StoreBook();
+    function testTrueIfSiTrueAndPublishFieldsNotEmpty()
+    {
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_pub' => 'test'
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_pub' => 'test'
+        ]);
 
-		$this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_pub' => 'test'
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_pub' => 'test'
+        ]);
 
-		$this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_city' => 'test'
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_city' => 'test'
+        ]);
 
-		$this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_year' => 'test'
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_year' => 'test'
+        ]);
 
-		$this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_isbn' => 'test'
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_isbn' => 'test'
+        ]);
 
-		$this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
-	}
+        $this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+    }
 
-	function testFalseIfSiFalseAndPiBnNotEmpty()
-	{
-		$request = new StoreBook();
+    function testFalseIfSiFalseAndPiBnNotEmpty()
+    {
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => false,
-			'pi_bn' => 'test'
-		]);
+        $request->merge([
+            'is_si' => false,
+            'pi_bn' => 'test'
+        ]);
 
-		$this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => false,
-			'pi_pub' => 'test'
-		]);
+        $request->merge([
+            'is_si' => false,
+            'pi_pub' => 'test'
+        ]);
 
-		$this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => false,
-			'pi_city' => 'test'
-		]);
+        $request->merge([
+            'is_si' => false,
+            'pi_city' => 'test'
+        ]);
 
-		$this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => false,
-			'pi_year' => 'test'
-		]);
+        $request->merge([
+            'is_si' => false,
+            'pi_year' => 'test'
+        ]);
 
-		$this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+        $this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
 
-		$request = new StoreBook();
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => false,
-			'pi_isbn' => 'test'
-		]);
+        $request->merge([
+            'is_si' => false,
+            'pi_isbn' => 'test'
+        ]);
 
-		$this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
-	}
+        $this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+    }
 
-	function testIsTrueIfPublishCityIsZero()
-	{
-		$request = new StoreBook();
+    function testIsTrueIfPublishCityIsZero()
+    {
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_city' => '0'
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_city' => '0'
+        ]);
 
-		$this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
-	}
+        $this->assertTrue($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+    }
 
-	function testIsFalseIfPublishCityIsNull()
-	{
-		$request = new StoreBook();
+    function testIsFalseIfPublishCityIsNull()
+    {
+        $request = new StoreBook();
 
-		$request->merge([
-			'is_si' => true,
-			'pi_bn' => null
-		]);
+        $request->merge([
+            'is_si' => true,
+            'pi_bn' => null
+        ]);
 
-		$this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
-	}
+        $this->assertFalse($request->isSiLabelIsTrueAndPublishFieldsIsNotEmpty());
+    }
 }

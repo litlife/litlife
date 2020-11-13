@@ -1,14 +1,29 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\UserOnModeration::class, function (Faker $faker) {
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'user_adds_id' => function () {
-			return factory(App\User::class)->create()->id;
-		}
-	];
-});
+use App\User;
+use App\UserOnModeration;
+
+class UserOnModerationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserOnModeration::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'user_adds_id' => User::factory()
+        ];
+    }
+}

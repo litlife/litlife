@@ -1,122 +1,160 @@
 <?php
 
-/* @var $factory Factory */
+namespace Database\Factories;
 
+use App\User;
 use App\UserOutgoingPayment;
 use App\UserPaymentDetail;
 use App\UserPaymentTransaction;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
 
-$factory->define(UserOutgoingPayment::class, function (Faker $faker) {
+class UserOutgoingPaymentFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserOutgoingPayment::class;
 
-	$payment_types = config('unitpay.allowed_outgoing_payment_types');
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $item_types = config('unitpay.allowed_outgoing_payment_types');
 
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'ip' => $faker->ipv4,
-		'purse' => $faker->creditCardNumber,
-		'payment_type' => $payment_types[array_rand($payment_types)],
-		'wallet_id' => function (array $payment) {
-			return factory(UserPaymentDetail::class)
-				->create([
-					'user_id' => $payment['user_id'],
-					'type' => $payment['payment_type'],
-					'number' => $payment['purse']
-				])->fresh()->id;
-		},
-		'payment_aggregator' => 'unitpay',
-		'payment_aggregator_transaction_id' => null,
-		'params' => null
-	];
-});
+        return [
+            'user_id' => User::factory(),
+            'ip' => $this->faker->ipv4,
+            'purse' => $this->faker->creditCardNumber,
+            'payment_type' => $item_types[array_rand($item_types)],
+            'wallet_id' => function (array $item) {
+                return UserPaymentDetail::factory()
+                    ->create([
+                        'user_id' => $item['user_id'],
+                        'type' => $item['payment_type'],
+                        'number' => $item['purse']
+                    ])->fresh()->id;
+            },
+            'payment_aggregator' => 'unitpay',
+            'payment_aggregator_transaction_id' => null,
+            'params' => null
+        ];
+    }
 
-$factory->afterCreatingState(App\UserOutgoingPayment::class, 'success', function ($payment, $faker) {
-	$payment->payment_aggregator_transaction_id = $faker->randomNumber(5);
-	$payment->save();
+    public function success()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$transaction = factory(UserPaymentTransaction::class)
-		->make([
-			'user_id' => $payment->user_id,
-			'sum' => -rand(50, 100)
-		]);
-	$transaction->typeWithdrawal();
-	$transaction->statusSuccess();
+        })->afterCreating(function ($item) {
+            $item->payment_aggregator_transaction_id = $this->faker->randomNumber(5);
+            $item->save();
 
-	$payment->transaction()->save($transaction);
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item->user_id,
+                    'sum' => -rand(50, 100)
+                ]);
+            $transaction->typeWithdrawal();
+            $transaction->statusSuccess();
 
-	$payment->user->balance(true);
-});
+            $item->transaction()->save($transaction);
 
-$factory->afterCreatingState(App\UserOutgoingPayment::class, 'wait', function ($payment, $faker) {
-	$payment->payment_aggregator_transaction_id = null;
-	$payment->save();
+            $item->user->balance(true);
+        });
+    }
 
-	$transaction = factory(UserPaymentTransaction::class)
-		->make([
-			'user_id' => $payment->user_id,
-			'sum' => -rand(50, 100),
-		]);
-	$transaction->typeWithdrawal();
-	$transaction->statusWait();
+    public function wait()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$payment->transaction()->save($transaction);
+        })->afterCreating(function ($item) {
+            $item->payment_aggregator_transaction_id = null;
+            $item->save();
 
-	$payment->user->balance(true);
-});
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item->user_id,
+                    'sum' => -rand(50, 100),
+                ]);
+            $transaction->typeWithdrawal();
+            $transaction->statusWait();
 
-$factory->afterCreatingState(App\UserOutgoingPayment::class, 'processing', function ($payment, $faker) {
-	$payment->payment_aggregator_transaction_id = $faker->randomNumber(5);
-	$payment->save();
+            $item->transaction()->save($transaction);
 
-	$transaction = factory(UserPaymentTransaction::class)
-		->make([
-			'user_id' => $payment->user_id,
-			'sum' => -rand(50, 100)
-		]);
-	$transaction->typeWithdrawal();
-	$transaction->statusProcessing();
+            $item->user->balance(true);
+        });
+    }
 
-	$payment->transaction()->save($transaction);
+    public function processing()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$payment->user->balance(true);
-});
+        })->afterCreating(function ($item) {
+            $item->payment_aggregator_transaction_id = $this->faker->randomNumber(5);
+            $item->save();
 
-$factory->afterCreatingState(App\UserOutgoingPayment::class, 'error', function ($payment, $faker) {
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item->user_id,
+                    'sum' => -rand(50, 100)
+                ]);
+            $transaction->typeWithdrawal();
+            $transaction->statusProcessing();
 
-	$payment->payment_aggregator_transaction_id = $faker->randomNumber(5);
-	$payment->params = ['error' => [
-		'message' => 'По вашему запросу ничего не нашлось.',
-		'code' => '100',
-	]];
-	$payment->save();
+            $item->transaction()->save($transaction);
 
-	$transaction = factory(UserPaymentTransaction::class)
-		->make([
-			'user_id' => $payment->user_id,
-			'sum' => -rand(50, 100)
-		]);
-	$transaction->typeWithdrawal();
-	$transaction->statusError();
+            $item->user->balance(true);
+        });
+    }
 
-	$payment->transaction()->save($transaction);
+    public function error()
+    {
+        return $this->afterMaking(function ($item) {
 
-	$payment->user->balance(true);
-});
+        })->afterCreating(function ($item) {
+            $item->payment_aggregator_transaction_id = $this->faker->randomNumber(5);
+            $item->params = [
+                'error' => [
+                    'message' => 'По вашему запросу ничего не нашлось.',
+                    'code' => '100',
+                ]
+            ];
+            $item->save();
 
-$factory->afterCreatingState(App\UserOutgoingPayment::class, 'canceled', function ($payment, $faker) {
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item->user_id,
+                    'sum' => -rand(50, 100)
+                ]);
+            $transaction->typeWithdrawal();
+            $transaction->statusError();
 
-	$transaction = factory(UserPaymentTransaction::class)
-		->make([
-			'user_id' => $payment->user_id,
-			'sum' => -rand(50, 100)
-		]);
-	$transaction->typeWithdrawal();
-	$transaction->statusCanceled();
+            $item->transaction()->save($transaction);
 
-	$payment->transaction()->save($transaction);
+            $item->user->balance(true);
+        });
+    }
 
-	$payment->user->balance(true);
-});
+    public function canceled()
+    {
+        return $this->afterMaking(function ($item) {
+
+        })->afterCreating(function ($item) {
+
+            $transaction = UserPaymentTransaction::factory()
+                ->make([
+                    'user_id' => $item->user_id,
+                    'sum' => -rand(50, 100)
+                ]);
+            $transaction->typeWithdrawal();
+            $transaction->statusCanceled();
+
+            $item->transaction()->save($transaction);
+
+            $item->user->balance(true);
+        });
+    }
+}

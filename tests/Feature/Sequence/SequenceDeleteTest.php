@@ -8,52 +8,52 @@ use Tests\TestCase;
 
 class SequenceDeleteTest extends TestCase
 {
-	public function testDeleteHttp()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testDeleteHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+        $admin = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)->create();
+        $sequence = Sequence::factory()->create();
 
-		$this->actingAs($admin)
-			->followingRedirects()
-			->get(route('sequences.delete', $sequence))
-			->assertSeeText(__('sequence.deleted'));
+        $this->actingAs($admin)
+            ->followingRedirects()
+            ->get(route('sequences.delete', $sequence))
+            ->assertSeeText(__('sequence.deleted'));
 
-		$sequence->refresh();
+        $sequence->refresh();
 
-		$this->assertSoftDeleted($sequence);
+        $this->assertSoftDeleted($sequence);
 
-		$this->assertEquals(1, $sequence->activities()->count());
-		$activity = $sequence->activities()->first();
-		$this->assertEquals('deleted', $activity->description);
-		$this->assertEquals($admin->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $this->assertEquals(1, $sequence->activities()->count());
+        $activity = $sequence->activities()->first();
+        $this->assertEquals('deleted', $activity->description);
+        $this->assertEquals($admin->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 
-	public function testRestoreHttp()
-	{
-		config(['activitylog.enabled' => true]);
+    public function testRestoreHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$admin = factory(User::class)->states('admin')->create();
+        $admin = User::factory()->admin()->create();
 
-		$sequence = factory(Sequence::class)->create();
-		$sequence->delete();
+        $sequence = Sequence::factory()->create();
+        $sequence->delete();
 
-		$this->actingAs($admin)
-			->followingRedirects()
-			->get(route('sequences.delete', $sequence))
-			->assertDontSeeText(__('sequence.deleted'));
+        $this->actingAs($admin)
+            ->followingRedirects()
+            ->get(route('sequences.delete', $sequence))
+            ->assertDontSeeText(__('sequence.deleted'));
 
-		$sequence->refresh();
+        $sequence->refresh();
 
-		$this->assertFalse($sequence->trashed());
+        $this->assertFalse($sequence->trashed());
 
-		$this->assertEquals(1, $sequence->activities()->count());
-		$activity = $sequence->activities()->first();
-		$this->assertEquals('restored', $activity->description);
-		$this->assertEquals($admin->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $this->assertEquals(1, $sequence->activities()->count());
+        $activity = $sequence->activities()->first();
+        $this->assertEquals('restored', $activity->description);
+        $this->assertEquals($admin->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 }

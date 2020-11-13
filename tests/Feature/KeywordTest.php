@@ -10,448 +10,435 @@ use Tests\TestCase;
 
 class KeywordTest extends TestCase
 {
-	public function testCanAddIfBookPrivateAndUserCreatorOfBook()
-	{
-		$user = factory(User::class)->create();
-
-		$book = factory(Book::class)
-			->states('private')
-			->create([
-				'create_user_id' => $user->id
-			]);
-
-		$this->assertTrue($user->can('addKeywords', $book));
-	}
-
-	public function testCantAddIfBookPrivateAndUserNotCreatorOfBookAndAdmin()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->book_keyword_add = true;
-		$admin->group->save();
-
-		$book = factory(Book::class)
-			->states('private')
-			->create();
-
-		$this->assertFalse($admin->can('addKeywords', $book));
-	}
-
-	public function testCantAddIfBookAcceptedAndNoPermissions()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_add = false;
-		$user->group->book_keyword_add_new_with_check = false;
-		$user->group->book_keyword_moderate = false;
-		$user->group->save();
-
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
-
-		$this->assertFalse($user->can('addKeywords', $book));
-	}
-
-	public function testCanAddIfBookAcceptedAndHasPermissions()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->book_keyword_add = true;
-		$admin->group->save();
-
-		$book = factory(Book::class)
-			->states('accepted')
-			->create();
-
-		$this->assertTrue($admin->can('addKeywords', $book));
-	}
-
-	public function testCreateHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_moderate = true;
-		$user->push();
-
-		$text = uniqid();
-
-		$this->actingAs($user)
-			->post(route('keywords.store', ['text' => $text]))
-			->assertRedirect(route('keywords.index'))
-			->assertSessionHasNoErrors();
+    public function testCanAddIfBookPrivateAndUserCreatorOfBook()
+    {
+        $user = User::factory()->create();
 
-		$keyword = $user->created_keywords()->first();
+        $book = Book::factory()
+            ->private()
+            ->create([
+                'create_user_id' => $user->id
+            ]);
 
-		$this->assertEquals($text, $keyword->text);
-		$this->assertTrue($keyword->isAccepted());
+        $this->assertTrue($user->can('addKeywords', $book));
+    }
 
-		$this->actingAs($user)
-			->get(route('keywords.index'))
-			->assertOk();
+    public function testCantAddIfBookPrivateAndUserNotCreatorOfBookAndAdmin()
+    {
+        $admin = User::factory()->create();
+        $admin->group->book_keyword_add = true;
+        $admin->group->save();
 
-		$text = uniqid();
-
-		$this->actingAs($user)
-			->followingRedirects()
-			->post(route('keywords.store', ['text' => $text]))
-			->assertSeeText(__('keyword.created', ['text' => $text]));
-	}
+        $book = Book::factory()->private()->create();
 
-	public function testCreateIfTextExistedNotDeletedHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_moderate = true;
-		$user->push();
-
-		$text = uniqid();
+        $this->assertFalse($admin->can('addKeywords', $book));
+    }
 
-		$keyword = factory(Keyword::class)
-			->create(['text' => $text]);
+    public function testCantAddIfBookAcceptedAndNoPermissions()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_add = false;
+        $user->group->book_keyword_add_new_with_check = false;
+        $user->group->book_keyword_moderate = false;
+        $user->group->save();
 
-		$response = $this->actingAs($user)
-			->followingRedirects()
-			->post(route('keywords.store', ['text' => $text]))
-			->assertSeeText(__('keyword.already_exists', ['text' => $text]));
-	}
+        $book = Book::factory()->accepted()->create();
 
-	public function testEditHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_edit = true;
-		$user->push();
+        $this->assertFalse($user->can('addKeywords', $book));
+    }
 
-		$text = uniqid();
+    public function testCanAddIfBookAcceptedAndHasPermissions()
+    {
+        $admin = User::factory()->create();
+        $admin->group->book_keyword_add = true;
+        $admin->group->save();
 
-		$keyword = factory(Keyword::class)
-			->create(['text' => $text]);
+        $book = Book::factory()->accepted()->create();
 
-		$response = $this->actingAs($user)
-			->get(route('keywords.edit', $keyword->id))
-			->assertOk();
-	}
+        $this->assertTrue($admin->can('addKeywords', $book));
+    }
 
-	public function testUpdateHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_edit = true;
-		$user->push();
+    public function testCreateHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_moderate = true;
+        $user->push();
 
-		$text = uniqid();
+        $text = uniqid();
 
-		$keyword = factory(Keyword::class)
-			->create();
+        $this->actingAs($user)
+            ->post(route('keywords.store', ['text' => $text]))
+            ->assertRedirect(route('keywords.index'))
+            ->assertSessionHasNoErrors();
 
-		$response = $this->actingAs($user)
-			->patch(route('keywords.update', $keyword->id), [
-				'text' => $text
-			])
-			->assertRedirect(route('keywords.index'))
-			->assertSessionHasNoErrors();
+        $keyword = $user->created_keywords()->first();
 
-		$keyword->refresh();
+        $this->assertEquals($text, $keyword->text);
+        $this->assertTrue($keyword->isAccepted());
 
-		$this->assertEquals($text, $keyword->text);
-	}
+        $this->actingAs($user)
+            ->get(route('keywords.index'))
+            ->assertOk();
 
-	public function testDeleteRestoreHttp()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_remove = true;
-		$user->push();
+        $text = uniqid();
 
-		$keyword = factory(Keyword::class)
-			->create();
+        $this->actingAs($user)
+            ->followingRedirects()
+            ->post(route('keywords.store', ['text' => $text]))
+            ->assertSeeText(__('keyword.created', ['text' => $text]));
+    }
 
-		$response = $this->actingAs($user)
-			->delete(route('keywords.destroy', ['keyword' => $keyword->id]))
-			->assertRedirect(route('keywords.index'));
+    public function testCreateIfTextExistedNotDeletedHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_moderate = true;
+        $user->push();
 
-		$keyword->refresh();
+        $text = uniqid();
 
-		$this->assertSoftDeleted($keyword);
+        $keyword = Keyword::factory()->create(['text' => $text]);
 
-		$response = $this->actingAs($user)
-			->delete(route('keywords.destroy', ['keyword' => $keyword->id]), [],
-				['HTTP_X-Requested-With' => 'XMLHttpRequest'])
-			->assertOk();
+        $response = $this->actingAs($user)
+            ->followingRedirects()
+            ->post(route('keywords.store', ['text' => $text]))
+            ->assertSeeText(__('keyword.already_exists', ['text' => $text]));
+    }
 
-		$keyword->refresh();
+    public function testEditHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_edit = true;
+        $user->push();
 
-		$response->assertJson($keyword->toArray());
+        $text = uniqid();
 
-		$this->assertFalse($keyword->trashed());
-	}
+        $keyword = Keyword::factory()->create(['text' => $text]);
 
-	public function testAttachExistedKeyword()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_add = true;
-		$user->group->save();
+        $response = $this->actingAs($user)
+            ->get(route('keywords.edit', $keyword->id))
+            ->assertOk();
+    }
 
-		$book_keyword = factory(BookKeyword::class)->create();
-		$book_keyword->keyword->statusAccepted();
-		$book_keyword->statusAccepted();
-		$book_keyword->push();
+    public function testUpdateHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_edit = true;
+        $user->push();
 
-		$book = factory(Book::class)->create();
+        $text = uniqid();
 
-		$title = $book_keyword->fresh()->keyword->text;
+        $keyword = Keyword::factory()->create();
 
-		$this->actingAs($user)
-			->post(route('books.keywords.store', $book), [
-				'keywords' => [$title]
-			])
-			->assertSessionHasNoErrors();
-
-		$new_book_keyword = $book->book_keywords()->first();
+        $response = $this->actingAs($user)
+            ->patch(route('keywords.update', $keyword->id), [
+                'text' => $text
+            ])
+            ->assertRedirect(route('keywords.index'))
+            ->assertSessionHasNoErrors();
 
-		$this->assertEquals($new_book_keyword->keyword()->first()->id, $book_keyword->keyword()->first()->id);
-		$this->assertTrue($new_book_keyword->isAccepted());
-		$this->assertTrue($new_book_keyword->keyword()->first()->isAccepted());
-	}
+        $keyword->refresh();
 
-	public function testAcceptBookKeyword()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_moderate = true;
-		$user->group->save();
+        $this->assertEquals($text, $keyword->text);
+    }
 
-		$book_keyword = factory(BookKeyword::class)->create();
-		$book_keyword->keyword->statusSentForReview();
-		$book_keyword->statusSentForReview();
-		$book_keyword->push();
+    public function testDeleteRestoreHttp()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_remove = true;
+        $user->push();
 
-		$this->actingAs($user)
-			->get(route('books.keywords.accept', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
-			->assertSessionHasNoErrors();
+        $keyword = Keyword::factory()->create();
 
-		$book_keyword->refresh();
+        $response = $this->actingAs($user)
+            ->delete(route('keywords.destroy', ['keyword' => $keyword->id]))
+            ->assertRedirect(route('keywords.index'));
 
-		$this->assertTrue($book_keyword->isAccepted());
-		$this->assertTrue($book_keyword->keyword()->first()->isAccepted());
-	}
+        $keyword->refresh();
 
-	/*
-		public function testAddNewToPrivateBook()
-		{
-			$user = factory(User::class)->create();
-			$user->group->save();
+        $this->assertSoftDeleted($keyword);
 
-			$book = factory(Book::class)->create(['create_user_id' => $user->id]);
-			$book->statusPrivate();
-			$book->save();
-			$book->refresh();
+        $response = $this->actingAs($user)
+            ->delete(route('keywords.destroy', ['keyword' => $keyword->id]), [],
+                ['HTTP_X-Requested-With' => 'XMLHttpRequest'])
+            ->assertOk();
 
-			$title = uniqid();
+        $keyword->refresh();
 
-			$this->actingAs($user)
-				->post(route('books.keywords.store', $book), [
-					'keywords' => [$title]
-				])
-				->assertSessionHasNoErrors();
+        $response->assertJson($keyword->toArray());
 
-			$book_keyword = $book->book_keywords()->first();
+        $this->assertFalse($keyword->trashed());
+    }
 
-			$this->assertTrue($book_keyword->isPrivate());
-			$this->assertTrue($book_keyword->keyword->isPrivate());
-		}
-		*/
+    public function testAttachExistedKeyword()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_add = true;
+        $user->group->save();
 
-	public function testDelete()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_remove = true;
-		$user->group->save();
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->statusAccepted();
+        $book_keyword->statusAccepted();
+        $book_keyword->push();
 
-		$book_keyword = factory(BookKeyword::class)->create();
-		$book_keyword->keyword->statusAccepted();
-		$book_keyword->statusAccepted();
-		$book_keyword->push();
+        $book = Book::factory()->create();
 
-		$keyword = $book_keyword->keyword;
+        $title = $book_keyword->fresh()->keyword->text;
 
-		$this->actingAs($user)
-			->delete(route('books.keywords.destroy', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
-			->assertSessionHasNoErrors();
+        $this->actingAs($user)
+            ->post(route('books.keywords.store', $book), [
+                'keywords' => [$title]
+            ])
+            ->assertSessionHasNoErrors();
 
-		$this->assertNull($book_keyword->fresh());
-		$this->assertNotNull($keyword->fresh());
-	}
+        $new_book_keyword = $book->book_keywords()->first();
 
-	public function testDeletePrivateKeyword()
-	{
-		$book_keyword = factory(BookKeyword::class)->create();
-		$book_keyword->keyword->statusPrivate();
-		$book_keyword->statusPrivate();
-		$book_keyword->push();
+        $this->assertEquals($new_book_keyword->keyword()->first()->id, $book_keyword->keyword()->first()->id);
+        $this->assertTrue($new_book_keyword->isAccepted());
+        $this->assertTrue($new_book_keyword->keyword()->first()->isAccepted());
+    }
 
-		$keyword = $book_keyword->keyword;
+    public function testAcceptBookKeyword()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_moderate = true;
+        $user->group->save();
 
-		$this->actingAs($book_keyword->create_user)
-			->delete(route('books.keywords.destroy', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->statusSentForReview();
+        $book_keyword->statusSentForReview();
+        $book_keyword->push();
 
-		$this->assertNull($book_keyword->fresh());
-		$this->assertNull($keyword->fresh());
-	}
+        $this->actingAs($user)
+            ->get(route('books.keywords.accept', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
+            ->assertSessionHasNoErrors();
 
-	public function testDeleteOnReviewKeyword()
-	{
-		$book_keyword = factory(BookKeyword::class)->create();
-		$book_keyword->keyword->statusSentForReview();
-		$book_keyword->statusSentForReview();
-		$book_keyword->push();
+        $book_keyword->refresh();
 
-		$keyword = $book_keyword->keyword;
+        $this->assertTrue($book_keyword->isAccepted());
+        $this->assertTrue($book_keyword->keyword()->first()->isAccepted());
+    }
 
-		$this->actingAs($book_keyword->create_user)
-			->delete(route('books.keywords.destroy', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
-			->assertSessionHasNoErrors()
-			->assertOk();
+    /*
+        public function testAddNewToPrivateBook()
+        {
+            $user = User::factory()->create();
+            $user->group->save();
 
-		$this->assertNull($book_keyword->fresh());
-		$this->assertNull($keyword->fresh());
-	}
+            $book = Book::factory()->create(['create_user_id' => $user->id]);
+            $book->statusPrivate();
+            $book->save();
+            $book->refresh();
 
-	public function testDisableAddNewKeywordIfBookNotAccepted()
-	{
+            $title = uniqid();
 
-		$user = factory(User::class)->create();
-		$user->group->save();
+            $this->actingAs($user)
+                ->post(route('books.keywords.store', $book), [
+                    'keywords' => [$title]
+                ])
+                ->assertSessionHasNoErrors();
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
-		$book->statusPrivate();
-		$book->save();
+            $book_keyword = $book->book_keywords()->first();
 
-		$title = uniqid();
+            $this->assertTrue($book_keyword->isPrivate());
+            $this->assertTrue($book_keyword->keyword->isPrivate());
+        }
+        */
 
-		$this->actingAs($user)
-			->post(route('books.keywords.store', $book), [
-				'keywords' => [$title]
-			])
-			->assertSessionHasNoErrors();
+    public function testDelete()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_remove = true;
+        $user->group->save();
 
-		$this->assertEquals(0, $book->book_keywords()->count());
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->statusAccepted();
+        $book_keyword->statusAccepted();
+        $book_keyword->push();
 
-		//
+        $keyword = $book_keyword->keyword;
 
-		$book = factory(Book::class)->create(['create_user_id' => $user->id]);
-		$book->statusSentForReview();
-		$book->save();
+        $this->actingAs($user)
+            ->delete(route('books.keywords.destroy', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
+            ->assertSessionHasNoErrors();
 
-		$title = uniqid();
+        $this->assertNull($book_keyword->fresh());
+        $this->assertNotNull($keyword->fresh());
+    }
 
-		$this->actingAs($user)
-			->post(route('books.keywords.store', $book), [
-				'keywords' => [$title]
-			])
-			->assertSessionHasNoErrors();
+    public function testDeletePrivateKeyword()
+    {
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->statusPrivate();
+        $book_keyword->statusPrivate();
+        $book_keyword->push();
 
-		$this->assertEquals(0, $book->book_keywords()->count());
-	}
+        $keyword = $book_keyword->keyword;
 
-	public function testCreatePolicy()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_add = false;
-		$user->group->book_keyword_add_new_with_check = false;
-		$user->group->book_keyword_moderate = false;
-		$user->push();
+        $this->actingAs($book_keyword->create_user)
+            ->delete(route('books.keywords.destroy', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$this->assertFalse($user->can('create', Keyword::class));
+        $this->assertNull($book_keyword->fresh());
+        $this->assertNull($keyword->fresh());
+    }
 
-		$user->group->book_keyword_add = true;
-		$user->push();
+    public function testDeleteOnReviewKeyword()
+    {
+        $book_keyword = BookKeyword::factory()->create();
+        $book_keyword->keyword->statusSentForReview();
+        $book_keyword->statusSentForReview();
+        $book_keyword->push();
 
-		$this->assertFalse($user->can('create', Keyword::class));
+        $keyword = $book_keyword->keyword;
 
-		$user->group->book_keyword_add = true;
-		$user->group->book_keyword_add_new_with_check = true;
-		$user->push();
+        $this->actingAs($book_keyword->create_user)
+            ->delete(route('books.keywords.destroy', ['book' => $book_keyword->book, 'keyword' => $book_keyword]))
+            ->assertSessionHasNoErrors()
+            ->assertOk();
 
-		$this->assertFalse($user->can('create', Keyword::class));
+        $this->assertNull($book_keyword->fresh());
+        $this->assertNull($keyword->fresh());
+    }
 
-		$user->group->book_keyword_moderate = true;
-		$user->push();
+    public function testDisableAddNewKeywordIfBookNotAccepted()
+    {
 
-		$this->assertTrue($user->can('create', Keyword::class));
-	}
+        $user = User::factory()->create();
+        $user->group->save();
 
-	public function testUpdatePolicy()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_add = true;
-		$user->group->book_keyword_add_new_with_check = true;
-		$user->group->book_keyword_moderate = true;
-		$user->push();
+        $book = Book::factory()->create(['create_user_id' => $user->id]);
+        $book->statusPrivate();
+        $book->save();
 
-		$keyword = factory(Keyword::class)
-			->create();
+        $title = uniqid();
 
-		$this->assertFalse($user->can('update', $keyword));
+        $this->actingAs($user)
+            ->post(route('books.keywords.store', $book), [
+                'keywords' => [$title]
+            ])
+            ->assertSessionHasNoErrors();
 
-		$user->group->book_keyword_edit = true;
-		$user->push();
+        $this->assertEquals(0, $book->book_keywords()->count());
 
-		$this->assertTrue($user->can('create', $keyword));
-	}
+        //
 
-	public function testDeletePolicy()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_add = true;
-		$user->group->book_keyword_add_new_with_check = true;
-		$user->group->book_keyword_moderate = true;
-		$user->group->book_keyword_edit = true;
-		$user->push();
+        $book = Book::factory()->create(['create_user_id' => $user->id]);
+        $book->statusSentForReview();
+        $book->save();
 
-		$keyword = factory(Keyword::class)
-			->create();
+        $title = uniqid();
 
-		$this->assertFalse($user->can('delete', $keyword));
+        $this->actingAs($user)
+            ->post(route('books.keywords.store', $book), [
+                'keywords' => [$title]
+            ])
+            ->assertSessionHasNoErrors();
 
-		$user->group->book_keyword_remove = true;
-		$user->push();
+        $this->assertEquals(0, $book->book_keywords()->count());
+    }
 
-		$this->assertTrue($user->can('delete', $keyword));
+    public function testCreatePolicy()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_add = false;
+        $user->group->book_keyword_add_new_with_check = false;
+        $user->group->book_keyword_moderate = false;
+        $user->push();
 
-		$keyword->delete();
+        $this->assertFalse($user->can('create', Keyword::class));
 
-		$this->assertFalse($user->can('delete', $keyword));
-	}
+        $user->group->book_keyword_add = true;
+        $user->push();
 
-	public function testRestorePolicy()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_remove = true;
-		$user->push();
+        $this->assertFalse($user->can('create', Keyword::class));
 
-		$keyword = factory(Keyword::class)->create();
+        $user->group->book_keyword_add = true;
+        $user->group->book_keyword_add_new_with_check = true;
+        $user->push();
 
-		$this->assertFalse($user->can('restore', $keyword));
+        $this->assertFalse($user->can('create', Keyword::class));
 
-		$keyword->delete();
+        $user->group->book_keyword_moderate = true;
+        $user->push();
 
-		$this->assertTrue($user->can('restore', $keyword));
-	}
+        $this->assertTrue($user->can('create', Keyword::class));
+    }
 
-	public function testViewIndexPolicy()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testUpdatePolicy()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_add = true;
+        $user->group->book_keyword_add_new_with_check = true;
+        $user->group->book_keyword_moderate = true;
+        $user->push();
 
-		$this->assertTrue($user->can('view_index', Keyword::class));
-	}
+        $keyword = Keyword::factory()->create();
 
-	public function testViewAtSidebarPolicy()
-	{
-		$user = factory(User::class)->create();
-		$user->group->book_keyword_edit = false;
-		$user->push();
+        $this->assertFalse($user->can('update', $keyword));
 
-		$this->assertFalse($user->can('viewAtSidebar', Keyword::class));
+        $user->group->book_keyword_edit = true;
+        $user->push();
 
-		$user->group->book_keyword_edit = true;
-		$user->push();
+        $this->assertTrue($user->can('create', $keyword));
+    }
 
-		$this->assertTrue($user->can('viewAtSidebar', Keyword::class));
-	}
+    public function testDeletePolicy()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_add = true;
+        $user->group->book_keyword_add_new_with_check = true;
+        $user->group->book_keyword_moderate = true;
+        $user->group->book_keyword_edit = true;
+        $user->push();
+
+        $keyword = Keyword::factory()->create();
+
+        $this->assertFalse($user->can('delete', $keyword));
+
+        $user->group->book_keyword_remove = true;
+        $user->push();
+
+        $this->assertTrue($user->can('delete', $keyword));
+
+        $keyword->delete();
+
+        $this->assertFalse($user->can('delete', $keyword));
+    }
+
+    public function testRestorePolicy()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_remove = true;
+        $user->push();
+
+        $keyword = Keyword::factory()->create();
+
+        $this->assertFalse($user->can('restore', $keyword));
+
+        $keyword->delete();
+
+        $this->assertTrue($user->can('restore', $keyword));
+    }
+
+    public function testViewIndexPolicy()
+    {
+        $user = User::factory()->create();
+
+        $this->assertTrue($user->can('view_index', Keyword::class));
+    }
+
+    public function testViewAtSidebarPolicy()
+    {
+        $user = User::factory()->create();
+        $user->group->book_keyword_edit = false;
+        $user->push();
+
+        $this->assertFalse($user->can('viewAtSidebar', Keyword::class));
+
+        $user->group->book_keyword_edit = true;
+        $user->push();
+
+        $this->assertTrue($user->can('viewAtSidebar', Keyword::class));
+    }
 }

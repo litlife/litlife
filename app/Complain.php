@@ -50,16 +50,16 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder|Complain onCheck()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain onlyChecked()
  * @method static Builder|Complain onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Complain orderStatusChangedAsc()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain orderStatusChangedDesc()
- * @method static \Illuminate\Database\Eloquent\Builder|Complain private ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Complain private()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain query()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain sentOnReview()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unaccepted()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain unchecked()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereComplainableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Complain whereCreateUserId($value)
@@ -82,57 +82,59 @@ use Illuminate\Support\Facades\Cache;
  */
 class Complain extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
-	use CheckedItems;
+    use SoftDeletes;
+    use UserCreate;
+    use CheckedItems;
 
-	public $dates = ['status_changed_at'];
-	protected $attributes =
-		[
-			'status' => StatusEnum::OnReview
-		];
-	protected $table = 'complaints';
-	protected $fillable = [
-		'text'
-	];
+    public $dates = ['status_changed_at'];
+    protected $attributes =
+        [
+            'status' => StatusEnum::OnReview
+        ];
+    protected $table = 'complaints';
+    protected $fillable = [
+        'text'
+    ];
 
-	static function getCachedOnModerationCount()
-	{
-		return Cache::tags([CacheTags::ComplainsOnModerationCount])->remember('count', 3600, function () {
-			return self::sentOnReview()->count();
-		});
-	}
+    static function getCachedOnModerationCount()
+    {
+        return Cache::tags([CacheTags::ComplainsOnModerationCount])->remember('count', 3600, function () {
+            return self::sentOnReview()->count();
+        });
+    }
 
-	static function flushCachedOnModerationCount()
-	{
-		Cache::tags([CacheTags::ComplainsOnModerationCount])->pull('count');
-	}
+    static function flushCachedOnModerationCount()
+    {
+        Cache::tags([CacheTags::ComplainsOnModerationCount])->pull('count');
+    }
 
-	public function complainable()
-	{
-		return $this->morphTo()->any();
-	}
+    public function complainable()
+    {
+        return $this->morphTo()->any();
+    }
 
-	function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id');
-	}
+    function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
 
-	public function setTextAttribute($text)
-	{
-		$this->attributes['text'] = $text;
-	}
+    public function setTextAttribute($text)
+    {
+        $this->attributes['text'] = $text;
+    }
 
-	public function getComplainableName()
-	{
-		if (empty($this->complainable))
-			return null;
+    public function getComplainableName()
+    {
+        if (empty($this->complainable)) {
+            return null;
+        }
 
-		$name = get_class($this->complainable);
+        $name = get_class($this->complainable);
 
-		if (preg_match('/^App\\\(.+)/iu', $name, $matches))
-			return mb_strtolower($matches[1]);
-		else
-			return $name;
-	}
+        if (preg_match('/^App\\\(.+)/iu', $name, $matches)) {
+            return mb_strtolower($matches[1]);
+        } else {
+            return $name;
+        }
+    }
 }

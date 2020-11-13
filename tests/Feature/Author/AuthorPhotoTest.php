@@ -11,172 +11,163 @@ use Tests\TestCase;
 
 class AuthorPhotoTest extends TestCase
 {
-	/**
-	 * Setup the test environment.
-	 *
-	 * @return void
-	 */
-	protected function setUp(): void
-	{
-		parent::setUp();
+    public function testStoreHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		Storage::fake(config('filesystems.default'));
-	}
+        $admin = User::factory()->create();
+        $admin->group->author_edit = true;
+        $admin->push();
 
-	public function testStoreHttp()
-	{
-		config(['activitylog.enabled' => true]);
+        $author = Author::factory()->create();
 
-		$admin = factory(User::class)->create();
-		$admin->group->author_edit = true;
-		$admin->push();
+        $file = UploadedFile::fake()->image('avatar.jpg');
 
-		$author = factory(Author::class)
-			->create();
+        $response = $this->actingAs($admin)
+            ->post(route('authors.photos.store', ['author' => $author->id]), [
+                'file' => $file,
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$file = UploadedFile::fake()->image('avatar.jpg');
+        $author->refresh();
+        $avatar = $author->avatar;
 
-		$response = $this->actingAs($admin)
-			->post(route('authors.photos.store', ['author' => $author->id]), [
-				'file' => $file,
-			])
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->assertNotNull($avatar);
+        $this->assertNotNull($avatar->exists());
+        $this->assertEquals($avatar->size, $avatar->getSize());
+        $this->assertEquals($avatar->width, $avatar->getRealWidth());
+        $this->assertEquals($avatar->height, $avatar->getRealHeight());
+        $this->assertEquals($avatar->create_user_id, $admin->id);
 
-		$author->refresh();
-		$avatar = $author->avatar;
+        $this->assertEquals(1, $author->activities()->count());
+        $activity = $author->activities()->first();
+        $this->assertEquals('photo_set', $activity->description);
+        $this->assertEquals($admin->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 
-		$this->assertNotNull($avatar);
-		$this->assertNotNull($avatar->exists());
-		$this->assertEquals($avatar->size, $avatar->getSize());
-		$this->assertEquals($avatar->width, $avatar->getRealWidth());
-		$this->assertEquals($avatar->height, $avatar->getRealHeight());
-		$this->assertEquals($avatar->create_user_id, $admin->id);
+    public function testDeleteHttp()
+    {
+        config(['activitylog.enabled' => true]);
 
-		$this->assertEquals(1, $author->activities()->count());
-		$activity = $author->activities()->first();
-		$this->assertEquals('photo_set', $activity->description);
-		$this->assertEquals($admin->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $admin = User::factory()->create();
+        $admin->group->author_edit = true;
+        $admin->push();
 
-	public function testDeleteHttp()
-	{
-		config(['activitylog.enabled' => true]);
+        $author = Author::factory()->create();
 
-		$admin = factory(User::class)->create();
-		$admin->group->author_edit = true;
-		$admin->push();
+        $photo = new AuthorPhoto;
+        $photo->storage = config('filesystems.default');
+        $photo->openImage(__DIR__.'/../images/test.jpeg');
+        $author->photos()->save($photo);
 
-		$author = factory(Author::class)->create();
+        $author->avatar()->associate($photo);
+        $author->save();
+        $author->refresh();
 
-		$photo = new AuthorPhoto;
-		$photo->storage = config('filesystems.default');
-		$photo->openImage(__DIR__ . '/../images/test.jpeg');
-		$author->photos()->save($photo);
+        $this->assertNotNull($author->avatar);
 
-		$author->avatar()->associate($photo);
-		$author->save();
-		$author->refresh();
+        $response = $this->actingAs($admin)
+            ->get(route('authors.photos.delete', ['author' => $author->id, 'id' => $author->avatar->id]))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$this->assertNotNull($author->avatar);
+        $author->refresh();
 
-		$response = $this->actingAs($admin)
-			->get(route('authors.photos.delete', ['author' => $author->id, 'id' => $author->avatar->id]))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->assertTrue($author->avatar()->withTrashed()->first()->trashed());
 
-		$author->refresh();
+        $this->assertEquals(1, $author->activities()->count());
+        $activity = $author->activities()->first();
+        $this->assertEquals('photo_remove', $activity->description);
+        $this->assertEquals($admin->id, $activity->causer_id);
+        $this->assertEquals('user', $activity->causer_type);
+    }
 
-		$this->assertTrue($author->avatar()->withTrashed()->first()->trashed());
+    public function testPolicy()
+    {
+        $admin = User::factory()->create();
 
-		$this->assertEquals(1, $author->activities()->count());
-		$activity = $author->activities()->first();
-		$this->assertEquals('photo_remove', $activity->description);
-		$this->assertEquals($admin->id, $activity->causer_id);
-		$this->assertEquals('user', $activity->causer_type);
-	}
+        $author = Author::factory()->create();
 
-	public function testPolicy()
-	{
-		$admin = factory(User::class)->create();
+        $author_photo = new AuthorPhoto;
+        $author_photo->openImage(__DIR__.'/../images/test.jpeg');
+        $author->photos()->save($author_photo);
 
-		$author = factory(Author::class)->create();
+        $this->assertFalse($admin->can('delete', $author_photo->fresh()));
 
-		$author_photo = new AuthorPhoto;
-		$author_photo->openImage(__DIR__ . '/../images/test.jpeg');
-		$author->photos()->save($author_photo);
+        $admin->group->author_edit = true;
+        $admin->push();
 
-		$this->assertFalse($admin->can('delete', $author_photo->fresh()));
+        $this->assertTrue($admin->can('delete', $author_photo->fresh()));
+    }
 
-		$admin->group->author_edit = true;
-		$admin->push();
+    public function testAuthorPrivatePolicy()
+    {
+        $admin = User::factory()->create();
 
-		$this->assertTrue($admin->can('delete', $author_photo->fresh()));
-	}
+        $author = Author::factory()->create();
+        $author->statusPrivate();
+        $author->save();
 
-	public function testAuthorPrivatePolicy()
-	{
-		$admin = factory(User::class)->create();
+        $author_photo = new AuthorPhoto;
+        $author_photo->openImage(__DIR__.'/../images/test.jpeg');
+        $author->photos()->save($author_photo);
 
-		$author = factory(Author::class)
-			->create();
-		$author->statusPrivate();
-		$author->save();
+        $this->assertFalse($admin->can('delete', $author_photo->fresh()));
+        $this->assertTrue($author->create_user->can('delete', $author_photo->fresh()));
+    }
 
-		$author_photo = new AuthorPhoto;
-		$author_photo->openImage(__DIR__ . '/../images/test.jpeg');
-		$author->photos()->save($author_photo);
+    public function testIndexHttp()
+    {
+        $author = Author::factory()->create();
 
-		$this->assertFalse($admin->can('delete', $author_photo->fresh()));
-		$this->assertTrue($author->create_user->can('delete', $author_photo->fresh()));
-	}
+        $this->get(route('authors.photos.index', ['author' => $author]))
+            ->assertRedirect(route('authors.show', ['author' => $author]));
+    }
 
-	public function testIndexHttp()
-	{
-		$author = factory(Author::class)
-			->create();
+    public function testShowHttp()
+    {
+        $author = Author::factory()->with_photo()->create();
 
-		$this->get(route('authors.photos.index', ['author' => $author]))
-			->assertRedirect(route('authors.show', ['author' => $author]));
-	}
+        $this->actingAs($author->create_user)
+            ->get(route('authors.photo', ['author' => $author]))
+            ->assertOk()
+            ->assertViewHas('author', $author)
+            ->assertViewIs('author.photo.show');
+    }
 
-	public function testShowHttp()
-	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+    public function testShowAuthorNotFound()
+    {
+        $author = Author::factory()->with_photo()->create();
 
-		$this->actingAs($author->create_user)
-			->get(route('authors.photo', ['author' => $author]))
-			->assertOk()
-			->assertViewHas('author', $author)
-			->assertViewIs('author.photo.show');
-	}
+        $author->delete();
 
-	public function testShowAuthorNotFound()
-	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+        $this->actingAs($author->create_user)
+            ->get(route('authors.photo', ['author' => $author]))
+            ->assertNotFound();
+    }
 
-		$author->delete();
+    public function testShowPhotoNotFound()
+    {
+        $author = Author::factory()->with_photo()->create();
 
-		$this->actingAs($author->create_user)
-			->get(route('authors.photo', ['author' => $author]))
-			->assertNotFound();
-	}
+        $author->photo->delete();
 
-	public function testShowPhotoNotFound()
-	{
-		$author = factory(Author::class)
-			->states('with_photo')
-			->create();
+        $this->actingAs($author->create_user)
+            ->get(route('authors.photo', ['author' => $author]))
+            ->assertNotFound();
+    }
 
-		$author->photo->delete();
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->actingAs($author->create_user)
-			->get(route('authors.photo', ['author' => $author]))
-			->assertNotFound();
-	}
+        Storage::fake(config('filesystems.default'));
+    }
 }

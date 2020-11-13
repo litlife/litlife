@@ -8,21 +8,21 @@ use Tests\TestCase;
 
 class ForumCreatePolicyTest extends TestCase
 {
-	public function testCantIfHasPermissions()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->add_forum_forum = false;
-		$admin->push();
+    public function testCantIfHasPermissions()
+    {
+        $admin = User::factory()->create();
+        $admin->group->add_forum_forum = false;
+        $admin->push();
 
-		$this->assertFalse($admin->can('create', Forum::class));
-	}
+        $this->assertFalse($admin->can('create', Forum::class));
+    }
 
-	public function testCantIfDoesntHavePermissions()
-	{
-		$admin = factory(User::class)->create();
-		$admin->group->add_forum_forum = true;
-		$admin->push();
+    public function testCantIfDoesntHavePermissions()
+    {
+        $admin = User::factory()->create();
+        $admin->group->add_forum_forum = true;
+        $admin->push();
 
-		$this->assertTrue($admin->can('create', Forum::class));
-	}
+        $this->assertTrue($admin->can('create', Forum::class));
+    }
 }

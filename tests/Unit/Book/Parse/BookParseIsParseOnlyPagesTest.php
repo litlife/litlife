@@ -7,20 +7,20 @@ use PHPUnit\Framework\TestCase;
 
 class BookParseIsParseOnlyPagesTest extends TestCase
 {
-	public function testSet()
-	{
-		$parse = new BookParse;
-		$parse->parseOnlyPages();
+    public function testSet()
+    {
+        $parse = new BookParse;
+        $parse->parseOnlyPages();
 
-		$this->assertEquals(['only_pages'], $parse->options);
-		$this->assertTrue($parse->isParseOnlyPages());
-	}
+        $this->assertEquals(['only_pages'], $parse->options);
+        $this->assertTrue($parse->isParseOnlyPages());
+    }
 
-	public function testDefault()
-	{
-		$parse = new BookParse;
+    public function testDefault()
+    {
+        $parse = new BookParse;
 
-		$this->assertNull($parse->options);
-		$this->assertFalse($parse->isParseOnlyPages());
-	}
+        $this->assertNull($parse->options);
+        $this->assertFalse($parse->isParseOnlyPages());
+    }
 }

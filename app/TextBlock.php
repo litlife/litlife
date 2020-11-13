@@ -25,10 +25,10 @@ use League\HTMLToMarkdown\HtmlConverter;
  * @method static Builder|TextBlock name($name)
  * @method static Builder|TextBlock newModelQuery()
  * @method static Builder|TextBlock newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|TextBlock query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|TextBlock whereCreatedAt($value)
  * @method static Builder|TextBlock whereCreator(\App\User $user)
  * @method static Builder|TextBlock whereId($value)
@@ -42,49 +42,51 @@ use League\HTMLToMarkdown\HtmlConverter;
  */
 class TextBlock extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	protected $fillable = [
-		'text',
-		'show_for_all',
-		'name'
-	];
+    protected $fillable = [
+        'text',
+        'show_for_all',
+        'name'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			if (empty($model->user_id))
-				$model->user_id = Auth::id();
-		});
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            if (empty($model->user_id)) {
+                $model->user_id = Auth::id();
+            }
+        });
 
-		static::Updating(function ($model) {
-			if (auth()->check())
-				$model->user_id = Auth::id();
-		});
+        static::Updating(function ($model) {
+            if (auth()->check()) {
+                $model->user_id = Auth::id();
+            }
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	static public function latestVersion($name)
-	{
-		return self::name($name)
-			->orderBy('created_at', 'desc')
-			->first();
-	}
+    static public function latestVersion($name)
+    {
+        return self::name($name)
+            ->orderBy('created_at', 'desc')
+            ->first();
+    }
 
-	public function scopeName($query, $name)
-	{
-		return $query->where('name', $name);
-	}
+    public function scopeName($query, $name)
+    {
+        return $query->where('name', $name);
+    }
 
-	public function getCreateUserIdColumn()
-	{
-		return 'user_id';
-	}
+    public function getCreateUserIdColumn()
+    {
+        return 'user_id';
+    }
 
-	public function getMarkdown()
-	{
-		$converter = new HtmlConverter(['strip_tags' => true]);
-		return $converter->convert($this->text);
-	}
+    public function getMarkdown()
+    {
+        $converter = new HtmlConverter(['strip_tags' => true]);
+        return $converter->convert($this->text);
+    }
 }

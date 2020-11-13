@@ -19,10 +19,10 @@ trait CheckedItems
 	status_changed_user_id
 	 */
 
-	public function status_changed_user()
-	{
-		return $this->hasOne('App\User', 'id', 'status_changed_user_id');
-	}
+    public function status_changed_user()
+    {
+        return $this->hasOne('App\User', 'id', 'status_changed_user_id');
+    }
 
 	public function getIsRejectedAttribute()
 	{

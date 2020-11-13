@@ -8,21 +8,21 @@ use Tests\TestCase;
 
 class SupportQuestionCreatePolicyTest extends TestCase
 {
-	public function testCanIfHasPermissions()
-	{
-		$user = factory(User::class)->create();
-		$user->group->send_a_support_question = true;
-		$user->push();
+    public function testCanIfHasPermissions()
+    {
+        $user = User::factory()->create();
+        $user->group->send_a_support_question = true;
+        $user->push();
 
-		$this->assertTrue($user->can('create', SupportQuestion::class));
-	}
+        $this->assertTrue($user->can('create', SupportQuestion::class));
+    }
 
-	public function testCantIfDoesntHavePermissions()
-	{
-		$user = factory(User::class)->create();
-		$user->group->send_a_support_question = false;
-		$user->push();
+    public function testCantIfDoesntHavePermissions()
+    {
+        $user = User::factory()->create();
+        $user->group->send_a_support_question = false;
+        $user->push();
 
-		$this->assertFalse($user->can('create', SupportQuestion::class));
-	}
+        $this->assertFalse($user->can('create', SupportQuestion::class));
+    }
 }

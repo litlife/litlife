@@ -8,17 +8,16 @@ use Tests\TestCase;
 
 class ClearBookViewIpTest extends TestCase
 {
-	public function testViewClear()
-	{
-		$book_view_ip = factory(BookViewIp::class)
-			->create();
+    public function testViewClear()
+    {
+        $book_view_ip = BookViewIp::factory()->create();
 
-		$book = $book_view_ip->book;
+        $book = $book_view_ip->book;
 
-		$this->assertNotNull(BookViewIp::first());
+        $this->assertNotNull(BookViewIp::first());
 
-		Artisan::call('clear:book_view_ip');
+        Artisan::call('clear:book_view_ip');
 
-		$this->assertNull(BookViewIp::first());
-	}
+        $this->assertNull(BookViewIp::first());
+    }
 }

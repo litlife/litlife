@@ -1,17 +1,32 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\BookAward::class, function (Faker $faker) {
-	return [
-		'book_id' => function () {
-			return factory(App\Book::class)->create()->id;
-		},
-		'award_id' => function () {
-			return factory(App\Award::class)->create()->id;
-		},
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-	];
-});
+use App\Award;
+use App\Book;
+use App\BookAward;
+use App\User;
+
+class BookAwardFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = BookAward::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'book_id' => Book::factory(),
+            'award_id' => Award::factory(),
+            'create_user_id' => User::factory(),
+        ];
+    }
+}

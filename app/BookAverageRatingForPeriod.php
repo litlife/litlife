@@ -28,10 +28,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $all_rating
  * @method static Builder|BookAverageRatingForPeriod newModelQuery()
  * @method static Builder|BookAverageRatingForPeriod newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|BookAverageRatingForPeriod query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|BookAverageRatingForPeriod whereAllRating($value)
  * @method static Builder|BookAverageRatingForPeriod whereBookId($value)
  * @method static Builder|BookAverageRatingForPeriod whereDayRating($value)
@@ -53,22 +53,22 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class BookAverageRatingForPeriod extends Model
 {
-	public $timestamps = false;
-	public $incrementing = false;
-	protected $table = 'books_average_rating_for_period';
-	protected $primaryKey = 'book_id';
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $table = 'books_average_rating_for_period';
+    protected $primaryKey = 'book_id';
 
-	protected $attributes =
-		[
-			'day_rating' => 0,
-			'day_votes_count' => 0,
-			'week_rating' => 0,
-			'week_votes_count' => 0,
-			'month_rating' => 0,
-			'month_votes_count' => 0,
-			'quarter_rating' => 0,
-			'quarter_votes_count' => 0,
-			'year_rating' => 0,
-			'year_votes_count' => 0
-		];
+    protected $attributes =
+        [
+            'day_rating' => 0,
+            'day_votes_count' => 0,
+            'week_rating' => 0,
+            'week_votes_count' => 0,
+            'month_rating' => 0,
+            'month_votes_count' => 0,
+            'quarter_rating' => 0,
+            'quarter_votes_count' => 0,
+            'year_rating' => 0,
+            'year_votes_count' => 0
+        ];
 }

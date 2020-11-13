@@ -8,51 +8,41 @@ use Tests\TestCase;
 
 class CommentPublishPolicyTest extends TestCase
 {
-	public function testCanPublishPrivate()
-	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+    public function testCanPublishPrivate()
+    {
+        $comment = Comment::factory()->private()->create();
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		$this->assertTrue($user->can('publish', $comment));
-	}
+        $this->assertTrue($user->can('publish', $comment));
+    }
 
-	public function testCantPublishNotPrivate()
-	{
-		$comment = factory(Comment::class)
-			->states('accepted')
-			->create();
+    public function testCantPublishNotPrivate()
+    {
+        $comment = Comment::factory()->accepted()->create();
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		$this->assertFalse($user->can('publish', $comment));
-	}
+        $this->assertFalse($user->can('publish', $comment));
+    }
 
-	public function testCantPublishByOtherUser()
-	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+    public function testCantPublishByOtherUser()
+    {
+        $comment = Comment::factory()->private()->create();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $user = User::factory()->admin()->create();
 
-		$this->assertFalse($user->can('publish', $comment));
-	}
+        $this->assertFalse($user->can('publish', $comment));
+    }
 
-	public function testCantPublishTrashed()
-	{
-		$comment = factory(Comment::class)
-			->states('private')
-			->create();
+    public function testCantPublishTrashed()
+    {
+        $comment = Comment::factory()->private()->create();
 
-		$user = $comment->create_user;
+        $user = $comment->create_user;
 
-		$comment->delete();
+        $comment->delete();
 
-		$this->assertFalse($user->can('publish', $comment));
-	}
+        $this->assertFalse($user->can('publish', $comment));
+    }
 }

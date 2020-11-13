@@ -23,10 +23,10 @@ use Illuminate\Support\Carbon;
  * @property-read \App\UserAgent|null $user_agent
  * @method static Builder|UserAuthLog newModelQuery()
  * @method static Builder|UserAuthLog newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|UserAuthLog query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|UserAuthLog whereCreatedAt($value)
  * @method static Builder|UserAuthLog whereId($value)
  * @method static Builder|UserAuthLog whereIp($value)
@@ -39,23 +39,23 @@ use Illuminate\Support\Carbon;
  */
 class UserAuthLog extends Model
 {
-	use UserAgentTrait;
+    use UserAgentTrait;
 
-	protected $dates = [
-		'created_at',
-		'updated_at'
-	];
+    protected $dates = [
+        'created_at',
+        'updated_at'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			$model->user_agent_id = UserAgent::getCurrentId();
-		});
-		parent::boot();
-	}
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            $model->user_agent_id = UserAgent::getCurrentId();
+        });
+        parent::boot();
+    }
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 }

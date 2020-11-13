@@ -10,24 +10,23 @@ use Tests\TestCase;
 
 class BookFileGetFirstFileInArchiveStreamTest extends TestCase
 {
-	public function testGetFirstFileInArchiveStream()
-	{
-		Storage::fake(config('filesystems.default'));
+    public function testGetFirstFileInArchiveStream()
+    {
+        Storage::fake(config('filesystems.default'));
 
-		$book = factory(Book::class)
-			->create();
+        $book = Book::factory()->create();
 
-		$file = new BookFile;
-		$file->zip = true;
-		$file->open(__DIR__ . '/../Books/test.fb2');
-		$file->statusAccepted();
-		$book->files()->save($file);
-		$file->refresh();
+        $file = new BookFile;
+        $file->zip = true;
+        $file->open(__DIR__.'/../Books/test.fb2');
+        $file->statusAccepted();
+        $book->files()->save($file);
+        $file->refresh();
 
-		$stream = $file->getFirstFileInArchiveStream();
+        $stream = $file->getFirstFileInArchiveStream();
 
-		$fb2 = new Fb2();
-		$fb2->setFile($stream);
-		$this->assertIsObject($fb2->description());
-	}
+        $fb2 = new Fb2();
+        $fb2->setFile($stream);
+        $this->assertIsObject($fb2->description());
+    }
 }

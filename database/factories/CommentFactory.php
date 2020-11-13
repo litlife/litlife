@@ -1,58 +1,98 @@
 <?php
 
+namespace Database\Factories;
+
+use App\Book;
 use App\Collection;
 use App\Comment;
-use Faker\Generator as Faker;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 
-$factory->define(App\Comment::class, function (Faker $faker) {
+class CommentFactory extends Factory
+{
+    use CheckedItems;
 
-	$text = $faker->realText(150) . ' ' . Str::random(10);
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Comment::class;
 
-	return [
-		'commentable_id' => function () {
-			return factory(App\Book::class)->create()->id;
-		},
-		'commentable_type' => 'book',
-		'create_user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'text' => $text,
-		'bb_text' => $text,
-		'ip' => $faker->ipv4,
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $text = $this->faker->realText(150).' '.Str::random(10);
 
-$factory->afterMakingState(App\Comment::class, 'collection', function (Comment $comment, $faker) {
+        return [
+            'commentable_id' => Book::factory(),
+            'commentable_type' => 'book',
+            'create_user_id' => User::factory(),
+            'text' => $text,
+            'bb_text' => $text,
+            'ip' => $this->faker->ipv4,
+        ];
+    }
 
-	$map = Relation::morphMap();
+    public function collection()
+    {
+        return $this->afterMaking(function (Comment $comment) {
+            $map = Relation::morphMap();
 
-	$key = array_search('App\Collection', $map);
+            $key = array_search('App\Collection', $map);
 
-	$comment->commentable_type = $key;
+            $comment->commentable_type = $key;
 
-	$collection = factory(Collection::class)->create();
+            $collection = Collection::factory()->create();
 
-	$comment->commentable_id = $collection->id;
-});
+            $comment->commentable_id = $collection->id;
+        })->afterCreating(function (Comment $comment) {
+            //
+        });
+    }
 
-$factory->afterMakingState(App\Comment::class, 'book', function (Comment $comment, $faker) {
+    public function book()
+    {
+        return $this->afterMaking(function (Comment $comment) {
+            $comment->commentable_type = 'book';
+        })->afterCreating(function (Comment $comment) {
+            //
+        });
+    }
 
-	$comment->commentable_type = 'book';
+    public function accepted()
+    {
+        return $this->afterMaking(function (Comment $comment) {
 
-});
+        })->afterCreating(function (Comment $comment) {
+            $comment->statusAccepted();
+            $comment->save();
+        });
+    }
 
-$factory->afterCreatingState(App\Comment::class, 'accepted', function (Comment $comment, $faker) {
-	$comment->statusAccepted();
-});
+    public function sent_for_review()
+    {
+        return $this->afterMaking(function (Comment $comment) {
 
-$factory->afterCreatingState(App\Comment::class, 'sent_for_review', function (Comment $comment, $faker) {
-	$comment->statusSentForReview();
-	$comment->save();
-});
+        })->afterCreating(function (Comment $comment) {
+            $comment->statusSentForReview();
+            $comment->save();
+        });
+    }
 
-$factory->afterCreatingState(App\Comment::class, 'private', function (Comment $comment, $faker) {
-	$comment->statusPrivate();
-	$comment->save();
-});
+    public function private()
+    {
+        return $this->afterMaking(function (Comment $comment) {
+
+        })->afterCreating(function (Comment $comment) {
+            $comment->statusPrivate();
+            $comment->save();
+        });
+    }
+}

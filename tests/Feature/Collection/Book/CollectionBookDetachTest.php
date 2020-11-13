@@ -9,33 +9,30 @@ use Tests\TestCase;
 
 class CollectionBookDetachTest extends TestCase
 {
-	public function testDetachBook()
-	{
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+    public function testDetachBook()
+    {
+        $user = User::factory()->admin()->create();
 
-		$collected_book = factory(CollectedBook::class)
-			->create();
+        $collected_book = CollectedBook::factory()->create();
 
-		$collection = $collected_book->collection;
-		$collection->status = StatusEnum::Accepted;
-		$collection->who_can_add = 'everyone';
-		$collection->save();
-		$collection->refresh();
+        $collection = $collected_book->collection;
+        $collection->status = StatusEnum::Accepted;
+        $collection->who_can_add = 'everyone';
+        $collection->save();
+        $collection->refresh();
 
-		$this->assertNull($collection->latest_updates_at);
+        $this->assertNull($collection->latest_updates_at);
 
-		$book = $collected_book->book;
+        $book = $collected_book->book;
 
-		$this->actingAs($user)
-			->get(route('collections.books.detach', ['collection' => $collection, 'book' => $book]))
-			->assertRedirect(route('collections.books', $collection))
-			->with('success', __('The book was successfully removed from the collection'));
+        $this->actingAs($user)
+            ->get(route('collections.books.detach', ['collection' => $collection, 'book' => $book]))
+            ->assertRedirect(route('collections.books', $collection))
+            ->with('success', __('The book was successfully removed from the collection'));
 
-		$collection->refresh();
+        $collection->refresh();
 
-		$this->assertEquals(0, $collection->books_count);
-		$this->assertNotNull($collection->latest_updates_at);
-	}
+        $this->assertEquals(0, $collection->books_count);
+        $this->assertNotNull($collection->latest_updates_at);
+    }
 }

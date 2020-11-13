@@ -7,92 +7,88 @@ use Tests\TestCase;
 
 class CollectionDeleteTest extends TestCase
 {
-	public function testDeleteConfirmationPage()
-	{
-		$collection = factory(Collection::class)
-			->create();
+    public function testDeleteConfirmationPage()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($collection->create_user)
-			->get(route('collections.delete.confirmation', $collection))
-			->assertOk()
-			->assertViewIs('collection.delete_confirmation')
-			->assertViewHas('collection', $collection)
-			->assertSeeText(__('Delete'));
-	}
+        $this->actingAs($collection->create_user)
+            ->get(route('collections.delete.confirmation', $collection))
+            ->assertOk()
+            ->assertViewIs('collection.delete_confirmation')
+            ->assertViewHas('collection', $collection)
+            ->assertSeeText(__('Delete'));
+    }
 
-	public function testDelete()
-	{
-		$collection = factory(Collection::class)
-			->create();
+    public function testDelete()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($collection->create_user)
-			->delete(route('collections.destroy', $collection))
-			->assertRedirect(route('collections.index'))
-			->assertSessionHas('success', __('The collection was successfully deleted'));
+        $this->actingAs($collection->create_user)
+            ->delete(route('collections.destroy', $collection))
+            ->assertRedirect(route('collections.index'))
+            ->assertSessionHas('success', __('The collection was successfully deleted'));
 
-		$this->assertSoftDeleted($collection);
-	}
+        $this->assertSoftDeleted($collection);
+    }
 
-	public function testDeleteAjax()
-	{
-		$collection = factory(Collection::class)->create();
+    public function testDeleteAjax()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($collection->create_user)
-			->ajax()
-			->delete(route('collections.destroy', $collection))
-			->assertOk();
+        $this->actingAs($collection->create_user)
+            ->ajax()
+            ->delete(route('collections.destroy', $collection))
+            ->assertOk();
 
-		$collection->refresh();
-		$user->refresh();
+        $collection->refresh();
+        $user->refresh();
 
-		$this->assertSoftDeleted($collection);
-		$this->assertEquals(0, $user->data->created_collections_count);
-	}
+        $this->assertSoftDeleted($collection);
+        $this->assertEquals(0, $user->data->created_collections_count);
+    }
 
-	public function testRestoreAjax()
-	{
-		$collection = factory(Collection::class)->create();
+    public function testRestoreAjax()
+    {
+        $collection = Collection::factory()->create();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$collection->delete();
+        $collection->delete();
 
-		$this->actingAs($collection->create_user)
-			->ajax()
-			->delete(route('collections.destroy', $collection))
-			->assertOk();
+        $this->actingAs($collection->create_user)
+            ->ajax()
+            ->delete(route('collections.destroy', $collection))
+            ->assertOk();
 
-		$collection->refresh();
-		$user->refresh();
+        $collection->refresh();
+        $user->refresh();
 
-		$this->assertFalse($collection->trashed());
-		$this->assertEquals(1, $user->data->created_collections_count);
-	}
+        $this->assertFalse($collection->trashed());
+        $this->assertEquals(1, $user->data->created_collections_count);
+    }
 
-	public function testCommentsDeletedAndRestoredWithCollection()
-	{
-		$collection = factory(Collection::class)
-			->states('with_comment')
-			->create();
+    public function testCommentsDeletedAndRestoredWithCollection()
+    {
+        $collection = Collection::factory()->with_comment()->create();
 
-		$comment = $collection->comments()->first();
+        $comment = $collection->comments()->first();
 
-		$collection->delete();
+        $collection->delete();
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertTrue($comment->trashed());
+        $this->assertTrue($comment->trashed());
 
-		$collection->restore();
+        $collection->restore();
 
-		$comment->refresh();
+        $comment->refresh();
 
-		$this->assertFalse($comment->trashed());
-	}
+        $this->assertFalse($comment->trashed());
+    }
 }

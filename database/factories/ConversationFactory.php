@@ -1,173 +1,201 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Conversation::class, function (Faker $faker) {
-	//$text = $faker->text(rand(100, 600));
-	return [
-		'latest_message_id' => 0
-	];
-});
+use App\Conversation;
+use App\Message;
+use App\Participation;
 
-$factory->afterCreatingState(App\Conversation::class, 'with_not_viewed_message', function ($conversation, $faker) {
+class ConversationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Conversation::class;
 
-	$participation1 = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        //$text = $this->faker->text(rand(100, 600));
+        return [
+            'latest_message_id' => 0
+        ];
+    }
 
-	$participation2 = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+    public function with_not_viewed_message()
+    {
+        return $this->afterCreating(function (Conversation $conversation) {
 
-	$receptient = $participation1->user;
-	$sender = $participation2->user;
+            $participation1 = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$message = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
-});
+            $participation2 = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-$factory->afterCreatingState(App\Conversation::class, 'with_two_not_viewed_message', function ($conversation, $faker) {
+            $receptient = $participation1->user;
+            $sender = $participation2->user;
 
-	$recepientParticipation = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+            $message = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-	$senderParticipation = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+        });
+    }
 
-	$receptient = $recepientParticipation->user;
-	$sender = $senderParticipation->user;
+    public function with_two_not_viewed_message()
+    {
+        return $this->afterCreating(function (Conversation $conversation) {
 
-	$message = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $recepientParticipation = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$message2 = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $senderParticipation = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$recepientParticipation->new_messages_count = 2;
-	$recepientParticipation->latest_message_id = $message2->id;
-	$recepientParticipation->latest_seen_message_id = null;
-	$recepientParticipation->save();
+            $receptient = $recepientParticipation->user;
+            $sender = $senderParticipation->user;
 
-	$senderParticipation->new_messages_count = 0;
-	$senderParticipation->latest_message_id = $message2->id;
-	$senderParticipation->latest_seen_message_id = $message2->id;
-	$senderParticipation->save();
+            $message = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-});
+            $message2 = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-$factory->afterCreatingState(App\Conversation::class, 'with_viewed_message', function ($conversation, $faker) {
+            $recepientParticipation->new_messages_count = 2;
+            $recepientParticipation->latest_message_id = $message2->id;
+            $recepientParticipation->latest_seen_message_id = null;
+            $recepientParticipation->save();
 
-	$participation1 = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+            $senderParticipation->new_messages_count = 0;
+            $senderParticipation->latest_message_id = $message2->id;
+            $senderParticipation->latest_seen_message_id = $message2->id;
+            $senderParticipation->save();
+        });
+    }
 
-	$participation2 = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+    public function with_viewed_message()
+    {
+        return $this->afterCreating(function (Conversation $conversation) {
 
-	$receptient = $participation1->user;
-	$sender = $participation2->user;
+            $participation1 = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$message = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $participation2 = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$participation1->new_messages_count = 0;
-	$participation1->latest_message_id = $message->id;
-	$participation1->latest_seen_message_id = $message->id;
-	$participation1->save();
+            $receptient = $participation1->user;
+            $sender = $participation2->user;
 
-	$participation2->new_messages_count = 0;
-	$participation2->latest_message_id = $message->id;
-	$participation2->latest_seen_message_id = $message->id;
-	$participation2->save();
-});
+            $message = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-$factory->afterCreatingState(App\Conversation::class, 'with_two_viewed_message', function ($conversation, $faker) {
+            $participation1->new_messages_count = 0;
+            $participation1->latest_message_id = $message->id;
+            $participation1->latest_seen_message_id = $message->id;
+            $participation1->save();
 
-	$recepientParticipation = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+            $participation2->new_messages_count = 0;
+            $participation2->latest_message_id = $message->id;
+            $participation2->latest_seen_message_id = $message->id;
+            $participation2->save();
+        });
+    }
 
-	$senderParticipation = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+    public function with_two_viewed_message()
+    {
+        return $this->afterCreating(function (Conversation $conversation) {
 
-	$receptient = $recepientParticipation->user;
-	$sender = $senderParticipation->user;
+            $recepientParticipation = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$message = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $senderParticipation = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$message2 = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $receptient = $recepientParticipation->user;
+            $sender = $senderParticipation->user;
 
-	$recepientParticipation->new_messages_count = 0;
-	$recepientParticipation->latest_message_id = $message2->id;
-	$recepientParticipation->latest_seen_message_id = $message2->id;
-	$recepientParticipation->save();
+            $message = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-	$senderParticipation->new_messages_count = 0;
-	$senderParticipation->latest_message_id = $message2->id;
-	$senderParticipation->latest_seen_message_id = $message2->id;
-	$senderParticipation->save();
+            $message2 = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-});
+            $recepientParticipation->new_messages_count = 0;
+            $recepientParticipation->latest_message_id = $message2->id;
+            $recepientParticipation->latest_seen_message_id = $message2->id;
+            $recepientParticipation->save();
 
-$factory->afterCreatingState(App\Conversation::class, 'with_viewed_and_not_viewed_message', function ($conversation, $faker) {
+            $senderParticipation->new_messages_count = 0;
+            $senderParticipation->latest_message_id = $message2->id;
+            $senderParticipation->latest_seen_message_id = $message2->id;
+            $senderParticipation->save();
+        });
+    }
 
-	$recepientParticipation = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+    public function with_viewed_and_not_viewed_message()
+    {
+        return $this->afterCreating(function (Conversation $conversation) {
 
-	$senderParticipation = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+            $recepientParticipation = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$receptient = $recepientParticipation->user;
-	$sender = $senderParticipation->user;
+            $senderParticipation = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$message = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $receptient = $recepientParticipation->user;
+            $sender = $senderParticipation->user;
 
-	$message2 = factory(\App\Message::class)
-		->create([
-			'conversation_id' => $conversation->id,
-			'create_user_id' => $sender->id
-		]);
+            $message = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-	$recepientParticipation->new_messages_count = 1;
-	$recepientParticipation->latest_message_id = $message2->id;
-	$recepientParticipation->latest_seen_message_id = $message->id;
-	$recepientParticipation->save();
+            $message2 = Message::factory()->create([
+                'conversation_id' => $conversation->id,
+                'create_user_id' => $sender->id
+            ]);
 
-	$senderParticipation->new_messages_count = 0;
-	$senderParticipation->latest_message_id = $message2->id;
-	$senderParticipation->latest_seen_message_id = $message2->id;
-	$senderParticipation->save();
+            $recepientParticipation->new_messages_count = 1;
+            $recepientParticipation->latest_message_id = $message2->id;
+            $recepientParticipation->latest_seen_message_id = $message->id;
+            $recepientParticipation->save();
 
-});
+            $senderParticipation->new_messages_count = 0;
+            $senderParticipation->latest_message_id = $message2->id;
+            $senderParticipation->latest_seen_message_id = $message2->id;
+            $senderParticipation->save();
+        });
+    }
 
-$factory->afterCreatingState(App\Conversation::class, 'with_two_users', function ($conversation, $faker) {
+    public function with_two_users()
+    {
+        return $this->afterCreating(function (Conversation $conversation) {
 
-	$participation1 = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+            $participation1 = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$participation2 = factory(\App\Participation::class)
-		->create(['conversation_id' => $conversation->id]);
+            $participation2 = Participation::factory()
+                ->create(['conversation_id' => $conversation->id]);
 
-	$receptient = $participation1->user;
-	$sender = $participation2->user;
-});
+            $receptient = $participation1->user;
+            $sender = $participation2->user;
+        });
+    }
+}

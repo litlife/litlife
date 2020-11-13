@@ -32,22 +32,22 @@ use Illuminate\Support\Carbon;
  */
 class BookAuthor extends Pivot
 {
-	public $table = 'book_authors';
+    public $table = 'book_authors';
 
-	public $timestamps = true;
+    public $timestamps = true;
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book')->any();
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book')->any();
+    }
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author')->any();
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author')->any();
+    }
 
-	public function getTypeKey()
-	{
-		return AuthorEnum::getKey($this->type);
-	}
+    public function getTypeKey()
+    {
+        return AuthorEnum::getKey($this->type);
+    }
 }

@@ -39,10 +39,10 @@ use Illuminate\Database\Query\Builder;
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData newQuery()
  * @method static Builder|UserData onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserData query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereAboutSelf($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBlogRecordCommentCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserData whereBooksPurchasedCount($value)
@@ -73,110 +73,113 @@ use Illuminate\Database\Query\Builder;
  */
 class UserData extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 
-	protected $primaryKey = 'user_id';
-	protected $table = 'user_datas';
+    protected $primaryKey = 'user_id';
+    protected $table = 'user_datas';
 
-	protected $fillable = [
-		'favorite_authors',
-		'favorite_genres',
-		'favorite_music',
-		'i_love',
-		'i_hate',
-		'about_self',
-		'favorite_quote'
-	];
+    protected $fillable = [
+        'favorite_authors',
+        'favorite_genres',
+        'favorite_music',
+        'i_love',
+        'i_hate',
+        'about_self',
+        'favorite_quote'
+    ];
 
-	protected $attributes =
-		[
-			'favorite_authors' => '',
-			'favorite_genres' => '',
-			'favorite_music' => '',
-			'i_love' => '',
-			'i_hate' => '',
-			'about_self' => '',
-			'favorite_quote' => '',
-			'blog_record_comment_count' => 0,
-			'created_books_count' => 0,
-			'created_authors_count' => 0,
-			'created_sequences_count' => 0,
-			'books_purchased_count' => 0
-		];
+    protected $attributes =
+        [
+            'favorite_authors' => '',
+            'favorite_genres' => '',
+            'favorite_music' => '',
+            'i_love' => '',
+            'i_hate' => '',
+            'about_self' => '',
+            'favorite_quote' => '',
+            'blog_record_comment_count' => 0,
+            'created_books_count' => 0,
+            'created_authors_count' => 0,
+            'created_sequences_count' => 0,
+            'books_purchased_count' => 0
+        ];
 
-	protected $dates = [
-		'last_news_view_at',
-		'favorite_authors_books_latest_viewed_at'
-	];
+    protected $dates = [
+        'last_news_view_at',
+        'favorite_authors_books_latest_viewed_at'
+    ];
 
-	public function getFavoriteAuthorsAttribute($value)
-	{
-		return strip_tags($value);
-	}
+    public function getFavoriteAuthorsAttribute($value)
+    {
+        return strip_tags($value);
+    }
 
-	public function setFavoriteAuthorsAttribute($value)
-	{
-		$value = strip_tags($value);
+    public function setFavoriteAuthorsAttribute($value)
+    {
+        $value = strip_tags($value);
 
-		$this->attributes['favorite_authors'] = $value;
-	}
+        $this->attributes['favorite_authors'] = $value;
+    }
 
-	public function user()
-	{
-		return $this->belongsTo('App\User');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
-	public function getFavoriteAuthorsBooksLatestViewedAtAttribute($value)
-	{
-		if (empty($value)) {
-			/*
-			if (empty($this->user->last_activity_at))
-				$value = $this->user->created_at;
-			else
-				$value = $this->user->last_activity_at;
-			*/
-			$value = Carbon::create(2019, 05, 05, 0, 0, 0);
-		}
+    public function getFavoriteAuthorsBooksLatestViewedAtAttribute($value)
+    {
+        if (empty($value)) {
+            /*
+            if (empty($this->user->last_activity_at))
+                $value = $this->user->created_at;
+            else
+                $value = $this->user->last_activity_at;
+            */
+            $value = Carbon::create(2019, 05, 05, 0, 0, 0);
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
-	public function getReferUsersCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function getReferUsersCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function setReferUsersCountAttribute($value)
-	{
-		if (empty($value))
-			$value = null;
+    public function setReferUsersCountAttribute($value)
+    {
+        if (empty($value)) {
+            $value = null;
+        }
 
-		$this->attributes['refer_users_count'] = $value;
-	}
+        $this->attributes['refer_users_count'] = $value;
+    }
 
-	public function getFavoriteCollectionsCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function getFavoriteCollectionsCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function setFavoriteCollectionsCountAttribute($value)
-	{
-		if (empty($value))
-			$value = null;
+    public function setFavoriteCollectionsCountAttribute($value)
+    {
+        if (empty($value)) {
+            $value = null;
+        }
 
-		$this->attributes['favorite_collections_count'] = $value;
-	}
+        $this->attributes['favorite_collections_count'] = $value;
+    }
 
-	public function getCreatedCollectionsCountAttribute($value)
-	{
-		return intval($value);
-	}
+    public function getCreatedCollectionsCountAttribute($value)
+    {
+        return intval($value);
+    }
 
-	public function setCreatedCollectionsCountAttribute($value)
-	{
-		if (empty($value))
-			$value = null;
+    public function setCreatedCollectionsCountAttribute($value)
+    {
+        if (empty($value)) {
+            $value = null;
+        }
 
-		$this->attributes['created_collections_count'] = $value;
-	}
+        $this->attributes['created_collections_count'] = $value;
+    }
 }

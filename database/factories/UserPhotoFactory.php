@@ -1,22 +1,43 @@
 <?php
 
+namespace Database\Factories;
+
+use App\User;
 use App\UserPhoto;
-use Faker\Generator as Faker;
+use Imagick;
+use ImagickPixel;
 
-$factory->define(App\UserPhoto::class, function (Faker $faker) {
+class UserPhotoFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = UserPhoto::class;
 
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+        ];
+    }
 
-$factory->afterMaking(App\UserPhoto::class, function (UserPhoto $photo, $faker) {
+    public function configure()
+    {
+        return $this->afterMaking(function ($item) {
+            $image = new Imagick();
+            $image->newImage(300, 300, new ImagickPixel('red'));
+            $image->setImageFormat('jpeg');
 
-	$image = new Imagick();
-	$image->newImage(300, 300, new ImagickPixel('red'));
-	$image->setImageFormat('jpeg');
+            $item->openImage($image);
+        })->afterCreating(function ($item) {
 
-	$photo->openImage($image);
-});
+        });
+    }
+}

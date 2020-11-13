@@ -2,7 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+
 
 /**
  * App\AuthorAverageRatingForPeriod
@@ -15,35 +17,38 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $year_rating
  * @property int|null $all_rating
  * @property-read \App\Author $author
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod query()
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereAllRating($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereAuthorId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereDayRating($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereMonthRating($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereQuarterRating($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereWeekRating($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AuthorAverageRatingForPeriod whereYearRating($value)
- * @mixin \Eloquent
+ * @method static Builder|AuthorAverageRatingForPeriod newModelQuery()
+ * @method static Builder|AuthorAverageRatingForPeriod newQuery()
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|AuthorAverageRatingForPeriod query()
+ * @method static Builder|Model void()
+ * @method static Builder|AuthorAverageRatingForPeriod whereAllRating($value)
+ * @method static Builder|AuthorAverageRatingForPeriod whereAuthorId($value)
+ * @method static Builder|AuthorAverageRatingForPeriod whereDayRating($value)
+ * @method static Builder|AuthorAverageRatingForPeriod whereMonthRating($value)
+ * @method static Builder|AuthorAverageRatingForPeriod whereQuarterRating($value)
+ * @method static Builder|AuthorAverageRatingForPeriod whereWeekRating($value)
+ * @method static Builder|AuthorAverageRatingForPeriod whereYearRating($value)
+ * @mixin Eloquent
  */
 class AuthorAverageRatingForPeriod extends Model
 {
-	public $attributes = [
-		'day_rating' => 0,
-		'week_rating' => 0,
-		'month_rating' => 0,
-		'quarter_rating' => 0,
-		'year_rating' => 0,
-		'all_rating' => 0
-	];
+    public $attributes = [
+        'day_rating' => 0,
+        'week_rating' => 0,
+        'month_rating' => 0,
+        'quarter_rating' => 0,
+        'year_rating' => 0,
+        'all_rating' => 0
+    ];
 
-	public $timestamps = false;
-	public $incrementing = false;
-	protected $primaryKey = 'author_id';
+    public $timestamps = false;
+    public $incrementing = false;
+    protected $primaryKey = 'author_id';
 
-	public function author()
-	{
-		return $this->belongsTo('App\Author');
-	}
+    public function author()
+    {
+        return $this->belongsTo('App\Author');
+    }
 }

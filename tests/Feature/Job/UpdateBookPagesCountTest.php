@@ -9,33 +9,29 @@ use Tests\TestCase;
 
 class UpdateBookPagesCountTest extends TestCase
 {
-	public function testAcceptedChapter()
-	{
-		$book = factory(Book::class)->create();
+    public function testAcceptedChapter()
+    {
+        $book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('accepted')
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->accepted()->create(['book_id' => $book->id]);
 
-		UpdateBookPagesCount::dispatch($book);
+        UpdateBookPagesCount::dispatch($book);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertEquals(2, $book->page_count);
-	}
+        $this->assertEquals(2, $book->page_count);
+    }
 
-	public function testPrivateChapter()
-	{
-		$book = factory(Book::class)->create();
+    public function testPrivateChapter()
+    {
+        $book = Book::factory()->create();
 
-		$section = factory(Section::class)
-			->states('private')
-			->create(['book_id' => $book->id]);
+        $section = Section::factory()->private()->create();
 
-		UpdateBookPagesCount::dispatch($book);
+        UpdateBookPagesCount::dispatch($book);
 
-		$book->refresh();
+        $book->refresh();
 
-		$this->assertEquals(0, $book->page_count);
-	}
+        $this->assertEquals(0, $book->page_count);
+    }
 }

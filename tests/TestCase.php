@@ -19,204 +19,204 @@ use League\Flysystem\Filesystem;
 
 abstract class TestCase extends BaseTestCase
 {
-	use CreatesApplication;
-	use DatabaseTransactions;
-	use WithFaker;
+    use CreatesApplication;
+    use DatabaseTransactions;
+    use WithFaker;
 
-	public $images = [];
+    public $images = [];
 
-	public function setUpFaker(): void
-	{
-		$this->faker = $this->makeFaker(config('app.faker_locale') ?? 'en_US');
-	}
+    public function setUpFaker(): void
+    {
+        $this->faker = $this->makeFaker(config('app.faker_locale') ?? 'en_US');
+    }
 
-	public function clearTestingDirecrory()
-	{
-		$root = storage_path('framework/testing/disks/');
+    public function preventCaptchaValidation()
+    {
+        // prevent validation error on captcha
+        NoCaptcha::shouldReceive('verifyResponse')
+            ->once()
+            ->andReturn(true);
+    }
 
-		$adapter = new Local($root);
-		$filesystem = new Filesystem($adapter);
+    public function assertSessionHasErrors($error, $bag = 'default')
+    {
+        $errors = pos(session('errors')->getBag($bag)->toArray());
+        $this->assertContains($error, $errors);
+    }
 
-		$files = $filesystem->listContents('/', false);
+    public function fakeImageStream($width = 100, $height = 100, $extension = 'jpeg')
+    {
+        $tmp = tmpfile();
 
-		foreach ($files as $file) {
-			if ($file['type'] == 'dir') {
-				$filesystem->deleteDir($file['filename']);
-			} else {
-				$filesystem->delete($file['filename']);
-			}
-		}
+        $imagick = new Imagick();
+        $imagick->newImage($width, $height, new ImagickPixel('white'));
+        $imagick->addNoiseImage(Imagick::NOISE_RANDOM, Imagick::CHANNEL_DEFAULT);
+        $imagick->setImageFormat($extension);
 
-		$this->assertEmpty($filesystem->listContents('/', false));
-	}
+        fwrite($tmp, $imagick->getImageBlob());
 
-	public function preventCaptchaValidation()
-	{
-		// prevent validation error on captcha
-		NoCaptcha::shouldReceive('verifyResponse')
-			->once()
-			->andReturn(true);
-	}
+        $key = uniqid();
 
-	public function assertSessionHasErrors($error, $bag = 'default')
-	{
-		$errors = pos(session('errors')->getBag($bag)->toArray());
-		$this->assertContains($error, $errors);
-	}
+        $this->images[$key] = $tmp;
 
-	public function fakeImageStream($width = 100, $height = 100, $extension = 'jpeg')
-	{
-		$tmp = tmpfile();
+        return stream_get_meta_data($this->images[$key])['uri'];
+    }
 
-		$imagick = new Imagick();
-		$imagick->newImage($width, $height, new ImagickPixel('white'));
-		$imagick->addNoiseImage(Imagick::NOISE_RANDOM, Imagick::CHANNEL_DEFAULT);
-		$imagick->setImageFormat($extension);
+    protected function disableCookiesEncryption($cookies)
+    {
+        $this->app->resolving(EncryptCookies::class,
+            function ($object) use ($cookies) {
+                $object->disableFor($cookies);
+            });
 
-		fwrite($tmp, $imagick->getImageBlob());
+        return $this;
+    }
 
-		$key = uniqid();
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->images[$key] = $tmp;
+        echo('setUp: '.round(memory_get_usage() / 1000000, 2).' MB | ');
+        /*
+                if (!$this->app) {
+                    $this->refreshApplication();
+                }
 
-		return stream_get_meta_data($this->images[$key])['uri'];
-	}
+                $this->setUpTraits();
 
-	protected function disableCookiesEncryption($cookies)
-	{
-		$this->app->resolving(EncryptCookies::class,
-			function ($object) use ($cookies) {
-				$object->disableFor($cookies);
-			});
+                foreach ($this->afterApplicationCreatedCallbacks as $callback) {
+                    call_user_func($callback);
+                }
 
-		return $this;
-	}
+                Facade::clearResolvedInstances();
 
-	/**
-	 * Setup the test environment.
-	 *
-	 * @return void
-	 */
-	protected function setUp(): void
-	{
-		parent::setUp();
+                Model::setEventDispatcher($this->app['events']);
 
-		echo('setUp: ' . round(memory_get_usage() / 1000000, 2) . ' MB | ');
-		/*
-				if (!$this->app) {
-					$this->refreshApplication();
-				}
+                $this->setUpHasRun = true;
+        */
+        $this->withoutMiddleware(RefreshUserLastActivity::class);
+        $this->withoutMiddleware(RemeberSessionGeoIpAndBrowser::class);
+        $this->withoutMiddleware(ErrorIfForbiddenWordsExists::class);
+        $this->withoutMiddleware(SEOMiddleware::class);
+        $this->withoutMiddleware(UserReferenceCookieSave::class);
+    }
 
-				$this->setUpTraits();
+    /**
+     * Clean up the testing environment before the next test.
+     *
+     * @return void
+     */
+    protected function tearDown(): void
+    {
+        if (rand(1, 100) == 50) {
+            $this->clearTestingDirecrory();
+        }
 
-				foreach ($this->afterApplicationCreatedCallbacks as $callback) {
-					call_user_func($callback);
-				}
+        parent::tearDown();
 
-				Facade::clearResolvedInstances();
+        /*
+        if ($this->app) {
+            $this->callBeforeApplicationDestroyedCallbacks();
 
-				Model::setEventDispatcher($this->app['events']);
+            $this->app->flush();
 
-				$this->setUpHasRun = true;
-		*/
-		$this->withoutMiddleware(RefreshUserLastActivity::class);
-		$this->withoutMiddleware(RemeberSessionGeoIpAndBrowser::class);
-		$this->withoutMiddleware(ErrorIfForbiddenWordsExists::class);
-		$this->withoutMiddleware(SEOMiddleware::class);
-		$this->withoutMiddleware(UserReferenceCookieSave::class);
-	}
+            $this->app = null;
+        }
 
-	/**
-	 * Clean up the testing environment before the next test.
-	 *
-	 * @return void
-	 */
-	protected function tearDown(): void
-	{
-		if (rand(1, 100) == 50) {
-			$this->clearTestingDirecrory();
-		}
+        $this->setUpHasRun = false;
 
-		parent::tearDown();
+        if (property_exists($this, 'serverVariables')) {
+            $this->serverVariables = [];
+        }
 
-		/*
-		if ($this->app) {
-			$this->callBeforeApplicationDestroyedCallbacks();
+        if (property_exists($this, 'defaultHeaders')) {
+            $this->defaultHeaders = [];
+        }
 
-			$this->app->flush();
+        if (class_exists('Mockery')) {
+            if ($container = Mockery::getContainer()) {
+                $this->addToAssertionCount($container->mockery_getExpectationCount());
+            }
 
-			$this->app = null;
-		}
+            try {
+                Mockery::close();
+            } catch (InvalidCountException $e) {
+                if (!Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
+                    throw $e;
+                }
+            }
+        }
 
-		$this->setUpHasRun = false;
+        if (class_exists(Carbon::class)) {
+            Carbon::setTestNow();
+        }
 
-		if (property_exists($this, 'serverVariables')) {
-			$this->serverVariables = [];
-		}
+        if (class_exists(CarbonImmutable::class)) {
+            CarbonImmutable::setTestNow();
+        }
 
-		if (property_exists($this, 'defaultHeaders')) {
-			$this->defaultHeaders = [];
-		}
+        $this->afterApplicationCreatedCallbacks = [];
+        $this->beforeApplicationDestroyedCallbacks = [];
 
-		if (class_exists('Mockery')) {
-			if ($container = Mockery::getContainer()) {
-				$this->addToAssertionCount($container->mockery_getExpectationCount());
-			}
+        Artisan::forgetBootstrappers();
 
-			try {
-				Mockery::close();
-			} catch (InvalidCountException $e) {
-				if (!Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
-					throw $e;
-				}
-			}
-		}
-
-		if (class_exists(Carbon::class)) {
-			Carbon::setTestNow();
-		}
-
-		if (class_exists(CarbonImmutable::class)) {
-			CarbonImmutable::setTestNow();
-		}
-
-		$this->afterApplicationCreatedCallbacks = [];
-		$this->beforeApplicationDestroyedCallbacks = [];
-
-		Artisan::forgetBootstrappers();
-
-		if ($this->callbackException) {
-			throw $this->callbackException;
-		}
+        if ($this->callbackException) {
+            throw $this->callbackException;
+        }
 
 
-		$refl = new ReflectionObject($this);
-		foreach ($refl->getProperties() as $prop) {
-			if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')) {
-				$prop->setAccessible(true);
-				$prop->setValue($this, null);
-			}
-		}
+        $refl = new ReflectionObject($this);
+        foreach ($refl->getProperties() as $prop) {
+            if (!$prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_')) {
+                $prop->setAccessible(true);
+                $prop->setValue($this, null);
+            }
+        }
 */
-		echo(' tearDown ' . round(memory_get_usage() / 1000000, 2) . ' MB ');
-		echo("\n");
-	}
+        echo(' tearDown '.round(memory_get_usage() / 1000000, 2).' MB ');
+        echo("\n");
+    }
 
-	protected function ajax()
-	{
-		return $this->withHeader('HTTP_X-Requested-With', 'XMLHttpRequest');
-	}
+    public function clearTestingDirecrory()
+    {
+        $root = storage_path('framework/testing/disks/');
 
-	protected function acceptJson()
-	{
-		return $this->withHeader('Accept', 'application/json');
-	}
+        $adapter = new Local($root);
+        $filesystem = new Filesystem($adapter);
 
-	protected function withOldInput($key, $value)
-	{
-		$input = $this->app['session']->get('_old_input');
-		$input[$key] = $value;
-		$this->session(['_old_input' => $input]);
-		return $this;
-	}
+        $files = $filesystem->listContents('/', false);
+
+        foreach ($files as $file) {
+            if ($file['type'] == 'dir') {
+                $filesystem->deleteDir($file['filename']);
+            } else {
+                $filesystem->delete($file['filename']);
+            }
+        }
+
+        $this->assertEmpty($filesystem->listContents('/', false));
+    }
+
+    protected function ajax()
+    {
+        return $this->withHeader('HTTP_X-Requested-With', 'XMLHttpRequest');
+    }
+
+    protected function acceptJson()
+    {
+        return $this->withHeader('Accept', 'application/json');
+    }
+
+    protected function withOldInput($key, $value)
+    {
+        $input = $this->app['session']->get('_old_input');
+        $input[$key] = $value;
+        $this->session(['_old_input' => $input]);
+        return $this;
+    }
 }

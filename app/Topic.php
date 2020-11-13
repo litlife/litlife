@@ -54,13 +54,13 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newQuery()
  * @method static Builder|Topic onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic opened()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByField($column, $ids)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostAscNullsFirst()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostDescNullsLast()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderByLastPostNullsLast()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Topic orderForIdeaForum()
- * @method static \Illuminate\Database\Eloquent\Builder|Topic public ()
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic public()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic query()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic trgmSearch($searchText)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic unarchived()
@@ -94,284 +94,284 @@ use Illuminate\Support\Carbon;
  */
 class Topic extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'name',
-		'description',
-		'post_desc',
-		'main_priority',
-		'forum_priority',
-		'hide_from_main_page',
-		'label'
-	];
+    protected $fillable = [
+        'name',
+        'description',
+        'post_desc',
+        'main_priority',
+        'forum_priority',
+        'hide_from_main_page',
+        'label'
+    ];
 
-	static function cachedLatestTopics()
-	{
-		return Cache::get(CacheTags::LatestTopicsQuery);
-	}
+    static function cachedLatestTopics()
+    {
+        return Cache::get(CacheTags::LatestTopicsQuery);
+    }
 
-	static function refreshLatestTopics()
-	{
-		$settings = Variable::where('name', 'settings')->first();
+    static function refreshLatestTopics()
+    {
+        $settings = Variable::where('name', 'settings')->first();
 
-		$topics = Topic::with('last_post.create_user', 'forum')
-			->when(isset($settings->value['hide_from_main_page_forums']), function ($query) use ($settings) {
-				return $query->whereNotIn('topics.forum_id', $settings->value['hide_from_main_page_forums']);
-			})
-			->select('topics.*')
-			->public()
-			->dontShowOnMainPage()
-			->orderByLastPostNullsLast()
-			->limit(3)
-			->get();
+        $topics = Topic::with('last_post.create_user', 'forum')
+            ->when(isset($settings->value['hide_from_main_page_forums']), function ($query) use ($settings) {
+                return $query->whereNotIn('topics.forum_id', $settings->value['hide_from_main_page_forums']);
+            })
+            ->select('topics.*')
+            ->public()
+            ->dontShowOnMainPage()
+            ->orderByLastPostNullsLast()
+            ->limit(3)
+            ->get();
 
-		Cache::forever(CacheTags::LatestTopicsQuery, $topics);
+        Cache::forever(CacheTags::LatestTopicsQuery, $topics);
 
-		return $topics;
-	}
+        return $topics;
+    }
 
-	public function scopeAny($query)
-	{
-		return $query->withTrashed();
-	}
+    public function scopeAny($query)
+    {
+        return $query->withTrashed();
+    }
 
-	public function postsOrderedBySetting()
-	{
-		return $this->hasMany('App\Post', 'topic_id')
-			->orderBy('id', $this->post_desc ? 'desc' : 'asc');
-	}
+    public function postsOrderedBySetting()
+    {
+        return $this->hasMany('App\Post', 'topic_id')
+            ->orderBy('id', $this->post_desc ? 'desc' : 'asc');
+    }
 
-	public function forum()
-	{
-		return $this->belongsTo('App\Forum')->any();
-	}
+    public function forum()
+    {
+        return $this->belongsTo('App\Forum')->any();
+    }
 
-	public function last_post()
-	{
-		return $this->hasOne('App\Post', 'id', 'last_post_id')
-			->with('create_user');
-	}
+    public function last_post()
+    {
+        return $this->hasOne('App\Post', 'id', 'last_post_id')
+            ->with('create_user');
+    }
 
-	public function top_post()
-	{
-		return $this->hasOne('App\Post', 'id', 'top_post_id')
-			->with('create_user');
-	}
+    public function top_post()
+    {
+        return $this->hasOne('App\Post', 'id', 'top_post_id')
+            ->with('create_user');
+    }
 
-	public function create_user()
-	{
-		return $this->belongsTo('App\User', $this->getCreateUserIdColumn(), 'id')
-			->with("avatar");
-	}
+    public function create_user()
+    {
+        return $this->belongsTo('App\User', $this->getCreateUserIdColumn(), 'id')
+            ->with("avatar");
+    }
 
-	public function posts()
-	{
-		return $this->hasMany('App\Post', 'topic_id');
-	}
+    public function scopeFulltextSearch($query, $searchText)
+    {
+        $Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
 
-	public function scopeFulltextSearch($query, $searchText)
-	{
-		$Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
+        $s = '';
 
-		$s = '';
+        if ($Ar) {
+            $s = "to_tsvector('english', \"" . $this->getTable() . "\".\"name\" )  ";
+            $s .= " @@ to_tsquery('english', quote_literal(quote_literal(?)))";
 
-		if ($Ar) {
-			$s = "to_tsvector('english', \"" . $this->getTable() . "\".\"name\" )  ";
-			$s .= " @@ to_tsquery('english', quote_literal(quote_literal(?)))";
+            return $query->whereRaw($s, [implode('+', $Ar)]);
+        }
+    }
 
-			return $query->whereRaw($s, [implode('+', $Ar)]);
-		}
-	}
+    public function scopeTrgmSearch($query, $searchText)
+    {
+        $Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
 
-	public function scopeTrgmSearch($query, $searchText)
-	{
-		$Ar = preg_split("/[\s,[:punct:]]+/", $searchText, 0, PREG_SPLIT_NO_EMPTY);
+        $s = '';
 
-		$s = '';
+        if ($Ar) {
+            /*
+            $query->whereRaw("to_tsvector('english', \"name\") @@ to_tsquery('english', quote_literal(quote_literal(?)))", [implode('&', $Ar)])
+            */
+            $s = "to_tsvector('english', \"name\") ";
+            $s .= " @@ to_tsquery(quote_literal(quote_literal(?)) || ':*')";
+            return $query->whereRaw($s, implode('+', $Ar));
+        }
+        return $query;
+    }
 
-		if ($Ar) {
-			/*
-			$query->whereRaw("to_tsvector('english', \"name\") @@ to_tsquery('english', quote_literal(quote_literal(?)))", [implode('&', $Ar)])
-			*/
-			$s = "to_tsvector('english', \"name\") ";
-			$s .= " @@ to_tsquery(quote_literal(quote_literal(?)) || ':*')";
-			return $query->whereRaw($s, implode('+', $Ar));
-		}
-		return $query;
-	}
+    public function scopeVoid($query)
+    {
+        return $query;
+    }
 
-	public function scopeVoid($query)
-	{
-		return $query;
-	}
+    public function isClosed()
+    {
+        return (bool)$this->closed;
+    }
 
-	public function isClosed()
-	{
-		return (bool)$this->closed;
-	}
+    public function isOpened()
+    {
+        return (bool)!$this->closed;
+    }
 
-	public function isOpened()
-	{
-		return (bool)!$this->closed;
-	}
+    public function open()
+    {
+        $this->closed = false;
+    }
 
-	public function open()
-	{
-		$this->closed = false;
-	}
+    public function close()
+    {
+        $this->closed = true;
+    }
 
-	public function close()
-	{
-		$this->closed = true;
-	}
+    public function scopeOpened($query)
+    {
+        return $query->where('closed', true);
+    }
 
-	public function scopeOpened($query)
-	{
-		return $query->where('closed', true);
-	}
+    public function scopeClosed($query)
+    {
+        return $query->where('closed', false);
+    }
 
-	public function scopeClosed($query)
-	{
-		return $query->where('closed', false);
-	}
+    public function scopeOrderByLastPostNullsLast($query)
+    {
+        //return $query->orderByRaw('"last_post_created_at" desc nulls last');
+        return $query->orderByWithNulls('last_post_created_at', 'desc', 'last');
+        //return $query->orderByRaw('"last_post_created_at" ? nulls ?', ['desc', 'last']);
+    }
 
-	public function scopeOrderByLastPostNullsLast($query)
-	{
-		//return $query->orderByRaw('"last_post_created_at" desc nulls last');
-		return $query->orderByWithNulls('last_post_created_at', 'desc', 'last');
-		//return $query->orderByRaw('"last_post_created_at" ? nulls ?', ['desc', 'last']);
-	}
+    public function scopeOrderByLastPostDescNullsLast($query)
+    {
+        //return $query->orderByRaw('"last_post_created_at" desc nulls last');
+        return $query->orderByWithNulls('last_post_created_at', 'desc', 'last');
+        //return $query->orderByRaw('"last_post_created_at" ? nulls ?', ['desc', 'last']);
+    }
 
-	public function scopeOrderByLastPostDescNullsLast($query)
-	{
-		//return $query->orderByRaw('"last_post_created_at" desc nulls last');
-		return $query->orderByWithNulls('last_post_created_at', 'desc', 'last');
-		//return $query->orderByRaw('"last_post_created_at" ? nulls ?', ['desc', 'last']);
-	}
+    public function scopeOrderByLastPostAscNullsFirst($query)
+    {
+        //return $query->orderByRaw('"last_post_created_at" desc nulls last');
+        return $query->orderByWithNulls('last_post_created_at', 'asc', 'first');
+        //return $query->orderByRaw('"last_post_created_at" ? nulls ?', ['desc', 'last']);
+    }
 
-	public function scopeOrderByLastPostAscNullsFirst($query)
-	{
-		//return $query->orderByRaw('"last_post_created_at" desc nulls last');
-		return $query->orderByWithNulls('last_post_created_at', 'asc', 'first');
-		//return $query->orderByRaw('"last_post_created_at" ? nulls ?', ['desc', 'last']);
-	}
+    public function archive()
+    {
+        $this->archived = true;
+    }
 
-	public function archive()
-	{
-		$this->archived = true;
-	}
+    public function unarchive()
+    {
+        $this->archived = false;
+    }
 
-	public function unarchive()
-	{
-		$this->archived = false;
-	}
+    public function isArchived()
+    {
+        return (bool)$this->archived;
+    }
 
-	public function isArchived()
-	{
-		return (bool)$this->archived;
-	}
+    public function scopeArchived($query)
+    {
+        return $query->where('archived', true);
+    }
 
-	public function scopeArchived($query)
-	{
-		return $query->where('archived', true);
-	}
+    public function scopeUnarchived($query)
+    {
+        return $query->where('archived', false);
+    }
 
-	public function scopeUnarchived($query)
-	{
-		return $query->where('archived', false);
-	}
+    public function scopeWithUserAccessToForums($query)
+    {
+        return $query->join('forums', 'forums.id', '=', 'topics.forum_id')
+            ->leftJoin('users_access_to_forums', function ($join) {
+                $join->on('users_access_to_forums.forum_id', '=', 'topics.forum_id')
+                    ->where('users_access_to_forums.user_id', auth()->id());
+            })->where(function ($query) {
+                $query->where('forums.private', false)
+                    ->orWhere(function ($query) {
+                        $query->where('forums.private', true)
+                            ->whereNotNull('users_access_to_forums.user_id');
+                    });
+            });
+    }
 
-	public function scopeWithUserAccessToForums($query)
-	{
-		return $query->join('forums', 'forums.id', '=', 'topics.forum_id')
-			->leftJoin('users_access_to_forums', function ($join) {
-				$join->on('users_access_to_forums.forum_id', '=', 'topics.forum_id')
-					->where('users_access_to_forums.user_id', auth()->id());
-			})->where(function ($query) {
-				$query->where('forums.private', false)
-					->orWhere(function ($query) {
-						$query->where('forums.private', true)
-							->whereNotNull('users_access_to_forums.user_id');
-					});
-			});
-	}
+    public function scopePublic($query)
+    {
+        return $query->join('forums', 'forums.id', '=', 'topics.forum_id')
+            ->where(function ($query) {
+                $query->where('forums.private', false);
+            });
+    }
 
-	public function scopePublic($query)
-	{
-		return $query->join('forums', 'forums.id', '=', 'topics.forum_id')
-			->where(function ($query) {
-				$query->where('forums.private', false);
-			});
-	}
+    public function scopeDontShowOnMainPage($query)
+    {
+        return $query->where('hide_from_main_page', false);
+    }
 
-	public function scopeDontShowOnMainPage($query)
-	{
-		return $query->where('hide_from_main_page', false);
-	}
+    public function scopeOrderForIdeaForum($query)
+    {
+        $bindings = [TopicLabelEnum::IdeaInProgress, TopicLabelEnum::IdeaOnReview];
 
-	public function scopeOrderForIdeaForum($query)
-	{
-		$bindings = [TopicLabelEnum::IdeaInProgress, TopicLabelEnum::IdeaOnReview];
+        $qs = 'CASE ';
+        $qs .= 'WHEN "label" = ? THEN 1 ';
+        $qs .= 'WHEN "label" = ? THEN 1 ';
+        $qs .= 'ELSE 2 ';
+        $qs .= 'END';
 
-		$qs = 'CASE ';
-		$qs .= 'WHEN "label" = ? THEN 1 ';
-		$qs .= 'WHEN "label" = ? THEN 1 ';
-		$qs .= 'ELSE 2 ';
-		$qs .= 'END';
+        // dd($bindings);
 
-		// dd($bindings);
+        return $query->orderByRaw($qs, $bindings)
+            ->orderByRaw('posts.like_count desc nulls last');
+    }
 
-		return $query->orderByRaw($qs, $bindings)
-			->orderByRaw('posts.like_count desc nulls last');
-	}
+    public function subscribed_users()
+    {
+        return $this->belongsToMany('App\User', 'user_topic_subscriptions')
+            ->withTimestamps();
+    }
 
-	public function subscribed_users()
-	{
-		return $this->belongsToMany('App\User', 'user_topic_subscriptions')
-			->withTimestamps();
-	}
+    public function user_subscriptions()
+    {
+        return $this->hasOne('App\UserTopicSubscription');
+    }
 
-	public function user_subscriptions()
-	{
-		return $this->hasOne('App\UserTopicSubscription');
-	}
+    public function auth_user_subscription()
+    {
+        return $this->hasOne('App\UserTopicSubscription')
+            ->where('user_id', auth()->id());
+    }
 
-	public function auth_user_subscription()
-	{
-		return $this->hasOne('App\UserTopicSubscription')
-			->where('user_id', auth()->id());
-	}
+    /**
+     * Обновляет количество постов в теме и последний пост
+     */
+    public function updateCountOfPostsAndLastPost()
+    {
+        $this->postsCountRefresh();
+        $this->lastPostRefresh();
+        $this->save();
+    }
 
-	public function postsCountRefresh()
-	{
-		$this->post_count = $this->posts()
-			->count();
-	}
+    public function postsCountRefresh()
+    {
+        $this->post_count = $this->posts()
+            ->count();
+    }
 
-	public function lastPostRefresh()
-	{
-		$post = $this->posts()
-			->latestWithId()
-			->first();
+    public function posts()
+    {
+        return $this->hasMany('App\Post', 'topic_id');
+    }
 
-		if (!empty($post)) {
-			$this->last_post_id = $post->id;
-			$this->last_post_created_at = $post->created_at;
-		} else {
-			$this->last_post_id = null;
-			$this->last_post_created_at = null;
-		}
-	}
+    public function lastPostRefresh()
+    {
+        $post = $this->posts()
+            ->latestWithId()
+            ->first();
 
-	/**
-	 * Обновляет количество постов в теме и последний пост
-	 */
-	public function updateCountOfPostsAndLastPost()
-	{
-		$this->postsCountRefresh();
-		$this->lastPostRefresh();
-		$this->save();
-	}
+        if (!empty($post)) {
+            $this->last_post_id = $post->id;
+            $this->last_post_created_at = $post->created_at;
+        } else {
+            $this->last_post_id = null;
+            $this->last_post_created_at = null;
+        }
+    }
 }

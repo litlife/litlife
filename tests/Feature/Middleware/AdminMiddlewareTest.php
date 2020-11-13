@@ -11,48 +11,47 @@ use Tests\TestCase;
 
 class AdminMiddlewareTest extends TestCase
 {
-	/** @test */
-	public function non_admins_are_redirected()
-	{
-		$group = factory(UserGroup::class)->create();
+    /** @test */
+    public function non_admins_are_redirected()
+    {
+        $group = UserGroup::factory()->create();
 
-		config(['litlife.admin_group_id' => $group->id]);
+        config(['litlife.admin_group_id' => $group->id]);
 
-		$user = factory(User::class)->create();
-		$user->groups()->sync([$group->id]);
-		$user->refresh();
+        $user = User::factory()->create();
+        $user->groups()->sync([$group->id]);
+        $user->refresh();
 
-		$this->actingAs($user);
+        $this->actingAs($user);
 
-		$request = Request::create('/admin', 'GET');
+        $request = Request::create('/admin', 'GET');
 
-		$middleware = new AdminMiddleware;
+        $middleware = new AdminMiddleware;
 
-		$response = $middleware->handle($request, function () {
-		});
+        $response = $middleware->handle($request, function () {
+        });
 
-		$this->assertEquals($response, null);
-	}
+        $this->assertEquals($response, null);
+    }
 
-	/** @test */
-	public function admins_are_not_redirected()
-	{
-		$group = factory(UserGroup::class)
-			->create();
+    /** @test */
+    public function admins_are_not_redirected()
+    {
+        $group = UserGroup::factory()->create();
 
-		config(['litlife.admin_group_id' => $group->id]);
+        config(['litlife.admin_group_id' => $group->id]);
 
-		$user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($user);
+        $this->actingAs($user);
 
-		$request = Request::create('/admin', 'GET');
+        $request = Request::create('/admin', 'GET');
 
-		$middleware = new AdminMiddleware;
+        $middleware = new AdminMiddleware;
 
-		$this->expectException(HttpException::class);
+        $this->expectException(HttpException::class);
 
-		$response = $middleware->handle($request, function () {
-		});
-	}
+        $response = $middleware->handle($request, function () {
+        });
+    }
 }

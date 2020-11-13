@@ -7,16 +7,15 @@ use Tests\TestCase;
 
 class UserCollectionCreateTest extends TestCase
 {
-	public function testUserCreatedCollectionsHttp()
-	{
-		$collection = factory(Collection::class)
-			->create(['title' => uniqid()]);
+    public function testUserCreatedCollectionsHttp()
+    {
+        $collection = Collection::factory()->create(['title' => uniqid()]);
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$this->actingAs($user)
-			->get(route('users.collections.created', ['user' => $user]))
-			->assertOk()
-			->assertSeeText($collection->title);
-	}
+        $this->actingAs($user)
+            ->get(route('users.collections.created', ['user' => $user]))
+            ->assertOk()
+            ->assertSeeText($collection->title);
+    }
 }

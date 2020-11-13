@@ -25,10 +25,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|Like newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Like newQuery()
  * @method static Builder|Like onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|Like query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreateUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreator(\App\User $user)
@@ -44,35 +44,36 @@ use Illuminate\Support\Carbon;
  */
 class Like extends Model
 {
-	use SoftDeletes;
-	use UserCreate;
+    use SoftDeletes;
+    use UserCreate;
 
-	protected $fillable = [
-		'user_id'
-	];
+    protected $fillable = [
+        'user_id'
+    ];
 
-	protected $visible = [
-		'id',
-		'likeable_type',
-		'likeable_id',
-		'create_user_id',
-		'created_at',
-		'deleted_at'
-	];
+    protected $visible = [
+        'id',
+        'likeable_type',
+        'likeable_id',
+        'create_user_id',
+        'created_at',
+        'deleted_at'
+    ];
 
-	/**
-	 * Get all of the owning commentable models.
-	 */
-	public function likeable()
-	{
-		return $this->morphTo()->any();
-	}
+    /**
+     * Get all of the owning commentable models.
+     */
+    public function likeable()
+    {
+        return $this->morphTo()->any();
+    }
 
-	public function getLikeableTypeAttribute($value)
-	{
-		if (is_numeric($value))
-			return intval($value);
-		else
-			return $value;
-	}
+    public function getLikeableTypeAttribute($value)
+    {
+        if (is_numeric($value)) {
+            return intval($value);
+        } else {
+            return $value;
+        }
+    }
 }

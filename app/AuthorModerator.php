@@ -14,51 +14,51 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\User|null $user
  * @method static Builder|AuthorModerator newModelQuery()
  * @method static Builder|AuthorModerator newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|AuthorModerator query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|AuthorModerator whereCreator(\App\User $user)
  * @mixin Eloquent
  */
 class AuthorModerator extends Model
 {
-	use UserCreate;
+    use UserCreate;
 
-	public $typeArray = [
-		'3' => 'editor',
-		'4' => 'author'
-	];
+    public $typeArray = [
+        '3' => 'editor',
+        '4' => 'author'
+    ];
 
-	public static function boot()
-	{
-		static::Creating(function ($model) {
-			$model->create_user()->associate(auth()->user());
-		});
+    public static function boot()
+    {
+        static::Creating(function ($model) {
+            $model->create_user()->associate(auth()->user());
+        });
 
-		parent::boot();
-	}
+        parent::boot();
+    }
 
-	/*
-		public function setTypeAttribute($value)
-		{
-			foreach ($this->typeArray as $code => $val) {
-				if ($value == $val)
-					$this->attributes['type'] = $code;
-			}
-		}
+    /*
+        public function setTypeAttribute($value)
+        {
+            foreach ($this->typeArray as $code => $val) {
+                if ($value == $val)
+                    $this->attributes['type'] = $code;
+            }
+        }
 
-		public function getTypeAttribute($value)
-		{
-			foreach ($this->typeArray as $code => $val) {
-				if ($code == $value)
-					return $val;
-			}
-		}
-		*/
+        public function getTypeAttribute($value)
+        {
+            foreach ($this->typeArray as $code => $val) {
+                if ($code == $value)
+                    return $val;
+            }
+        }
+        */
 
-	public function user()
-	{
-		return $this->hasOne('App\User', 'id', 'user_id');
-	}
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
 }

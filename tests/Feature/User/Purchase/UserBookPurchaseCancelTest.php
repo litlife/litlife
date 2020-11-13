@@ -15,84 +15,84 @@ use Tests\TestCase;
 
 class UserBookPurchaseCancelTest extends TestCase
 {
-	public function testCancelSuccessful()
-	{
-		$buyer_referer = factory(User::class)
-			->states('with_100_balance')
-			->create();
+    public function testCancelSuccessful()
+    {
+        $buyer_referer = User::factory()
+            ->withMoneyOnBalance(100)
+            ->create();
 
-		$seller_referer = factory(User::class)
-			->states('with_200_balance')
-			->create();
+        $seller_referer = User::factory()
+            ->withMoneyOnBalance(200)
+            ->create();
 
-		$buyer = factory(User::class)
-			->states('with_300_balance')
-			->create();
-		$buyer->setReferredByUserId($buyer_referer->id);
+        $buyer = User::factory()
+            ->withMoneyOnBalance(300)
+            ->create();
 
-		$author = factory(Author::class)->states('with_author_manager_can_sell')->create();
+        $buyer->setReferredByUserId($buyer_referer->id);
 
-		$manager = $author->managers()->first();
+        $author = Author::factory()->with_author_manager_can_sell()->create();
 
-		$seller = factory(User::class)
-			->states('with_400_balance')
-			->create();
-		$seller->setReferredByUserId($seller_referer->id);
-		$manager->user_id = $seller->id;
-		$manager->save();
+        $manager = $author->managers()->first();
 
-		$book = factory(Book::class)
-			->states('on_sale')
-			->create();
-		$book->price = 65;
-		$book->save();
+        $seller = User::factory()
+            ->withMoneyOnBalance(400)
+            ->create();
 
-		$author->written_books()->sync([$book->id]);
+        $seller->setReferredByUserId($seller_referer->id);
+        $manager->user_id = $seller->id;
+        $manager->save();
 
-		$book->refresh();
+        $book = Book::factory()->on_sale()->create();
+        $book->price = 65;
+        $book->save();
 
-		BookPurchaseJob::dispatch($book, $buyer, $seller);
+        $author->written_books()->sync([$book->id]);
 
-		Notification::fake();
+        $book->refresh();
 
-		$purchase = $buyer->purchases()->first();
-		$purchase->refresh();
-		$buyer->refresh();
-		$seller->refresh();
-		$buyer_referer->refresh();
-		$seller_referer->refresh();
+        BookPurchaseJob::dispatch($book, $buyer, $seller);
 
-		$this->assertEquals(1, $buyer->data->books_purchased_count);
-		$this->assertEquals(65, $book->price);
-		$this->assertEquals(235.00, $buyer->balance(true));
-		$this->assertEquals(445.50, $seller->balance(true));
-		$this->assertEquals(106.50, $buyer_referer->balance(true));
-		$this->assertEquals(206.50, $seller_referer->balance(true));
+        Notification::fake();
 
-		BookPurchaseCancelJob::dispatch($purchase);
+        $purchase = $buyer->purchases()->first();
+        $purchase->refresh();
+        $buyer->refresh();
+        $seller->refresh();
+        $buyer_referer->refresh();
+        $seller_referer->refresh();
 
-		$purchase->refresh();
+        $this->assertEquals(1, $buyer->data->books_purchased_count);
+        $this->assertEquals(65, $book->price);
+        $this->assertEquals(235.00, $buyer->balance(true));
+        $this->assertEquals(445.50, $seller->balance(true));
+        $this->assertEquals(106.50, $buyer_referer->balance(true));
+        $this->assertEquals(206.50, $seller_referer->balance(true));
 
-		$this->assertTrue($purchase->isCanceled());
+        BookPurchaseCancelJob::dispatch($purchase);
 
-		$this->assertTrue($purchase->buyer_transaction->isStatusCanceled());
-		$this->assertTrue($purchase->seller_transaction->isStatusCanceled());
-		$this->assertTrue($purchase->commission_transaction->isStatusCanceled());
-		$this->assertTrue($purchase->referer_buyer_transaction->isStatusCanceled());
-		$this->assertTrue($purchase->referer_seller_transaction->isStatusCanceled());
+        $purchase->refresh();
 
-		$buyer->refresh();
-		$seller->refresh();
-		$buyer_referer->refresh();
-		$seller_referer->refresh();
+        $this->assertTrue($purchase->isCanceled());
 
-		$this->assertEquals(300, $buyer->balance());
-		$this->assertEquals(400, $seller->balance());
-		$this->assertEquals(100, $buyer_referer->balance());
-		$this->assertEquals(200, $seller_referer->balance());
-		$this->assertEquals(0, $buyer->data->books_purchased_count);
+        $this->assertTrue($purchase->buyer_transaction->isStatusCanceled());
+        $this->assertTrue($purchase->seller_transaction->isStatusCanceled());
+        $this->assertTrue($purchase->commission_transaction->isStatusCanceled());
+        $this->assertTrue($purchase->referer_buyer_transaction->isStatusCanceled());
+        $this->assertTrue($purchase->referer_seller_transaction->isStatusCanceled());
 
-		Notification::assertSentTo($buyer, BookPurchaseCanceledNotification::class);
-		Notification::assertSentTo($seller, BookSaleCanceledNotification::class);
-	}
+        $buyer->refresh();
+        $seller->refresh();
+        $buyer_referer->refresh();
+        $seller_referer->refresh();
+
+        $this->assertEquals(300, $buyer->balance());
+        $this->assertEquals(400, $seller->balance());
+        $this->assertEquals(100, $buyer_referer->balance());
+        $this->assertEquals(200, $seller_referer->balance());
+        $this->assertEquals(0, $buyer->data->books_purchased_count);
+
+        Notification::assertSentTo($buyer, BookPurchaseCanceledNotification::class);
+        Notification::assertSentTo($seller, BookSaleCanceledNotification::class);
+    }
 }

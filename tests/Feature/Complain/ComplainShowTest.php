@@ -9,52 +9,44 @@ use Tests\TestCase;
 
 class ComplainShowTest extends TestCase
 {
-	public function testShowIsOkIfOnReview()
-	{
-		$user = factory(User::class)->create();
+    public function testShowIsOkIfOnReview()
+    {
+        $user = User::factory()->create();
 
-		$complain = factory(Complain::class)
-			->states('comment', 'sent_for_review')
-			->create();
+        $complain = Complain::factory()->comment()->sent_for_review()->create();
 
-		$user = $complain->create_user;
-		$user->group->complain = true;
-		$user->push();
+        $user = $complain->create_user;
+        $user->group->complain = true;
+        $user->push();
 
-		$this->actingAs($user)
-			->get(route('complaints.show', $complain->id))
-			->assertOk()
-			->assertSeeText(__('complain.complaint_is_pending'));
-	}
+        $this->actingAs($user)
+            ->get(route('complaints.show', $complain->id))
+            ->assertOk()
+            ->assertSeeText(__('complain.complaint_is_pending'));
+    }
 
-	public function testComplainShowStringAsID()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testComplainShowStringAsID()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)
-			->states('wall_post')
-			->create();
+        $complain = Complain::factory()->wall_post()->create();
 
-		$this->actingAs($admin)
-			->get(route('complaints.show', ['complain' => Str::random(5)]))
-			->assertNotFound();
-	}
+        $this->actingAs($admin)
+            ->get(route('complaints.show', ['complain' => Str::random(5)]))
+            ->assertNotFound();
+    }
 
-	public function testSeeReviewed()
-	{
-		$complain = factory(Complain::class)
-			->states('comment', 'accepted')
-			->create();
+    public function testSeeReviewed()
+    {
+        $complain = Complain::factory()->comment()->accepted()->create();
 
-		$user = $complain->create_user;
-		$user->group->complain = true;
-		$user->push();
+        $user = $complain->create_user;
+        $user->group->complain = true;
+        $user->push();
 
-		$this->actingAs($user)
-			->get(route('complaints.show', ['complain' => $complain]))
-			->assertOk()
-			->assertSeeText(__('Сomplaint has been reviewed'));
-	}
+        $this->actingAs($user)
+            ->get(route('complaints.show', ['complain' => $complain]))
+            ->assertOk()
+            ->assertSeeText(__('Сomplaint has been reviewed'));
+    }
 }

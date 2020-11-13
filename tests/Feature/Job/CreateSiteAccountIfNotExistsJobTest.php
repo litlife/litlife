@@ -8,19 +8,19 @@ use Tests\TestCase;
 
 class CreateSiteAccountIfNotExistsJobTest extends TestCase
 {
-	public function testCreateSiteAccount()
-	{
-		$user = User::find(config('app.user_id'));
-		$user->forceDelete();
+    public function testCreateSiteAccount()
+    {
+        $user = User::find(config('app.user_id'));
+        $user->forceDelete();
 
-		dispatch(new CreateSiteAccountIfNotExists());
+        dispatch(new CreateSiteAccountIfNotExists());
 
-		$user = User::find(config('app.user_id'));
+        $user = User::find(config('app.user_id'));
 
-		$this->assertNotNull($user);
+        $this->assertNotNull($user);
 
-		foreach ($user->email_notification_setting->getFillableAll() as $name => $value) {
-			$this->assertFalse($value);
-		}
-	}
+        foreach ($user->email_notification_setting->getFillableAll() as $name => $value) {
+            $this->assertFalse($value);
+        }
+    }
 }

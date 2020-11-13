@@ -6,42 +6,42 @@ use PHPUnit\Framework\TestCase;
 
 class TmpFileTest extends TestCase
 {
-	public function testFilePath()
-	{
-		$content = uniqid();
+    public function testFilePath()
+    {
+        $content = uniqid();
 
-		$file = tmpfilePath($content);
+        $file = tmpfilePath($content);
 
-		$this->assertTrue(file_exists($file));
-		$this->assertEquals($content, file_get_contents($file));
-	}
+        $this->assertTrue(file_exists($file));
+        $this->assertEquals($content, file_get_contents($file));
+    }
 
-	public function testTmpFileRename()
-	{
-		$tmp = tmpfile();
+    public function testTmpFileRename()
+    {
+        $tmp = tmpfile();
 
-		$name = stream_get_meta_data($tmp)['uri'];
+        $name = stream_get_meta_data($tmp)['uri'];
 
-		$newName = $name . '.tmp';
+        $newName = $name.'.tmp';
 
-		rename($name, $newName);
+        rename($name, $newName);
 
-		$this->assertFileExists($newName);
+        $this->assertFileExists($newName);
 
-		fclose($tmp);
-		unset($tmp);
+        fclose($tmp);
+        unset($tmp);
 
-		$this->assertFileExists($newName);
-	}
+        $this->assertFileExists($newName);
+    }
 
-	public function testTempName()
-	{
-		$name = tempnam(sys_get_temp_dir(), "FOO");
+    public function testTempName()
+    {
+        $name = tempnam(sys_get_temp_dir(), "FOO");
 
-		$newName = $name . '.tmp';
+        $newName = $name.'.tmp';
 
-		rename($name, $newName);
+        rename($name, $newName);
 
-		$this->assertFileExists($newName);
-	}
+        $this->assertFileExists($newName);
+    }
 }

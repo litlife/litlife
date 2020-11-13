@@ -8,40 +8,36 @@ use Tests\TestCase;
 
 class TopicArchivePolicyTest extends TestCase
 {
-	public function testCanArchiveIfHasPermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->manipulate_topic = true;
-		$user->push();
+    public function testCanArchiveIfHasPermission()
+    {
+        $user = User::factory()->create();
+        $user->group->manipulate_topic = true;
+        $user->push();
 
-		$topic = factory(Topic::class)
-			->create();
+        $topic = Topic::factory()->create();
 
-		$this->assertTrue($user->can('archive', $topic));
-	}
+        $this->assertTrue($user->can('archive', $topic));
+    }
 
-	public function testCantArchiveIfNoPermission()
-	{
-		$user = factory(User::class)->create();
-		$user->group->manipulate_topic = false;
-		$user->push();
+    public function testCantArchiveIfNoPermission()
+    {
+        $user = User::factory()->create();
+        $user->group->manipulate_topic = false;
+        $user->push();
 
-		$topic = factory(Topic::class)
-			->create();
+        $topic = Topic::factory()->create();
 
-		$this->assertFalse($user->can('archive', $topic));
-	}
+        $this->assertFalse($user->can('archive', $topic));
+    }
 
-	public function testCantArchiveIfAlreadyArchived()
-	{
-		$user = factory(User::class)->create();
-		$user->group->manipulate_topic = true;
-		$user->push();
+    public function testCantArchiveIfAlreadyArchived()
+    {
+        $user = User::factory()->create();
+        $user->group->manipulate_topic = true;
+        $user->push();
 
-		$topic = factory(Topic::class)
-			->states('archived')
-			->create();
+        $topic = Topic::factory()->archived()->create();
 
-		$this->assertFalse($user->can('archive', $topic));
-	}
+        $this->assertFalse($user->can('archive', $topic));
+    }
 }

@@ -11,17 +11,16 @@ use Tests\TestCase;
 
 class NumberOfUnansweredSupportQuestionsHasChangedTest extends TestCase
 {
-	public function test()
-	{
-		$user = factory(User::class)
-			->create();
+    public function test()
+    {
+        $user = User::factory()->create();
 
-		$this->assertNotNull($user->getNumberInProgressQuestions());
+        $this->assertNotNull($user->getNumberInProgressQuestions());
 
-		$this->assertNotNull(Cache::tags([CacheTags::NumberInProcessSupportQuestions])->get($user->id));
+        $this->assertNotNull(Cache::tags([CacheTags::NumberInProcessSupportQuestions])->get($user->id));
 
-		UpdateUserNumberInProgressQuestions::dispatch($user);
+        UpdateUserNumberInProgressQuestions::dispatch($user);
 
-		$this->assertNull(Cache::tags([CacheTags::NumberInProcessSupportQuestions])->get($user->id));
-	}
+        $this->assertNull(Cache::tags([CacheTags::NumberInProcessSupportQuestions])->get($user->id));
+    }
 }

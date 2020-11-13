@@ -8,15 +8,15 @@ use Tests\TestCase;
 
 class PostMovePolicyTest extends TestCase
 {
-	public function testMovePolicy()
-	{
-		$user = factory(User::class)->create();
+    public function testMovePolicy()
+    {
+        $user = User::factory()->create();
 
-		$this->assertFalse($user->can('move', Post::class));
+        $this->assertFalse($user->can('move', Post::class));
 
-		$user->group->forum_move_post = true;
-		$user->push();
+        $user->group->forum_move_post = true;
+        $user->push();
 
-		$this->assertTrue($user->can('move', Post::class));
-	}
+        $this->assertTrue($user->can('move', Post::class));
+    }
 }

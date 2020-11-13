@@ -1,37 +1,58 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Blog;
-use Faker\Generator as Faker;
+use App\User;
+use Database\Factories\Traits\CheckedItems;
 use Illuminate\Support\Str;
 
-$factory->define(App\Blog::class, function (Faker $faker) {
+class BlogFactory extends Factory
+{
+    use CheckedItems;
 
-	$text = Str::random(10) . ' ' . $faker->realText(200);
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Blog::class;
 
-	return [
-		'blog_user_id' => function () {
-			return factory(App\User::class)->states('with_user_permissions')->create()->id;
-		},
-		'create_user_id' => function () {
-			return factory(App\User::class)->states('with_user_permissions')->create()->id;
-		},
-		'text' => $text,
-		'bb_text' => $text,
-		'tree' => null,
-		'display_on_home_page' => true
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $text = Str::random(10).' '.$this->faker->realText(200);
 
-$factory->afterMakingState(App\Blog::class, 'fixed', function (Blog $blog, $faker) {
-	$blog->blog_user_id = $blog->create_user_id;
-});
+        return [
+            'blog_user_id' => User::factory()->with_user_permissions(),
+            'create_user_id' => User::factory()->with_user_permissions(),
+            'text' => $text,
+            'bb_text' => $text,
+            'tree' => null,
+            'display_on_home_page' => true
+        ];
+    }
 
-$factory->afterCreatingState(App\Blog::class, 'fixed', function (Blog $blog, $faker) {
-	$blog->fix();
-});
+    public function fixed()
+    {
+        return $this->afterMaking(function (Blog $blog) {
+            $blog->blog_user_id = $blog->create_user_id;
+        })->afterCreating(function (Blog $blog) {
+            $blog->fix();
+        });
+    }
 
-$factory->afterCreatingState(App\Blog::class, 'sent_for_review', function (Blog $blog, $faker) {
-	$blog->statusSentForReview();
-	$blog->save();
-});
+    public function sent_for_review()
+    {
+        return $this->afterMaking(function ($item) {
 
+        })->afterCreating(function ($item) {
+            $item->statusSentForReview();
+            $item->save();
+        });
+    }
+}

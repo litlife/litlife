@@ -9,90 +9,83 @@ use Tests\TestCase;
 
 class SupportQuestionSolvePolicyTest extends TestCase
 {
-	public function testCanIfUserHasPermissionAndStartedReview()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+    public function testCanIfUserHasPermissionAndStartedReview()
+    {
+        $supportQuestion = SupportQuestion::factory()
+            ->review_starts()
+            ->create([
+                'status_changed_user_id' => User::factory()->with_user_group()->admin()
+            ]);
 
-		$user = $supportQuestion->status_changed_user;
-		$user->group->reply_to_support_service = true;
-		$user->push();
+        $user = $supportQuestion->status_changed_user;
+        $user->group->reply_to_support_service = true;
+        $user->push();
 
-		$this->assertTrue($user->can('solve', $supportQuestion));
-	}
+        $this->assertTrue($user->can('solve', $supportQuestion));
+    }
 
-	public function testCantIfDoesntHavePermission()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->create();
+    public function testCantIfDoesntHavePermission()
+    {
+        $supportQuestion = SupportQuestion::factory()->create();
 
-		$user = factory(User::class)->create();
-		$user->group->reply_to_support_service = false;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->reply_to_support_service = false;
+        $user->push();
 
-		$this->assertFalse($user->can('solve', $supportQuestion));
-	}
+        $this->assertFalse($user->can('solve', $supportQuestion));
+    }
 
-	public function testCantSolveIfAccepted()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('accepted')
-			->create();
+    public function testCantSolveIfAccepted()
+    {
+        $supportQuestion = SupportQuestion::factory()->accepted()->create();
 
-		$user = factory(User::class)->create();
-		$user->group->reply_to_support_service = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->reply_to_support_service = true;
+        $user->push();
 
-		$this->assertFalse($user->can('solve', $supportQuestion));
-	}
+        $this->assertFalse($user->can('solve', $supportQuestion));
+    }
 
-	public function testCantIfNotStartedReview()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+    public function testCantIfNotStartedReview()
+    {
+        $supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
-		$user = factory(User::class)->create();
-		$user->group->reply_to_support_service = true;
-		$user->push();
+        $user = User::factory()->create();
+        $user->group->reply_to_support_service = true;
+        $user->push();
 
-		$this->assertFalse($user->can('solve', $supportQuestion));
-	}
+        $this->assertFalse($user->can('solve', $supportQuestion));
+    }
 
-	public function testCanIfUserThatCreatedRequestAndLastMessageIsNotCreatorOfRequest()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+    public function testCanIfUserThatCreatedRequestAndLastMessageIsNotCreatorOfRequest()
+    {
+        $supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
-		$user = $supportQuestion->create_user;
+        $user = $supportQuestion->create_user;
 
-		$message = factory(SupportQuestionMessage::class)
-			->make();
+        $message = SupportQuestionMessage::factory()
+            ->make();
 
-		$supportQuestion->messages()->save($message);
-		$supportQuestion->latest_message_id = $message->id;
-		$supportQuestion->save();
+        $supportQuestion->messages()->save($message);
+        $supportQuestion->latest_message_id = $message->id;
+        $supportQuestion->save();
 
-		$this->assertTrue($user->can('solve', $supportQuestion));
-	}
+        $this->assertTrue($user->can('solve', $supportQuestion));
+    }
 
-	public function testCantIfUserThatCreatedRequestAndLastMessageIsCreatorOfRequest()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('sent_for_review')
-			->create();
+    public function testCantIfUserThatCreatedRequestAndLastMessageIsCreatorOfRequest()
+    {
+        $supportQuestion = SupportQuestion::factory()->sent_for_review()->create();
 
-		$user = $supportQuestion->create_user;
+        $user = $supportQuestion->create_user;
 
-		$message = factory(SupportQuestionMessage::class)
-			->make(['create_user_id' => $user->id]);
+        $message = SupportQuestionMessage::factory()
+            ->make(['create_user_id' => $user->id]);
 
-		$supportQuestion->messages()->save($message);
-		$supportQuestion->latest_message_id = $message->id;
-		$supportQuestion->save();
+        $supportQuestion->messages()->save($message);
+        $supportQuestion->latest_message_id = $message->id;
+        $supportQuestion->save();
 
-		$this->assertFalse($user->can('solve', $supportQuestion));
-	}
+        $this->assertFalse($user->can('solve', $supportQuestion));
+    }
 }

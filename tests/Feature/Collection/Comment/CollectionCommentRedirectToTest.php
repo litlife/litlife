@@ -7,20 +7,18 @@ use Tests\TestCase;
 
 class CollectionCommentRedirectToTest extends TestCase
 {
-	public function testRedirectToComment()
-	{
-		$comment = factory(Comment::class)
-			->states('collection')
-			->create();
+    public function testRedirectToComment()
+    {
+        $comment = Comment::factory()->collection()->create();
 
-		$this->assertTrue($comment->isCollectionType());
+        $this->assertTrue($comment->isCollectionType());
 
-		$response = $this->get(route('comments.go', $comment))
-			->assertRedirect(route('collections.comments', [
-				'collection' => $comment->commentable,
-				'page' => 1,
-				'comment' => $comment,
-				'#comment_' . $comment->id
-			]));
-	}
+        $response = $this->get(route('comments.go', $comment))
+            ->assertRedirect(route('collections.comments', [
+                'collection' => $comment->commentable,
+                'page' => 1,
+                'comment' => $comment,
+                '#comment_'.$comment->id
+            ]));
+    }
 }

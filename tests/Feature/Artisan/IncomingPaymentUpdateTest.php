@@ -9,60 +9,56 @@ use Tests\TestCase;
 
 class IncomingPaymentUpdateTest extends TestCase
 {
-	public function testUpdate()
-	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+    public function testUpdate()
+    {
+        $transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
-		$buyer = $transaction->user;
+        $buyer = $transaction->user;
 
-		$json = [
-			'result' => [
-				'status' => 'error',
-				'projectId' => config('unitpay.project_id'),
-				'paymentId' => $transaction->operable->payment_id,
-				'account' => $transaction->id,
-				'purse' => "481776xxxxxx1111",
-				'profit' => $transaction->sum,
-				'paymentType' => $transaction->operable->payment_type,
-				'orderSum' => $transaction->sum,
-				'orderCurrency' => "RUB",
-				'date' => now()->toDateTimeString(),
-				'payerSum' => "103.04",
-				'payerCurrency' => "RUB",
-				'availableForRefund' => '99.00',
-				'isPreauth' => 0,
-				'refunds' => [],
-			]
-		];
+        $json = [
+            'result' => [
+                'status' => 'error',
+                'projectId' => config('unitpay.project_id'),
+                'paymentId' => $transaction->operable->payment_id,
+                'account' => $transaction->id,
+                'purse' => "481776xxxxxx1111",
+                'profit' => $transaction->sum,
+                'paymentType' => $transaction->operable->payment_type,
+                'orderSum' => $transaction->sum,
+                'orderCurrency' => "RUB",
+                'date' => now()->toDateTimeString(),
+                'payerSum' => "103.04",
+                'payerCurrency' => "RUB",
+                'availableForRefund' => '99.00',
+                'isPreauth' => 0,
+                'refunds' => [],
+            ]
+        ];
 
-		UnitPay::shouldReceive('request')->once()->andReturn(new UnitPayApiResponse(json_encode($json)));
-		UnitPay::makePartial();
+        UnitPay::shouldReceive('request')->once()->andReturn(new UnitPayApiResponse(json_encode($json)));
+        UnitPay::makePartial();
 
-		$this->artisan('payments:incoming_payment_update', ['transaction_id' => $transaction->id])
-			->expectsOutput('Данные транзакции успешно обновлены')
-			->assertExitCode(0);
+        $this->artisan('payments:incoming_payment_update', ['transaction_id' => $transaction->id])
+            ->expectsOutput('Данные транзакции успешно обновлены')
+            ->assertExitCode(0);
 
-		$transaction->refresh();
+        $transaction->refresh();
 
-		$this->assertEquals($json, $transaction->operable->getParamsArray());
+        $this->assertEquals($json, $transaction->operable->getParamsArray());
 
-		$this->assertTrue($transaction->isStatusError());
-	}
+        $this->assertTrue($transaction->isStatusError());
+    }
 
-	public function testTransactionNotFound()
-	{
-		$transaction = factory(UserPaymentTransaction::class)
-			->states('incoming', 'processing', 'unitpay')
-			->create(['sum' => '50']);
+    public function testTransactionNotFound()
+    {
+        $transaction = UserPaymentTransaction::factory()->incoming()->processing()->unitpay()->create(['sum' => '50']);
 
-		$id = $transaction->id;
+        $id = $transaction->id;
 
-		$transaction->forceDelete();
+        $transaction->forceDelete();
 
-		$this->artisan('payments:incoming_payment_update', ['transaction_id' => $id])
-			->expectsOutput('Транзакция с указанным ID: ' . $id . ' не найдена')
-			->assertExitCode(0);
-	}
+        $this->artisan('payments:incoming_payment_update', ['transaction_id' => $id])
+            ->expectsOutput('Транзакция с указанным ID: '.$id.' не найдена')
+            ->assertExitCode(0);
+    }
 }

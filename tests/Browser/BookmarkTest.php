@@ -10,225 +10,227 @@ use Tests\DuskTestCase;
 
 class BookmarkTest extends DuskTestCase
 {
-	/**
-	 * A Dusk test example.
-	 *
-	 * @return void
-	 */
+    /**
+     * A Dusk test example.
+     *
+     * @return void
+     */
 
-	public function testCreate()
-	{
-		$this->browse(function ($user_browser) {
+    public function testCreate()
+    {
+        $this->browse(function ($user_browser) {
 
-			//$admin_user = factory(User::class)->create();
+            //$admin_user = User::factory()->create();
 
-			$user = factory(User::class)->create();
+            $user = User::factory()->create();
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('profile', $user))
-				->assertVisible('#bookmarkAddButton')
-				->assertMissing('#bookmarkRemoveButton')
-				->click('#bookmarkAddButton')
-				->whenAvailable('#bookmarkAddModal', function ($modal) {
-					$modal->press(__('common.add'));
-				})
-				->waitUntilMissing('#bookmarkAddModal')
-				->visit(route('profile', $user))
-				->assertVisible('#bookmarkRemoveButton')
-				->assertMissing('#bookmarkAddButton');
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('profile', $user))
+                ->assertVisible('#bookmarkAddButton')
+                ->assertMissing('#bookmarkRemoveButton')
+                ->click('#bookmarkAddButton')
+                ->whenAvailable('#bookmarkAddModal', function ($modal) {
+                    $modal->press(__('common.add'));
+                })
+                ->waitUntilMissing('#bookmarkAddModal')
+                ->visit(route('profile', $user))
+                ->assertVisible('#bookmarkRemoveButton')
+                ->assertMissing('#bookmarkAddButton');
 
-			$bookmarks = $user->bookmarks()->get();
+            $bookmarks = $user->bookmarks()->get();
 
-			$this->assertEquals(1, $bookmarks->count());
-		});
-	}
+            $this->assertEquals(1, $bookmarks->count());
+        });
+    }
 
-	public function testCreateInsideFolder()
-	{
-		$this->browse(function ($user_browser) {
+    public function testCreateInsideFolder()
+    {
+        $this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+            $user = User::factory()->create();
 
-			event(new Registered($user));
+            event(new Registered($user));
 
-			$bookmark_folder = factory(BookmarkFolder::class)
-				->create(['create_user_id' => $user->id]);
+            $bookmark_folder = BookmarkFolder::factory()->create(['create_user_id' => $user->id]);
 
-			$title = $this->faker->realText(100);
+            $title = $this->faker->realText(100);
 
-			$this->assertEquals(2, $user->bookmark_folders()->count());
+            $this->assertEquals(2, $user->bookmark_folders()->count());
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('profile', $user))
-				->waitFor('#bookmarkAddButton', 20)
-				->assertVisible('#bookmarkAddButton')
-				->assertMissing('#bookmarkRemoveButton')
-				->click('#bookmarkAddButton')
-				->whenAvailable('#bookmarkAddModal', function ($modal) use ($bookmark_folder, $title) {
-					$modal->type('title', $title)
-						->waitFor('select[name=folder] option')
-						->select('folder', $bookmark_folder->id)
-						->press(__('common.add'));
-				})
-				->waitUntilMissing('#bookmarkAddModal')
-				->visit(route('profile', $user))
-				->waitFor('#bookmarkRemoveButton', 30)
-				->assertVisible('#bookmarkRemoveButton')
-				->assertMissing('#bookmarkAddButton');
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('profile', $user))
+                ->waitFor('#bookmarkAddButton', 20)
+                ->assertVisible('#bookmarkAddButton')
+                ->assertMissing('#bookmarkRemoveButton')
+                ->click('#bookmarkAddButton')
+                ->whenAvailable('#bookmarkAddModal', function ($modal) use ($bookmark_folder, $title) {
+                    $modal->type('title', $title)
+                        ->waitFor('select[name=folder] option')
+                        ->select('folder', $bookmark_folder->id)
+                        ->press(__('common.add'));
+                })
+                ->waitUntilMissing('#bookmarkAddModal')
+                ->visit(route('profile', $user))
+                ->waitFor('#bookmarkRemoveButton', 30)
+                ->assertVisible('#bookmarkRemoveButton')
+                ->assertMissing('#bookmarkAddButton');
 
-			$this->assertEquals(2, $user->bookmark_folders()->count());
-			$this->assertEquals(1, $user->bookmarks()->count());
-			$this->assertEquals(1, $user->bookmark_folders()->where('title', '!=', 'Несортированные')->first()->bookmark_count);
-			$this->assertEquals($title, $user->bookmark_folders()->where('title', '!=', 'Несортированные')->first()->bookmarks()->first()->title);
+            $this->assertEquals(2, $user->bookmark_folders()->count());
+            $this->assertEquals(1, $user->bookmarks()->count());
+            $this->assertEquals(1, $user->bookmark_folders()->where('title', '!=', 'Несортированные')->first()->bookmark_count);
+            $this->assertEquals($title, $user->bookmark_folders()->where('title', '!=', 'Несортированные')->first()->bookmarks()->first()->title);
 
-		});
-	}
+        });
+    }
 
-	public function testCreateBookmarkFoler()
-	{
-		$this->browse(function ($user_browser) {
+    public function testCreateBookmarkFoler()
+    {
+        $this->browse(function ($user_browser) {
 
-			//$admin_user = factory(User::class)->create();
+            //$admin_user = User::factory()->create();
 
-			$user = factory(User::class)->create();
+            $user = User::factory()->create();
 
-			$title = $this->faker->realText(100);
+            $title = $this->faker->realText(100);
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('users.bookmarks.index', $user))
-				->with('#bookmarks', function ($bookmarks) use ($title) {
-					$bookmarks->type('title', $title)
-						->press(__('bookmark_folder.create'))
-						->whenAvailable('.folders', function ($list) use ($title) {
-							$list->assertSee($title);
-						});
-				});
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('users.bookmarks.index', $user))
+                ->with('#bookmarks', function ($bookmarks) use ($title) {
+                    $bookmarks->type('title', $title)
+                        ->press(__('bookmark_folder.create'))
+                        ->whenAvailable('.folders', function ($list) use ($title) {
+                            $list->assertSee($title);
+                        });
+                });
 
-		});
-	}
+        });
+    }
 
-	public function testEdit()
-	{
-		$this->browse(function ($user_browser) {
+    public function testEdit()
+    {
+        $this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+            $user = User::factory()->create();
 
-			$bookmark_folder = factory(BookmarkFolder::class)->create([
-				'create_user_id' => $user->id
-			]);
+            $bookmark_folder = BookmarkFolder::factory()
+                ->create([
+                    'create_user_id' => $user->id
+                ]);
 
-			$bookmark_folder2 = factory(BookmarkFolder::class)->create([
-				'create_user_id' => $user->id
-			]);
+            $bookmark_folder2 = BookmarkFolder::factory()
+                ->create([
+                    'create_user_id' => $user->id
+                ]);
 
-			$bookmark = factory(Bookmark::class)->create([
-				'create_user_id' => $user->id
-			]);
+            $bookmark = Bookmark::factory()
+                ->create([
+                    'create_user_id' => $user->id
+                ]);
 
-			$this->assertEquals($user->id, $bookmark_folder->create_user_id);
-			$this->assertEquals($user->id, $bookmark_folder2->create_user_id);
-			$this->assertEquals($user->id, $bookmark->create_user_id);
+            $this->assertEquals($user->id, $bookmark_folder->create_user_id);
+            $this->assertEquals($user->id, $bookmark_folder2->create_user_id);
+            $this->assertEquals($user->id, $bookmark->create_user_id);
 
-			$title = $this->faker->realText(100);
+            $title = $this->faker->realText(100);
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('bookmarks.edit', $bookmark))
-				->with('#main', function ($main) use ($title, $bookmark_folder) {
-					$main->type('title', $title)
-						->select('folder_id', $bookmark_folder->id)
-						->press(__('common.save'))
-						->assertSee(__('common.data_saved'));
-				});
-
-
-			$this->assertEquals($title, $bookmark->fresh()->title);
-			$this->assertEquals(1, $bookmark_folder->fresh()->bookmark_count);
-			$this->assertEquals(0, $bookmark_folder2->fresh()->bookmark_count);
-
-			$title = $this->faker->realText(100);
-
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('bookmarks.edit', $bookmark))
-				->with('#main', function ($main) use ($title, $bookmark_folder2) {
-					$main->type('title', $title)
-						->select('folder_id', $bookmark_folder2->id)
-						->press(__('common.save'))
-						->assertSee(__('common.data_saved'));
-				});
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('bookmarks.edit', $bookmark))
+                ->with('#main', function ($main) use ($title, $bookmark_folder) {
+                    $main->type('title', $title)
+                        ->select('folder_id', $bookmark_folder->id)
+                        ->press(__('common.save'))
+                        ->assertSee(__('common.data_saved'));
+                });
 
 
-			$this->assertEquals($title, $bookmark->fresh()->title);
-			$this->assertEquals(0, $bookmark_folder->fresh()->bookmark_count);
-			$this->assertEquals(1, $bookmark_folder2->fresh()->bookmark_count);
+            $this->assertEquals($title, $bookmark->fresh()->title);
+            $this->assertEquals(1, $bookmark_folder->fresh()->bookmark_count);
+            $this->assertEquals(0, $bookmark_folder2->fresh()->bookmark_count);
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('bookmarks.edit', $bookmark))
-				->with('#main', function ($main) use ($title) {
-					$main->type('title', $title)
-						->select('folder_id', '')
-						->press(__('common.save'))
-						->assertSee(__('common.data_saved'));
-				});
+            $title = $this->faker->realText(100);
+
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('bookmarks.edit', $bookmark))
+                ->with('#main', function ($main) use ($title, $bookmark_folder2) {
+                    $main->type('title', $title)
+                        ->select('folder_id', $bookmark_folder2->id)
+                        ->press(__('common.save'))
+                        ->assertSee(__('common.data_saved'));
+                });
 
 
-			$this->assertEquals(0, $bookmark_folder->fresh()->bookmark_count);
-			$this->assertEquals(0, $bookmark_folder2->fresh()->bookmark_count);
+            $this->assertEquals($title, $bookmark->fresh()->title);
+            $this->assertEquals(0, $bookmark_folder->fresh()->bookmark_count);
+            $this->assertEquals(1, $bookmark_folder2->fresh()->bookmark_count);
 
-		});
-	}
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('bookmarks.edit', $bookmark))
+                ->with('#main', function ($main) use ($title) {
+                    $main->type('title', $title)
+                        ->select('folder_id', '')
+                        ->press(__('common.save'))
+                        ->assertSee(__('common.data_saved'));
+                });
 
-	public function testFolderSavePosition()
-	{
-		$this->browse(function ($user_browser) {
 
-			$user = factory(User::class)->create();
+            $this->assertEquals(0, $bookmark_folder->fresh()->bookmark_count);
+            $this->assertEquals(0, $bookmark_folder2->fresh()->bookmark_count);
 
-			event(new Registered($user));
+        });
+    }
 
-			$auto_created_bookmark_folder = $user->bookmark_folders()->first();
+    public function testFolderSavePosition()
+    {
+        $this->browse(function ($user_browser) {
 
-			$bookmark_folder = factory(BookmarkFolder::class)->create([
-				'create_user_id' => $user->id
-			]);
+            $user = User::factory()->create();
 
-			$bookmark_folder2 = factory(BookmarkFolder::class)->create([
-				'create_user_id' => $user->id
-			]);
+            event(new Registered($user));
 
-			$order = [$bookmark_folder->id, $bookmark_folder2->id, $auto_created_bookmark_folder->id];
+            $auto_created_bookmark_folder = $user->bookmark_folders()->first();
 
-			$user->setting->bookmark_folder_order = $order;
-			$user->setting->save();
+            $bookmark_folder = BookmarkFolder::factory()->create([
+                'create_user_id' => $user->id
+            ]);
 
-			$this->assertEquals($order, $user->setting->bookmark_folder_order);
+            $bookmark_folder2 = BookmarkFolder::factory()->create([
+                'create_user_id' => $user->id
+            ]);
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('users.bookmarks.index', $user))
-				->whenAvailable('.folders', function ($folders) use ($bookmark_folder2) {
-					$folders->dragUp('[data-id="' . $bookmark_folder2->id . '"] .handle', 500);
-				})
-				->waitForText(__('bookmark_folder.position_saved'));
+            $order = [$bookmark_folder->id, $bookmark_folder2->id, $auto_created_bookmark_folder->id];
 
-			$this->assertEquals([$bookmark_folder2->id, $bookmark_folder->id, $auto_created_bookmark_folder->id],
-				$user->setting->fresh()->bookmark_folder_order);
+            $user->setting->bookmark_folder_order = $order;
+            $user->setting->save();
 
-			$user_browser->resize(1000, 1000)
-				->loginAs($user)
-				->visit(route('users.bookmarks.index', $user))
-				->whenAvailable('.folders', function ($folders) use ($bookmark_folder) {
-					$folders->dragDown('[data-id="' . $bookmark_folder->id . '"] .handle', 500);
-				})
-				->waitForText(__('bookmark_folder.position_saved'));
+            $this->assertEquals($order, $user->setting->bookmark_folder_order);
 
-			$this->assertEquals([$bookmark_folder2->id, $auto_created_bookmark_folder->id, $bookmark_folder->id],
-				$user->setting->fresh()->bookmark_folder_order);
-		});
-	}
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('users.bookmarks.index', $user))
+                ->whenAvailable('.folders', function ($folders) use ($bookmark_folder2) {
+                    $folders->dragUp('[data-id="'.$bookmark_folder2->id.'"] .handle', 500);
+                })
+                ->waitForText(__('bookmark_folder.position_saved'));
+
+            $this->assertEquals([$bookmark_folder2->id, $bookmark_folder->id, $auto_created_bookmark_folder->id],
+                $user->setting->fresh()->bookmark_folder_order);
+
+            $user_browser->resize(1000, 1000)
+                ->loginAs($user)
+                ->visit(route('users.bookmarks.index', $user))
+                ->whenAvailable('.folders', function ($folders) use ($bookmark_folder) {
+                    $folders->dragDown('[data-id="'.$bookmark_folder->id.'"] .handle', 500);
+                })
+                ->waitForText(__('bookmark_folder.position_saved'));
+
+            $this->assertEquals([$bookmark_folder2->id, $auto_created_bookmark_folder->id, $bookmark_folder->id],
+                $user->setting->fresh()->bookmark_folder_order);
+        });
+    }
 }

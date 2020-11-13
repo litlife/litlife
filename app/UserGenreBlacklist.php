@@ -25,5 +25,5 @@ use Illuminate\Support\Carbon;
  */
 class UserGenreBlacklist extends Pivot
 {
-	//
+    //
 }

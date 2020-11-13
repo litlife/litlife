@@ -1,13 +1,30 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\GenreGroup::class, function (Faker $faker) {
+use App\GenreGroup;
 
-	return [
-		'name' => uniqid(),
-		'book_count' => 0,
-		'created_at' => now(),
-		'updated_at' => now()
-	];
-});
+class GenreGroupFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = GenreGroup::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => uniqid(),
+            'book_count' => 0,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+    }
+}

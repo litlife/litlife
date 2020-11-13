@@ -8,25 +8,25 @@ use Tests\TestCase;
 
 class CollectionRestorePolicyTest extends TestCase
 {
-	public function testRestorePolicyIfUserCreator()
-	{
-		$collection = factory(Collection::class)->create()->fresh();
+    public function testRestorePolicyIfUserCreator()
+    {
+        $collection = Collection::factory()->create()->fresh();
 
-		$user = $collection->create_user;
+        $user = $collection->create_user;
 
-		$collection->delete();
+        $collection->delete();
 
-		$this->assertTrue($user->can('restore', $collection));
-	}
+        $this->assertTrue($user->can('restore', $collection));
+    }
 
-	public function testRestorePolicyIfUserNotCreator()
-	{
-		$collection = factory(Collection::class)->create()->fresh();
+    public function testRestorePolicyIfUserNotCreator()
+    {
+        $collection = Collection::factory()->create()->fresh();
 
-		$user = factory(User::class)->create()->fresh();
+        $user = User::factory()->create()->fresh();
 
-		$collection->delete();
+        $collection->delete();
 
-		$this->assertFalse($user->can('restore', $collection));
-	}
+        $this->assertFalse($user->can('restore', $collection));
+    }
 }

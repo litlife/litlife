@@ -33,11 +33,11 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction newQuery()
  * @method static Builder|UserPaymentTransaction onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction processed()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction wait()
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction whereBalanceBefore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserPaymentTransaction whereCreatedAt($value)
@@ -59,142 +59,143 @@ use Illuminate\Support\Carbon;
  */
 class UserPaymentTransaction extends Model
 {
-	use SoftDeletes;
-	use PaymentsStatuses;
+    use SoftDeletes;
+    use PaymentsStatuses;
 
-	public $casts = [
-		'params' => 'object'
-	];
+    public $casts = [
+        'params' => 'object'
+    ];
 
-	public $dates = [
-		'status_changed_at'
-	];
+    public $dates = [
+        'status_changed_at'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'user_id', 'id');
-	}
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
 
-	public function operable()
-	{
-		return $this->morphTo();
-	}
+    public function operable()
+    {
+        return $this->morphTo();
+    }
 
-	public function getTypeAttribute($value)
-	{
-		return TransactionType::getKey(intval($value));
-	}
+    public function getTypeAttribute($value)
+    {
+        return TransactionType::getKey(intval($value));
+    }
 
-	public function setTypeAttribute($value)
-	{
-		if (!is_integer($value))
-			$value = TransactionType::getValue(mb_ucfirst($value));
+    public function setTypeAttribute($value)
+    {
+        if (!is_integer($value)) {
+            $value = TransactionType::getValue(mb_ucfirst($value));
+        }
 
-		$this->attributes['type'] = $value;
-	}
+        $this->attributes['type'] = $value;
+    }
 
-	public function isSell()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::sell);
-	}
+    public function isSell()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::sell);
+    }
 
-	public function isBuy()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::buy);
-	}
+    public function isBuy()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::buy);
+    }
 
-	public function isWithdrawal()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::withdrawal);
-	}
+    public function isWithdrawal()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::withdrawal);
+    }
 
-	public function isDeposit()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::deposit);
-	}
+    public function isDeposit()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::deposit);
+    }
 
-	public function isComission()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::comission);
-	}
+    public function isComission()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::comission);
+    }
 
-	public function isReceipt()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::receipt);
-	}
+    public function isReceipt()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::receipt);
+    }
 
-	public function isTransfer()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::transfer);
-	}
+    public function isTransfer()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::transfer);
+    }
 
-	public function isComissionRefererBuyer()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::comission_referer_buyer);
-	}
+    public function isComissionRefererBuyer()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::comission_referer_buyer);
+    }
 
-	public function isComissionRefererSeller()
-	{
-		return $this->type == TransactionType::getKey(TransactionType::comission_referer_seller);
-	}
+    public function isComissionRefererSeller()
+    {
+        return $this->type == TransactionType::getKey(TransactionType::comission_referer_seller);
+    }
 
-	public function typeDeposit()
-	{
-		$this->type = TransactionType::deposit;
-	}
+    public function typeDeposit()
+    {
+        $this->type = TransactionType::deposit;
+    }
 
-	public function typeWithdrawal()
-	{
-		$this->type = TransactionType::withdrawal;
-	}
+    public function typeWithdrawal()
+    {
+        $this->type = TransactionType::withdrawal;
+    }
 
-	public function typeBuy()
-	{
-		$this->type = TransactionType::buy;
-	}
+    public function typeBuy()
+    {
+        $this->type = TransactionType::buy;
+    }
 
-	public function typeSell()
-	{
-		$this->type = TransactionType::sell;
-	}
+    public function typeSell()
+    {
+        $this->type = TransactionType::sell;
+    }
 
-	public function typeComission()
-	{
-		$this->type = TransactionType::comission;
-	}
+    public function typeComission()
+    {
+        $this->type = TransactionType::comission;
+    }
 
-	public function typeComissionRefererBuyer()
-	{
-		$this->type = TransactionType::comission_referer_buyer;
-	}
+    public function typeComissionRefererBuyer()
+    {
+        $this->type = TransactionType::comission_referer_buyer;
+    }
 
-	public function typeComissionRefererSeller()
-	{
-		$this->type = TransactionType::comission_referer_seller;
-	}
+    public function typeComissionRefererSeller()
+    {
+        $this->type = TransactionType::comission_referer_seller;
+    }
 
-	public function typeReceipt()
-	{
-		$this->type = TransactionType::receipt;
-	}
+    public function typeReceipt()
+    {
+        $this->type = TransactionType::receipt;
+    }
 
-	public function typeTransfer()
-	{
-		$this->type = TransactionType::transfer;
-	}
+    public function typeTransfer()
+    {
+        $this->type = TransactionType::transfer;
+    }
 
-	public function scopeDeposit($query)
-	{
-		return $query->where('type', TransactionType::deposit);
-	}
+    public function scopeDeposit($query)
+    {
+        return $query->where('type', TransactionType::deposit);
+    }
 
-	public function scopeWithdrawal($query)
-	{
-		return $query->where('type', TransactionType::withdrawal);
-	}
+    public function scopeWithdrawal($query)
+    {
+        return $query->where('type', TransactionType::withdrawal);
+    }
 
-	public function getBalanceAfterAttribute()
-	{
-		return $this->attributes['balance_before'] + $this->attributes['sum'];
-	}
+    public function getBalanceAfterAttribute()
+    {
+        return $this->attributes['balance_before'] + $this->attributes['sum'];
+    }
 }

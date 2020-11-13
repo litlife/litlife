@@ -14,337 +14,316 @@ use Tests\TestCase;
 
 class CommentTest extends TestCase
 {
-	public function testFulltextSearch()
-	{
-		$author = Comment::FulltextSearch('Время&—&детство!')->get();
-
-		$this->assertTrue(true);
-	}
-
-	public function testCommentsOnCheck()
-	{
-		$user = factory(User::class)->create();
-		$user->group->check_post_comments = true;
-		$user->push();
-
-		$comment = factory(Comment::class)->create();
-		$comment->statusSentForReview();
-		$comment->save();
-		$comment->refresh();
-
-		$this->assertTrue($comment->isSentForReview());
-
-		$this->actingAs($user)
-			->get(route('comments.on_check'))
-			->assertOk()
-			->assertSeeText($comment->text);
-	}
-
-	public function testUserReadedBooksHttp()
-	{
-		$user = factory(User::class)
-			->create();
-
-		$comment = factory(Comment::class)
-			->create();
-
-		$this->actingAs($user)
-			->get(route('users.books.readed.comments', $user))
-			->assertDontSee($comment->text);
-
-		$book_status = factory(BookStatus::class)
-			->create([
-				'book_id' => $comment->commentable->id,
-				'user_id' => $user->id,
-				'status' => 'read_now'
-			]);
+    public function testFulltextSearch()
+    {
+        $author = Comment::FulltextSearch('Время&—&детство!')->get();
 
-		$this->actingAs($user)
-			->get(route('users.books.readed.comments', $user))
-			->assertDontSee($comment->text);
+        $this->assertTrue(true);
+    }
 
-		$book_status->status = 'readed';
-		$book_status->save();
+    public function testCommentsOnCheck()
+    {
+        $user = User::factory()->create();
+        $user->group->check_post_comments = true;
+        $user->push();
 
-		$this->actingAs($user)
-			->get(route('users.books.readed.comments', $user))
-			->assertSee($comment->text);
-	}
+        $comment = Comment::factory()->create();
+        $comment->statusSentForReview();
+        $comment->save();
+        $comment->refresh();
 
-	public function testViewInUserCommentList()
-	{
-		$comment = factory(Comment::class)->create();
-		$comment->statusSentForReview();
-		$comment->save();
+        $this->assertTrue($comment->isSentForReview());
 
-		UpdateUserCommentsCount::dispatch($comment->create_user);
+        $this->actingAs($user)
+            ->get(route('comments.on_check'))
+            ->assertOk()
+            ->assertSeeText($comment->text);
+    }
 
-		$this->assertEquals(1, $comment->create_user->comment_count);
+    public function testUserReadedBooksHttp()
+    {
+        $user = User::factory()->create();
 
-		$user = factory(User::class)
-			->create();
+        $comment = Comment::factory()->create();
 
-		$this->actingAs($comment->create_user)
-			->get(route('users.books.comments', ['user' => $comment->create_user->id]))
-			->assertOk()
-			->assertSeeText($comment->text);
+        $this->actingAs($user)
+            ->get(route('users.books.readed.comments', $user))
+            ->assertDontSee($comment->text);
 
-		$this->actingAs($user)
-			->get(route('users.books.comments', ['user' => $comment->create_user->id]))
-			->assertOk()
-			->assertDontSeeText($comment->text)
-			->assertSeeText(trans_choice('comment.on_check', 1));
-	}
+        $book_status = BookStatus::factory()->create([
+            'book_id' => $comment->commentable->id,
+            'user_id' => $user->id,
+            'status' => 'read_now'
+        ]);
 
-	public function testBBEmpty()
-	{
-		$comment = factory(Comment::class)
-			->create();
+        $this->actingAs($user)
+            ->get(route('users.books.readed.comments', $user))
+            ->assertDontSee($comment->text);
 
-		$this->expectException(QueryException::class);
+        $book_status->status = 'readed';
+        $book_status->save();
 
-		$comment->bb_text = '';
-		$comment->save();
-	}
+        $this->actingAs($user)
+            ->get(route('users.books.readed.comments', $user))
+            ->assertSee($comment->text);
+    }
 
-	public function testRelationUserBookVote()
-	{
-		$user = factory(User::class)->create();
+    public function testViewInUserCommentList()
+    {
+        $comment = Comment::factory()->create();
+        $comment->statusSentForReview();
+        $comment->save();
 
-		$comment = factory(Comment::class)
-			->create([
-				'commentable_type' => 'book',
-				'create_user_id' => $user->id
-			]);
+        UpdateUserCommentsCount::dispatch($comment->create_user);
 
-		$book = $comment->commentable;
+        $this->assertEquals(1, $comment->create_user->comment_count);
 
-		$this->assertInstanceOf(Book::class, $book);
+        $user = User::factory()->create();
 
-		$vote = factory(BookVote::class)
-			->create([
-				'book_id' => $book->id,
-				'create_user_id' => $user->id
-			])->fresh();
+        $this->actingAs($comment->create_user)
+            ->get(route('users.books.comments', ['user' => $comment->create_user->id]))
+            ->assertOk()
+            ->assertSeeText($comment->text);
 
-		$vote2 = factory(BookVote::class)
-			->create([
-				'book_id' => $book->id
-			])->fresh();
+        $this->actingAs($user)
+            ->get(route('users.books.comments', ['user' => $comment->create_user->id]))
+            ->assertOk()
+            ->assertDontSeeText($comment->text)
+            ->assertSeeText(trans_choice('comment.on_check', 1));
+    }
 
-		$vote3 = factory(BookVote::class)
-			->create([
-				'create_user_id' => $user->id
-			])->fresh();
+    public function testBBEmpty()
+    {
+        $comment = Comment::factory()->create();
 
-		$comment->refresh();
+        $this->expectException(QueryException::class);
 
-		$comments = Comment::where('id', $comment->id)
-			->with('userBookVote')
-			->get();
+        $comment->bb_text = '';
+        $comment->save();
+    }
 
-		$vote4 = $comments->first()->userBookVote;
+    public function testRelationUserBookVote()
+    {
+        $user = User::factory()->create();
 
-		$this->assertEquals($vote, $vote4);
-	}
+        $comment = Comment::factory()->create([
+            'commentable_type' => 'book',
+            'create_user_id' => $user->id
+        ]);
 
-	public function testUpperCaseLettersCount()
-	{
-		$text = '[I]текст[/I][b]Текст Текст Текст[/b]';
+        $book = $comment->commentable;
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+        $this->assertInstanceOf(Book::class, $book);
 
-		$this->assertEquals(3, $comment->getUpperCaseCharactersCount($comment->getContent()));
-		$this->assertEquals(15, $comment->getUpperCaseLettersPercent($comment->getContent()));
+        $vote = BookVote::factory()->create([
+            'book_id' => $book->id,
+            'create_user_id' => $user->id
+        ])->fresh();
 
-		$text = ' ТЕКСТ текст';
+        $vote2 = BookVote::factory()->create([
+            'book_id' => $book->id
+        ])->fresh();
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+        $vote3 = BookVote::factory()->create([
+            'create_user_id' => $user->id
+        ])->fresh();
 
-		$this->assertEquals(5, $comment->getUpperCaseCharactersCount($comment->getContent()));
-		$this->assertEquals(50, $comment->getUpperCaseLettersPercent($comment->getContent()));
+        $comment->refresh();
 
-		$text = ' ТЕКСТ ТЕКСТ тек';
+        $comments = Comment::where('id', $comment->id)
+            ->with('userBookVote')
+            ->get();
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+        $vote4 = $comments->first()->userBookVote;
 
-		$this->assertEquals(10, $comment->getUpperCaseCharactersCount($comment->getContent()));
-		$this->assertEquals(77, $comment->getUpperCaseLettersPercent($comment->getContent()));
+        $this->assertEquals($vote, $vote4);
+    }
 
-		$text = ' :) ';
+    public function testUpperCaseLettersCount()
+    {
+        $text = '[I]текст[/I][b]Текст Текст Текст[/b]';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-		$this->assertEquals(0, $comment->getUpperCaseCharactersCount($comment->getContent()));
-		$this->assertEquals(0, $comment->getUpperCaseLettersPercent($comment->getContent()));
-	}
+        $this->assertEquals(3, $comment->getUpperCaseCharactersCount($comment->getContent()));
+        $this->assertEquals(15, $comment->getUpperCaseLettersPercent($comment->getContent()));
 
-	public function testSentForReviewIfExternalLinksAndLackOfCommentsCount()
-	{
-		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
+        $text = ' ТЕКСТ текст';
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-		$this->assertTrue($comment->isSentForReview());
-	}
+        $this->assertEquals(5, $comment->getUpperCaseCharactersCount($comment->getContent()));
+        $this->assertEquals(50, $comment->getUpperCaseLettersPercent($comment->getContent()));
 
-	public function testAcceptedIfExternalLinksAndEnoughOfCommentsCount()
-	{
-		$user = factory(User::class)->create();
-		$user->comment_count = 100;
-		$user->save();
+        $text = ' ТЕКСТ ТЕКСТ тек';
 
-		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-		$comment = factory(Comment::class)
-			->create(['create_user_id' => $user->id, 'bb_text' => $text]);
+        $this->assertEquals(10, $comment->getUpperCaseCharactersCount($comment->getContent()));
+        $this->assertEquals(77, $comment->getUpperCaseLettersPercent($comment->getContent()));
 
-		$this->assertTrue($comment->isAccepted());
-	}
+        $text = ' :) ';
 
-	public function testAcceptedIfExternalLinksAndEnoughOfPostsCount()
-	{
-		$user = factory(User::class)->create();
-		$user->forum_message_count = 100;
-		$user->save();
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-		$text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
+        $this->assertEquals(0, $comment->getUpperCaseCharactersCount($comment->getContent()));
+        $this->assertEquals(0, $comment->getUpperCaseLettersPercent($comment->getContent()));
+    }
 
-		$comment = factory(Comment::class)
-			->create(['create_user_id' => $user->id, 'bb_text' => $text]);
+    public function testSentForReviewIfExternalLinksAndLackOfCommentsCount()
+    {
+        $text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$this->assertTrue($comment->isAccepted());
-	}
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-	public function testSentForReviewIfTextUpperCase()
-	{
-		$text = 'ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ';
+        $this->assertTrue($comment->isSentForReview());
+    }
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+    public function testAcceptedIfExternalLinksAndEnoughOfCommentsCount()
+    {
+        $user = User::factory()->create();
+        $user->comment_count = 100;
+        $user->save();
 
-		$this->assertTrue($comment->isSentForReview());
-	}
+        $text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-	public function testAcceptedIfTextUpperCase2()
-	{
-		$text = 'ТЕ';
+        $comment = Comment::factory()->create(['create_user_id' => $user->id, 'bb_text' => $text]);
 
-		$comment = factory(Comment::class)
-			->create(['bb_text' => $text]);
+        $this->assertTrue($comment->isAccepted());
+    }
 
-		$this->assertTrue($comment->isAccepted());
-	}
+    public function testAcceptedIfExternalLinksAndEnoughOfPostsCount()
+    {
+        $user = User::factory()->create();
+        $user->forum_message_count = 100;
+        $user->save();
 
-	public function testPerPage2()
-	{
-		$response = $this->get(route('home.latest_comments', ['per_page' => 5]))
-			->assertOk();
+        $text = 'текст [url]http://example.com/test[/url] текст [url]http://example.com/test[/url]';
 
-		$this->assertEquals(10, $response->original->gatherData()['comments']->perPage());
+        $comment = Comment::factory()->create(['create_user_id' => $user->id, 'bb_text' => $text]);
 
-		$response = $this->get(route('home.latest_comments', ['per_page' => 200]))
-			->assertOk();
+        $this->assertTrue($comment->isAccepted());
+    }
 
-		$this->assertEquals(100, $response->original->gatherData()['comments']->perPage());
-	}
+    public function testSentForReviewIfTextUpperCase()
+    {
+        $text = 'ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ТЕКСТ ';
 
-	public function testPerPage()
-	{
-		$author = factory(Author::class)->create();
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-		$response = $this->get(route('authors.comments', ['author' => $author, 'per_page' => 5]))
-			->assertOk();
+        $this->assertTrue($comment->isSentForReview());
+    }
 
-		$this->assertEquals(10, $response->original->gatherData()['comments']->perPage());
+    public function testAcceptedIfTextUpperCase2()
+    {
+        $text = 'ТЕ';
 
-		$response = $this->get(route('authors.comments', ['author' => $author, 'per_page' => 200]))
-			->assertOk();
+        $comment = Comment::factory()->create(['bb_text' => $text]);
 
-		$this->assertEquals(100, $response->original->gatherData()['comments']->perPage());
-	}
+        $this->assertTrue($comment->isAccepted());
+    }
 
-	public function testSetGetParentComment()
-	{
-		$comment = factory(Comment::class)
-			->create();
+    public function testPerPage2()
+    {
+        $response = $this->get(route('home.latest_comments', ['per_page' => 5]))
+            ->assertOk();
 
-		$comment2 = new Comment();
-		$comment2->parent = $comment;
+        $this->assertEquals(10, $response->original->gatherData()['comments']->perPage());
 
-		$this->assertTrue($comment2->parent->is($comment));
-	}
+        $response = $this->get(route('home.latest_comments', ['per_page' => 200]))
+            ->assertOk();
 
-	public function testOriginCommentableRelation()
-	{
-		$comment = factory(Comment::class)
-			->states('book')
-			->create();
+        $this->assertEquals(100, $response->original->gatherData()['comments']->perPage());
+    }
 
-		$book = $comment->commentable;
+    public function testPerPage()
+    {
+        $author = Author::factory()->create();
 
-		$this->assertEquals($book->origin_commentable_id, $book->commentable_id);
-		$this->assertInstanceOf(Book::class, $comment->commentable);
-		$this->assertInstanceOf(Book::class, $comment->originCommentable);
-		$this->assertEquals($comment->commentable->id, $comment->originCommentable->id);
+        $response = $this->get(route('authors.comments', ['author' => $author, 'per_page' => 5]))
+            ->assertOk();
 
-		$comment->load(['commentable', 'originCommentable']);
+        $this->assertEquals(10, $response->original->gatherData()['comments']->perPage());
 
-		$this->assertEquals($book->origin_commentable_id, $book->commentable_id);
-		$this->assertInstanceOf(Book::class, $comment->commentable);
-		$this->assertInstanceOf(Book::class, $comment->originCommentable);
-		$this->assertEquals($comment->commentable->id, $comment->originCommentable->id);
-	}
+        $response = $this->get(route('authors.comments', ['author' => $author, 'per_page' => 200]))
+            ->assertOk();
 
-	/*
-		public function testForbidBBCodeTags()
-		{
-			$text = '[b][size]текст[/size][/b]';
+        $this->assertEquals(100, $response->original->gatherData()['comments']->perPage());
+    }
 
-			$comment = new Comment;
-			$comment->setForbidTags(['size']);
-			$comment->setBBCode($text);
+    public function testSetGetParentComment()
+    {
+        $comment = Comment::factory()->create();
 
-			$this->assertEquals('[b]текст[/b]', $comment->getBBCode());
+        $comment2 = new Comment();
+        $comment2->parent = $comment;
 
-			$text = '[size=5][b]текст[/b][/size]';
+        $this->assertTrue($comment2->parent->is($comment));
+    }
 
-			$comment = new Comment;
-			$comment->setForbidTags(['size']);
-			$comment->setBBCode($text);
+    public function testOriginCommentableRelation()
+    {
+        $comment = Comment::factory()->book()->create();
 
-			$this->assertEquals('[b]текст[/b]', $comment->getBBCode());
+        $book = $comment->commentable;
 
-			$text = '[code][size=5][b]текст[/b][/size][/code]';
+        $this->assertEquals($book->origin_commentable_id, $book->commentable_id);
+        $this->assertInstanceOf(Book::class, $comment->commentable);
+        $this->assertInstanceOf(Book::class, $comment->originCommentable);
+        $this->assertEquals($comment->commentable->id, $comment->originCommentable->id);
 
-			$comment = new Comment;
-			$comment->setForbidTags(['size']);
-			$comment->setBBCode($text);
+        $comment->load(['commentable', 'originCommentable']);
 
-			$this->assertEquals('[code][size=5][b]текст[/b][/size][/code]', $comment->getBBCode());
+        $this->assertEquals($book->origin_commentable_id, $book->commentable_id);
+        $this->assertInstanceOf(Book::class, $comment->commentable);
+        $this->assertInstanceOf(Book::class, $comment->originCommentable);
+        $this->assertEquals($comment->commentable->id, $comment->originCommentable->id);
+    }
 
-			$text = '[code][size=5][b][code][size=5]текст[/size][/code][/b][/size][/code]';
+    /*
+        public function testForbidBBCodeTags()
+        {
+            $text = '[b][size]текст[/size][/b]';
 
-			$comment = new Comment;
-			$comment->setForbidTags(['size']);
-			$comment->setBBCode($text);
+            $comment = new Comment;
+            $comment->setForbidTags(['size']);
+            $comment->setBBCode($text);
 
-			$this->assertEquals('[code][size=5][b][code][size=5]текст[/size][/code][/b][/size][/code]',
-				$comment->getBBCode());
+            $this->assertEquals('[b]текст[/b]', $comment->getBBCode());
 
-			$text = '[code][size=5][b]text[/b][/size][/code]text[code][size=5]текст[/size][/code]';
+            $text = '[size=5][b]текст[/b][/size]';
 
-			$comment = new Comment;
-			$comment->setForbidTags(['size']);
-			$comment->setBBCode($text);
+            $comment = new Comment;
+            $comment->setForbidTags(['size']);
+            $comment->setBBCode($text);
 
-			$this->assertEquals('[code][size=5][b]text[/b][/size][/code]text[code][size=5]текст[/size][/code]',
-				$comment->getBBCode());
-		}
-	*/
+            $this->assertEquals('[b]текст[/b]', $comment->getBBCode());
+
+            $text = '[code][size=5][b]текст[/b][/size][/code]';
+
+            $comment = new Comment;
+            $comment->setForbidTags(['size']);
+            $comment->setBBCode($text);
+
+            $this->assertEquals('[code][size=5][b]текст[/b][/size][/code]', $comment->getBBCode());
+
+            $text = '[code][size=5][b][code][size=5]текст[/size][/code][/b][/size][/code]';
+
+            $comment = new Comment;
+            $comment->setForbidTags(['size']);
+            $comment->setBBCode($text);
+
+            $this->assertEquals('[code][size=5][b][code][size=5]текст[/size][/code][/b][/size][/code]',
+                $comment->getBBCode());
+
+            $text = '[code][size=5][b]text[/b][/size][/code]text[code][size=5]текст[/size][/code]';
+
+            $comment = new Comment;
+            $comment->setForbidTags(['size']);
+            $comment->setBBCode($text);
+
+            $this->assertEquals('[code][size=5][b]text[/b][/size][/code]text[code][size=5]текст[/size][/code]',
+                $comment->getBBCode());
+        }
+    */
 }

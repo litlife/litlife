@@ -1,16 +1,31 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Participation::class, function (Faker $faker) {
+use App\Conversation;
+use App\Participation;
+use App\User;
 
-	return [
-		'user_id' => function () {
-			return factory(App\User::class)->create()->id;
-		},
-		'conversation_id' => function () {
-			return factory(App\Conversation::class)->create()->id;
-		},
-		'latest_seen_message_id' => 0
-	];
-});
+class ParticipationFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Participation::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => User::factory(),
+            'conversation_id' => Conversation::factory(),
+            'latest_seen_message_id' => 0
+        ];
+    }
+}

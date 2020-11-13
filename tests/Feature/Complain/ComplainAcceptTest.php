@@ -8,26 +8,24 @@ use Tests\TestCase;
 
 class ComplainAcceptTest extends TestCase
 {
-	public function testAcceptHttp()
-	{
-		$admin = factory(User::class)
-			->states('admin')
-			->create();
+    public function testAcceptHttp()
+    {
+        $admin = User::factory()->admin()->create();
 
-		$complain = factory(Complain::class)->states('comment', 'review_starts')->create();
-		$complain->status_changed_user_id = $admin->id;
-		$complain->save();
+        $complain = Complain::factory()->comment()->review_starts()->create();
+        $complain->status_changed_user_id = $admin->id;
+        $complain->save();
 
-		$count = Complain::getCachedOnModerationCount();
+        $count = Complain::getCachedOnModerationCount();
 
-		$this->actingAs($admin)
-			->get(route('complains.approve', $complain))
-			->assertSessionHasNoErrors()
-			->assertRedirect();
+        $this->actingAs($admin)
+            ->get(route('complains.approve', $complain))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect();
 
-		$complain->refresh();
+        $complain->refresh();
 
-		$this->assertEquals(($count - 1), Complain::getCachedOnModerationCount());
-		$this->assertTrue($complain->isAccepted());
-	}
+        $this->assertEquals(($count - 1), Complain::getCachedOnModerationCount());
+        $this->assertTrue($complain->isAccepted());
+    }
 }

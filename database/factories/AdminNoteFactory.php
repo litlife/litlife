@@ -1,18 +1,32 @@
 <?php
 
-use App\Enums\StatusEnum;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\AdminNote::class, function (Faker $faker) {
+use App\AdminNote;
+use App\Book;
+use App\User;
 
-	return [
-		'admin_noteable_id' => function () {
-			return factory(App\Book::class)->create(['status' => StatusEnum::Accepted])->id;
-		},
-		'admin_noteable_type' => 'book',
-		'text' => $faker->realText(100),
-		'create_user_id' => function () {
-			return factory(App\User::class)->states('with_user_permissions')->create()->id;
-		}
-	];
-});
+class AdminNoteFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = AdminNote::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'admin_noteable_id' => Book::factory(),
+            'admin_noteable_type' => 'book',
+            'text' => $this->faker->realText(100),
+            'create_user_id' => User::factory()->with_user_permissions()
+        ];
+    }
+}

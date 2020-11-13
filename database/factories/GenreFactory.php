@@ -1,34 +1,74 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Genre::class, function (Faker $faker) {
+use App\Genre;
 
-	return [
-		'genre_group_id' => 1,
-		'name' => uniqid(),
-		'fb_code' => uniqid(),
-		'book_count' => 0,
-		'age' => rand(0, 18),
-		'created_at' => now(),
-		'updated_at' => now()
-	];
-});
+class GenreFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Genre::class;
 
-$factory->state(App\Genre::class, 'with_main_genre', function ($faker) {
-	return [
-		'genre_group_id' => function () {
-			return factory(App\Genre::class)->states('main_genre')
-				->create()->id;
-		}
-	];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'genre_group_id' => 1,
+            'name' => uniqid(),
+            'fb_code' => uniqid(),
+            'book_count' => 0,
+            'age' => rand(0, 18),
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+    }
 
-$factory->state(App\Genre::class, 'main_genre', [
-	'genre_group_id' => null,
-]);
+    public function with_main_genre()
+    {
+        return $this->afterMaking(function (Genre $genre) {
+            //
+        })->afterCreating(function (Genre $genre) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'genre_group_id' => function () {
+                    return Genre::factory()->main_genre()->create()->id;
+                }
+            ];
+        });
+    }
 
+    public function main_genre()
+    {
+        return $this->afterMaking(function (Genre $genre) {
+            //
+        })->afterCreating(function (Genre $genre) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'genre_group_id' => null,
+            ];
+        });
+    }
 
-$factory->state(App\Genre::class, 'age_0', [
-	'age' => 0,
-]);
+    public function age_0()
+    {
+        return $this->afterMaking(function (Genre $genre) {
+            //
+        })->afterCreating(function (Genre $genre) {
+            //
+        })->state(function (array $attributes) {
+            return [
+                'age' => 0,
+            ];
+        });
+    }
+}

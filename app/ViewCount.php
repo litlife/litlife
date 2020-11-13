@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\Book $book
  * @method static Builder|ViewCount newModelQuery()
  * @method static Builder|ViewCount newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByField($column, $ids)
- * @method static \Illuminate\Database\Eloquent\Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
+ * @method static Builder|Model orderByField($column, $ids)
+ * @method static Builder|Model orderByWithNulls($column, $sort = 'asc', $nulls = 'first')
  * @method static Builder|ViewCount query()
- * @method static \Illuminate\Database\Eloquent\Builder|Model void()
+ * @method static Builder|Model void()
  * @method static Builder|ViewCount whereAll($value)
  * @method static Builder|ViewCount whereBookId($value)
  * @method static Builder|ViewCount whereDay($value)
@@ -32,22 +32,22 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class ViewCount extends Model
 {
-	public $timestamps = false;
+    public $timestamps = false;
 
-	public $incrementing = false;
+    public $incrementing = false;
 
-	public $attributes = [
-		'day' => 0,
-		'week' => 0,
-		'month' => 0,
-		'year' => 0,
-		'all' => 0
-	];
+    public $attributes = [
+        'day' => 0,
+        'week' => 0,
+        'month' => 0,
+        'year' => 0,
+        'all' => 0
+    ];
 
-	protected $primaryKey = 'book_id';
+    protected $primaryKey = 'book_id';
 
-	public function book()
-	{
-		return $this->belongsTo('App\Book', 'book_id', 'id');
-	}
+    public function book()
+    {
+        return $this->belongsTo('App\Book', 'book_id', 'id');
+    }
 }

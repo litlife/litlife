@@ -9,86 +9,88 @@ use App\Jobs\SupportQuestion\UpdateNumberOfNewQuestions;
 use App\Jobs\User\UpdateUserNumberInProgressQuestions;
 use App\SupportQuestion;
 use App\SupportQuestionMessage;
+use App\User;
 use Illuminate\Support\Facades\Bus;
 use Tests\TestCase;
 
 class SupportQuestionMarkAsSolvedTest extends TestCase
 {
-	public function testWithoutAjax()
-	{
-		Bus::fake();
+    public function testWithoutAjax()
+    {
+        Bus::fake();
 
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+        $supportQuestion = SupportQuestion::factory()
+            ->review_starts()
+            ->create([
+                'status_changed_user_id' => User::factory()->with_user_group()->admin()
+            ]);
 
-		$user = $supportQuestion->status_changed_user;
-		$user->group->reply_to_support_service = true;
-		$user->push();
+        $user = $supportQuestion->status_changed_user;
+        $user->group->reply_to_support_service = true;
+        $user->push();
 
-		$this->actingAs($user)
-			->get(route('support_questions.solve', $supportQuestion))
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('support_questions.unsolved'))
-			->assertSessionHas('success', __('Thank you! You marked the support question as resolved'));
+        $this->actingAs($user)
+            ->get(route('support_questions.solve', $supportQuestion))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('support_questions.unsolved'))
+            ->assertSessionHas('success', __('Thank you! You marked the support question as resolved'));
 
-		$supportQuestion->refresh();
+        $supportQuestion->refresh();
 
-		$this->assertTrue($supportQuestion->isAccepted());
+        $this->assertTrue($supportQuestion->isAccepted());
 
-		Bus::assertDispatched(UpdateNumberInProgressQuestions::class);
-		Bus::assertDispatched(UpdateNumberOfAnsweredQuestions::class);
-		Bus::assertNotDispatched(UpdateNumberOfNewQuestions::class);
-		Bus::assertDispatched(UpdateUserNumberInProgressQuestions::class, function ($job) use ($supportQuestion) {
-			return $supportQuestion->status_changed_user->is($job->user);
-		});
-	}
+        Bus::assertDispatched(UpdateNumberInProgressQuestions::class);
+        Bus::assertDispatched(UpdateNumberOfAnsweredQuestions::class);
+        Bus::assertNotDispatched(UpdateNumberOfNewQuestions::class);
+        Bus::assertDispatched(UpdateUserNumberInProgressQuestions::class, function ($job) use ($supportQuestion) {
+            return $supportQuestion->status_changed_user->is($job->user);
+        });
+    }
 
-	public function testWithAjax()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts')
-			->create();
+    public function testWithAjax()
+    {
+        $supportQuestion = SupportQuestion::factory()
+            ->review_starts()
+            ->create([
+                'status_changed_user_id' => User::factory()->with_user_group()->admin()
+            ]);
 
-		$user = $supportQuestion->status_changed_user;
-		$user->group->reply_to_support_service = true;
-		$user->push();
+        $user = $supportQuestion->status_changed_user;
+        $user->group->reply_to_support_service = true;
+        $user->push();
 
-		$this->actingAs($user)
-			->ajax()
-			->get(route('support_questions.solve', $supportQuestion))
-			->assertSessionHasNoErrors()
-			->assertViewIs('support_question.status')
-			->assertViewHas('item', $supportQuestion);
+        $this->actingAs($user)
+            ->ajax()
+            ->get(route('support_questions.solve', $supportQuestion))
+            ->assertSessionHasNoErrors()
+            ->assertViewIs('support_question.status')
+            ->assertViewHas('item', $supportQuestion);
 
-		$supportQuestion->refresh();
+        $supportQuestion->refresh();
 
-		$this->assertTrue($supportQuestion->isAccepted());
-	}
+        $this->assertTrue($supportQuestion->isAccepted());
+    }
 
-	public function testIfAuthUserCreator()
-	{
-		$supportQuestion = factory(SupportQuestion::class)
-			->states('review_starts', 'with_message')
-			->create();
+    public function testIfAuthUserCreator()
+    {
+        $supportQuestion = SupportQuestion::factory()->review_starts()->with_message()->create();
 
-		$user = $supportQuestion->create_user;
+        $user = $supportQuestion->create_user;
 
-		$message = factory(SupportQuestionMessage::class)
-			->make();
+        $message = SupportQuestionMessage::factory()->make();
 
-		$supportQuestion->messages()->save($message);
-		$supportQuestion->latest_message_id = $message->id;
-		$supportQuestion->save();
+        $supportQuestion->messages()->save($message);
+        $supportQuestion->latest_message_id = $message->id;
+        $supportQuestion->save();
 
-		$this->actingAs($user)
-			->get(route('support_questions.solve', $supportQuestion))
-			->assertSessionHasNoErrors()
-			->assertRedirect(route('support_questions.show', $supportQuestion))
-			->assertSessionHas('success', __('Thank you! You marked the support question as resolved'));
+        $this->actingAs($user)
+            ->get(route('support_questions.solve', $supportQuestion))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('support_questions.show', $supportQuestion))
+            ->assertSessionHas('success', __('Thank you! You marked the support question as resolved'));
 
-		$supportQuestion->refresh();
+        $supportQuestion->refresh();
 
-		$this->assertTrue($supportQuestion->isAccepted());
-	}
+        $this->assertTrue($supportQuestion->isAccepted());
+    }
 }

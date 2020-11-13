@@ -8,21 +8,18 @@ use Tests\TestCase;
 
 class BookmarkFolderIndexTest extends TestCase
 {
-	public function testList()
-	{
-		$user = factory(User::class)
-			->create();
+    public function testList()
+    {
+        $user = User::factory()->create();
 
-		$folder = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $user]);
+        $folder = BookmarkFolder::factory()->create(['create_user_id' => $user]);
 
-		$folder2 = factory(BookmarkFolder::class)
-			->create(['create_user_id' => $user]);
+        $folder2 = BookmarkFolder::factory()->create(['create_user_id' => $user]);
 
-		$this->actingAs($user)
-			->get(route('bookmark_folders.list'))
-			->assertOk()
-			->assertSeeText($folder->title)
-			->assertSeeText($folder2->title);
-	}
+        $this->actingAs($user)
+            ->get(route('bookmark_folders.list'))
+            ->assertOk()
+            ->assertSeeText($folder->title)
+            ->assertSeeText($folder2->title);
+    }
 }

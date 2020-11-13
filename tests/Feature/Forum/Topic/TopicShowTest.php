@@ -9,154 +9,146 @@ use Tests\TestCase;
 
 class TopicShowTest extends TestCase
 {
-	public function testShowHttp()
-	{
-		$topic = factory(Topic::class)
-			->create();
+    public function testShowHttp()
+    {
+        $topic = Topic::factory()->create();
 
-		$this->get(route('topics.show', $topic))
-			->assertOk()
-			->assertSeeText(__('post.nothing_found'));
-	}
+        $this->get(route('topics.show', $topic))
+            ->assertOk()
+            ->assertSeeText(__('post.nothing_found'));
+    }
 
-	public function testShowHttpDontSeeNothingFoundIfFixPost()
-	{
-		$post = factory(Post::class)->create();
+    public function testShowHttpDontSeeNothingFoundIfFixPost()
+    {
+        $post = Post::factory()->create();
 
-		$post->fix();
+        $post->fix();
 
-		$this->get(route('topics.show', $post->topic))
-			->assertOk()
-			->assertDontSeeText(__('post.nothing_found'));
-	}
+        $this->get(route('topics.show', $post->topic))
+            ->assertOk()
+            ->assertDontSeeText(__('post.nothing_found'));
+    }
 
-	public function testViewCount()
-	{
-		$post = factory(Post::class)
-			->create();
+    public function testViewCount()
+    {
+        $post = Post::factory()->create();
 
-		$topic = $post->topic;
+        $topic = $post->topic;
 
-		$this->get(route('topics.show', $topic))
-			->assertOk();
-		$topic->refresh();
-		$this->assertEquals(1, $topic->view_count);
+        $this->get(route('topics.show', $topic))
+            ->assertOk();
+        $topic->refresh();
+        $this->assertEquals(1, $topic->view_count);
 
-		$this->get(route('topics.show', $topic))
-			->assertOk();
-		$topic->refresh();
-		$this->assertEquals(2, $topic->view_count);
+        $this->get(route('topics.show', $topic))
+            ->assertOk();
+        $topic->refresh();
+        $this->assertEquals(2, $topic->view_count);
 
-		$this->get(route('topics.show', $topic))
-			->assertOk();
-		$topic->refresh();
-		$this->assertEquals(3, $topic->view_count);
-	}
+        $this->get(route('topics.show', $topic))
+            ->assertOk();
+        $topic->refresh();
+        $this->assertEquals(3, $topic->view_count);
+    }
 
-	public function testViewPrivateTopic()
-	{
-		$post = factory(Post::class)
-			->create();
+    public function testViewPrivateTopic()
+    {
+        $post = Post::factory()->create();
 
-		$user = $post->create_user;
+        $user = $post->create_user;
 
-		$forum = $post->forum;
-		$forum->private = true;
-		$forum->save();
+        $forum = $post->forum;
+        $forum->private = true;
+        $forum->save();
 
-		$this->assertFalse($user->can('view', $forum));
+        $this->assertFalse($user->can('view', $forum));
 
-		$forum->users_with_access()->sync([$user->id]);
-		$forum->refresh();
+        $forum->users_with_access()->sync([$user->id]);
+        $forum->refresh();
 
-		$this->assertTrue($user->can('view', $forum));
+        $this->assertTrue($user->can('view', $forum));
 
-		$response = $this->actingAs($user)
-			->get(route('topics.show', ['topic' => $post->topic->id]))
-			->assertOk()
-			->assertSeeText($forum->name);
+        $response = $this->actingAs($user)
+            ->get(route('topics.show', ['topic' => $post->topic->id]))
+            ->assertOk()
+            ->assertSeeText($forum->name);
 
-		$other_user = factory(User::class)
-			->create();
+        $other_user = User::factory()->create();
 
-		$response = $this->actingAs($other_user)
-			->get(route('topics.show', ['topic' => $post->topic->id]))
-			->assertForbidden();
+        $response = $this->actingAs($other_user)
+            ->get(route('topics.show', ['topic' => $post->topic->id]))
+            ->assertForbidden();
 
-		$response = $this->get(route('topics.show', ['topic' => $post->topic->id]))
-			->assertForbidden();
-	}
+        $response = $this->get(route('topics.show', ['topic' => $post->topic->id]))
+            ->assertForbidden();
+    }
 
-	public function testForumDeletedShowTopic()
-	{
-		$topic = factory(Topic::class)
-			->create();
+    public function testForumDeletedShowTopic()
+    {
+        $topic = Topic::factory()->create();
 
-		$topic->forum->delete();
+        $topic->forum->delete();
 
-		$this->get(route('topics.show', $topic))
-			->assertNotFound();
+        $this->get(route('topics.show', $topic))
+            ->assertNotFound();
 
-		$topic->forum->forceDelete();
+        $topic->forum->forceDelete();
 
-		$this->get(route('topics.show', $topic))
-			->assertNotFound();
-	}
+        $this->get(route('topics.show', $topic))
+            ->assertNotFound();
+    }
 
-	public function testIsNotFoundIfTopicDeleted()
-	{
-		$topic = factory(Topic::class)->create();
+    public function testIsNotFoundIfTopicDeleted()
+    {
+        $topic = Topic::factory()->create();
 
-		$topic->delete();
+        $topic->delete();
 
-		$this->get(route('topics.show', $topic))
-			->assertNotFound();
-	}
+        $this->get(route('topics.show', $topic))
+            ->assertNotFound();
+    }
 
-	public function testCanSeeArchivedTopicPosts()
-	{
-		$topic = factory(Topic::class)
-			->states('archived', 'with_post')
-			->create();
+    public function testCanSeeArchivedTopicPosts()
+    {
+        $topic = Topic::factory()->archived()->with_post()->create();
 
-		$post = $topic->posts()->first();
+        $post = $topic->posts()->first();
 
-		$this->get(route('topics.show', $topic))
-			->assertOk()
-			->assertSeeText($post->html_text);
-	}
+        $this->get(route('topics.show', $topic))
+            ->assertOk()
+            ->assertSeeText($post->html_text);
+    }
 
-	public function testViewInTopicIfOnReview()
-	{
-		$post = factory(Post::class)->create();
-		$post->statusSentForReview();
-		$post->save();
+    public function testViewInTopicIfOnReview()
+    {
+        $post = Post::factory()->create();
+        $post->statusSentForReview();
+        $post->save();
 
-		$user = factory(User::class)
-			->create();
+        $user = User::factory()->create();
 
-		$this->actingAs($post->create_user)
-			->get(route('topics.show', $post->topic))
-			->assertSeeText($post->text);
+        $this->actingAs($post->create_user)
+            ->get(route('topics.show', $post->topic))
+            ->assertSeeText($post->text);
 
-		$this->actingAs($user)
-			->get(route('topics.show', $post->topic))
-			->assertDontSeeText($post->text)
-			->assertSeeText(trans_choice('post.on_check', 1));
-	}
+        $this->actingAs($user)
+            ->get(route('topics.show', $post->topic))
+            ->assertDontSeeText($post->text)
+            ->assertSeeText(trans_choice('post.on_check', 1));
+    }
 
-	public function testPerPage()
-	{
-		$topic = factory(Topic::class)->create();
+    public function testPerPage()
+    {
+        $topic = Topic::factory()->create();
 
-		$response = $this->get(route('topics.show', ['topic' => $topic, 'per_page' => 5]))
-			->assertOk();
+        $response = $this->get(route('topics.show', ['topic' => $topic, 'per_page' => 5]))
+            ->assertOk();
 
-		$this->assertEquals(10, $response->original->gatherData()['items']->perPage());
+        $this->assertEquals(10, $response->original->gatherData()['items']->perPage());
 
-		$response = $this->get(route('topics.show', ['topic' => $topic, 'per_page' => 200]))
-			->assertOk();
+        $response = $this->get(route('topics.show', ['topic' => $topic, 'per_page' => 200]))
+            ->assertOk();
 
-		$this->assertEquals(100, $response->original->gatherData()['items']->perPage());
-	}
+        $this->assertEquals(100, $response->original->gatherData()['items']->perPage());
+    }
 }

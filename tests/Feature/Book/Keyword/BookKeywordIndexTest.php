@@ -8,43 +8,37 @@ use Tests\TestCase;
 
 class BookKeywordIndexTest extends TestCase
 {
-	public function testShowBookKeywordsIfBookDeleted()
-	{
-		$bookKeyword = factory(BookKeyword::class)
-			->create();
+    public function testShowBookKeywordsIfBookDeleted()
+    {
+        $bookKeyword = BookKeyword::factory()->create();
 
-		$book = $bookKeyword->book;
+        $book = $bookKeyword->book;
 
-		$book->delete();
+        $book->delete();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $user = User::factory()->admin()->create();
 
-		$response = $this->actingAs($user)
-			->get(route('books.keywords.index', ['book' => $book]))
-			->assertOk();
-	}
+        $response = $this->actingAs($user)
+            ->get(route('books.keywords.index', ['book' => $book]))
+            ->assertOk();
+    }
 
-	public function testShowBookEditIfKeywordDeleted()
-	{
-		$bookKeyword = factory(BookKeyword::class)
-			->create();
+    public function testShowBookEditIfKeywordDeleted()
+    {
+        $bookKeyword = BookKeyword::factory()->create();
 
-		$book = $bookKeyword->book;
+        $book = $bookKeyword->book;
 
-		$bookKeyword->keyword->delete();
+        $bookKeyword->keyword->delete();
 
-		$user = factory(User::class)
-			->states('admin')
-			->create();
+        $user = User::factory()->admin()->create();
 
-		$response = $this->actingAs($user)
-			->get(route('books.edit', ['book' => $book]))
-			->assertOk();
+        $response = $this->actingAs($user)
+            ->get(route('books.edit', ['book' => $book]))
+            ->assertOk();
 
-		$response = $this->actingAs($user)
-			->get(route('books.keywords.index', ['book' => $book]))
-			->assertOk();
-	}
+        $response = $this->actingAs($user)
+            ->get(route('books.keywords.index', ['book' => $book]))
+            ->assertOk();
+    }
 }
