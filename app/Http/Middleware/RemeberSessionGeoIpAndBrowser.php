@@ -32,7 +32,15 @@ class RemeberSessionGeoIpAndBrowser
 		$browser = $request->session()->get('browser');
 
 		if (empty($browser))
-			$request->session()->put('browser', Browser::detect());
+        {
+            try {
+                $browser = Browser::detect();
+            } catch (\Exception $exception) {
+                $browser = Browser::parse('');
+            }
+
+            $request->session()->put('browser', $browser);
+        }
 
 		return $next($request);
 	}
