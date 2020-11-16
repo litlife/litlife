@@ -488,7 +488,9 @@ class BookSearchTest extends TestCase
 
     public function testAnnotationExists()
     {
-        $book = Book::factory()->with_genre()->create();
+        $title = Str::random(10);
+
+        $book = Book::factory()->with_genre()->create(['title' => $title]);
 
         $this->assertFalse($book->fresh()->annotation_exists);
 
