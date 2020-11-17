@@ -60,7 +60,7 @@ class SupportQuestionPolicy extends Policy
 		if ($request->isUserCreator($auth_user))
 			return $this->allow();
 
-		return $this->deny();
+		$this->deny();
 	}
 
 	/**
@@ -170,4 +170,22 @@ class SupportQuestionPolicy extends Policy
 
 		return $this->allow();
 	}
+
+    /**
+     * Может ли пользователь отредактировать вопрос
+     *
+     * @param User $auth_user
+     * @param SupportQuestion $supportQuestion
+     * @return mixed
+     */
+    public function update(User $auth_user, SupportQuestion $supportQuestion)
+    {
+        if ($supportQuestion->isUserCreator($auth_user))
+            return $this->allow();
+
+        if ($auth_user->getPermission('reply_to_support_service'))
+            return $this->allow();
+
+        return $this->deny(__('You don\'t have permission to edit the question'));
+    }
 }

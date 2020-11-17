@@ -584,6 +584,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/support_questions/solved', 'SupportQuestionController@solved')->name('support_questions.solved');
 	Route::get('/support_questions/in_process_of_solving', 'SupportQuestionController@inProcessOfSolving')->name('support_questions.in_process_of_solving');
 	Route::get('/support_questions/unsolved', 'SupportQuestionController@unsolved')->name('support_questions.unsolved');
+    Route::get('/support_questions/{support_question}/edit', 'SupportQuestionController@edit')->name('support_questions.edit');
+    Route::patch('/support_questions/{support_question}', 'SupportQuestionController@update')->name('support_questions.update');
 
 	Route::get('/support_questions/{support_question}/feedbacks/create', 'SupportQuestionController@feedbackCreate')->name('support_questions.feedbacks.create');
 	Route::post('/support_questions/{support_question}/feedbacks', 'SupportQuestionController@feedbackStore')->name('support_questions.feedbacks.store');

@@ -6,6 +6,7 @@ use App\Events\NumberOfUnsolvedSupportQuestionsHasChanged;
 use App\FeedbackSupportResponses;
 use App\Http\Requests\StoreFeedbackSupportQuestion;
 use App\Http\Requests\StoreSupportQuestion;
+use App\Http\Requests\UpdateSupportQuestionCategory;
 use App\Jobs\SupportQuestion\UpdateNumberInProgressQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfAnsweredQuestions;
 use App\Jobs\SupportQuestion\UpdateNumberOfNewQuestions;
@@ -14,7 +15,9 @@ use App\SupportQuestion;
 use App\SupportQuestionMessage;
 use App\User;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tests\Feature\SupportQuestion\SupportQuestionStoreTest;
 
 class SupportQuestionController extends Controller
 {
@@ -310,4 +313,42 @@ class SupportQuestionController extends Controller
 			->route('support_questions.show', $supportQuestion)
 			->with('success', __('Thank you for your feedback!'));
 	}
+
+    /**
+     * Question editing page
+     *
+     * @return \Illuminate\Http\Response
+     * @param SupportQuestion $supportQuestion
+     * @throws AuthorizationException
+     */
+    public function edit(SupportQuestion $supportQuestion)
+    {
+        $this->authorize('update', $supportQuestion);
+
+        return view('support_question.edit', ['supportQuestion' => $supportQuestion]);
+    }
+
+    /**
+     * Saving an edited question
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param SupportQuestion $supportQuestion
+     * @return \Illuminate\Http\Response
+     * @throws AuthorizationException
+     */
+    public function update(UpdateSupportQuestionCategory $request, SupportQuestion $supportQuestion)
+    {
+        $this->authorize('update', $supportQuestion);
+
+        DB::beginTransaction();
+
+        $supportQuestion->fill($request->all());
+        $supportQuestion->save();
+
+        DB::commit();
+
+        return redirect()
+            ->route('support_questions.edit', $supportQuestion)
+            ->with('success', __('The data was successfully stored'));
+    }
 }

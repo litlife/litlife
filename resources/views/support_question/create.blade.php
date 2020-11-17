@@ -14,9 +14,10 @@
 
 	<div class="card mb-2">
 		<div class="card-body">
-			Чтобы не ждать ответа, советуем поискать решение
-			в <a href="{{ route('faq') }}" class="text-info">Часто задаваемых вопросах</a>
-			или на <a href="{{ route('forums.index') }}" class="text-info">Форуме</a>.
+			{{ __('To avoid waiting for an answer, we recommend that you look for a solution in') }}
+			<a href="{{ route('faq') }}" class="text-info">{{ __('Frequently asked question') }}</a>
+			{{ __('or at') }} <a href="{{ route('forums.index') }}" class="text-info">{{ __('Forum') }}</a>. <br />
+			{{ __('You can suggest an idea') }} <a href="{{ route('ideas.index') }}" class="text-info">{{ __('here') }}</a>
 		</div>
 	</div>
 

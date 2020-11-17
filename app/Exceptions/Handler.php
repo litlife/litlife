@@ -11,6 +11,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\ValidationException;
@@ -98,7 +99,12 @@ class Handler extends ExceptionHandler
 		if (App::environment() == 'testing') {
 			//dd(config('app.debug'));
 
-			//throw $exception;
+			if ($exception instanceof UrlGenerationException)
+                throw $exception;
+
+            if ($exception instanceof \ErrorException) {
+                throw $exception;
+            }
 
 			if ($exception instanceof QueryException) {
 				throw $exception;

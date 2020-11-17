@@ -1621,3 +1621,7 @@ Breadcrumbs::for('support_questions.in_process_of_solving', function ($breadcrum
 Breadcrumbs::for('support_questions.index', function ($breadcrumbs) {
 	$breadcrumbs->push(__('Support questions'), route('support_questions.index'));
 });
+
+Breadcrumbs::for('support_questions.edit', function ($breadcrumbs, $supportQuestion) {
+    $breadcrumbs->push(__('Editing a question'), route('support_questions.edit', $supportQuestion));
+});

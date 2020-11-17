@@ -14,7 +14,8 @@
 	<div class="card-body">
 
 		<h6 class="card-title">
-			{{ __(\App\Enums\SupportQuestionTypeEnum::getDescription($item->category)) }}:
+			<a href="{{ route('support_questions.edit', $item) }}" target="_blank">
+				{{ __(\App\Enums\SupportQuestionTypeEnum::getDescription($item->category)) }}</a>:
 
 			<a href="{{ route('support_questions.show', $item) }}">
 				{{ $item->title }}
