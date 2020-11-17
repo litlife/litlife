@@ -28,27 +28,29 @@
 	@endif
 
 	@if ($supportQuestion->feedback)
-		<div class="card mb-2">
-			<div class="card-body flex-row d-flex">
-				<div class="mr-3">
-					@switch(\App\Enums\FaceReactionEnum::getKey($supportQuestion->feedback->face_reaction))
-						@case('Smile')
-						<i class="far fa-smile h1 mb-0 text-primary"></i>
-						@break
-						@case('Meh')
-						<i class="far fa-meh h1 mb-0 text-primary"></i>
-						@break
-						@case('Sad')
-						<i class="far fa-frown h1 mb-0 text-primary"></i>
-						@break
-					@endswitch
-				</div>
+		@if (!$supportQuestion->isAuthUserCreator())
+			<div class="card mb-2">
+				<div class="card-body flex-row d-flex">
+					<div class="mr-3">
+						@switch(\App\Enums\FaceReactionEnum::getKey($supportQuestion->feedback->face_reaction))
+							@case('Smile')
+							<i class="far fa-smile h1 mb-0 text-primary"></i>
+							@break
+							@case('Meh')
+							<i class="far fa-meh h1 mb-0 text-primary"></i>
+							@break
+							@case('Sad')
+							<i class="far fa-frown h1 mb-0 text-primary"></i>
+							@break
+						@endswitch
+					</div>
 
-				<div class="">
-					{{ $supportQuestion->feedback->text }}
+					<div class="">
+						{{ $supportQuestion->feedback->text }}
+					</div>
 				</div>
 			</div>
-		</div>
+		@endif
 	@else
 		@can('create_feedback', $supportQuestion)
 			@include('support_question.feedback.form')
@@ -72,6 +74,18 @@
 				</a>
 			</div>
 		@endcan
+
+		@if ($supportQuestion->isAccepted())
+			<div class="alert alert-success mb-2">
+				{{ __("Your question is resolved.") }}
+				{{ __("If you still have questions, please") }}
+				@can ('create', \App\SupportQuestion::class)
+					<a class="alert-link" href="{{ route('support_questions.create', ['user' => auth()->user()]) }}">
+						{{ __('ask a new question') }}
+					</a>
+				@endcan
+			</div>
+		@endif
 	@else
 		@if ($supportQuestion->isSentForReview())
 			<div class="alert alert-info">
