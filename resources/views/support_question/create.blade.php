@@ -14,10 +14,10 @@
 
 	<div class="card mb-2">
 		<div class="card-body">
-			{{ __('To avoid waiting for an answer, we recommend that you look for a solution in') }}
-			<a href="{{ route('faq') }}" class="text-info">{{ __('Frequently asked question') }}</a>
-			{{ __('or at') }} <a href="{{ route('forums.index') }}" class="text-info">{{ __('Forum') }}</a>. <br />
-			{{ __('You can suggest an idea') }} <a href="{{ route('ideas.index') }}" class="text-info">{{ __('here') }}</a>
+			{{ __('To avoid waiting for an answer, we recommend that you look for a solution') }}
+			<a href="{{ route('faq') }}" class="text-info">{{ __('in answers to frequently asked questions') }}</a>
+			<a href="{{ route('forums.index') }}" class="text-info">{{ __('or at Forum') }}</a>. <br />
+			{{ __('You can suggest an idea') }} <a href="{{ route('ideas.index') }}" class="text-info">{{ __('here') }}</a>.
 		</div>
 	</div>
 

@@ -44,8 +44,12 @@ $color = 'blue';
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-{{ __('notification.sincerely_yours') }}, <br> {{ __('app.name') }}
+{{ __('notification.sincerely_yours') }}, [{{ __('app.name') }}]({{ route('home') }})!
 @endif
+
+[{{ __('Answers to frequently asked questions') }}]({{ route('faq') }}) &nbsp;
+[{{ __('Forum') }}]({{ route('forums.index') }}) &nbsp;
+[{{ __('Guide') }}]({{ route('topics.show', ['topic' => 2837]) }})
 
 {{-- Subcopy --}}
 @isset($actionText)

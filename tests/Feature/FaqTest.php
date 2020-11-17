@@ -10,7 +10,16 @@ use Tests\TestCase;
 
 class FaqTest extends TestCase
 {
-    public function testIsOk()
+    public function testIsOkIfUserAuth()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('faq'))
+            ->assertOk();
+    }
+
+    public function testIsOkIfUserGuest()
     {
         $this->get(route('faq'))
             ->assertOk();

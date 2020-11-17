@@ -866,6 +866,16 @@
 			</div>
 		@endif
 
+		@if ($errors->any())
+			<div class="errors alert alert-danger">
+				<ul class="mb-0">
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
+			</div>
+		@endif
+
 		<div id="user_question" class="card">
 			<div class="card-header">
 				{{ __('If you can not find an answer to your question, please contact us:') }}
@@ -878,7 +888,11 @@
 					</div>
 				@endguest
 
-				@can('create_topic', $forum)
+				@can('create_support_questions', auth()->user())
+
+					@include('support_question.form', ['user' => auth()->user()])
+
+				@elsecan('create_topic', $forum)
 
 					<form role="form" method="post"
 						  action="{{ route('questions.store') }}">
