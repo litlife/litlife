@@ -111,11 +111,21 @@ class CommentController extends Controller
 		$this->authorize('commentOn', $mainCommentable);
 
 		if (auth()->user()->comments()->where('created_at', '>', now()->subMinutes(10))->count() >= 10)
-			return back()->withErrors(['bb_text' => __('comment.you_comment_to_fast')]);
+			return back()
+                ->withErrors(['bb_text' => __('comment.you_comment_to_fast')]);
 
 		$comment = new Comment($request->all());
 
-		if (!empty($parent))
+		$latestUserComment = $mainCommentable->comments()
+            ->where('create_user_id', auth()->id())
+            ->where('bb_text', $comment->bb_text)
+            ->first();
+
+        if ($latestUserComment)
+            return back()
+                ->withErrors(['bb_text' => __('You leave the same comments')]);
+
+        if (!empty($parent))
 			$comment->parent = $parent;
 
 		if ($mainCommentable instanceof Book) {

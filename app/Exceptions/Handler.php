@@ -99,6 +99,9 @@ class Handler extends ExceptionHandler
 		if (App::environment() == 'testing') {
 			//dd(config('app.debug'));
 
+            if ($exception instanceof \Error)
+                throw $exception;
+
 			if ($exception instanceof UrlGenerationException)
                 throw $exception;
 

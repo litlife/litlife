@@ -116,4 +116,29 @@ class SupportQuestionMessageStoreTest extends TestCase
         Notification::assertNotSentTo($supportUser, NewSupportResponseNotification::class);
         Notification::assertSentTo($supportQuestion->create_user, NewSupportResponseNotification::class);
     }
+
+    public function testYouHaveAlreadyAddedAMessageWithThisText()
+    {
+        $supportQuestion = SupportQuestion::factory()
+            ->sent_for_review()
+            ->has(
+                SupportQuestionMessage::factory()
+                    ->state(function (array $attributes, SupportQuestion $supportQuestion) {
+                        return ['create_user_id' => $supportQuestion->create_user];
+                    }), 'messages'
+            )
+            ->create();
+
+        $message = $supportQuestion->messages()->first();
+
+        $this->assertTrue($message->create_user->is($supportQuestion->create_user));
+
+        $user = $message->create_user;
+
+        $this->actingAs($user)
+            ->post(route('support_question_messages.store', ['support_question' => $supportQuestion->id]),
+                ['bb_text' => $message->bb_text])
+            ->assertRedirect()
+            ->assertSessionHasErrors(['bb_text' => __('You have already added a message with this text')]);
+    }
 }

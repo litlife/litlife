@@ -26,7 +26,18 @@ class SupportQuestionMessageController extends Controller
 			$this->authorize('createMessage', $supportQuestion);
 		}
 
+        $latestMessage = $supportQuestion->messages()
+            ->latest()
+            ->first();
+
 		$message = new SupportQuestionMessage($request->all());
+
+		if ($latestMessage instanceof SupportQuestionMessage)
+        {
+            if ($latestMessage->isAuthUserCreator() and $latestMessage->bb_text == $message->bb_text)
+                return back()
+                    ->withErrors(['bb_text' => __('You have already added a message with this text')]);
+        }
 
 		$supportQuestion
 			->messages()

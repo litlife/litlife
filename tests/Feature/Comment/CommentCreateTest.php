@@ -259,4 +259,24 @@ class CommentCreateTest extends TestCase
             $child->create_user, NewCommentReplyNotification::class
         );
     }
+
+    public function testYouLeaveTheSameComments()
+    {
+        $comment = Comment::factory()
+            ->book()
+            ->create();
+
+        $user = $comment->create_user;
+        $user->group->add_comment = true;
+        $user->push();
+
+        $response = $this->actingAs($user)
+            ->post(
+                route('comments.store', ['commentable_type' => 'book', 'commentable_id' => $comment->commentable->id]),
+                ['bb_text' => $comment->bb_text]
+            )
+            ->assertRedirect();
+
+        $response->assertSessionHasErrors(['bb_text' => __('You leave the same comments')]);
+    }
 }

@@ -575,7 +575,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::get('/support', 'SupportQuestionController@support')->name('support');
 	Route::get('/support_questions/{support_question}', 'SupportQuestionController@show')->name('support_questions.show');
-	Route::post('/support_question_messages', 'SupportQuestionMessageController@store')->name('support_question_messages.store');
+	Route::post('/support_question_messages', 'SupportQuestionMessageController@store')->name('support_question_messages.store')->middleware('db.transaction');
 	Route::get('/support_questions/{support_question}/start_review', 'SupportQuestionController@startReview')->name('support_questions.start_review');
 	Route::get('/support_questions/{support_question}/approve', 'SupportQuestionController@approve')->name('support_questions.approve');
 	Route::get('/support_questions/{support_question}/stop_review', 'SupportQuestionController@stopReview')->name('support_questions.stop_review');

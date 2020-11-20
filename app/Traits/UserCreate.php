@@ -35,7 +35,7 @@ trait UserCreate
 			return false;
 	}
 
-	public function isHaveAccess()
+	public function isHaveAccess() :bool
 	{
 		if (($this->isPrivate()) and (!$this->isAuthUserCreator()))
 			return false;
@@ -43,10 +43,9 @@ trait UserCreate
 			return true;
 	}
 
-	public function isAuthUserCreator()
+	public function isAuthUserCreator() :bool
 	{
-		if (auth()->id() == $this->{$this->getCreateUserIdColumn()})
-			return true;
+		return (auth()->id() == $this->{$this->getCreateUserIdColumn()});
 	}
 
 	public function scopeWhereCreator($query, User $user)
