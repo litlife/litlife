@@ -85,4 +85,31 @@ class AuthorManagerCreateTest extends TestCase
 
         $this->assertEquals('Автор', $user->groups()->disableCache()->whereName('Автор')->first()->name);
     }
+
+    public function testCanIfTheRejectedRequestExists()
+    {
+        $admin = User::factory()->create();
+        $admin->group->moderator_add_remove = true;
+        $admin->push();
+
+        $manager = Manager::factory()
+            ->rejected()
+            ->create();
+
+        $user = $manager->user;
+        $author = $manager->manageable;
+
+        $response = $this->actingAs($admin)
+            ->post(route('authors.managers.store', ['author' => $author->id]), [
+                'user_id' => $user->id,
+                'character' => 'author'
+            ])
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        $manager = $author->managers()->first();
+
+        $this->assertNotNull($manager);
+        $this->assertEquals($user->id, $manager->user_id);
+    }
 }

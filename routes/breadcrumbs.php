@@ -1625,3 +1625,7 @@ Breadcrumbs::for('support_questions.index', function ($breadcrumbs) {
 Breadcrumbs::for('support_questions.edit', function ($breadcrumbs, $supportQuestion) {
     $breadcrumbs->push(__('Editing a question'), route('support_questions.edit', $supportQuestion));
 });
+
+Breadcrumbs::for('verifications.show', function ($breadcrumbs, $manager) {
+    $breadcrumbs->push(__('Request for verification'), route('support_questions.edit', $manager));
+});

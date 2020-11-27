@@ -48,6 +48,7 @@ class AuthorManagerController extends Controller
 		], [], __('manager'));
 
 		$count = $author->managers()
+            ->accepted()
 			->where('character', 'author')
 			->count();
 
@@ -96,11 +97,7 @@ class AuthorManagerController extends Controller
 	{
 		$this->authorize('verficationRequest', $author);
 
-		$manager = $author->managers()
-			->where('user_id', auth()->id())
-			->first();
-
-		return view('author.manager.verification', compact('author', 'manager'));
+		return view('author.manager.verification', compact('author'));
 	}
 
 	/**

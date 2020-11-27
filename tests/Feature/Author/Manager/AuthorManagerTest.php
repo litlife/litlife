@@ -19,39 +19,6 @@ class AuthorManagerTest extends TestCase
             ->assertOk();
     }
 
-    public function testVerificationRequestHttp()
-    {
-        $author = Author::factory()->create();
-
-        $user = User::factory()->create();
-        $user->group->author_editor_request = true;
-        $user->push();
-
-        $this->actingAs($user)
-            ->get(route('authors.verification.request', $author))
-            ->assertOk();
-
-        $comment = $this->faker->realText(100);
-
-        $this->actingAs($user)
-            ->post(route('authors.verification.request_save', $author),
-                ['comment' => $comment])
-            ->assertSessionHasNoErrors()
-            ->assertRedirect(route('authors.show', $author))
-            ->assertSessionHas(['success' => __('manager.request_has_been_sent')]);
-
-        $manager = $author->managers()->first();
-
-        $this->assertNotNull($manager);
-        $this->assertEquals($user->id, $manager->create_user_id);
-        $this->assertEquals($user->id, $manager->user_id);
-        $this->assertEquals('author', $manager->character);
-        $this->assertEquals($author->id, $manager->manageable_id);
-        $this->assertEquals('author', $manager->manageable_type);
-        $this->assertEquals($comment, $manager->comment);
-        $this->assertTrue($manager->isSentForReview());
-    }
-
     /*
         public function testEditorRequestHttp()
         {
@@ -87,120 +54,6 @@ class AuthorManagerTest extends TestCase
         }
     */
 
-    public function testAcceptHttp()
-    {
-        Notification::fake();
-
-        $admin = User::factory()->create();
-        $admin->group->author_editor_check = true;
-        $admin->push();
-
-        $manager = Manager::factory()
-            ->character_author()
-            ->review_starts()
-            ->create();
-        $manager->status_changed_user_id = $admin->id;
-        $manager->save();
-        $manager->refresh();
-
-        $this->assertTrue($manager->isReviewStarts());
-        $this->assertEquals('author', $manager->character);
-
-        $this->actingAs($admin)
-            ->get(route('managers.approve', ['manager' => $manager->id]))
-            ->assertRedirect(route('managers.on_check'))
-            ->assertSessionHas(['success' => __('manager.request_approved')]);
-
-        $manager->refresh();
-
-        $this->assertTrue($manager->isAccepted());
-
-        Notification::assertSentTo(
-            $manager->user,
-            AuthorManagerAcceptedNotification::class,
-            function ($notification, $channels) use ($manager) {
-                $this->assertContains('mail', $channels);
-                $this->assertContains('database', $channels);
-
-                $mail = $notification->toMail($manager->user);
-
-                $this->assertEquals(__('notification.author_manager_request_accepted.subject'), $mail->subject);
-                $this->assertEquals(__('notification.author_manager_request_accepted.line', ['author_name' => $manager->manageable->name]),
-                    $mail->introLines[0]);
-                $this->assertEquals(__('notification.author_manager_request_accepted.action'), $mail->actionText);
-                $this->assertEquals(route('authors.show', ['author' => $manager->manageable]), $mail->actionUrl);
-
-                $array = $notification->toArray($manager->user);
-
-                $this->assertEquals(__('notification.author_manager_request_accepted.subject'), $array['title']);
-                $this->assertEquals(__('notification.author_manager_request_accepted.line', ['author_name' => $manager->manageable->name]),
-                    $array['description']);
-                $this->assertEquals(route('authors.show', ['author' => $manager->manageable]), $array['url']);
-
-                return $notification->manager->id == $manager->id;
-            }
-        );
-    }
-
-    public function testRejectHttp()
-    {
-        Notification::fake();
-
-        $admin = User::factory()->create();
-        $admin->group->author_editor_check = true;
-        $admin->push();
-
-        $manager = Manager::factory()
-            ->character_author()
-            ->review_starts()
-            ->create();
-        $manager->status_changed_user_id = $admin->id;
-        $manager->save();
-        $manager->refresh();
-
-        $this->assertTrue($manager->isReviewStarts());
-        $this->assertEquals('author', $manager->character);
-
-        $this->actingAs($admin)
-            ->get(route('managers.decline', ['manager' => $manager->id]))
-            ->assertRedirect(route('managers.on_check'))
-            ->assertSessionHas(['success' => __('manager.declined')]);
-
-        $manager->refresh();
-
-        $this->assertTrue($manager->isRejected());
-
-        $user = $manager->user;
-
-        $this->assertNull($user->groups()->whereName('Автор')->first());
-
-        Notification::assertSentTo(
-            $manager->user,
-            AuthorManagerRejectedNotification::class,
-            function ($notification, $channels) use ($manager) {
-                $this->assertContains('mail', $channels);
-                $this->assertContains('database', $channels);
-
-                $mail = $notification->toMail($manager->user);
-
-                $this->assertEquals(__('notification.author_manager_request_rejected.subject'), $mail->subject);
-                $this->assertEquals(__('notification.author_manager_request_rejected.line', ['author_name' => $manager->manageable->name]),
-                    $mail->introLines[0]);
-                $this->assertEquals(__('notification.author_manager_request_rejected.action'), $mail->actionText);
-                $this->assertEquals(route('authors.show', ['author' => $manager->manageable]), $mail->actionUrl);
-
-                $array = $notification->toArray($manager->user);
-
-                $this->assertEquals(__('notification.author_manager_request_rejected.subject'), $array['title']);
-                $this->assertEquals(__('notification.author_manager_request_rejected.line', ['author_name' => $manager->manageable->name]),
-                    $array['description']);
-                $this->assertEquals(route('authors.show', ['author' => $manager->manageable]), $array['url']);
-
-                return $notification->manager->id == $manager->id;
-            }
-        );
-    }
-
     public function testProfitPercentAttribute()
     {
         $comission = rand(10, 90);
@@ -230,97 +83,6 @@ class AuthorManagerTest extends TestCase
 
         $this->assertFalse($manager->isAuthorCharacter());
         $this->assertTrue($manager->isEditorCharacter());
-    }
-
-    public function testAttachAuthorUserGroupOnApprove()
-    {
-        $admin = User::factory()->admin()->create();
-
-        $manager = Manager::factory()
-            ->character_author()
-            ->review_starts()
-            ->create();
-
-        $manager->status_changed_user_id = $admin->id;
-        $manager->save();
-        $manager->refresh();
-
-        $this->actingAs($admin)
-            ->get(route('managers.approve', ['manager' => $manager->id]))
-            ->assertRedirect(route('managers.on_check'))
-            ->assertSessionHas(['success' => __('manager.request_approved')]);
-
-        $manager->refresh();
-
-        $this->assertTrue($manager->isAccepted());
-
-        $user = $manager->user;
-
-        $this->assertEquals('Автор', $user->groups()->disableCache()->whereName('Автор')->first()->name);
-    }
-
-    public function testDetachAuthorUserGroupOnManagerDelete()
-    {
-        $admin = User::factory()->admin()->create();
-
-        $manager = Manager::factory()
-            ->character_author()
-            ->accepted()
-            ->create();
-
-        $user = $manager->user;
-        $user->attachUserGroupByNameIfExists('Автор');
-
-        $this->assertEquals('Автор', $user->groups()->disableCache()->whereName('Автор')->first()->name);
-        $this->assertEquals(2, $user->groups()->disableCache()->count());
-
-        $this->actingAs($admin)
-            ->get(route('managers.destroy', ['manager' => $manager->id]))
-            ->assertRedirect();
-
-        $manager->refresh();
-        $user->refresh();
-
-        $this->assertSoftDeleted($manager);
-        $this->assertNull($user->groups()->disableCache()->whereName('Автор')->first());
-        $this->assertEquals(1, $user->groups()->disableCache()->count());
-    }
-
-    public function testStartReview()
-    {
-        $admin = User::factory()->admin()->create();
-
-        $manager = Manager::factory()->sent_for_review()->create();
-
-        $this->actingAs($admin)
-            ->get(route('managers.start_review', $manager))
-            ->assertRedirect();
-
-        $manager->refresh();
-
-        $this->assertTrue($manager->isReviewStarts());
-    }
-
-    public function testStopReview()
-    {
-        $admin = User::factory()->admin()->create();
-
-        $manager = Manager::factory()->review_starts()->create();
-        $manager->status_changed_user_id = $admin->id;
-        $manager->save();
-        $manager->refresh();
-
-        $this->assertNotNull($manager->status_changed_user_id);
-
-        $this->assertTrue($manager->isReviewStarts());
-
-        $this->actingAs($admin)
-            ->get(route('managers.stop_review', $manager))
-            ->assertRedirect();
-
-        $manager->refresh();
-
-        $this->assertTrue($manager->isSentForReview());
     }
 
     public function testPolicyIsCantStartReviewIfAlreadyReviewStarts()
@@ -431,30 +193,6 @@ class AuthorManagerTest extends TestCase
         $this->assertTrue($admin->can('stopReview', $manager));
     }
 
-    public function testSentVerificationRequestIfAuthorPrivate()
-    {
-        $author = Author::factory()->private()->create();
-
-        $user = $author->create_user;
-        $user->group->author_editor_request = true;
-        $user->push();
-
-        $comment = $this->faker->realText(300);
-
-        $this->actingAs($user)
-            ->post(route('authors.verification.request_save', $author), [
-                'comment' => $comment
-            ])
-            ->assertSessionHasNoErrors()
-            ->assertRedirect()
-            ->assertSessionHas(['success' => __('manager.request_is_saved_and_will_be_sent_for_review_after_the_authors_publication')]);
-
-        $manager = $author->managers()->first();
-
-        $this->assertNotNull($manager);
-        $this->assertTrue($manager->isPrivate());
-    }
-
     /*
         public function testSentEditorRequestIfAuthorPrivate()
         {
@@ -512,41 +250,6 @@ class AuthorManagerTest extends TestCase
         $this->assertFalse($admin->can('startReview', $manager));
     }
 
-
-    public function testSalesDisableHttp()
-    {
-        $author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
-
-        $manager = $author->managers()->first();
-        $book = $author->books()->first();
-        $seller = $manager->user;
-        $book->create_user_id = $seller->id;
-        $book->save();
-        $book->refresh();
-
-        $user = User::factory()->create();
-
-        $this->assertFalse($user->can('read', $book));
-        $this->assertTrue($user->can('buy', $book));
-        $this->assertTrue($seller->can('sell', $book));
-
-        $admin = User::factory()->admin()->create();
-
-        $this->actingAs($admin)
-            ->get(route('authors.sales.disable', $author))
-            ->assertRedirect(route('authors.show', $author))
-            ->assertSessionHas(['success' => __('manager.ability_to_sell_books_for_the_author_is_disabled')]);
-
-        $manager->refresh();
-        $book->refresh();
-
-        $this->assertFalse($user->can('buy', $book));
-        $this->assertFalse($seller->can('sell', $book));
-        $this->assertFalse($manager->can_sale);
-        $this->assertEquals(0, $book->price);
-        $this->assertFalse($user->can('read', $book));
-    }
-
     public function testCantSalesDisableIfNoPermissions()
     {
         $author = Author::factory()->with_author_manager_can_sell()->with_book_for_sale()->create();
@@ -568,39 +271,6 @@ class AuthorManagerTest extends TestCase
 
         $this->assertFalse($admin->can('salesDisable', $author));
     }
-
-    public function testRemoveSaleRequestIfManagerDestroyed()
-    {
-        $admin = User::factory()->admin()->create();
-
-        $manager = Manager::factory()
-            ->character_author()
-            ->accepted()
-            ->create();
-
-        $user = $manager->user;
-        $author = $manager->manageable;
-
-        $saleRequest = AuthorSaleRequest::factory()
-            ->sent_for_review()
-            ->create([
-                'create_user_id' => $user,
-                'manager_id' => $manager->id,
-                'author_id' => $author->id
-            ]);
-
-        $this->actingAs($admin)
-            ->get(route('managers.destroy', ['manager' => $manager->id]))
-            ->assertRedirect();
-
-        $manager->refresh();
-        $user->refresh();
-        $saleRequest->refresh();
-
-        $this->assertSoftDeleted($manager);
-        $this->assertSoftDeleted($saleRequest);
-    }
-
 
     public function testCanStartReviewIfAuthorDeleted()
     {
@@ -745,46 +415,5 @@ class AuthorManagerTest extends TestCase
         $manager->save();
 
         $this->assertFalse($book->isUserVerifiedAuthorOfBook($user));
-    }
-
-    public function testCantChangeSiLPPublishFieldsIfBookAccepted()
-    {
-        $author = Author::factory()
-            ->with_author_manager()
-            ->with_si_book()
-            ->create();
-
-        $manager = $author->managers()->first();
-        $book = $author->books()->first();
-        $user = $manager->user;
-
-        $this->actingAs($user)
-            ->get(route('books.edit', $book))
-            ->assertOk()
-            ->assertViewHas(['cantEditSiLpPublishFields' => true]);
-
-        $post = [
-            'title' => $book->title,
-            'genres' => [$book->genres()->first()->id],
-            'writers' => [$book->writers()->first()->id],
-            'ti_lb' => 'RU',
-            'ti_olb' => 'RU',
-            'ready_status' => 'complete',
-            'is_si' => false,
-            'is_lp' => false,
-            'pi_pub' => $this->faker->realText(50),
-            'pi_city' => $this->faker->realText(50)
-        ];
-
-        $this->actingAs($user)
-            ->patch(route('books.update', $book), $post)
-            ->assertRedirect()
-            ->assertSessionHasNoErrors();
-
-        $book->refresh();
-
-        $this->assertTrue($book->is_si);
-        $this->assertEmpty($book->pi_pub);
-        $this->assertEmpty($book->pi_city);
     }
 }

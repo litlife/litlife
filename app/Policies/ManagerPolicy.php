@@ -25,9 +25,8 @@ class ManagerPolicy extends Policy
      */
     public function view(User $auth_user, Manager $manager)
     {
-        if ($auth_user->id == $manager->user_id) {
+        if ($auth_user->id == $manager->user_id)
             return true;
-        }
 
         return (boolean) $auth_user->getPermission('moderator_add_remove');
     }

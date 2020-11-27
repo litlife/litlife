@@ -340,11 +340,7 @@ class AuthorPolicy extends Policy
 
             if ($manager->user_id == $auth_user->id) {
                 if ($manager->isSentForReview()) {
-                    return false;
-                }
-
-                if ($manager->isPrivate()) {
-                    return false;
+                    return $this->deny(__('The verification request is waiting for review'));
                 }
             }
         }

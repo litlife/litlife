@@ -195,4 +195,9 @@ class Manager extends Model
     {
         return $query->where('character', 'editor');
     }
+
+    public function isCreateUserIsSameAsUser() :bool
+    {
+        return $this->create_user_id == $this->user_id;
+    }
 }

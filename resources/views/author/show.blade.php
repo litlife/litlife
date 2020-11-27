@@ -124,13 +124,6 @@
 											</a>
 										@endcan
 
-										@can ('delete', $managers->where('user_id', auth()->id())->first())
-											<a class="dropdown-item text-lowercase"
-											   href="{{ route('managers.destroy', $managers->where('user_id', auth()->id())->first()) }}">
-												{{ __('author.stop_edit') }}
-											</a>
-										@endcan
-
 										@can ('restore', $author)
 											<a class="dropdown-item text-lowercase"
 											   href="{{ route('authors.delete', $author) }}">
@@ -256,39 +249,21 @@
 						@if (!$author->trashed())
 							<div class="row mb-3">
 								<div class="col-12">
-									@if ($manager = $managers->where('user_id', auth()->id())->first())
-										@if ($manager->isSentForReview())
 
-											@if ($manager->isAuthorCharacter())
-												<div class="alert alert-warning" role="alert">
-													{{ __('manager.request_on_review') }}
-													<a class="btn btn-sm btn-light"
-													   href="{{ route('managers.destroy', $manager) }}">{{ __('common.delete') }}</a>
-												</div>
-											@elseif ($manager->isEditorCharacter())
-												<div class="alert alert-warning" role="alert">
-													{{ __('manager.request_on_review') }}
-													<a class="btn btn-sm btn-light"
-													   href="{{ route('managers.destroy', $manager) }}">{{ __('common.delete') }}</a>
-												</div>
-											@endif
+									@can ('verficationRequest', $author)
+										@if (optional(auth()->user())->isNameMatchesAuthorName($author))
+											<a class="btn btn-primary"
+											   href="{{ route('authors.verification.request', ['author' => $author]) }}">
+												{{ __('author.iam_the_author') }}
+											</a>
+										@else
+											<a class="btn btn-light"
+											   href="{{ route('authors.verification.request', ['author' => $author]) }}">
+												{{ __('author.iam_the_author') }}
+											</a>
 										@endif
-									@else
-										@can ('verficationRequest', $author)
-											@if (optional(auth()->user())->isNameMatchesAuthorName($author))
-												<a class="btn btn-primary"
-												   href="{{ route('authors.verification.request', ['author' => $author]) }}">
-													{{ __('author.iam_the_author') }}
-												</a>
-											@else
-												<a class="btn btn-light"
-												   href="{{ route('authors.verification.request', ['author' => $author]) }}">
-													{{ __('author.iam_the_author') }}
-												</a>
-											@endif
-										@endcan
-									@endif
-
+									@endcan
+			
 									@if (!$author->isPrivate())
 
 										@can('create', \App\AuthorRepeat::class)

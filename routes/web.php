@@ -152,7 +152,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/authors/{author}/editor/request', 'AuthorManagerController@editorRequest')->name('authors.editor.request');
 	Route::post('/authors/{author}/editor/request', 'AuthorManagerController@editorRequestSave')->name('authors.editor.request_save');
 
-	Route::get('/managers/{manager}', 'AuthorManagerController@show')->name('managers.show');
+	Route::get('/verifications/{manager}', 'AuthorManagerController@show')->name('verifications.show');
 
 	Route::get('/authors/{author}/sales/request', 'AuthorManagerController@salesRequestForm')->name('authors.sales.request');
 	Route::post('/authors/{author}/sales/request', 'AuthorManagerController@salesRequestStore')->name('authors.sales.store');

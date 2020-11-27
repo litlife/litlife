@@ -167,5 +167,15 @@
   "Guide": "Путеводитель",
   "Forum": "Форум",
   "You leave the same comments": "Вы оставляете одинаковые комментарии",
-  "You have already added a message with this text": "Вы уже добавили сообщение с таким текстом"
+  "You have already added a message with this text": "Вы уже добавили сообщение с таким текстом",
+  "The verification request is waiting for review": "Запрос на верификацию ожидает рассмотрения",
+  "Request for verification": "Заявка на верификацию",
+  "The request was processed by": "Заявку обработал",
+  "The request was sent by": "Заявку отправил",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": "",
+  "": ""
 }

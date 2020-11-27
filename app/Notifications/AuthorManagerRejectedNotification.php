@@ -58,7 +58,7 @@ class AuthorManagerRejectedNotification extends Notification
 			->subject(__('notification.author_manager_request_rejected.subject'))
 			->greeting(__('notification.greeting') . ', ' . $notifiable->userName . '!')
 			->line(__('notification.author_manager_request_rejected.line', ['author_name' => $this->manager->manageable->name]))
-			->action(__('notification.author_manager_request_rejected.action'), route('authors.show', ['author' => $this->manager->manageable]));
+			->action(__('notification.author_manager_request_rejected.action'), route('verifications.show', ['manager' => $this->manager]));
 	}
 
 	/**
@@ -72,7 +72,7 @@ class AuthorManagerRejectedNotification extends Notification
 		return [
 			'title' => __('notification.author_manager_request_rejected.subject'),
 			'description' => __('notification.author_manager_request_rejected.line', ['author_name' => $this->manager->manageable->name]),
-			'url' => route('authors.show', ['author' => $this->manager->manageable])
+			'url' => route('verifications.show', ['manager' => $this->manager])
 		];
 	}
 }

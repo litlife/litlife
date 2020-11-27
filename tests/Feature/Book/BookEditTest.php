@@ -843,4 +843,45 @@ class BookEditTest extends TestCase
 
         $this->assertTrue($genre->is($book->genres()->first()));
     }
+
+    public function testCantChangeSiLPPublishFieldsIfBookAccepted()
+    {
+        $author = Author::factory()
+            ->with_author_manager()
+            ->with_si_book()
+            ->create();
+
+        $manager = $author->managers()->first();
+        $book = $author->books()->first();
+        $user = $manager->user;
+
+        $this->actingAs($user)
+            ->get(route('books.edit', $book))
+            ->assertOk()
+            ->assertViewHas(['cantEditSiLpPublishFields' => true]);
+
+        $post = [
+            'title' => $book->title,
+            'genres' => [$book->genres()->first()->id],
+            'writers' => [$book->writers()->first()->id],
+            'ti_lb' => 'RU',
+            'ti_olb' => 'RU',
+            'ready_status' => 'complete',
+            'is_si' => false,
+            'is_lp' => false,
+            'pi_pub' => $this->faker->realText(50),
+            'pi_city' => $this->faker->realText(50)
+        ];
+
+        $this->actingAs($user)
+            ->patch(route('books.update', $book), $post)
+            ->assertRedirect()
+            ->assertSessionHasNoErrors();
+
+        $book->refresh();
+
+        $this->assertTrue($book->is_si);
+        $this->assertEmpty($book->pi_pub);
+        $this->assertEmpty($book->pi_city);
+    }
 }
