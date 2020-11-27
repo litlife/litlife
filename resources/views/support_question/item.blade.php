@@ -20,6 +20,12 @@
 			<a href="{{ route('support_questions.show', $item) }}">
 				{{ $item->title }}
 			</a>
+
+			@if ($item->isReviewStarts())
+				@if ($item->isLatestMessageByCreatedUser())
+					<span class="badge badge-primary">{{ __('Has answer') }}</span>
+				@endif
+			@endif
 		</h6>
 
 		<div class="status">

@@ -14,7 +14,9 @@ class SupportQuestionUnansweredTest extends TestCase
         $user->group->reply_to_support_service = true;
         $user->push();
 
-        $request = SupportQuestion::factory()->with_message()->create();
+        $request = SupportQuestion::factory()
+            ->with_message()
+            ->create();
 
         $this->actingAs($user)
             ->get(route('support_questions.unsolved'))

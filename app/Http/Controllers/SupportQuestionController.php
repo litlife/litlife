@@ -18,6 +18,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tests\Feature\SupportQuestion\SupportQuestionStoreTest;
+use Illuminate\Database\Eloquent\Builder;
 
 class SupportQuestionController extends Controller
 {
@@ -71,7 +72,7 @@ class SupportQuestionController extends Controller
 		$this->authorize('view_index', SupportQuestion::class);
 
 		$supportQuestions = SupportQuestion::whereStatusIn(['OnReview'])
-			->with('create_user.avatar', 'latest_message.create_user.avatar')
+			->with('create_user.avatar', 'latest_message.create_user.avatar', 'status_changed_user')
 			->oldest()
 			->simplePaginate();
 
@@ -89,8 +90,13 @@ class SupportQuestionController extends Controller
 		$this->authorize('view_index', SupportQuestion::class);
 
 		$supportQuestions = SupportQuestion::whereStatusIn(['ReviewStarts'])
-			->with('create_user.avatar', 'latest_message.create_user.avatar')
-			->oldest()
+			->with('create_user.avatar', 'latest_message.create_user.avatar', 'status_changed_user')
+			->orderByDesc(
+                SupportQuestionMessage::select('created_at')
+                    ->whereColumn('support_question_id', 'support_questions.id')
+                    ->whereColumn('support_questions.create_user_id', 'support_question_messages.create_user_id')
+                    ->limit(1)
+            )
 			->simplePaginate();
 
 		return view('support_question.index', ['supportQuestions' => $supportQuestions]);
@@ -107,7 +113,7 @@ class SupportQuestionController extends Controller
 		$this->authorize('view_index', SupportQuestion::class);
 
 		$supportQuestions = SupportQuestion::latest()
-			->with('create_user.avatar', 'latest_message.create_user.avatar', 'feedback')
+			->with('create_user.avatar', 'latest_message.create_user.avatar', 'feedback', 'status_changed_user')
 			->accepted()
 			->simplePaginate();
 

@@ -199,7 +199,8 @@ class SupportQuestion extends Model
 
     public function isLatestMessageByCreatedUser(): bool
     {
-        return $this->create_user->is($this->latest_message->create_user);
+        return optional($this->create_user)
+            ->is(optional($this->latest_message)->create_user);
     }
 
     public function setTitleAttribute($value)
