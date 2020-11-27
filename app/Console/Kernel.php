@@ -155,6 +155,7 @@ class Kernel extends ConsoleKernel
 		Commands\Book\BookDeleteAllPagesWhereSectionWasNotFouncCommand::class,
 
 		Commands\Fix\CorrectionOfBookIDForComments::class,
+        Commands\AutoSolveSupportQuestion::class,
 	];
 
 	/**
@@ -236,6 +237,9 @@ class Kernel extends ConsoleKernel
 
 		$schedule->command('refresh:keywords')
 			->dailyAt('4:20');
+
+        $schedule->command('support_question:solve', ['days' => 7])
+            ->dailyAt('5:20');
 
 		//$schedule->command('bookfiles:deleteting_old')->hourly();
 
