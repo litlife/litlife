@@ -627,10 +627,11 @@ Route::resource('topics', 'TopicController', ['only' => ['show']]);
 
 Route::get('/auth/{provider}', 'UserSocialAccountController@redirectToProvider')
 	->name('social_accounts.redirect')
-	->where('provider', '(google|facebook|vkontakte)');
+	->where('provider', '(google|facebook|vkontakte|yandex)');
+
 Route::get('/auth/{provider}/callback', 'UserSocialAccountController@handleProviderCallback')
 	->name('social_accounts.callback')
-	->where('provider', '(google|facebook|vkontakte)');
+	->where('provider', '(google|facebook|vkontakte|yandex)');
 
 Route::get('/books/{book}/awards', 'BookAwardController@index')->name('books.awards.index');
 Route::resource('books.sections', 'SectionController', ['only' => ['index', 'show']]);

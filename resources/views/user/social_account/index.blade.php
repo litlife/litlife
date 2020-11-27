@@ -17,7 +17,7 @@
 						<table class="table table-striped">
 							<tr>
 								<td>
-									Google Plus
+									{{ __('Google') }}
 								</td>
 								<td>
 									@if (empty($account = $user->social_accounts->where('provider', 'google')->first()))
@@ -49,7 +49,7 @@
 
 							<tr>
 								<td>
-									Facebook
+									{{ __('Facebook') }}
 								</td>
 								<td>
 									@if (empty($account = $user->social_accounts->where('provider', 'facebook')->first()))
@@ -81,12 +81,44 @@
 
 							<tr>
 								<td>
-									Вконтакте
+									{{ __('Vk') }}
 								</td>
 								<td>
 									@if (empty($account = $user->social_accounts->where('provider', 'vkontakte')->first()))
 										<a class="btn btn-light"
 										   href="{{ route('social_accounts.redirect', ['provider' => 'vkontakte']) }}">
+											{{ __('user.social_accounts_array.bind') }}
+										</a>
+									@else
+										{{ __('user.social_accounts_array.binded') }}
+
+										<div class="btn-group">
+											<button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+													data-toggle="dropdown"
+													aria-haspopup="true"
+													aria-expanded="false">
+												<i class="fas fa-ellipsis-h"></i>
+											</button>
+											<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+												<a class="dropdown-item"
+												   href="{{ route('users.social_accounts.detach', ['user' => $user->id, 'id' => $account->id]) }}">
+													{{ __('user.social_accounts_array.unbind') }}
+												</a>
+											</div>
+										</div>
+
+									@endif
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									{{ __('Yandex') }}
+								</td>
+								<td>
+									@if (empty($account = $user->social_accounts->where('provider', 'yandex')->first()))
+										<a class="btn btn-light"
+										   href="{{ route('social_accounts.redirect', ['provider' => 'yandex']) }}">
 											{{ __('user.social_accounts_array.bind') }}
 										</a>
 									@else

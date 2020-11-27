@@ -173,9 +173,9 @@
   "The request was processed by": "Заявку обработал",
   "The request was sent by": "Заявку отправил",
   "Has answer": "Есть ответ",
-  "": "",
-  "": "",
-  "": "",
-  "": "",
+  "Yandex": "Яндекс",
+  "Vk": "Вконтакте",
+  "Google": "Гугл",
+  "Facebook": "Фейсбук",
   "": ""
 }

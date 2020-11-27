@@ -21,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
 			'SocialiteProviders\Google\GoogleExtendSocialite@handle',
 			'SocialiteProviders\VKontakte\VKontakteExtendSocialite@handle',
 			'SocialiteProviders\Facebook\FacebookExtendSocialite@handle',
+            'SocialiteProviders\\Yandex\\YandexExtendSocialite@handle',
 		],
 
 		'App\Events\BookRatingChanged' => [

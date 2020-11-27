@@ -53,7 +53,7 @@
 			<i class="fab fa-google-plus-g"></i>
 		</div>
 		<div class="w-100 text-truncate">
-			{{ __('auth.social_account', ['social_network' => 'Google']) }}
+			{{ __('auth.social_account', ['social_network' => __('Google')]) }}
 		</div>
 	</a>
 
@@ -63,7 +63,17 @@
 			<i class="fab fa-facebook-f"></i>
 		</div>
 		<div class="w-100 text-truncate">
-			{{ __('auth.social_account', ['social_network' => 'Facebook']) }}
+			{{ __('auth.social_account', ['social_network' => __('Facebook')]) }}
+		</div>
+	</a>
+
+	<a href="{{ route('social_accounts.redirect', ['provider' => 'yandex']) }}"
+	   class="btn btn-sm btn-block d-flex background-color-yandex color-white">
+		<div class="flex-shrink-1 mr-2">
+			<i class="fab fa-yandex"></i>
+		</div>
+		<div class="w-100 text-truncate">
+			{{ __('auth.social_account', ['social_network' => __('Yandex')]) }}
 		</div>
 	</a>
 
@@ -73,7 +83,7 @@
 			<i class="fab fa-vk"></i>
 		</div>
 		<div class="w-100 text-truncate">
-			{{ __('auth.social_account', ['social_network' => 'Vk']) }}
+			{{ __('auth.social_account', ['social_network' => __('Vk')]) }}
 		</div>
 	</a>
 
