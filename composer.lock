@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4cb53c60217dc87aa02d17262c1ae4a2",
+    "content-hash": "ca865df1e1bc437ee9f9476cb0171e19",
     "packages": [
         {
             "name": "anhskohbo/no-captcha",
@@ -754,16 +754,16 @@
         },
         {
             "name": "clue/socket-raw",
-            "version": "v1.4.1",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/clue/php-socket-raw.git",
-                "reference": "00ab102d061f6cdb895e79dd4d69140c7bda31cc"
+                "reference": "089ffa05fa75bdc4e919aac44bbc435b3ef640ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clue/php-socket-raw/zipball/00ab102d061f6cdb895e79dd4d69140c7bda31cc",
-                "reference": "00ab102d061f6cdb895e79dd4d69140c7bda31cc",
+                "url": "https://api.github.com/repos/clue/php-socket-raw/zipball/089ffa05fa75bdc4e919aac44bbc435b3ef640ef",
+                "reference": "089ffa05fa75bdc4e919aac44bbc435b3ef640ef",
                 "shasum": ""
             },
             "require": {
@@ -771,7 +771,7 @@
                 "php": ">=5.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "^7.0 || ^6.0 || ^5.2 || ^4.8.35"
+                "phpunit/phpunit": "^9.3 || ^5.7 || ^4.8.35"
             },
             "type": "library",
             "autoload": {
@@ -789,7 +789,7 @@
                     "email": "christian@clue.engineering"
                 }
             ],
-            "description": "Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets)",
+            "description": "Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets).",
             "homepage": "https://github.com/clue/php-socket-raw",
             "keywords": [
                 "Socket",
@@ -805,7 +805,17 @@
                 "udp",
                 "unix"
             ],
-            "time": "2019-10-28T12:32:07+00:00"
+            "funding": [
+                {
+                    "url": "https://clue.engineering/support",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-11-27T13:16:18+00:00"
         },
         {
             "name": "coderello/laravel-shared-data",
@@ -6714,21 +6724,22 @@
         },
         {
             "name": "socialiteproviders/facebook",
-            "version": "v1.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Facebook.git",
-                "reference": "c89d5fa4c770c9e1ec0e472ccb7dd7353a199619"
+                "reference": "1e75925276eebae5ebbcbbfb6e1d9d47b285a12d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Facebook/zipball/c89d5fa4c770c9e1ec0e472ccb7dd7353a199619",
-                "reference": "c89d5fa4c770c9e1ec0e472ccb7dd7353a199619",
+                "url": "https://api.github.com/repos/SocialiteProviders/Facebook/zipball/1e75925276eebae5ebbcbbfb6e1d9d47b285a12d",
+                "reference": "1e75925276eebae5ebbcbbfb6e1d9d47b285a12d",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~3.0"
+                "ext-json": "*",
+                "php": "^7.2",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -6747,26 +6758,26 @@
                 }
             ],
             "description": "Facebook (facebook.com) OAuth2 Provider for Laravel Socialite",
-            "time": "2019-01-11T19:47:04+00:00"
+            "time": "2020-10-25T22:31:20+00:00"
         },
         {
             "name": "socialiteproviders/google",
-            "version": "v3.1.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Google-Plus.git",
-                "reference": "32de376b9ae29765c09f8e4a4ea022154605231b"
+                "reference": "e3ac3e1991331286603262afec0f972891801652"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Google-Plus/zipball/32de376b9ae29765c09f8e4a4ea022154605231b",
-                "reference": "32de376b9ae29765c09f8e4a4ea022154605231b",
+                "url": "https://api.github.com/repos/SocialiteProviders/Google-Plus/zipball/e3ac3e1991331286603262afec0f972891801652",
+                "reference": "e3ac3e1991331286603262afec0f972891801652",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.0 || ~3.0"
+                "php": "^7.2",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -6785,20 +6796,20 @@
                 }
             ],
             "description": "Google OAuth2 Provider for Laravel Socialite",
-            "time": "2020-07-14T02:02:00+00:00"
+            "time": "2020-10-25T22:31:20+00:00"
         },
         {
             "name": "socialiteproviders/manager",
-            "version": "v3.6",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Manager.git",
-                "reference": "fc8dbcf0061f12bfe0cc347e9655af932860ad36"
+                "reference": "ecd506bc798ca0e8823668ca17a30c7ef08f65fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/fc8dbcf0061f12bfe0cc347e9655af932860ad36",
-                "reference": "fc8dbcf0061f12bfe0cc347e9655af932860ad36",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/ecd506bc798ca0e8823668ca17a30c7ef08f65fa",
+                "reference": "ecd506bc798ca0e8823668ca17a30c7ef08f65fa",
                 "shasum": ""
             },
             "require": {
@@ -6848,26 +6859,26 @@
             ],
             "description": "Easily add new or override built-in providers in Laravel Socialite.",
             "homepage": "https://socialiteproviders.com/",
-            "time": "2020-09-08T10:41:06+00:00"
+            "time": "2020-10-20T22:15:02+00:00"
         },
         {
             "name": "socialiteproviders/vkontakte",
-            "version": "v4.1.0",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/VKontakte.git",
-                "reference": "81f4b79c47c4c6aba8f1f2685dddeb0505f1e71a"
+                "reference": "a1090d616109060247da9261399181cf7fdf1e47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/VKontakte/zipball/81f4b79c47c4c6aba8f1f2685dddeb0505f1e71a",
-                "reference": "81f4b79c47c4c6aba8f1f2685dddeb0505f1e71a",
+                "url": "https://api.github.com/repos/SocialiteProviders/VKontakte/zipball/a1090d616109060247da9261399181cf7fdf1e47",
+                "reference": "a1090d616109060247da9261399181cf7fdf1e47",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.0 || ~3.0"
+                "php": "^7.2",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -6886,7 +6897,45 @@
                 }
             ],
             "description": "VKontakte OAuth2 Provider for Laravel Socialite",
-            "time": "2019-12-08T14:15:15+00:00"
+            "time": "2020-10-25T22:31:20+00:00"
+        },
+        {
+            "name": "socialiteproviders/yandex",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Yandex.git",
+                "reference": "c02385fd57e1315bd107b343b459b8daa4f3a450"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Yandex/zipball/c02385fd57e1315bd107b343b459b8daa4f3a450",
+                "reference": "c02385fd57e1315bd107b343b459b8daa4f3a450",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.2",
+                "socialiteproviders/manager": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Yandex\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Faust",
+                    "email": "hello@brianfaust.de"
+                }
+            ],
+            "description": "Yandex OAuth2 Provider for Laravel Socialite",
+            "time": "2020-10-25T22:31:20+00:00"
         },
         {
             "name": "spatie/laravel-activitylog",
@@ -12354,16 +12403,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.10",
+            "version": "8.5.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "ebd3963f9ba330f98a8fe6ccf5390839e868af75"
+                "reference": "3123601e3b29339b20129acc3f989cfec3274566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ebd3963f9ba330f98a8fe6ccf5390839e868af75",
-                "reference": "ebd3963f9ba330f98a8fe6ccf5390839e868af75",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3123601e3b29339b20129acc3f989cfec3274566",
+                "reference": "3123601e3b29339b20129acc3f989cfec3274566",
                 "shasum": ""
             },
             "require": {
@@ -12379,7 +12428,7 @@
                 "phar-io/version": "^2.0.1",
                 "php": "^7.2",
                 "phpspec/prophecy": "^1.10.3",
-                "phpunit/php-code-coverage": "^7.0.11",
+                "phpunit/php-code-coverage": "^7.0.12",
                 "phpunit/php-file-iterator": "^2.0.2",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^2.1.2",
@@ -12443,7 +12492,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-27T05:24:14+00:00"
+            "time": "2020-11-27T12:46:45+00:00"
         },
         {
             "name": "psr/cache",
