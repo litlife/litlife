@@ -34,6 +34,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|DatabaseNotification whereType($value)
  * @method static Builder|DatabaseNotification whereUpdatedAt($value)
  * @mixin Eloquent
+ * @method static Builder|DatabaseNotification read()
+ * @method static Builder|DatabaseNotification unread()
  */
 class DatabaseNotification extends \Illuminate\Notifications\DatabaseNotification
 {
