@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\AuthorManager;
+namespace Tests\Feature\Author\Manager;
 
 use App\AuthorSaleRequest;
 use App\Manager;
