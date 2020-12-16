@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class FeedbackSupportResponsesSeeder extends Seeder
+class BookTextProcessingSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.

@@ -11,7 +11,9 @@ class CreateSiteAccountIfNotExistsJobTest extends TestCase
     public function testCreateSiteAccount()
     {
         $user = User::find(config('app.user_id'));
-        $user->forceDelete();
+
+        if (!empty($user))
+            $user->forceDelete();
 
         dispatch(new CreateSiteAccountIfNotExists());
 

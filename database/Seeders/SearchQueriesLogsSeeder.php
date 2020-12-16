@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class UserSearchSettingSeeder extends Seeder
+class SearchQueriesLogsSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.

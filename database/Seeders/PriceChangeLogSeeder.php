@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class SupportQuestionSeeder extends Seeder
+class PriceChangeLogSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.

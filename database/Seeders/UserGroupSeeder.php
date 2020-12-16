@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\UserGroup;
 use Illuminate\Database\Seeder;
 

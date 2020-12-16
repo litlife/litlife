@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Genre;
 use Illuminate\Database\Seeder;
 
 class GenreSeeder extends Seeder
@@ -14,7 +17,7 @@ class GenreSeeder extends Seeder
 		$array = [
 			[
 				'name' => 'Фантастика и Фэнтези',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Космоопера', 'fb2_code' => 'sf_space_opera', 'age' => '0'],
 					['name' => 'Мистика', 'fb2_code' => 'sf_mystic', 'age' => '0'],
 					['name' => 'Ненаучная фантастика', 'fb2_code' => 'nsf', 'age' => '0'],
@@ -47,7 +50,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Проза',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Историческая проза', 'fb2_code' => 'prose_history', 'age' => '0'],
 					['name' => 'Классическая проза', 'fb2_code' => 'prose_classic', 'age' => '0'],
 					['name' => 'Эссе, очерк, этюд, набросок', 'fb2_code' => 'essay', 'age' => '0'],
@@ -73,7 +76,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Любовные романы',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Эротика', 'fb2_code' => 'love_erotica', 'age' => '18'],
 					['name' => 'Любовно-фантастические романы', 'fb2_code' => 'love_sf', 'age' => '0'],
 					['name' => 'Остросюжетные любовные романы', 'fb2_code' => 'love_detective', 'age' => '0'],
@@ -88,7 +91,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Научно-образовательная',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Геология и география', 'fb2_code' => 'sci_geo', 'age' => '0'],
 					['name' => 'Альтернативная медицина', 'fb2_code' => 'sci_medicine_alternative', 'age' => '0'],
 					['name' => 'Литературоведение', 'fb2_code' => 'sci_philology', 'age' => '0'],
@@ -132,7 +135,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Детективы и Триллеры',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Триллеры', 'fb2_code' => 'thriller', 'age' => '0'],
 					['name' => 'Шпионские детективы', 'fb2_code' => 'det_espionage', 'age' => '0'],
 					['name' => 'Дамский детективный роман', 'fb2_code' => 'det_cozy', 'age' => '0'],
@@ -153,7 +156,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Документальная литература',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Научпоп', 'fb2_code' => 'sci_popular', 'age' => '0'],
 					['name' => 'Публицистика', 'fb2_code' => 'nonf_publicism', 'age' => '0'],
 					['name' => 'Биографии и мемуары', 'fb2_code' => 'nonf_biography', 'age' => '0'],
@@ -165,7 +168,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Детские',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Сказки', 'fb2_code' => 'child_tale', 'age' => '0'],
 					['name' => 'Детская образовательная литература', 'fb2_code' => 'child_education', 'age' => '0'],
 					['name' => 'Детский фольклор', 'fb2_code' => 'child_folklore', 'age' => '0'],
@@ -180,7 +183,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Приключения',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Вестерны', 'fb2_code' => 'adv_western', 'age' => '0'],
 					['name' => 'Приключения про индейцев', 'fb2_code' => 'adv_indian', 'age' => '0'],
 					['name' => 'Морские приключения', 'fb2_code' => 'adv_maritime', 'age' => '0'],
@@ -192,7 +195,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Дом и Семья',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Хобби и ремесла', 'fb2_code' => 'home_crafts', 'age' => '0'],
 					['name' => 'Сад и Огород', 'fb2_code' => 'home_garden', 'age' => '0'],
 					['name' => 'Спорт', 'fb2_code' => 'home_sport', 'age' => '0'],
@@ -208,7 +211,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Поэзия и драматургия',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Эпическая поэзия', 'fb2_code' => 'epic_poetry', 'age' => '0'],
 					['name' => 'Поэзия', 'fb2_code' => 'poetry', 'age' => '0'],
 					['name' => 'Драматургия', 'fb2_code' => 'dramaturgy', 'age' => '0'],
@@ -224,7 +227,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Религия и духовность',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Хиромантия', 'fb2_code' => 'palmistry', 'age' => '0'],
 					['name' => 'Астрология', 'fb2_code' => 'astrology', 'age' => '0'],
 					['name' => 'Иудаизм', 'fb2_code' => 'religion_judaism', 'age' => '0'],
@@ -244,7 +247,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Прочее',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Шахматы', 'fb2_code' => 'chess', 'age' => '0'],
 					['name' => 'Недописанное', 'fb2_code' => 'unfinished', 'age' => '0'],
 					['name' => 'Театр', 'fb2_code' => 'theatre', 'age' => '0'],
@@ -259,7 +262,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Юмор',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Юмористические стихи', 'fb2_code' => 'humor_verse', 'age' => '0'],
 					['name' => 'Комедия', 'fb2_code' => 'comedy', 'age' => '0'],
 					['name' => 'Прочий юмор', 'fb2_code' => 'humor', 'age' => '0'],
@@ -270,7 +273,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Справочная литература',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Прочая справочная литература', 'fb2_code' => 'reference', 'age' => '0'],
 					['name' => 'Руководства', 'fb2_code' => 'ref_guide', 'age' => '0'],
 					['name' => 'Словари', 'fb2_code' => 'ref_dict', 'age' => '0'],
@@ -281,7 +284,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Деловая литература',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Управление, подбор персонала', 'fb2_code' => 'management', 'age' => '0'],
 					['name' => 'Ценные бумаги, инвестиции', 'fb2_code' => 'stock', 'age' => '0'],
 					['name' => 'Деловая литература', 'fb2_code' => 'sci_business', 'age' => '0'],
@@ -303,7 +306,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Старинная литература',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Древневосточная литература', 'fb2_code' => 'antique_east', 'age' => '0'],
 					['name' => 'Прочая старинная литература', 'fb2_code' => 'antique', 'age' => '0'],
 					['name' => 'Античная литература', 'fb2_code' => 'antique_ant', 'age' => '0'],
@@ -314,7 +317,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Военное дело',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Военное дело: прочее', 'fb2_code' => 'military', 'age' => '0'],
 					['name' => 'Боевые искусства', 'fb2_code' => 'military_arts', 'age' => '0'],
 					['name' => 'Военная техника и вооружение', 'fb2_code' => 'military_weapon', 'age' => '0'],
@@ -323,7 +326,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Компьютеры и Интернет',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Базы данных', 'fb2_code' => 'comp_db', 'age' => '0'],
 					['name' => 'Прочая компьютерная литература', 'fb2_code' => 'computers', 'age' => '0'],
 					['name' => 'ОС и Сети', 'fb2_code' => 'comp_osnet', 'age' => '0'],
@@ -336,7 +339,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Техника',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Архитектура', 'fb2_code' => 'architecture_book', 'age' => '0'],
 					['name' => 'Автомобили и ПДД', 'fb2_code' => 'auto_regulations', 'age' => '0'],
 					['name' => 'Строительство и сопромат', 'fb2_code' => 'sci_build', 'age' => '0'],
@@ -347,7 +350,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Драматургия',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Мистерия', 'fb2_code' => 'mystery', 'age' => '0'],
 					['name' => 'Драма', 'fb2_code' => 'drama', 'age' => '0'],
 					['name' => 'Водевиль', 'fb2_code' => 'vaudeville', 'age' => '0'],
@@ -358,7 +361,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Фольклор',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Былины', 'fb2_code' => 'epic', 'age' => '0'],
 					['name' => 'Народные песни', 'fb2_code' => 'folk_songs', 'age' => '0'],
 					['name' => 'Народные сказки', 'fb2_code' => 'folk_tale', 'age' => '0'],
@@ -370,7 +373,7 @@ class GenreSeeder extends Seeder
 			],
 			[
 				'name' => 'Жанр не определен',
-				'subenre' => [
+				'subgenres' => [
 					['name' => 'Разное', 'fb2_code' => 'other', 'age' => '0'],
 				]
 			],
@@ -385,17 +388,20 @@ class GenreSeeder extends Seeder
 
 	public function genre(array $array, $genreGroupId = null)
 	{
-		$genre = new \App\Genre([
-			'name' => $array['name'],
-			'fb_code' => $array['fb2_code'] ?? null,
-			'age' => $array['age'] ?? null,
-			'genre_group_id' => $genreGroupId
-		]);
+        $genre = Genre::where('name', $array['name'])->first();
 
-		$genre->save();
+	    if (empty($genre))
+        {
+            $genre = \App\Genre::firstOrCreate([
+                'name' => $array['name'],
+                'fb_code' => $array['fb2_code'] ?? null,
+                'age' => $array['age'] ?? null,
+                'genre_group_id' => $genreGroupId
+            ]);
+        }
 
-		if (!empty($array['subenre'])) {
-			array_walk($array['subenre'], function ($array) use ($genre) {
+		if (!empty($array['subgenres'])) {
+			array_walk($array['subgenres'], function ($array) use ($genre) {
 				$this->genre($array, $genre->id);
 			});
 		}

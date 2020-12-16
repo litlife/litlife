@@ -14,9 +14,7 @@ class BookUpdateTitleAuthorsHelperTest extends TestCase
 
         $author = Author::factory()->create();
 
-        $author2 = Author::factory()->create();
-
-        $book->writers()->sync([$author->id, $author2->id]);
+        $book->writers()->sync([$author->id]);
 
         $book->updateTitleAuthorsHelper();
         $book->save();
@@ -33,7 +31,7 @@ class BookUpdateTitleAuthorsHelperTest extends TestCase
         $this->assertEquals(mb_strtolower($book->title),
             $book->title_search_helper);
 
-        $this->assertEquals(mb_strtolower($book->title.' '.$author2->fullName.' '.$author->fullName),
+        $this->assertEquals(mb_strtolower($book->title.' '.$author->fullName),
             $book->title_author_search_helper);
     }
 }

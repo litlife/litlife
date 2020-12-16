@@ -1,5 +1,8 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\TextBlock;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +22,8 @@ class DatabaseSeeder extends Seeder
 				LanguageSeeder::class,
 				UserGroupSeeder::class,
 				UserSeeder::class,
-				ForumSeeder::class
+				ForumSeeder::class,
+                TextBlockSeeder::class
 			]);
 		});
 	}

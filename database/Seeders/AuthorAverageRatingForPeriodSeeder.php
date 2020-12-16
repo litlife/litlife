@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class SearchQueriesLogsSeeder extends Seeder
+class AuthorAverageRatingForPeriodSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.

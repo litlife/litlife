@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Smile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -160,17 +162,21 @@ class SmilesSeeder extends Seeder
 
 					$parameters = ['width' => $img->width(), 'height' => $img->height()];
 
+                    $smiles = Smile::where('name', $smile[0])->first();
 
-					$smiles = new Smile;
-					$smiles->name = $smile[0];
-					$smiles->description = $smile[1];
-					$smiles->simple_form = $smile[2] ?? null;
-					$smiles->parameters = $parameters;
+					if (empty($smiles))
+                    {
+                        $smiles = new Smile;
+                        $smiles->name = $smile[0];
+                        $smiles->description = $smile[1];
+                        $smiles->simple_form = $smile[2] ?? null;
+                        $smiles->parameters = $parameters;
 
-					if (isset($smile['ny']))
-						$smiles->for = 'NewYear';
+                        if (isset($smile['ny']))
+                            $smiles->for = 'NewYear';
 
-					$smiles->save();
+                        $smiles->save();
+                    }
 				}
 
 

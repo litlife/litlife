@@ -123,7 +123,7 @@ class ForumShowTest extends TestCase
         $response = $this
             ->get(route('forums.show', ['forum' => $forum->id]))
             ->assertOk()
-            ->assertSeeTextInOrder([$topic->name, $topic3->name, $topic2->name]);
+            ->assertSeeTextInOrder([$topic->name, $topic2->name]);
 
         Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);
         Like::factory()->create(['likeable_type' => 'post', 'likeable_id' => $post2->id]);

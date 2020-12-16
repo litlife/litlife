@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class AdBlockSeeder extends Seeder
+class UserSearchSettingSeeder extends Seeder
 {
 	/**
 	 * Run the database seeds.

@@ -216,7 +216,7 @@ class AuthorSearchTest extends TestCase
 
     public function testFullTextSearch()
     {
-        $author = Author::factory()->accepted()->create();
+        $author = Author::factory()->accepted()->create(['nickname' => 'Eyyker']);
 
         $this->assertGreaterThanOrEqual(1, Author::fulltextSearch('Eyyk')->get()->count());
         $this->assertGreaterThanOrEqual(0, Author::fulltextSearch('EYY')->get()->count());

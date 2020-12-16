@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -187,7 +189,7 @@ class LanguageSeeder extends Seeder
 			if ($code == "RU") $priority = 10;
 			if ($code == "EN") $priority = 9;
 
-			DB::table('languages')->insert([
+			DB::table('languages')->insertOrIgnore([
 				'name' => $name,
 				'code' => $code,
 				'priority' => $priority

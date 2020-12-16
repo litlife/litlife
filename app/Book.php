@@ -1019,7 +1019,10 @@ class Book extends Model
     {
         $rate_info = unserialize($value);
 
-        $max = @max($rate_info) ?? 0;
+        if (is_array($rate_info))
+            $max = @max($rate_info) ?? 0;
+        else
+            $max = 0;
 
         $array = [];
 
