@@ -155,6 +155,7 @@ class Kernel extends ConsoleKernel
 		Commands\Book\BookDeleteAllPagesWhereSectionWasNotFouncCommand::class,
 
 		Commands\Fix\CorrectionOfBookIDForComments::class,
+        Commands\CsvFileCreate::class,
 	];
 
 	/**
