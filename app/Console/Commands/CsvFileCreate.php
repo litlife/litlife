@@ -59,7 +59,7 @@ class CsvFileCreate extends Command
         Storage::disk($this->disk)
             ->append($this->file, 'book_id,create_user_id,rate,create_user_gender,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent');
 
-        BookVote::query()
+        $query = BookVote::query()
             ->when($this->columns->contains('book_writers_genders'), function ($query) {
                 $query->with('book.writers');
             })
@@ -67,7 +67,7 @@ class CsvFileCreate extends Command
                 $query->with('book.genres');
             })
             ->when($this->columns->contains('book_keywords_ids'), function ($query) {
-                $query->with('book.book_keywords');
+                $query->with('book.book_keywords.keyword');
             })
             ->when($this->after_time, function ($query) {
                 $query->where('user_updated_at', '>=', $this->after_time);
@@ -79,29 +79,49 @@ class CsvFileCreate extends Command
             ->whereHas('create_user', function (Builder $query) {
                 $query->where('book_rate_count',
                     '>=', $this->option('min_book_rate_count'));
-            })
-            ->with(['create_user', 'book'])
-            ->chunkById($this->batch, function ($votes) {
+            });
 
-                $output = '';
+        $count = $query->count();
+
+        $this->line('Count: '.$count);
+
+        $bar = $this->output->createProgressBar($count);
+
+        $bar->start();
+
+        $query->with(['create_user', 'book'])
+            ->chunkById($this->batch, function ($votes) use (&$bar) {
+
+                $array = [];
 
                 foreach ($votes as $vote) {
-                    $array = $this->getArray($vote);
-                    $output .= implode(',', $array)."\n";
+                    $array[] = $this->handleLine($vote);
+
+                    $bar->advance();
                 }
 
-                $output = trim($output, "\n");
+                $output = implode("\n", $array);
 
                 Storage::disk($this->disk)
                     ->append($this->file, $output);
             });
 
+        $bar->finish();
+
+        $this->line('');
         $this->line('File created '.Storage::disk($this->disk)->url($this->file));
 
         return 0;
     }
 
-    private function getArray(BookVote $vote)
+    private function handleLine(BookVote $vote) :string
+    {
+        $array = $this->getArray($vote);
+
+        return implode(',', $array);
+    }
+
+    private function getArray(BookVote $vote) :array
     {
         //$book_title = $vote->book->title;
         //$book_title = preg_replace('/(\,|\")/iu', ' ', $book_title);
@@ -118,7 +138,12 @@ class CsvFileCreate extends Command
             $book_genres_ids[] = $genre->id;
 
         foreach ($vote->book->book_keywords as $keyword)
-            $book_keywords_ids[] = $keyword->keyword->id;
+        {
+            if (!empty($keyword->keyword))
+            {
+                $book_keywords_ids[] = $keyword->keyword->id;
+            }
+        }
 
         sort($writers_genders);
         sort($book_genres_ids);

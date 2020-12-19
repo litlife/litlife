@@ -111,4 +111,41 @@ class CsvFileCreateTest extends TestCase
 
         $this->assertEquals(1, count($lines));
     }
+
+    public function testIfKeywordNotFound()
+    {
+        $create_user = User::factory()->male();
+
+        $book = Book::factory()
+            ->has(Author::factory()->count(2), 'writers')
+            ->has(Genre::factory()->count(2))
+            ->has(BookKeyword::factory()->count(2), 'book_keywords');
+
+        $vote = BookVote::factory()
+            ->for($book)
+            ->for($create_user, 'create_user')
+            ->create();
+
+        $book = $vote->book;
+
+        $book->book_keywords()->first()->keyword->forceDelete();
+
+        $keyword = $book->book_keywords()->has('keyword')->first()->keyword;
+
+        $this->artisan('csv_file:create', [
+            'after_time' => $vote->user_updated_at,
+            '--disk' => $this->disk,
+            '--file' => $this->file
+        ])->assertExitCode(0);
+
+        $content = Storage::disk($this->disk)->get($this->file);
+
+        $lines = explode("\n", $content);
+
+        $this->assertEquals(2, count($lines));
+
+        $array = str_getcsv($lines[1], ",");
+
+        $this->assertEquals($keyword->id, $array[6]);
+    }
 }
