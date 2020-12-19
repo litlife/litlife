@@ -106,12 +106,12 @@ class Smile extends Model
 
     public function getWidth()
     {
-        return $this->parameters->width;
+        return optional($this->parameters)->width;
     }
 
     public function getHeight()
     {
-        return $this->parameters->height;
+        return optional($this->parameters)->height;
     }
 
     public function freshImageSize()

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Stream;
 use Imagick;
 use Litlife\Url\Url;
 
@@ -214,7 +215,7 @@ trait ImageResizable
 		rewind($this->source);
 	}
 
-	public function downloadThrougnGuzzle($url)
+	public function downloadThrougnGuzzle($url) : \Psr\Http\Message\StreamInterface
 	{
 		$headers = [
 			'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.170 Safari/537.36',
@@ -222,6 +223,7 @@ trait ImageResizable
 		];
 
 		$client = new Client();
+
 		$response = $client->request('GET', $url, [
 			'allow_redirects' => [
 				'max' => 5,        // allow at most 10 redirects.

@@ -62,7 +62,7 @@ class ComplainPolicy extends Policy
             return false;
         }
 
-        if ($complain->status_changed_user->id != $auth_user->id) {
+        if (optional($complain->status_changed_user)->id != $auth_user->id) {
             return false;
         }
 
@@ -111,7 +111,7 @@ class ComplainPolicy extends Policy
             return false;
         }
 
-        if ($complain->status_changed_user->id != $auth_user->id) {
+        if (optional($complain->status_changed_user)->id != $auth_user->id) {
             return false;
         }
 

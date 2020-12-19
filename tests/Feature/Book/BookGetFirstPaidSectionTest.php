@@ -11,7 +11,7 @@ class BookGetFirstPaidSectionTest extends TestCase
     {
         $book = Book::factory()->on_sale()->with_section()->create();
 
-        $section = $book->sections()->chapter()->first();
+        $section = $book->sections()->chapter()->defaultOrder()->first();
 
         $this->assertTrue($section->is($book->getFirstPaidSection()));
     }
@@ -20,10 +20,14 @@ class BookGetFirstPaidSectionTest extends TestCase
     {
         $book = Book::factory()->on_sale()->with_three_sections()->create(['free_sections_count' => 1]);
 
-        $sections = $book->sections()->chapter()->get();
+        $sections = $book->sections()->chapter()->defaultOrder()->get();
 
-        $this->assertFalse($sections->get(0)->is($book->getFirstPaidSection()));
-        $this->assertTrue($sections->get(1)->is($book->getFirstPaidSection()));
-        $this->assertFalse($sections->get(2)->is($book->getFirstPaidSection()));
+        $firstPaidSection = $book->getFirstPaidSection();
+
+        $this->assertEquals(3, $sections->count());
+
+        $this->assertNotEquals($sections->get(0)->id, $firstPaidSection->id);
+        $this->assertEquals($sections->get(1)->id, $firstPaidSection->id);
+        $this->assertNotEquals($sections->get(2)->id, $firstPaidSection->id);
     }
 }

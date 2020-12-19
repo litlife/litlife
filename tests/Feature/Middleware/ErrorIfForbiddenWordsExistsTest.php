@@ -40,9 +40,16 @@ class ErrorIfForbiddenWordsExistsTest extends TestCase
             $settings->name = 'settings';
         }
 
-        $array = $settings->value['forbidden_words'];
-        $array[] = $word;
+        if (isset($settings->value['forbidden_words']))
+        {
+            $array = $settings->value['forbidden_words'];
+        }
+        else
+        {
+            $array = [];
+        }
 
+        $array[] = $word;
         $settings->value = ['forbidden_words' => $array];
         $settings->save();
     }

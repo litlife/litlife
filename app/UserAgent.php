@@ -43,7 +43,7 @@ class UserAgent extends Model
 
     public function setValueAttribute($value)
     {
-        $this->attributes['value'] = mb_substr($value, 0, 256);
+        $this->attributes['value'] = mb_substr($value, 0, 255);
     }
 
     public function getParsedAttribute(): Result
