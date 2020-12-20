@@ -22,7 +22,8 @@ class CsvFileCreate extends Command
                             {--batch=5000}
                             {--columns=book_id,create_user_id,rate,create_user_gender,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent}
                             {--min_book_user_votes_count=0}
-                            {--min_book_rate_count=0}';
+                            {--min_book_rate_count=0}
+                            {--min_rate=4}';
 
     /**
      * Create a new command instance.
@@ -79,7 +80,8 @@ class CsvFileCreate extends Command
             ->whereHas('create_user', function (Builder $query) {
                 $query->where('book_rate_count',
                     '>=', $this->option('min_book_rate_count'));
-            });
+            })
+            ->where('vote', '>', $this->option('min_rate'));
 
         $count = $query->count();
 

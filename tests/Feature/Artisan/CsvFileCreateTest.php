@@ -47,7 +47,8 @@ class CsvFileCreateTest extends TestCase
         $this->artisan('csv_file:create', [
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
-            '--file' => $this->file
+            '--file' => $this->file,
+            '--min_rate' => 0
         ])->assertExitCode(0);
 
         $book = $vote->book;
@@ -100,7 +101,8 @@ class CsvFileCreateTest extends TestCase
         $this->artisan('csv_file:create', [
             'after_time' => $vote->user_updated_at->addMinute(),
             '--disk' => $this->disk,
-            '--file' => $this->file
+            '--file' => $this->file,
+            '--min_rate' => 0
         ])->assertExitCode(0);
 
         $book = $vote->book;
@@ -135,7 +137,8 @@ class CsvFileCreateTest extends TestCase
         $this->artisan('csv_file:create', [
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
-            '--file' => $this->file
+            '--file' => $this->file,
+            '--min_rate' => 0
         ])->assertExitCode(0);
 
         $content = Storage::disk($this->disk)->get($this->file);
@@ -147,5 +150,51 @@ class CsvFileCreateTest extends TestCase
         $array = str_getcsv($lines[1], ",");
 
         $this->assertEquals($keyword->id, $array[6]);
+    }
+
+    public function testNotFoundIfMinRateGreater()
+    {
+        $create_user = User::factory();
+
+        $vote = BookVote::factory()
+            ->create(['vote' => 3]);
+
+        $this->artisan('csv_file:create', [
+            'after_time' => $vote->user_updated_at,
+            '--disk' => $this->disk,
+            '--file' => $this->file,
+            '--min_rate' => 4
+        ])->assertExitCode(0);
+
+        $book = $vote->book;
+
+        $content = Storage::disk($this->disk)->get($this->file);
+
+        $lines = explode("\n", $content);
+
+        $this->assertEquals(1, count($lines));
+    }
+
+    public function testFoundIfMinRateLower()
+    {
+        $create_user = User::factory();
+
+        $vote = BookVote::factory()
+            ->create(['vote' => 4]);
+
+        $this->artisan('csv_file:create', [
+            'after_time' => $vote->user_updated_at,
+            '--disk' => $this->disk,
+            '--file' => $this->file,
+            '--min_rate' => 3
+        ])->assertExitCode(0);
+
+        $book = $vote->book;
+
+        $content = Storage::disk($this->disk)->get($this->file);
+
+        $lines = explode("\n", $content);
+
+        $this->assertEquals(2, count($lines));
     }
 }
