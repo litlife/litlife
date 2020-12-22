@@ -156,7 +156,8 @@ class Kernel extends ConsoleKernel
 
 		Commands\Fix\CorrectionOfBookIDForComments::class,
         Commands\AutoSolveSupportQuestion::class,
-        Commands\CsvFileCreate::class
+        Commands\Csv\BookVoteCsvCreate::class,
+        Commands\Csv\BookCsvCreate::class
 	];
 
 	/**

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class CsvFileCreateTest extends TestCase
+class BookVoteCsvCreateTest extends TestCase
 {
     private $file = '/test.csv';
     private $disk = 'public';
@@ -44,7 +44,7 @@ class CsvFileCreateTest extends TestCase
             ->for($create_user, 'create_user')
             ->create();
 
-        $this->artisan('csv_file:create', [
+        $this->artisan('csv:book_vote', [
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
@@ -98,7 +98,7 @@ class CsvFileCreateTest extends TestCase
         $vote = BookVote::factory()
             ->create();
 
-        $this->artisan('csv_file:create', [
+        $this->artisan('csv:book_vote', [
             'after_time' => $vote->user_updated_at->addMinute(),
             '--disk' => $this->disk,
             '--file' => $this->file,
@@ -134,7 +134,7 @@ class CsvFileCreateTest extends TestCase
 
         $keyword = $book->book_keywords()->has('keyword')->first()->keyword;
 
-        $this->artisan('csv_file:create', [
+        $this->artisan('csv:book_vote', [
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
@@ -159,7 +159,7 @@ class CsvFileCreateTest extends TestCase
         $vote = BookVote::factory()
             ->create(['vote' => 3]);
 
-        $this->artisan('csv_file:create', [
+        $this->artisan('csv:book_vote', [
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
@@ -182,7 +182,7 @@ class CsvFileCreateTest extends TestCase
         $vote = BookVote::factory()
             ->create(['vote' => 4]);
 
-        $this->artisan('csv_file:create', [
+        $this->artisan('csv:book_vote', [
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
