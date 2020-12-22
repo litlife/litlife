@@ -71,7 +71,8 @@ class BookCsvCreate extends Command
             })
             ->when($this->after_time, function ($query) {
                 $query->where('created_at', '>=', $this->after_time);
-            });
+            })
+            ->where('user_vote_count', '>=', $this->option('min_book_user_votes_count'));
 
         $count = $query->count();
 

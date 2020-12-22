@@ -43,7 +43,8 @@ class BookCsvCreateTest extends TestCase
         $this->artisan('csv:book', [
             'after_time' => $book->created_at,
             '--disk' => $this->disk,
-            '--file' => $this->file
+            '--file' => $this->file,
+            '--min_book_user_votes_count' => 0
         ])->assertExitCode(0);
 
         UpdateBookRating::dispatch($book);
@@ -96,7 +97,8 @@ class BookCsvCreateTest extends TestCase
         $this->artisan('csv:book', [
             'after_time' => $book->created_at->addMinute(),
             '--disk' => $this->disk,
-            '--file' => $this->file
+            '--file' => $this->file,
+            '--min_book_user_votes_count' => 0
         ])->assertExitCode(0);
 
         $content = Storage::disk($this->disk)->get($this->file);
@@ -123,7 +125,8 @@ class BookCsvCreateTest extends TestCase
         $this->artisan('csv:book', [
             'after_time' => $book->created_at,
             '--disk' => $this->disk,
-            '--file' => $this->file
+            '--file' => $this->file,
+            '--min_book_user_votes_count' => 0
         ])->assertExitCode(0);
 
         $content = Storage::disk($this->disk)->get($this->file);

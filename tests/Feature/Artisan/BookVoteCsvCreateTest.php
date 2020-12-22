@@ -48,7 +48,9 @@ class BookVoteCsvCreateTest extends TestCase
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
-            '--min_rate' => 0
+            '--min_rate' => 0,
+            '--min_book_user_votes_count' => 0,
+            '--min_book_rate_count' => 0
         ])->assertExitCode(0);
 
         $book = $vote->book;
@@ -102,7 +104,9 @@ class BookVoteCsvCreateTest extends TestCase
             'after_time' => $vote->user_updated_at->addMinute(),
             '--disk' => $this->disk,
             '--file' => $this->file,
-            '--min_rate' => 0
+            '--min_rate' => 0,
+            '--min_book_user_votes_count' => 0,
+            '--min_book_rate_count' => 0
         ])->assertExitCode(0);
 
         $book = $vote->book;
@@ -138,7 +142,9 @@ class BookVoteCsvCreateTest extends TestCase
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
-            '--min_rate' => 0
+            '--min_rate' => 0,
+            '--min_book_user_votes_count' => 0,
+            '--min_book_rate_count' => 0
         ])->assertExitCode(0);
 
         $content = Storage::disk($this->disk)->get($this->file);
@@ -163,7 +169,9 @@ class BookVoteCsvCreateTest extends TestCase
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
-            '--min_rate' => 4
+            '--min_rate' => 4,
+            '--min_book_user_votes_count' => 0,
+            '--min_book_rate_count' => 0
         ])->assertExitCode(0);
 
         $book = $vote->book;
@@ -186,7 +194,9 @@ class BookVoteCsvCreateTest extends TestCase
             'after_time' => $vote->user_updated_at,
             '--disk' => $this->disk,
             '--file' => $this->file,
-            '--min_rate' => 3
+            '--min_rate' => 3,
+            '--min_book_user_votes_count' => 0,
+            '--min_book_rate_count' => 0
         ])->assertExitCode(0);
 
         $book = $vote->book;
