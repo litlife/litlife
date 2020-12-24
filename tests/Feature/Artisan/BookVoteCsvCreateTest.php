@@ -6,6 +6,7 @@ use App\Author;
 use App\Book;
 use App\BookKeyword;
 use App\BookVote;
+use App\Enums\BookComplete;
 use App\Genre;
 use App\Jobs\Book\UpdateBookRating;
 use App\User;
@@ -32,9 +33,15 @@ class BookVoteCsvCreateTest extends TestCase
 
     public function testLine()
     {
-        $create_user = User::factory()->male();
+        $create_user = User::factory()
+            ->male()
+            ->state([
+                'born_date' => '2010-02-03'
+            ]);
 
         $book = Book::factory()
+            ->lp_true()
+            ->si_false()
             ->has(Author::factory()->count(2), 'writers')
             ->has(Genre::factory()->count(2))
             ->has(BookKeyword::factory()->count(2), 'book_keywords');
@@ -71,7 +78,9 @@ class BookVoteCsvCreateTest extends TestCase
         dump($lines[1]);
 
         $this->assertEquals([
-            'book_id', 'create_user_id', 'rate', 'create_user_gender', 'book_writers_genders', 'book_genres_ids', 'book_keywords_ids', 'male_vote_percent'
+            'book_id', 'create_user_id', 'rate', 'create_user_gender', 'book_writers_genders',
+            'book_genres_ids', 'book_keywords_ids', 'male_vote_percent', 'create_user_born_year',
+            'user_updated_at_timestamp', 'book_is_si', 'book_is_lp', 'book_ready_status'
         ], explode(',', $lines[0]));
 
         $this->assertEquals($vote->book->id, $array[0]);
@@ -91,6 +100,11 @@ class BookVoteCsvCreateTest extends TestCase
         $this->assertEquals(implode(',', $book_genres_ids), $array[5]);
         $this->assertEquals(implode(',', $book_keywords_ids), $array[6]);
         $this->assertEquals($vote->book->male_vote_percent, $array[7]);
+        $this->assertEquals($vote->create_user->born_date->year, $array[8]);
+        $this->assertEquals($vote->user_updated_at->timestamp, $array[9]);
+        $this->assertEquals(intval($vote->book->is_si), $array[10]);
+        $this->assertEquals(intval($vote->book->is_lp), $array[11]);
+        $this->assertEquals(BookComplete::getValue($vote->book->ready_status), $array[12]);
     }
 
     public function testAfterTime()

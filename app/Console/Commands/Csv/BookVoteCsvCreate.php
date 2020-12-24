@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Csv;
 
 use App\BookVote;
+use App\Enums\BookComplete;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,9 +21,9 @@ class BookVoteCsvCreate extends Command
                             {--disk=public}
                             {--file=/datasets/book_votes_dataset.csv}
                             {--batch=5000}
-                            {--columns=book_id,create_user_id,rate,create_user_gender,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent}
-                            {--min_book_user_votes_count=0}
-                            {--min_book_rate_count=0}
+                            {--columns=book_id,create_user_id,rate,create_user_gender,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent,create_user_born_year,user_updated_at_timestamp,book_is_si,book_is_lp,book_ready_status}
+                            {--min_book_user_votes_count=5}
+                            {--min_book_rate_count=5}
                             {--min_rate=4}';
 
     /**
@@ -171,7 +172,25 @@ class BookVoteCsvCreate extends Command
             $array['book_keywords_ids'] = '"'.implode(',', $book_keywords_ids).'"';
 
         if ($this->columns->contains('male_vote_percent'))
-            $array['male_vote_percent'] = $vote->book->male_vote_percent;
+            if ($vote->book->male_vote_percent !== null)
+                $array['male_vote_percent'] = round($vote->book->male_vote_percent, 1);
+            else
+                $array['male_vote_percent'] = '';
+
+        if ($this->columns->contains('create_user_born_year'))
+            $array['create_user_born_year'] = $vote->create_user->born_date->year;
+
+        if ($this->columns->contains('user_updated_at_timestamp'))
+            $array['user_updated_at_timestamp'] = $vote->user_updated_at->timestamp;
+
+        if ($this->columns->contains('book_is_si'))
+            $array['book_is_si'] = intval($vote->book->is_si);
+
+        if ($this->columns->contains('book_is_lp'))
+            $array['book_is_lp'] = intval($vote->book->is_lp);
+
+        if ($this->columns->contains('book_ready_status'))
+            $array['book_ready_status'] = BookComplete::getValue($vote->book->ready_status);
 
         return $array;
     }

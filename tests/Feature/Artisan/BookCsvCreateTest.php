@@ -6,6 +6,7 @@ use App\Author;
 use App\Book;
 use App\BookKeyword;
 use App\BookVote;
+use App\Enums\BookComplete;
 use App\Genre;
 use App\Jobs\Book\UpdateBookRating;
 use App\User;
@@ -63,7 +64,8 @@ class BookCsvCreateTest extends TestCase
         dump($lines[1]);
 
         $this->assertEquals([
-            'book_id', 'book_title', 'book_writers_genders', 'book_genres_ids', 'book_keywords_ids', 'male_vote_percent'
+            'book_id', 'book_title', 'book_writers_genders', 'book_genres_ids', 'book_keywords_ids', 'male_vote_percent',
+            'book_is_si', 'book_is_lp', 'book_ready_status'
         ], explode(',', $lines[0]));
 
         $this->assertEquals($book->id, $array[0]);
@@ -84,7 +86,10 @@ class BookCsvCreateTest extends TestCase
         $this->assertEquals(implode(',', $writers_genders), $array[2]);
         $this->assertEquals(implode(',', $book_genres_ids), $array[3]);
         $this->assertEquals(implode(',', $book_keywords_ids), $array[4]);
-        $this->assertEquals($book->male_vote_percent, $array[5]);
+        $this->assertEquals('', $array[5]);
+        $this->assertEquals(intval($book->is_si), $array[6]);
+        $this->assertEquals(intval($book->is_lp), $array[7]);
+        $this->assertEquals(BookComplete::getValue($book->ready_status), $array[8]);
     }
 
     public function testAfterTime()

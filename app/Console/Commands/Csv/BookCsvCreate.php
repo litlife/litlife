@@ -4,6 +4,7 @@ namespace App\Console\Commands\Csv;
 
 use App\Book;
 use App\BookVote;
+use App\Enums\BookComplete;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +22,7 @@ class BookCsvCreate extends Command
                             {--disk=public}
                             {--file=/datasets/book_dataset.csv}
                             {--batch=5000}
-                            {--columns=book_id,book_title,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent}
+                            {--columns=book_id,book_title,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent,book_is_si,book_is_lp,book_ready_status}
                             {--min_book_user_votes_count=5}';
 
     /**
@@ -154,7 +155,21 @@ class BookCsvCreate extends Command
             $array['book_keywords_ids'] = '"'.implode(',', $book_keywords_ids).'"';
 
         if ($this->columns->contains('male_vote_percent'))
-            $array['male_vote_percent'] = $book->male_vote_percent;
+        {
+            if ($book->male_vote_percent !== null)
+                $array['male_vote_percent'] = round($book->male_vote_percent, 1);
+            else
+                $array['male_vote_percent'] = '';
+        }
+
+        if ($this->columns->contains('book_is_si'))
+            $array['book_is_si'] = intval($book->is_si);
+
+        if ($this->columns->contains('book_is_lp'))
+            $array['book_is_lp'] = intval($book->is_lp);
+
+        if ($this->columns->contains('book_ready_status'))
+            $array['book_ready_status'] = BookComplete::getValue($book->ready_status);
 
         return $array;
     }
