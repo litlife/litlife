@@ -178,7 +178,9 @@ class BookVoteCsvCreate extends Command
                 $array['male_vote_percent'] = '';
 
         if ($this->columns->contains('create_user_born_year'))
-            $array['create_user_born_year'] = $vote->create_user->born_date->year;
+        {
+            $array['create_user_born_year'] = optional($vote->create_user->born_date)->year;
+        }
 
         if ($this->columns->contains('user_updated_at_timestamp'))
             $array['user_updated_at_timestamp'] = $vote->user_updated_at->timestamp;

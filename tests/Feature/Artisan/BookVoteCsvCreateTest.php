@@ -221,4 +221,38 @@ class BookVoteCsvCreateTest extends TestCase
 
         $this->assertEquals(2, count($lines));
     }
+
+    public function testUserBornDate()
+    {
+        $create_user = User::factory()
+            ->male()
+            ->state(['born_date' => null]);
+
+        $vote = BookVote::factory()
+            ->for($create_user, 'create_user')
+            ->create();
+
+        $this->artisan('csv:book_vote', [
+            'after_time' => $vote->user_updated_at,
+            '--disk' => $this->disk,
+            '--file' => $this->file,
+            '--min_rate' => 0,
+            '--min_book_user_votes_count' => 0,
+            '--min_book_rate_count' => 0
+        ])->assertExitCode(0);
+
+        $book = $vote->book;
+
+        $content = Storage::disk($this->disk)->get($this->file);
+
+        $lines = explode("\n", $content);
+
+        $this->assertEquals(2, count($lines));
+
+        $array = str_getcsv($lines[1], ",");
+
+        $this->assertEquals($vote->book->male_vote_percent, $array[7]);
+        $this->assertEquals('', $array[8]);
+        $this->assertEquals($vote->user_updated_at->timestamp, $array[9]);
+    }
 }
