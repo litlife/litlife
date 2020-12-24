@@ -190,7 +190,12 @@ class BookVoteCsvCreate extends Command
             $array['book_is_lp'] = intval($vote->book->is_lp);
 
         if ($this->columns->contains('book_ready_status'))
-            $array['book_ready_status'] = BookComplete::getValue($vote->book->ready_status);
+        {
+            if (BookComplete::hasKey($vote->book->ready_status))
+                $array['book_ready_status'] = BookComplete::getValue($vote->book->ready_status);
+            else
+                $array['book_ready_status'] = '';
+        }
 
         return $array;
     }
