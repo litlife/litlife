@@ -21,7 +21,7 @@ class BookVoteCsvCreate extends Command
                             {--disk=public}
                             {--file=/datasets/book_votes_dataset.csv}
                             {--batch=5000}
-                            {--columns=book_id,create_user_id,rate,create_user_gender,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent,create_user_born_year,user_updated_at_timestamp,book_is_si,book_is_lp,book_ready_status}
+                            {--columns=book_id,book_title,create_user_id,rate,create_user_gender,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent,create_user_born_year,user_updated_at_timestamp,book_is_si,book_is_lp,book_ready_status}
                             {--min_book_user_votes_count=5}
                             {--min_book_rate_count=5}
                             {--min_rate=4}';
@@ -126,10 +126,6 @@ class BookVoteCsvCreate extends Command
 
     private function getArray(BookVote $vote) :array
     {
-        //$book_title = $vote->book->title;
-        //$book_title = preg_replace('/(\,|\")/iu', ' ', $book_title);
-        //$book_title = preg_replace('/([[:space:]]+)/iu', ' ', $book_title);
-
         $writers_genders = [];
         $book_genres_ids = [];
         $book_keywords_ids = [];
@@ -153,6 +149,16 @@ class BookVoteCsvCreate extends Command
         sort($book_keywords_ids);
 
         $array['book_id'] = $vote->book_id;
+
+        if ($this->columns->contains('book_title'))
+        {
+            $title = $vote->book->title;
+            $title = preg_replace('/(\,|\")/iu', ' ', $title);
+            $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
+
+            $array['book_title'] = '"'.$title.'"';
+        }
+
         $array['create_user_id'] = $vote->create_user->id;
         $array['rate'] = $vote->vote;
 

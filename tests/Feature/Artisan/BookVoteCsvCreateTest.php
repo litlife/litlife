@@ -78,15 +78,21 @@ class BookVoteCsvCreateTest extends TestCase
         dump($lines[1]);
 
         $this->assertEquals([
-            'book_id', 'create_user_id', 'rate', 'create_user_gender', 'book_writers_genders',
+            'book_id', 'book_title', 'create_user_id', 'rate', 'create_user_gender', 'book_writers_genders',
             'book_genres_ids', 'book_keywords_ids', 'male_vote_percent', 'create_user_born_year',
             'user_updated_at_timestamp', 'book_is_si', 'book_is_lp', 'book_ready_status'
         ], explode(',', $lines[0]));
 
         $this->assertEquals($vote->book->id, $array[0]);
-        $this->assertEquals($vote->create_user->id, $array[1]);
-        $this->assertEquals($vote->vote, $array[2]);
-        $this->assertEquals($vote->create_user->gender, $array[3]);
+
+        $title = $vote->book->title;
+        $title = preg_replace('/(\,|\")/iu', ' ', $title);
+        $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
+
+        $this->assertEquals($title, $array[1]);
+        $this->assertEquals($vote->create_user->id, $array[2]);
+        $this->assertEquals($vote->vote, $array[3]);
+        $this->assertEquals($vote->create_user->gender, $array[4]);
 
         $writers_genders = $book->writers->pluck('gender')->toArray();
         $book_genres_ids = $book->genres->pluck('id')->toArray();
@@ -96,15 +102,15 @@ class BookVoteCsvCreateTest extends TestCase
         sort($book_genres_ids);
         sort($book_keywords_ids);
 
-        $this->assertEquals(implode(',', $writers_genders), $array[4]);
-        $this->assertEquals(implode(',', $book_genres_ids), $array[5]);
-        $this->assertEquals(implode(',', $book_keywords_ids), $array[6]);
-        $this->assertEquals($vote->book->male_vote_percent, $array[7]);
-        $this->assertEquals($vote->create_user->born_date->year, $array[8]);
-        $this->assertEquals($vote->user_updated_at->timestamp, $array[9]);
-        $this->assertEquals(intval($vote->book->is_si), $array[10]);
-        $this->assertEquals(intval($vote->book->is_lp), $array[11]);
-        $this->assertEquals(BookComplete::getValue($vote->book->ready_status), $array[12]);
+        $this->assertEquals(implode(',', $writers_genders), $array[5]);
+        $this->assertEquals(implode(',', $book_genres_ids), $array[6]);
+        $this->assertEquals(implode(',', $book_keywords_ids), $array[7]);
+        $this->assertEquals($vote->book->male_vote_percent, $array[8]);
+        $this->assertEquals($vote->create_user->born_date->year, $array[9]);
+        $this->assertEquals($vote->user_updated_at->timestamp, $array[10]);
+        $this->assertEquals(intval($vote->book->is_si), $array[11]);
+        $this->assertEquals(intval($vote->book->is_lp), $array[12]);
+        $this->assertEquals(BookComplete::getValue($vote->book->ready_status), $array[13]);
     }
 
     public function testAfterTime()
@@ -169,7 +175,7 @@ class BookVoteCsvCreateTest extends TestCase
 
         $array = str_getcsv($lines[1], ",");
 
-        $this->assertEquals($keyword->id, $array[6]);
+        $this->assertEquals($keyword->id, $array[7]);
     }
 
     public function testNotFoundIfMinRateGreater()
@@ -251,8 +257,8 @@ class BookVoteCsvCreateTest extends TestCase
 
         $array = str_getcsv($lines[1], ",");
 
-        $this->assertEquals($vote->book->male_vote_percent, $array[7]);
-        $this->assertEquals('', $array[8]);
-        $this->assertEquals($vote->user_updated_at->timestamp, $array[9]);
+        $this->assertEquals($vote->book->male_vote_percent, $array[8]);
+        $this->assertEquals('', $array[9]);
+        $this->assertEquals($vote->user_updated_at->timestamp, $array[10]);
     }
 }

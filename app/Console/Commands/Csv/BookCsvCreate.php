@@ -116,10 +116,6 @@ class BookCsvCreate extends Command
 
     private function getArray($book) :array
     {
-        $title = $book->title;
-        $title = preg_replace('/(\,|\")/iu', ' ', $title);
-        $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
-
         $writers_genders = [];
         $book_genres_ids = [];
         $book_keywords_ids = [];
@@ -143,7 +139,14 @@ class BookCsvCreate extends Command
         sort($book_keywords_ids);
 
         $array['book_id'] = $book->id;
-        $array['book_title'] = '"'.$title.'"';
+
+        if ($this->columns->contains('book_title'))
+        {
+            $title = $book->title;
+            $title = preg_replace('/(\,|\")/iu', ' ', $title);
+            $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
+            $array['book_title'] = '"'.$title.'"';
+        }
 
         if ($this->columns->contains('book_writers_genders'))
             $array['book_writers_genders'] = '"'.implode(',', $writers_genders).'"';
