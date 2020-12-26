@@ -72,12 +72,19 @@ class BookCsvCreateTest extends TestCase
 
         $title = preg_replace('/(\,|\")/iu', ' ', $book->title);
         $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
-        
+
         $this->assertEquals($title, $array[1]);
 
         $writers_genders = $book->writers->pluck('gender')->toArray();
-        $book_genres_ids = $book->genres->pluck('name')->toArray();
-        $book_keywords_ids = $book->book_keywords()->with('keyword')->get()->pluck('keyword.text')->toArray();
+
+        $book_genres_ids = $book->genres->pluck('name')->map(function ($text) {
+            return mb_strtolower($text);
+        })->toArray();
+
+        $book_keywords_ids = $book->book_keywords()->with('keyword')->get()->pluck('keyword.text')
+            ->map(function ($text) {
+                return mb_strtolower($text);
+            })->toArray();
 
         sort($writers_genders);
 
@@ -143,6 +150,6 @@ class BookCsvCreateTest extends TestCase
 
         $array = str_getcsv($lines[1], ",");
 
-        $this->assertTrue(in_array($keyword->text, explode(', ', $array[3])));
+        $this->assertTrue(in_array(mb_strtolower($keyword->text), explode(', ', $array[3])));
     }
 }

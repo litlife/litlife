@@ -149,24 +149,23 @@ class BookCsvCreate extends Command
 
         if ($this->columns->contains('book_category'))
         {
-            $categories = [];
+            $categories = $book->genres->pluck('name')->map(function ($name) {
+                return preg_replace('/(\,|\")/iu', ' ', $name);
+            });
 
-            foreach ($book->genres as $genre)
-            {
-                $categories[] = preg_replace('/(\,|\")/iu', ' ', $genre->name);
-            }
+            $keywords = $book->book_keywords->pluck('keyword.text')->map(function ($name) {
+                return preg_replace('/(\,|\")/iu', ' ', $name);
+            });
 
-            foreach ($book->book_keywords as $keyword)
-            {
-                if (!empty($keyword->keyword))
-                {
-                    $categories[] = preg_replace('/(\,|\")/iu', ' ', $keyword->keyword->text);
-                }
-            }
+            $categories = $categories
+                ->merge($keywords)
+                ->map(function ($text) {
+                    return mb_strtolower($text);
+                })
+                ->unique()
+                ->sort();
 
-            sort($categories);
-
-            $array['book_category'] = '"'.implode(', ', $categories).'"';
+            $array['book_category'] = '"'.implode(', ', $categories->toArray()).'"';
         }
 
         if ($this->columns->contains('male_vote_percent'))
