@@ -64,7 +64,7 @@ class BookCsvCreateTest extends TestCase
         dump($lines[1]);
 
         $this->assertEquals([
-            'book_id', 'book_title', 'book_writers_genders', 'book_genres_ids', 'book_keywords_ids', 'male_vote_percent',
+            'book_id', 'book_title', 'book_writers_genders', 'book_category', 'male_vote_percent',
             'book_is_si', 'book_is_lp', 'book_ready_status'
         ], explode(',', $lines[0]));
 
@@ -76,20 +76,21 @@ class BookCsvCreateTest extends TestCase
         $this->assertEquals($title, $array[1]);
 
         $writers_genders = $book->writers->pluck('gender')->toArray();
-        $book_genres_ids = $book->genres->pluck('id')->toArray();
-        $book_keywords_ids = $book->book_keywords()->with('keyword')->get()->pluck('keyword.id')->toArray();
+        $book_genres_ids = $book->genres->pluck('name')->toArray();
+        $book_keywords_ids = $book->book_keywords()->with('keyword')->get()->pluck('keyword.text')->toArray();
 
         sort($writers_genders);
-        sort($book_genres_ids);
-        sort($book_keywords_ids);
+
+        $category = array_merge($book_genres_ids, $book_keywords_ids);
+
+        sort($category);
 
         $this->assertEquals(implode(',', $writers_genders), $array[2]);
-        $this->assertEquals(implode(',', $book_genres_ids), $array[3]);
-        $this->assertEquals(implode(',', $book_keywords_ids), $array[4]);
-        $this->assertEquals('', $array[5]);
-        $this->assertEquals(intval($book->is_si), $array[6]);
-        $this->assertEquals(intval($book->is_lp), $array[7]);
-        $this->assertEquals(BookComplete::getValue($book->ready_status), $array[8]);
+        $this->assertEquals(implode(', ', $category), $array[3]);
+        $this->assertEquals('', $array[4]);
+        $this->assertEquals(intval($book->is_si), $array[5]);
+        $this->assertEquals(intval($book->is_lp), $array[6]);
+        $this->assertEquals(BookComplete::getValue($book->ready_status), $array[7]);
     }
 
     public function testAfterTime()
@@ -142,6 +143,6 @@ class BookCsvCreateTest extends TestCase
 
         $array = str_getcsv($lines[1], ",");
 
-        $this->assertEquals($keyword->id, $array[4]);
+        $this->assertTrue(in_array($keyword->text, explode(', ', $array[3])));
     }
 }

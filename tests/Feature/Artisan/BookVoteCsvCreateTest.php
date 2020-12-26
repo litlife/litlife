@@ -10,6 +10,7 @@ use App\Enums\BookComplete;
 use App\Genre;
 use App\Jobs\Book\UpdateBookRating;
 use App\User;
+use App\UserData;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -33,8 +34,14 @@ class BookVoteCsvCreateTest extends TestCase
 
     public function testLine()
     {
+        $create_user_data = UserData::factory()
+            ->state([
+                'favorite_genres' => 'Романы, Детективы'
+            ]);
+
         $create_user = User::factory()
             ->male()
+            ->has($create_user_data, 'data')
             ->state([
                 'born_date' => '2010-02-03'
             ]);
@@ -61,6 +68,7 @@ class BookVoteCsvCreateTest extends TestCase
         ])->assertExitCode(0);
 
         $book = $vote->book;
+        $user = $vote->create_user;
 
         UpdateBookRating::dispatch($book);
 
@@ -79,8 +87,9 @@ class BookVoteCsvCreateTest extends TestCase
 
         $this->assertEquals([
             'book_id', 'book_title', 'create_user_id', 'rate', 'create_user_gender', 'book_writers_genders',
-            'book_genres_ids', 'book_keywords_ids', 'male_vote_percent', 'create_user_born_year',
-            'user_updated_at_timestamp', 'book_is_si', 'book_is_lp', 'book_ready_status'
+            'book_category', 'male_vote_percent', 'create_user_born_year',
+            'user_updated_at_timestamp', 'book_is_si', 'book_is_lp', 'book_ready_status',
+            'create_user_favorite_genres'
         ], explode(',', $lines[0]));
 
         $this->assertEquals($vote->book->id, $array[0]);
@@ -95,22 +104,23 @@ class BookVoteCsvCreateTest extends TestCase
         $this->assertEquals($vote->create_user->gender, $array[4]);
 
         $writers_genders = $book->writers->pluck('gender')->toArray();
-        $book_genres_ids = $book->genres->pluck('id')->toArray();
-        $book_keywords_ids = $book->book_keywords()->with('keyword')->get()->pluck('keyword.id')->toArray();
+        $book_genres_ids = $book->genres->pluck('name')->toArray();
+        $book_keywords_ids = $book->book_keywords()->with('keyword')->get()->pluck('keyword.text')->toArray();
 
+        $book_category = array_merge($book_genres_ids, $book_keywords_ids);
+
+        sort($book_category);
         sort($writers_genders);
-        sort($book_genres_ids);
-        sort($book_keywords_ids);
 
         $this->assertEquals(implode(',', $writers_genders), $array[5]);
-        $this->assertEquals(implode(',', $book_genres_ids), $array[6]);
-        $this->assertEquals(implode(',', $book_keywords_ids), $array[7]);
-        $this->assertEquals($vote->book->male_vote_percent, $array[8]);
-        $this->assertEquals($vote->create_user->born_date->year, $array[9]);
-        $this->assertEquals($vote->user_updated_at->timestamp, $array[10]);
-        $this->assertEquals(intval($vote->book->is_si), $array[11]);
-        $this->assertEquals(intval($vote->book->is_lp), $array[12]);
-        $this->assertEquals(BookComplete::getValue($vote->book->ready_status), $array[13]);
+        $this->assertEquals(implode(', ', $book_category), $array[6]);
+        $this->assertEquals($vote->book->male_vote_percent, $array[7]);
+        $this->assertEquals($vote->create_user->born_date->year, $array[8]);
+        $this->assertEquals($vote->user_updated_at->timestamp, $array[9]);
+        $this->assertEquals(intval($vote->book->is_si), $array[10]);
+        $this->assertEquals(intval($vote->book->is_lp), $array[11]);
+        $this->assertEquals(BookComplete::getValue($vote->book->ready_status), $array[12]);
+        $this->assertEquals($user->data->favorite_genres, $array[13]);
     }
 
     public function testAfterTime()
@@ -140,7 +150,8 @@ class BookVoteCsvCreateTest extends TestCase
 
     public function testIfKeywordNotFound()
     {
-        $create_user = User::factory()->male();
+        $create_user = User::factory()
+            ->male();
 
         $book = Book::factory()
             ->has(Author::factory()->count(2), 'writers')
@@ -175,7 +186,7 @@ class BookVoteCsvCreateTest extends TestCase
 
         $array = str_getcsv($lines[1], ",");
 
-        $this->assertEquals($keyword->id, $array[7]);
+        $this->assertTrue(in_array($keyword->text, explode(', ', $array[6])));
     }
 
     public function testNotFoundIfMinRateGreater()
@@ -257,8 +268,8 @@ class BookVoteCsvCreateTest extends TestCase
 
         $array = str_getcsv($lines[1], ",");
 
-        $this->assertEquals($vote->book->male_vote_percent, $array[8]);
-        $this->assertEquals('', $array[9]);
-        $this->assertEquals($vote->user_updated_at->timestamp, $array[10]);
+        $this->assertEquals($vote->book->male_vote_percent, $array[7]);
+        $this->assertEquals('', $array[8]);
+        $this->assertEquals($vote->user_updated_at->timestamp, $array[9]);
     }
 }

@@ -22,7 +22,7 @@ class BookCsvCreate extends Command
                             {--disk=public}
                             {--file=/datasets/book_dataset.csv}
                             {--batch=5000}
-                            {--columns=book_id,book_title,book_writers_genders,book_genres_ids,book_keywords_ids,male_vote_percent,book_is_si,book_is_lp,book_ready_status}
+                            {--columns=book_id,book_title,book_writers_genders,book_category,male_vote_percent,book_is_si,book_is_lp,book_ready_status}
                             {--min_book_user_votes_count=5}';
 
     /**
@@ -64,11 +64,9 @@ class BookCsvCreate extends Command
             ->when($this->columns->contains('book_writers_genders'), function ($query) {
                 $query->with('writers');
             })
-            ->when($this->columns->contains('book_genres_ids'), function ($query) {
-                $query->with('genres');
-            })
-            ->when($this->columns->contains('book_keywords_ids'), function ($query) {
-                $query->with('book_keywords.keyword');
+            ->when($this->columns->contains('book_category'), function ($query) {
+                $query->with('genres')
+                    ->with('book_keywords.keyword');
             })
             ->when($this->after_time, function ($query) {
                 $query->where('created_at', '>=', $this->after_time);
@@ -135,8 +133,6 @@ class BookCsvCreate extends Command
         }
 
         sort($writers_genders);
-        sort($book_genres_ids);
-        sort($book_keywords_ids);
 
         $array['book_id'] = $book->id;
 
@@ -151,11 +147,27 @@ class BookCsvCreate extends Command
         if ($this->columns->contains('book_writers_genders'))
             $array['book_writers_genders'] = '"'.implode(',', $writers_genders).'"';
 
-        if ($this->columns->contains('book_genres_ids'))
-            $array['book_genres_ids'] = '"'.implode(',', $book_genres_ids).'"';
+        if ($this->columns->contains('book_category'))
+        {
+            $categories = [];
 
-        if ($this->columns->contains('book_keywords_ids'))
-            $array['book_keywords_ids'] = '"'.implode(',', $book_keywords_ids).'"';
+            foreach ($book->genres as $genre)
+            {
+                $categories[] = preg_replace('/(\,|\")/iu', ' ', $genre->name);
+            }
+
+            foreach ($book->book_keywords as $keyword)
+            {
+                if (!empty($keyword->keyword))
+                {
+                    $categories[] = preg_replace('/(\,|\")/iu', ' ', $keyword->keyword->text);
+                }
+            }
+
+            sort($categories);
+
+            $array['book_category'] = '"'.implode(', ', $categories).'"';
+        }
 
         if ($this->columns->contains('male_vote_percent'))
         {
