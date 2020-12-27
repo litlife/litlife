@@ -89,12 +89,12 @@ class BookVoteCsvCreateTest extends TestCase
             'book_id', 'book_title', 'create_user_id', 'rate', 'create_user_gender', 'book_writers_genders',
             'book_category', 'male_vote_percent', 'create_user_born_year',
             'user_updated_at_timestamp', 'book_is_si', 'book_is_lp', 'book_ready_status',
-            'create_user_favorite_genres'
+            'create_user_favorite_genres', 'book_lang'
         ], explode(',', $lines[0]));
 
         $this->assertEquals($vote->book->id, $array[0]);
 
-        $title = $vote->book->title;
+        $title = $vote->book->title_author_search_helper;
         $title = preg_replace('/(\,|\")/iu', ' ', $title);
         $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
 
@@ -128,6 +128,7 @@ class BookVoteCsvCreateTest extends TestCase
         $this->assertEquals(intval($vote->book->is_lp), $array[11]);
         $this->assertEquals(BookComplete::getValue($vote->book->ready_status), $array[12]);
         $this->assertEquals($user->data->favorite_genres, $array[13]);
+        $this->assertEquals($book->ti_lb, $array[14]);
     }
 
     public function testAfterTime()

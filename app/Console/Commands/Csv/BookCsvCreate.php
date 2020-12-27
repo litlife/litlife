@@ -22,7 +22,7 @@ class BookCsvCreate extends Command
                             {--disk=public}
                             {--file=/datasets/book_dataset.csv}
                             {--batch=5000}
-                            {--columns=book_id,book_title,book_writers_genders,book_category,male_vote_percent,book_is_si,book_is_lp,book_ready_status}
+                            {--columns=book_id,book_title,book_writers_genders,book_category,male_vote_percent,book_is_si,book_is_lp,book_ready_status,book_lang}
                             {--min_book_user_votes_count=5}';
 
     /**
@@ -138,7 +138,7 @@ class BookCsvCreate extends Command
 
         if ($this->columns->contains('book_title'))
         {
-            $title = $book->title;
+            $title = mb_strtolower($book->title_author_search_helper);
             $title = preg_replace('/(\,|\")/iu', ' ', $title);
             $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
             $array['book_title'] = '"'.$title.'"';
@@ -188,6 +188,10 @@ class BookCsvCreate extends Command
                 $array['book_ready_status'] = BookComplete::getValue($book->ready_status);
             else
                 $array['book_ready_status'] = '';
+        }
+
+        if ($this->columns->contains('book_lang')) {
+            $array['book_lang'] = $book->ti_lb;
         }
 
         return $array;

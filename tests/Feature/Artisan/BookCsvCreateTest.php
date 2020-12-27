@@ -65,12 +65,12 @@ class BookCsvCreateTest extends TestCase
 
         $this->assertEquals([
             'book_id', 'book_title', 'book_writers_genders', 'book_category', 'male_vote_percent',
-            'book_is_si', 'book_is_lp', 'book_ready_status'
+            'book_is_si', 'book_is_lp', 'book_ready_status', 'book_lang'
         ], explode(',', $lines[0]));
 
         $this->assertEquals($book->id, $array[0]);
 
-        $title = preg_replace('/(\,|\")/iu', ' ', $book->title);
+        $title = preg_replace('/(\,|\")/iu', ' ', $book->title_author_search_helper);
         $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
 
         $this->assertEquals($title, $array[1]);
@@ -98,6 +98,7 @@ class BookCsvCreateTest extends TestCase
         $this->assertEquals(intval($book->is_si), $array[5]);
         $this->assertEquals(intval($book->is_lp), $array[6]);
         $this->assertEquals(BookComplete::getValue($book->ready_status), $array[7]);
+        $this->assertEquals($book->ti_lb, $array[8]);
     }
 
     public function testAfterTime()

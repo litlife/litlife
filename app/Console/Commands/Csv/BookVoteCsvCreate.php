@@ -21,7 +21,7 @@ class BookVoteCsvCreate extends Command
                             {--disk=public}
                             {--file=/datasets/book_votes_dataset.csv}
                             {--batch=1000}
-                            {--columns=book_id,book_title,create_user_id,rate,create_user_gender,book_writers_genders,book_category,male_vote_percent,create_user_born_year,user_updated_at_timestamp,book_is_si,book_is_lp,book_ready_status,create_user_favorite_genres}
+                            {--columns=book_id,book_title,create_user_id,rate,create_user_gender,book_writers_genders,book_category,male_vote_percent,create_user_born_year,user_updated_at_timestamp,book_is_si,book_is_lp,book_ready_status,create_user_favorite_genres,book_lang}
                             {--min_book_user_votes_count=5}
                             {--min_book_rate_count=5}
                             {--min_rate=3}';
@@ -137,7 +137,7 @@ class BookVoteCsvCreate extends Command
         $array['book_id'] = $vote->book_id;
 
         if ($this->columns->contains('book_title')) {
-            $title = $vote->book->title;
+            $title = $vote->book->title_author_search_helper;
             $title = preg_replace('/(\,|\")/iu', ' ', $title);
             $title = preg_replace('/([[:space:]]+)/iu', ' ', $title);
 
@@ -220,6 +220,10 @@ class BookVoteCsvCreate extends Command
             } else {
                 $array['create_user_favorite_genres'] = '"'.$text.'"';
             }
+        }
+
+        if ($this->columns->contains('book_lang')) {
+            $array['book_lang'] = $vote->book->ti_lb;
         }
 
         return $array;
