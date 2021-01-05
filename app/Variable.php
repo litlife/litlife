@@ -31,6 +31,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Variable whereValue($value)
  * @method static Builder|Variable withCacheCooldownSeconds($seconds = null)
  * @mixin Eloquent
+ * @method static CachedBuilder|Variable all($columns = [])
+ * @method static CachedBuilder|Variable avg($column)
+ * @method static CachedBuilder|Variable cache(array $tags = [])
+ * @method static CachedBuilder|Variable cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|Variable count($columns = '*')
+ * @method static CachedBuilder|Variable disableModelCaching()
+ * @method static CachedBuilder|Variable flushCache(array $tags = [])
+ * @method static CachedBuilder|Variable getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|Variable inRandomOrder($seed = '')
+ * @method static CachedBuilder|Variable insert(array $values)
+ * @method static CachedBuilder|Variable isCachable()
+ * @method static CachedBuilder|Variable max($column)
+ * @method static CachedBuilder|Variable min($column)
+ * @method static CachedBuilder|Variable sum($column)
+ * @method static CachedBuilder|Variable truncate()
  */
 class Variable extends Model
 {

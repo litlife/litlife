@@ -39,6 +39,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|AdBlock whereUserUpdatedAt($value)
  * @method static Builder|AdBlock withCacheCooldownSeconds($seconds = null)
  * @mixin Eloquent
+ * @method static CachedBuilder|AdBlock all($columns = [])
+ * @method static CachedBuilder|AdBlock avg($column)
+ * @method static CachedBuilder|AdBlock cache(array $tags = [])
+ * @method static CachedBuilder|AdBlock cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|AdBlock count($columns = '*')
+ * @method static CachedBuilder|AdBlock disableModelCaching()
+ * @method static CachedBuilder|AdBlock flushCache(array $tags = [])
+ * @method static CachedBuilder|AdBlock getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|AdBlock inRandomOrder($seed = '')
+ * @method static CachedBuilder|AdBlock insert(array $values)
+ * @method static CachedBuilder|AdBlock isCachable()
+ * @method static CachedBuilder|AdBlock max($column)
+ * @method static CachedBuilder|AdBlock min($column)
+ * @method static CachedBuilder|AdBlock sum($column)
+ * @method static CachedBuilder|AdBlock truncate()
  */
 class AdBlock extends Model
 {

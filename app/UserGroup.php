@@ -275,6 +275,21 @@ use Illuminate\Support\Str;
  * @method static Builder|UserGroup withTrashed()
  * @method static Builder|UserGroup withoutTrashed()
  * @mixin Eloquent
+ * @method static CachedBuilder|UserGroup all($columns = [])
+ * @method static CachedBuilder|UserGroup avg($column)
+ * @method static CachedBuilder|UserGroup cache(array $tags = [])
+ * @method static CachedBuilder|UserGroup cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|UserGroup count($columns = '*')
+ * @method static CachedBuilder|UserGroup disableModelCaching()
+ * @method static CachedBuilder|UserGroup flushCache(array $tags = [])
+ * @method static CachedBuilder|UserGroup getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|UserGroup inRandomOrder($seed = '')
+ * @method static CachedBuilder|UserGroup insert(array $values)
+ * @method static CachedBuilder|UserGroup isCachable()
+ * @method static CachedBuilder|UserGroup max($column)
+ * @method static CachedBuilder|UserGroup min($column)
+ * @method static CachedBuilder|UserGroup sum($column)
+ * @method static CachedBuilder|UserGroup truncate()
  */
 class UserGroup extends Model
 {

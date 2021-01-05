@@ -37,6 +37,21 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|UserReadStyle whereUserId($value)
  * @method static Builder|UserReadStyle withCacheCooldownSeconds($seconds = null)
  * @mixin Eloquent
+ * @method static CachedBuilder|UserReadStyle all($columns = [])
+ * @method static CachedBuilder|UserReadStyle avg($column)
+ * @method static CachedBuilder|UserReadStyle cache(array $tags = [])
+ * @method static CachedBuilder|UserReadStyle cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|UserReadStyle count($columns = '*')
+ * @method static CachedBuilder|UserReadStyle disableModelCaching()
+ * @method static CachedBuilder|UserReadStyle flushCache(array $tags = [])
+ * @method static CachedBuilder|UserReadStyle getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|UserReadStyle inRandomOrder($seed = '')
+ * @method static CachedBuilder|UserReadStyle insert(array $values)
+ * @method static CachedBuilder|UserReadStyle isCachable()
+ * @method static CachedBuilder|UserReadStyle max($column)
+ * @method static CachedBuilder|UserReadStyle min($column)
+ * @method static CachedBuilder|UserReadStyle sum($column)
+ * @method static CachedBuilder|UserReadStyle truncate()
  */
 class UserReadStyle extends Model
 {

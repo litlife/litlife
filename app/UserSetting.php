@@ -44,6 +44,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|UserSetting whereUserId($value)
  * @method static Builder|UserSetting withCacheCooldownSeconds($seconds = null)
  * @mixin Eloquent
+ * @method static CachedBuilder|UserSetting all($columns = [])
+ * @method static CachedBuilder|UserSetting avg($column)
+ * @method static CachedBuilder|UserSetting cache(array $tags = [])
+ * @method static CachedBuilder|UserSetting cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|UserSetting count($columns = '*')
+ * @method static CachedBuilder|UserSetting disableModelCaching()
+ * @method static CachedBuilder|UserSetting flushCache(array $tags = [])
+ * @method static CachedBuilder|UserSetting getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|UserSetting inRandomOrder($seed = '')
+ * @method static CachedBuilder|UserSetting insert(array $values)
+ * @method static CachedBuilder|UserSetting isCachable()
+ * @method static CachedBuilder|UserSetting max($column)
+ * @method static CachedBuilder|UserSetting min($column)
+ * @method static CachedBuilder|UserSetting sum($column)
+ * @method static CachedBuilder|UserSetting truncate()
  */
 class UserSetting extends Model
 {

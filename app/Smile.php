@@ -59,6 +59,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Smile withTrashed()
  * @method static Builder|Smile withoutTrashed()
  * @mixin Eloquent
+ * @method static CachedBuilder|Smile all($columns = [])
+ * @method static CachedBuilder|Smile avg($column)
+ * @method static CachedBuilder|Smile cache(array $tags = [])
+ * @method static CachedBuilder|Smile cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|Smile count($columns = '*')
+ * @method static CachedBuilder|Smile disableModelCaching()
+ * @method static CachedBuilder|Smile flushCache(array $tags = [])
+ * @method static CachedBuilder|Smile getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|Smile inRandomOrder($seed = '')
+ * @method static CachedBuilder|Smile insert(array $values)
+ * @method static CachedBuilder|Smile isCachable()
+ * @method static CachedBuilder|Smile max($column)
+ * @method static CachedBuilder|Smile min($column)
+ * @method static CachedBuilder|Smile sum($column)
+ * @method static CachedBuilder|Smile truncate()
  */
 class Smile extends Model
 {

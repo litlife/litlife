@@ -41,6 +41,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Language withTrashed()
  * @method static Builder|Language withoutTrashed()
  * @mixin Eloquent
+ * @method static CachedBuilder|Language all($columns = [])
+ * @method static CachedBuilder|Language avg($column)
+ * @method static CachedBuilder|Language cache(array $tags = [])
+ * @method static CachedBuilder|Language cachedValue(array $arguments, string $cacheKey)
+ * @method static CachedBuilder|Language count($columns = '*')
+ * @method static CachedBuilder|Language disableModelCaching()
+ * @method static CachedBuilder|Language flushCache(array $tags = [])
+ * @method static CachedBuilder|Language getModelCacheCooldown(\Illuminate\Database\Eloquent\Model $instance)
+ * @method static CachedBuilder|Language inRandomOrder($seed = '')
+ * @method static CachedBuilder|Language insert(array $values)
+ * @method static CachedBuilder|Language isCachable()
+ * @method static CachedBuilder|Language max($column)
+ * @method static CachedBuilder|Language min($column)
+ * @method static CachedBuilder|Language sum($column)
+ * @method static CachedBuilder|Language truncate()
  */
 class Language extends Model
 {

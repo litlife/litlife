@@ -53,6 +53,8 @@ use Illuminate\Support\Str;
  * @method static Builder|Genre withTrashed()
  * @method static Builder|Genre withoutTrashed()
  * @mixin Eloquent
+ * @property int|null $old_genre_group_id Старый ID главного жанра
+ * @method static \Illuminate\Database\Eloquent\Builder|Genre whereOldGenreGroupId($value)
  */
 class Genre extends Model
 {
