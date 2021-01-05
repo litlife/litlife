@@ -13,7 +13,7 @@
 
 			@foreach ($sequences as $sequence)
 
-				@include('sequence.list.'.$item_render)
+				@include($resource->getViewName(), ['sequence' => $sequence])
 
 				@if (in_array($loop->index, [$rand]))
 					@can('see_ads', \App\User::class)

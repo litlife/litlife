@@ -24,7 +24,8 @@
 							<select class="form-control" name="order">
 								@foreach ($order_array as $code => $function)
 									<option value="{{ $code }}"
-											@if ($code == $input['order']) selected="selected" @endif > {{ __('sequence.sorting.'.$code.'') }}</option>
+										@if ($code == $resource->getInputValue('order')) selected="selected" @endif >
+										{{ __('sequence.sorting.'.$code.'') }}</option>
 								@endforeach
 							</select>
 						</div>

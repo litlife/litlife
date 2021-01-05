@@ -285,14 +285,14 @@ class Sequence extends Model
 
     public function scopeOrderByBooksCountAsc($query)
     {
-        return $query->orderBy('book_count', 'desc')
+        return $query->orderBy('book_count', 'asc')
             ->orderBy('sequences.id', 'asc');
     }
 
     public function scopeOrderByBooksCountDesc($query)
     {
         return $query->orderBy('book_count', 'desc')
-            ->orderBy('sequences.id', 'asc');
+            ->orderBy('sequences.id', 'desc');
     }
 
     public function updateBooksCount()
