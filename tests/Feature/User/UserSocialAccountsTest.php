@@ -88,7 +88,8 @@ class UserSocialAccountsTest extends TestCase
      * @param  string  $token
      * @param  int  $id
      */
-    public function mockSocialiteFacade($email = null, $token = 'foo', $provider_name = 'google', $provider_user_id = 1, $avatar_url = '/img/nocover4.jpeg')
+    public function mockSocialiteFacade($email = null, $token = 'foo', $provider_name = 'google', $provider_user_id = 1, $avatar_url = '/img/nocover4.jpeg',
+        $userName = 'Laztopaz')
     {
         $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
         $provider->shouldReceive('redirect')->andReturn('Redirected');
@@ -101,7 +102,7 @@ class UserSocialAccountsTest extends TestCase
             $abstractUser->shouldReceive('getId')
                 ->andReturn($provider_user_id)
                 ->shouldReceive('getName')
-                ->andReturn('Laztopaz')
+                ->andReturn($userName)
                 ->shouldReceive('getAvatar')
                 ->andReturn($avatar_url);
         } else {
@@ -110,7 +111,7 @@ class UserSocialAccountsTest extends TestCase
                 ->shouldReceive('getEmail')
                 ->andReturn($email)
                 ->shouldReceive('getName')
-                ->andReturn('Laztopaz')
+                ->andReturn($userName)
                 ->shouldReceive('getAvatar')
                 ->andReturn($avatar_url);
         }
@@ -765,5 +766,24 @@ EOT;
             ->assertRedirect();
     }
 
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testSeeAllowUserUserNameError()
+    {
+        $email = $this->faker->email;
+        $provider_user_id = $this->faker->uuid;
+        $token = $this->faker->linuxPlatformToken;
 
+        $this->assertNull(UserEmail::email($email)->first());
+
+        $this->mockSocialiteFacade($email, $token, 'yandex', $provider_user_id, null, '');
+
+        $this->followingRedirects()
+            ->get('/auth/yandex/callback')
+            ->assertOk()
+            ->assertSeeText(__('Please allow to use your name to create a new account'));
+    }
 }

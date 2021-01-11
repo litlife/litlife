@@ -142,7 +142,15 @@ class UserSocialAccountController extends Controller
 
 						$user = new User;
 						preg_match('/([[:graph:]]+)(?:[[:space:]]*)([[:graph:]]*)/iu', $providerUser->getName(), $array);
-						list(, $user->first_name, $user->last_name) = $array;
+
+						if (empty($array[1]))
+                        {
+                            return redirect()
+                                ->route('home')
+                                ->withErrors([__('Please allow to use your name to create a new account')], 'login');
+                        }
+
+                        list(, $user->first_name, $user->last_name) = $array;
 						$user->email = $email_array[0];
 						$user->password = $password;
 						$user->save();
