@@ -90,8 +90,8 @@ return [
 	"refresh_counters" => "обновить счетчики",
 	"search" => "Поисковая строка",
 	"sorting" => [
-		"MyLibraryAddTimeFirst" => "Первые добавленные в личную библиотеку",
-		"MyLibraryAddTimeLast" => "Последние добавленные в личную библиотеку",
+		"MyLibraryAddTimeFirst" => "Первые добавленные в избранное",
+		"MyLibraryAddTimeLast" => "Последние добавленные в избранное",
 		"book_volume" => "Количеству книг",
 		"created_at_asc" => "Первые добавленные",
 		"created_at_desc" => "Последние добавленные",

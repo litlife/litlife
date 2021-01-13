@@ -207,8 +207,8 @@ return [
 	],
 	"si" => "СИ",
 	"sorting" => [
-		"MyLibraryAddTimeFirst" => "Первые по добавлению в мою библиотеку",
-		"MyLibraryAddTimeLast" => "Последние по добавлению в мою библиотеку",
+		"MyLibraryAddTimeFirst" => "Первые добавленные в избранное",
+		"MyLibraryAddTimeLast" => "Последние добавленные в избранное",
 		"OnShow_Down" => "Последние по дате появления в библиотеке",
 		"SequenceNumberAsc" => "По номеру в серии с начала",
 		"SequenceNumberDesc" => "По номеру в серии с конца",

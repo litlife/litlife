@@ -28,8 +28,8 @@ return [
 		"name_asc" => "По алфавиту с начала",
 		"name_desc" => "По алфавиту с конца",
 		"oldest" => "Первые добавленные",
-		"user_sequences_created_at_asc" => "Первые добавленные в личную бибилиотеку",
-		"user_sequences_created_at_desc" => "Последние добавленные в личную бибилиотеку"
+		"user_sequences_created_at_asc" => "Первые добавленные в избранное",
+		"user_sequences_created_at_desc" => "Последние добавленные в избранное"
 	],
 
 	'favorite' => 'Серии в личной библиотеке',

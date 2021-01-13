@@ -47,15 +47,16 @@ class SequenceListController extends Controller
 	}
 
 	/**
-	 * Серии в библиотеке пользователя
+	 * Серии в избранном пользователя
 	 *
+     * @param Request $request
 	 * @param User $user
 	 * @return View
 	 */
 	function userLibrary(Request $request, User $user)
 	{
         $builder = $user->sequences()
-            ->withPivot('user_sequences_created_at_asc')
+            ->withPivot('created_at')
             ->any();
 
         $resource = (new SequenceSearchResource($request, $builder))
