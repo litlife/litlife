@@ -983,8 +983,10 @@ class BookPolicy extends Policy
 
         if ($book->isRejected())
         {
-            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
-                return true;
+            if (!empty($auth_user)) {
+                if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
             }
 
             return false;
@@ -1080,8 +1082,10 @@ class BookPolicy extends Policy
 
         if ($book->isRejected())
         {
-            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
-                return true;
+            if (!empty($auth_user)) {
+                if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
             }
 
             return false;
@@ -1146,8 +1150,10 @@ class BookPolicy extends Policy
 
         if ($book->isRejected())
         {
-            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
-                return true;
+            if (!empty($auth_user)) {
+                if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
             }
 
             return false;
@@ -1194,8 +1200,10 @@ class BookPolicy extends Policy
 
         if ($book->isRejected())
         {
-            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
-                return true;
+            if (!empty($auth_user)) {
+                if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
             }
 
             return false;
