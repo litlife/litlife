@@ -72,6 +72,7 @@ class BookReadPolicyTest extends TestCase
         $section = $book->sections()->chapter()->first();
 
         $this->assertTrue($user->can('read', $book));
+        $this->assertTrue($user->can('view_read_button', $book));
         $this->assertTrue($user->can('view', $section));
 
         $page = $section->pages()->first();
@@ -95,6 +96,7 @@ class BookReadPolicyTest extends TestCase
         $section = $book->sections()->chapter()->first();
 
         $this->assertFalse($user->can('read', $book));
+        $this->assertFalse($user->can('view_read_button', $book));
         $this->assertFalse($user->can('view', $section));
 
         $page = $section->pages()->first();

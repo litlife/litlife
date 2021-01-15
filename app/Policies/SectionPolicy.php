@@ -91,8 +91,10 @@ class SectionPolicy extends Policy
 
         if ($section->book->isRejected())
         {
-            if ($section->book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
-                return true;
+            if (!empty($auth_user)) {
+                if ($section->book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
             }
 
             return false;

@@ -27,8 +27,10 @@ class PagePolicy
     {
         if ($page->book->isRejected())
         {
-            if ($page->book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
-                return true;
+            if (!empty($auth_user)) {
+                if ($page->book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
             }
 
             return false;

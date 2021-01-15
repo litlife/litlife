@@ -1026,6 +1026,17 @@ class BookPolicy extends Policy
             }
         }
 
+        if ($book->isRejected())
+        {
+            if (!empty($auth_user)) {
+                if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         return true;
     }
 
