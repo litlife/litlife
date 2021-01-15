@@ -89,6 +89,15 @@ class SectionPolicy extends Policy
             return $this->deny(__('book.paid_part_of_book'));
         }
 
+        if ($section->book->isRejected())
+        {
+            if ($section->book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 

@@ -46,4 +46,47 @@ class BookReadDownloadPolicyTest extends TestCase
         $this->assertTrue($user->can('download', $book));
         $this->assertTrue($user->can('read_or_download', $book));
     }
+
+    public function testCanIfUserBoughtBookAndItIsRemovedFromSale()
+    {
+        $book = Book::factory()
+            ->with_section()
+            ->removed_from_sale()
+            ->withDownloadAccess()
+            ->create();
+
+        $this->assertTrue($book->isRejected());
+
+        $user = User::factory()
+            ->create();
+
+        $purchase = UserPurchase::factory()
+            ->create([
+                'buyer_user_id' => $user->id,
+                'purchasable_id' => $book->id,
+                'purchasable_type' => 'book'
+            ]);
+
+        $this->assertTrue($user->can('download', $book));
+        $this->assertTrue($user->can('read_or_download', $book));
+        $this->assertTrue($user->can('view_download_files', $book));
+    }
+
+    public function testCantIfBookRemovedFromSale()
+    {
+        $book = Book::factory()
+            ->with_section()
+            ->removed_from_sale()
+            ->withDownloadAccess()
+            ->create();
+
+        $this->assertTrue($book->isRejected());
+
+        $user = User::factory()
+            ->create();
+
+        $this->assertFalse($user->can('download', $book));
+        $this->assertFalse($user->can('read_or_download', $book));
+        $this->assertFalse($user->can('view_download_files', $book));
+    }
 }

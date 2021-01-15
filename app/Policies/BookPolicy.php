@@ -981,6 +981,15 @@ class BookPolicy extends Policy
             return $this->deny(__('book.paid_part_of_book'));
         }
 
+        if ($book->isRejected())
+        {
+            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -1058,6 +1067,15 @@ class BookPolicy extends Policy
             return true;
         }
 
+        if ($book->isRejected())
+        {
+            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -1115,6 +1133,15 @@ class BookPolicy extends Policy
             return $this->deny(__('book.you_need_to_purchase_a_book_to_download'));
         }
 
+        if ($book->isRejected())
+        {
+            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
         return true;
     }
 
@@ -1152,6 +1179,15 @@ class BookPolicy extends Policy
             } else {
                 return false;
             }
+        }
+
+        if ($book->isRejected())
+        {
+            if ($book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                return true;
+            }
+
+            return false;
         }
 
         return true;

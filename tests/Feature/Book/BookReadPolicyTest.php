@@ -48,4 +48,57 @@ class BookReadPolicyTest extends TestCase
 
         $this->assertFalse($user->can('read', $book));
     }
+
+    public function testCanIfUserBoughtBookAndItIsRemovedFromSale()
+    {
+        $book = Book::factory()
+            ->with_section()
+            ->removed_from_sale()
+            ->withReadAccess()
+            ->create();
+
+        $this->assertTrue($book->isRejected());
+
+        $user = User::factory()
+            ->create();
+
+        $purchase = UserPurchase::factory()
+            ->create([
+                'buyer_user_id' => $user->id,
+                'purchasable_id' => $book->id,
+                'purchasable_type' => 'book'
+            ]);
+
+        $section = $book->sections()->chapter()->first();
+
+        $this->assertTrue($user->can('read', $book));
+        $this->assertTrue($user->can('view', $section));
+
+        $page = $section->pages()->first();
+
+        $this->assertTrue($user->can('view', $page));
+    }
+
+    public function testCantIfBookRemovedFromSale()
+    {
+        $book = Book::factory()
+            ->with_section()
+            ->removed_from_sale()
+            ->withReadAccess()
+            ->create();
+
+        $this->assertTrue($book->isRejected());
+
+        $user = User::factory()
+            ->create();
+
+        $section = $book->sections()->chapter()->first();
+
+        $this->assertFalse($user->can('read', $book));
+        $this->assertFalse($user->can('view', $section));
+
+        $page = $section->pages()->first();
+
+        $this->assertFalse($user->can('view', $page));
+    }
 }

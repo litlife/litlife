@@ -529,4 +529,32 @@ class BookFactory extends Factory
             ];
         });
     }
+
+    public function withReadAccess()
+    {
+        return $this->afterMaking(function (Book $book) {
+            $book->readAccessEnable();
+        });
+    }
+
+    public function withDownloadAccess()
+    {
+        return $this->afterMaking(function (Book $book) {
+            $book->downloadAccessEnable();
+        });
+    }
+
+    public function withoutReadAccess()
+    {
+        return $this->afterMaking(function (Book $book) {
+            $book->readAccessDisable();
+        });
+    }
+
+    public function withoutDownloadAccess()
+    {
+        return $this->afterMaking(function (Book $book) {
+            $book->downloadAccessDisable();
+        });
+    }
 }

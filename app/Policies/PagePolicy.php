@@ -25,6 +25,15 @@ class PagePolicy
      */
     public function view(?User $auth_user, Page $page)
     {
+        if ($page->book->isRejected())
+        {
+            if ($page->book->purchases->where('buyer_user_id', $auth_user->id)->first()) {
+                return true;
+            }
+
+            return false;
+        }
+
         if (!$page->book->isReadAccess()) {
             if (!empty($auth_user) and optional($page->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
                 return true;
@@ -58,6 +67,7 @@ class PagePolicy
                 return true;
             }
         }
+
 
     }
 
