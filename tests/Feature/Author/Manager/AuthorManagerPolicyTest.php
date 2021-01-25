@@ -248,7 +248,7 @@ class AuthorManagerPolicyTest extends TestCase
 
         $this->assertTrue($user->can('addFiles', $book));
         $this->assertTrue($user->can('update', $file));
-        $this->assertFalse($user->can('delete', $file));
+        $this->assertTrue($user->can('delete', $file));
         $this->assertFalse($user->can('restore', $file));
         $this->assertFalse($user->can('view_on_moderation', $file));
         $this->assertTrue($user->can('set_source_and_make_pages', $file));
@@ -343,7 +343,7 @@ class AuthorManagerPolicyTest extends TestCase
 
         $this->assertTrue($user->can('addFiles', $book));
         $this->assertTrue($user->can('update', $file));
-        $this->assertFalse($user->can('delete', $file));
+        $this->assertTrue($user->can('delete', $file));
         $this->assertFalse($user->can('restore', $file));
         $this->assertFalse($user->can('view_on_moderation', $file));
         $this->assertFalse($user->can('set_source_and_make_pages', $file));

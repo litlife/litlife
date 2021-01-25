@@ -65,6 +65,11 @@ class BookFilePolicy extends Policy
                 return true;
             }
         } else {
+
+            if (optional($file->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
+                return true;
+            }
+
             return (boolean) $auth_user->getPermission('book_file_delete');
         }
     }
@@ -96,6 +101,11 @@ class BookFilePolicy extends Policy
                 return true;
             }
         } else {
+
+            if (optional($file->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
+                return true;
+            }
+
             return (boolean) $auth_user->getPermission('book_file_delete');
         }
     }
