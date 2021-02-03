@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Smile;
 
 use App\Enums\VariablesEnum;
 use App\Smile;

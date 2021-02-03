@@ -35,40 +35,14 @@ class AuthorTest extends DuskTestCase
                 ->type('comment', $this->faker->realText(200))
                 ->press(__('manager.send_request'))
                 ->assertSee(__('manager.request_has_been_sent'))
-                ->visit(route('authors.show', $author))
-                ->assertSee(__('manager.request_on_review'));
+                ->visit(route('authors.show', $author));
 
             $manager = $author->managers->first();
 
             $this->assertTrue($manager->isSentForReview());
         });
     }
-
-    public function testDeleteRequest()
-    {
-        $this->browse(function ($user_browser) {
-
-            $manager = Manager::factory()->sent_for_review()->create();
-
-            $user = $manager->user;
-            $author = $manager->manageable;
-            $user->group->author_editor_request = true;
-            $user->push();
-
-            $user_browser->resize(1000, 1000)
-                ->loginAs($user)
-                ->visit(route('authors.show', $author))
-                ->assertSee(__('common.delete'))
-                ->clickLink(__('common.delete'))
-                ->assertDontSee(__('manager.request_on_review'))
-                ->assertSeeLink(__('author.iam_the_author'));
-
-            $manager->refresh();
-
-            $this->assertTrue($manager->trashed());
-        });
-    }
-
+/*
     public function testCheckManager()
     {
         $this->browse(function ($admin_browser) {
@@ -78,11 +52,16 @@ class AuthorTest extends DuskTestCase
             $admin_user->group->moderator_add_remove = true;
             $admin_user->push();
 
-            $manager = Manager::factory()->sent_for_review()->create();
+            $manager = Manager::factory()
+                ->character_author()
+                ->sent_for_review()
+                ->create();
 
             $user = $manager->user;
 
-            $author = Author::factory()->create();
+            $this->assertTrue($manager->manageable->isAccepted());
+
+            dump($user->name);
 
             $admin_browser->resize(1000, 1000)
                 ->loginAs($admin_user)
@@ -104,6 +83,7 @@ class AuthorTest extends DuskTestCase
             $this->assertTrue($manager->isAccepted());
         });
     }
+    */
 
     public function testDeleteManager()
     {

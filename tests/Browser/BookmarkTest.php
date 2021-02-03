@@ -214,7 +214,7 @@ class BookmarkTest extends DuskTestCase
                 ->loginAs($user)
                 ->visit(route('users.bookmarks.index', $user))
                 ->whenAvailable('.folders', function ($folders) use ($bookmark_folder2) {
-                    $folders->dragUp('[data-id="'.$bookmark_folder2->id.'"] .handle', 500);
+                    $folders->dragUp('[data-id="'.$bookmark_folder2->id.'"] .handle', 200);
                 })
                 ->waitForText(__('bookmark_folder.position_saved'));
 

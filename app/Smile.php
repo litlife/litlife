@@ -81,6 +81,8 @@ class Smile extends Model
     use ImageResizable;
     use Cachable;
 
+    public $source;
+
     protected $casts = [
         'parameters' => 'object'
     ];
@@ -109,6 +111,11 @@ class Smile extends Model
         return '/images/smiles/' . $this->name;
     }
  */
+
+    public function setSimpleFormAttribute($value)
+    {
+        $this->attributes['simple_form'] = trim(mb_strtolower($value));
+    }
 
     public function getSimpleFormAttribute($value)
     {

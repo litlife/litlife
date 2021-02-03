@@ -31,12 +31,17 @@ abstract class DuskTestCase extends BaseTestCase
         $this->faker = $this->makeFaker(config('app.faker_locale') ?? 'en_US');
     }
 
-    /**
-     * Temporal solution for cleaning up session
-     */
     protected function setUp(): void
     {
         parent::setUp();
+
+        echo (get_called_class().'::'.$this->getName() . "\n");
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         foreach (static::$browsers as $browser) {
             $browser->driver->manage()->deleteAllCookies();
         }
@@ -50,17 +55,16 @@ abstract class DuskTestCase extends BaseTestCase
     protected function driver()
     {
         $options = (new ChromeOptions)->addArguments([
-            '--disable-gpu',
-            '--headless',
-            '--no-sandbox'
+            '--headless'
         ]);
 
         $options->setExperimentalOption('mobileEmulation', ['userAgent' => $this->userAgent]);
 
         return RemoteWebDriver::create(
-            'http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
-            ChromeOptions::CAPABILITY, $options
-        ), 150000, 150000
+            'http://localhost:9515',
+            DesiredCapabilities::chrome()->setCapability(ChromeOptions::CAPABILITY, $options),
+            150000,
+            150000
         );
     }
 }
