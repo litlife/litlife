@@ -45,6 +45,7 @@ class Mailing extends Model
     public function scopeWhereEmail($query, $email)
     {
         $email = preg_quote($email);
+        $email = ilikeSpecialChars($email);
 
         return $query->where('email', 'ilike', mb_strtolower($email));
     }

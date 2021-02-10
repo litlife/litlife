@@ -176,13 +176,13 @@ class AddFb2File
 				}
 
 				if ($titleInfo->hasChild('lang')) {
-					if ($lang = Language::where('code', 'ilike', $titleInfo->getFirstChildValue('lang'))->first()) {
+					if ($lang = Language::where('code', 'ilike', ilikeSpecialChars($titleInfo->getFirstChildValue('lang')))->first()) {
 						$this->book->ti_lb = $lang->code;
 					}
 				}
 
 				if ($titleInfo->hasChild('src-lang')) {
-					if ($lang = Language::where('code', 'ilike', $titleInfo->getFirstChildValue('src-lang'))->first()) {
+					if ($lang = Language::where('code', 'ilike', ilikeSpecialChars($titleInfo->getFirstChildValue('src-lang')))->first()) {
 						$this->book->ti_olb = $lang->code;
 					}
 				}
@@ -334,7 +334,7 @@ class AddFb2File
 
 		foreach ($this->fb2->description()->getFirstChild('title-info')->query('*[local-name()=\'genre\']') as $genreTag) {
 			$genreName = $genreTag->getNodeValue();
-			if ($genre = Genre::where('fb_code', 'ilike', $genreName)->orWhere('name', 'ilike', $genreName)->first()) {
+			if ($genre = Genre::where('fb_code', 'ilike', ilikeSpecialChars($genreName))->orWhere('name', 'ilike', ilikeSpecialChars($genreName))->first()) {
 				$this->book->genres()->syncWithoutDetaching([$genre->id]);
 			}
 		}
@@ -355,7 +355,7 @@ class AddFb2File
 				// если имя серии пустое, то не добавляем
 				if (!empty($name)) {
 					$sequence = Sequence::acceptedOrBelongsToUser($this->book->create_user)
-						->where('name', 'ILIKE', $name)
+						->where('name', 'ILIKE', ilikeSpecialChars($name))
 						->notMerged()
 						->first();
 

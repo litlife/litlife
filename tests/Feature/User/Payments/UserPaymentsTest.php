@@ -1194,7 +1194,7 @@ class UserPaymentsTest extends TestCase
 
         $this->assertEquals(50, $user->month_profit());
 
-        Carbon::setTestNow(now()->addDays(28));
+        Carbon::setTestNow(now()->addDays(25));
 
         $this->assertEquals(50, $user->month_profit());
 

@@ -571,13 +571,13 @@ class Author extends Model
 
         $query->where(function ($query) use ($last_name, $first_name, $middle_name, $nickname) {
             $query->when($last_name, function ($query, $last_name) {
-                return $query->where('last_name', 'ILIKE', $last_name);
+                return $query->where('last_name', 'ILIKE', ilikeSpecialChars($last_name));
             })->when($first_name, function ($query, $first_name) {
-                return $query->where('first_name', 'ILIKE', $first_name);
+                return $query->where('first_name', 'ILIKE', ilikeSpecialChars($first_name));
             })->when($middle_name, function ($query, $middle_name) {
-                return $query->where('middle_name', 'ILIKE', $middle_name);
+                return $query->where('middle_name', 'ILIKE', ilikeSpecialChars($middle_name));
             })->when($nickname, function ($query, $nickname) {
-                return $query->where('nickname', 'ILIKE', $nickname);
+                return $query->where('nickname', 'ILIKE', ilikeSpecialChars($nickname));
             });
         });
 

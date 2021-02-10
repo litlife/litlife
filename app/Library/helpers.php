@@ -408,4 +408,9 @@ function replaceSimilarSymbols($searchText)
 	return $searchText;
 }
 
+function ilikeSpecialChars($string)
+{
+    return addcslashes($string, '_%');
+}
+
 

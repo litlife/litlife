@@ -37,7 +37,7 @@ class UserNickUnique implements Rule
 	 */
 	public function passes($attribute, $value)
 	{
-		$query = User::where('nick', 'ilike', $value);
+		$query = User::where('nick', 'ilike', ilikeSpecialChars($value));
 
 		if (!empty($this->ignore_user_id))
 			$query->where('id', '!=', $this->ignore_user_id);

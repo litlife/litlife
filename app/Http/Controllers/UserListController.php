@@ -56,13 +56,13 @@ class UserListController extends Controller
 			$this->query->fulltextSearch($this->input['search']);
 		} else {
 			if ($this->input['first_name'])
-				$this->query->where("first_name", 'ilike', $this->input['first_name'] . '%');
+				$this->query->where("first_name", 'ilike', ilikeSpecialChars($this->input['first_name']) . '%');
 
 			if ($this->input['last_name'])
-				$this->query->where("last_name", 'ilike', $this->input['last_name'] . '%');
+				$this->query->where("last_name", 'ilike', ilikeSpecialChars($this->input['last_name']) . '%');
 
 			if ($this->input['nick'])
-				$this->query->where("nick", 'ilike', $this->input['nick'] . '%');
+				$this->query->where("nick", 'ilike', ilikeSpecialChars($this->input['nick']) . '%');
 		}
 
 		if ($this->input['gender'] and Gender::hasKey($this->input['gender']))

@@ -33,8 +33,6 @@ class BookSqliteTest extends TestCase
     {
         parent::setUp();
 
-        //$this->tmp_file = tmpfile();
-
         $this->book = Book::factory()->create([
             'online_read_new_format' => false,
             'page_count' => 1
@@ -42,7 +40,10 @@ class BookSqliteTest extends TestCase
 
         $this->db_path = $this->book->getBookPath();
 
-        mkdir(pathinfo($this->db_path, PATHINFO_DIRNAME), null, true);
+        $dir = pathinfo($this->db_path, PATHINFO_DIRNAME);
+
+        mkdir($dir, null, true);
+
         $l = fopen($this->db_path, 'w+');
         fclose($l);
 

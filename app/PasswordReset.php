@@ -80,6 +80,8 @@ class PasswordReset extends Model
 
     public function scopeWhereEmail($query, $email)
     {
+        $email = ilikeSpecialChars($email);
+
         return $query->where('email', 'ilike', mb_strtolower($email));
     }
 

@@ -174,7 +174,7 @@ class BookKeyword extends Model
     {
         $text = trim($text);
 
-        return $query->where('text', 'ilike', $text . '%');
+        return $query->where('text', 'ilike', ilikeSpecialChars($text) . '%');
     }
 
     public function scopeJoinKeywords($query)

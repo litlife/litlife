@@ -1354,6 +1354,8 @@ class User extends Authenticatable
 
     public function scopeWhereTextStatusLike($query, $text)
     {
+        $text = ilikeSpecialChars($text);
+
         return $query->where('text_status', 'ilike', '%' . $text . '%');
     }
 
@@ -1486,6 +1488,8 @@ class User extends Authenticatable
 
     public function scopeWhereNickEquals($query, $nick)
     {
+        $nick = ilikeSpecialChars($nick);
+
         return $query->where('nick', 'ilike', preg_quote($nick));
     }
 

@@ -111,12 +111,14 @@ class UserEmail extends Model
     public function scopeEmail($query, $email)
     {
         $email = preg_quote($email);
+        $email = ilikeSpecialChars($email);
         return $query->where('email', 'ilike', $email);
     }
 
     public function scopeWhereEmail($query, $email)
     {
         $email = preg_quote($email);
+        $email = ilikeSpecialChars($email);
         return $query->where('email', 'ilike', mb_strtolower($email));
     }
 
@@ -127,6 +129,7 @@ class UserEmail extends Model
             foreach ($emails as $email) {
                 $email = preg_quote($email);
                 $email = mb_strtolower($email);
+                $email = ilikeSpecialChars($email);
                 $query->orWhere('email', 'ilike', $email);
             }
         });

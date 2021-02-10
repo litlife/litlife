@@ -50,6 +50,6 @@ class Invitation extends Model
 
     public function scopeWhereEmail($query, $email)
     {
-        return $query->where('email', 'ilike', mb_strtolower($email));
+        return $query->where('email', 'ilike', ilikeSpecialChars(mb_strtolower($email)));
     }
 }

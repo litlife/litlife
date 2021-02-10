@@ -444,6 +444,7 @@ class CollectionController extends Controller
 			$query = Book::where(function ($query) use ($str) {
 				return $query->titleAuthorFulltextSearch($str)
 					->when((mb_strlen($str) > 10), function ($query) use ($str) {
+                        $str = ilikeSpecialChars($str);
 						return $query->orWhere('pi_isbn', 'ilike', '%' . $str . '%');
 					});
 			})->orderByRaw('"main_book_id" nulls first')

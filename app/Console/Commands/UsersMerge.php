@@ -360,7 +360,8 @@ class UsersMerge extends Command
 		$items = UserEmail::where('user_id', $user->id)->get();
 
 		foreach ($items as $item) {
-			if (!UserEmail::where('user_id', $this->main_user->id)->where('email', 'ilike', '%' . $item->email . '%')
+            $string = ilikeSpecialChars($item->email);
+			if (!UserEmail::where('user_id', $this->main_user->id)->where('email', 'ilike', '%' . $string . '%')
 				->first()) {
 				$item->user_id = $this->main_user->id;
 				$item->save();

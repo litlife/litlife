@@ -581,6 +581,7 @@ class UserGroup extends Model
 
     public function scopeWhereName($query, $name)
     {
+        $name = ilikeSpecialChars($name);
         return $query->where('name', 'ilike', $name);
     }
 

@@ -521,7 +521,7 @@ class AuthorController extends Controller
 
 	public function search(Request $request)
 	{
-		$str = trim($request->input('q'));
+        $string = trim($request->input('q'));
 
 		if (auth()->check()) {
 			$managers = auth()->user()->managers()
@@ -529,8 +529,9 @@ class AuthorController extends Controller
 				->whereHasMorph(
 					'manageable',
 					['App\Author'],
-					function (Builder $query) use ($str) {
-						$query->where('name_helper', 'ILIKE', '%' . $str . '%');
+					function (Builder $query) use ($string) {
+                        $string = ilikeSpecialChars($string);
+						$query->where('name_helper', 'ILIKE', '%' . $string . '%');
 					})
 				->accepted()
 				->get();
@@ -540,10 +541,10 @@ class AuthorController extends Controller
 			->acceptedOrBelongsToAuthUser()
 			->orderByRatingDesc();
 
-		if (is_numeric($str)) {
-			$query->where('id', pg_intval($str));
+		if (is_numeric($string)) {
+			$query->where('id', pg_intval($string));
 		} else {
-			$query->fulltextSearch($str);
+			$query->fulltextSearch($string);
 
 			if (!empty($managers) and $managers->isNotEmpty()) {
 				$query->whereNotIn('id', $managers->pluck('manageable.id')->toArray());

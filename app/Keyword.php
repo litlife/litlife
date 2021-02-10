@@ -147,6 +147,7 @@ class Keyword extends Model
     public function scopeSearch($query, $text)
     {
         $text = trim($text);
+        $text = ilikeSpecialChars($text);
 
         return $query->where('text', 'ilike', $text . '%');
     }

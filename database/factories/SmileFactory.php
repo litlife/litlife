@@ -28,6 +28,23 @@ class SmileFactory extends Factory
         ];
     }
 
+    /**
+     * Configure the model factory.
+     *
+     * @return $this
+     */
+    public function configure()
+    {
+        return $this->afterMaking(function (Smile $smile) {
+
+            $imagick = new \Imagick();
+            $imagick->setFormat("jpeg");
+            $imagick->newImage(20, 20, new \ImagickPixel('red'));
+
+            $smile->openImage($imagick);
+        });
+    }
+
     public function for_new_year()
     {
         return $this->afterMaking(function ($item) {

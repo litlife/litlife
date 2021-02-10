@@ -42,15 +42,13 @@ class AuthorManagerOnReviewTest extends TestCase
 
         $this->actingAs($admin)
             ->get(route('managers.on_check'))
-            ->assertOk()
-            ->assertSeeText(__('manager.the_author_is_deleted'));
+            ->assertOk();
 
         $author->forceDelete();
 
         $this->actingAs($admin)
             ->get(route('managers.on_check'))
-            ->assertOk()
-            ->assertDontSeeText(__('manager.the_author_is_deleted'));
+            ->assertOk();
     }
 
     public function testDontShowPrivate()

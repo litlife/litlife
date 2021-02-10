@@ -170,4 +170,9 @@ class Smile extends Model
 
         return false;
     }
+
+    public function getDirname()
+    {
+        return 'smiles';
+    }
 }
