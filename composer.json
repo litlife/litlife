@@ -108,6 +108,7 @@
         "filp/whoops": "^2.7",
         "fzaninotto/faker": "^1.9",
         "laravel/dusk": "^6.4",
+        "laravel/envoy": "^2.5",
         "laravel/homestead": "^11.0",
         "mockery/mockery": "^1.4",
         "nikaia/translation-sheet": "^1.3",
