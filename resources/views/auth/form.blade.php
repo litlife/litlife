@@ -18,7 +18,7 @@
 	</div>
 
 	<div class="form-group form-check">
-		<input id="login_remember" name="remember" type="checkbox" class="form-check-input">
+		<input id="login_remember" name="remember" type="checkbox" class="form-check-input" checked="checked">
 		<label class="form-check-label" for="login_remember">{{ __('auth.remember') }}</label>
 	</div>
 
