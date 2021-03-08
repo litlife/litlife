@@ -320,7 +320,7 @@ class AuthorPolicy extends Policy
     }
 
     /**
-     * Может ли пользователь подать заявку "Я автор"
+     * Может ли пользователь подать заявку на верификацию
      *
      * @param  User  $auth_user
      * @param  Author  $author
@@ -335,11 +335,11 @@ class AuthorPolicy extends Policy
 
         foreach ($managers as $manager) {
             if ($manager->isAccepted()) {
-                return false;
+                return $this->deny(__('The verification request has already been approved'));
             }
 
             if ($manager->user_id == $auth_user->id) {
-                if ($manager->isSentForReview()) {
+                if ($manager->isSentForReview() or $manager->isReviewStarts()) {
                     return $this->deny(__('The verification request is waiting for review'));
                 }
             }

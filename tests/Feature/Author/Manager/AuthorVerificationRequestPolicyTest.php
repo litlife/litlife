@@ -3,6 +3,7 @@
 namespace Tests\Feature\Author\Manager;
 
 use App\Author;
+use App\Manager;
 use App\User;
 use Tests\TestCase;
 
@@ -70,5 +71,22 @@ class AuthorVerificationRequestPolicyTest extends TestCase
         $user = User::factory()->admin()->create();
 
         $this->assertTrue($user->can('verficationRequest', $author));
+    }
+
+    public function testFalseIfRequestReviewStarts()
+    {
+        $author = Author::factory()
+            ->has(
+                Manager::factory()
+                    ->character_author()
+                    ->review_starts()
+            )->create();
+
+        $manager = $author->managers()->first();
+        $user = $manager->user;
+        $user->group->author_editor_request = true;
+        $user->push();
+
+        $this->assertFalse($user->can('verficationRequest', $author));
     }
 }
