@@ -50,11 +50,15 @@ return [
 		'card' => '4',
 		'webmoney' => '1',
 		'yandex' => '7',
+        'yoomoney' => '7',
 		'qiwi' => '7',
 		'beeline' => '25',
 		'mts' => '12',
 		'mf' => '20',
 		'tele2' => '25',
+        'applepay' => '4',
+        'googlepay' => '4',
+        'samsungpay' => '4'
 	],
 	'allowed_mobile_payment_types' => [
 		'beeline',
@@ -64,33 +68,43 @@ return [
 	],
 	'withdrawal_restrictions' => [
 		'qiwi' => [
-			'comission' => '1.5',
-			'min' => '1',
-			'max' => '250000',
+			'comission' => '2',
+			'min' => '10',
+			'max' => '15000',
 		],
 		'yandex' => [
 			'comission' => '2',
 			'min' => '10',
 			'max' => '15000',
 		],
+        'yoomoney' => [
+            'comission' => '2',
+            'min' => '10',
+            'max' => '15000',
+            'max_in_day' => '600000',
+        ],
 		'webmoney' => [
 			'comission' => '3',
 			'min' => '10',
-			'max' => '14700',
-			'max_in_month' => '60000',
+			'max' => '14700'
 		],
+        'wmr' => [
+            'comission' => '3',
+            'min' => '10',
+            'max' => '14700'
+        ],
 		'card_rf' => [
+            'comission' => '2',
 			'min_comission' => '30',
-			'comission' => '2.0',
 			'min' => '50',
-			'max' => '100000',
+			'max' => '50000',
 			'max_in_month' => '600000',
 		],
 		'card_not_rf' => [
+            'comission' => '3',
 			'min_comission' => '180',
-			'comission' => '3.0',
 			'min' => '120',
-			'max' => '100000',
+			'max' => '50000',
 			'max_in_month' => '600000',
 		]
 	]
