@@ -81,4 +81,45 @@ class AuthorDeleteRestoreTest extends TestCase
 
         $this->assertNull($user->groups()->disableCache()->whereName('Автор')->first());
     }
+
+    public function testDeleteIfMultipleRequestsForVerificationHaveBeenSent()
+    {
+        $author = Author::factory()
+            ->private()
+            ->create();
+
+        $user = $author->create_user;
+
+        $manager = Manager::factory()
+            ->character_author()
+            ->private()
+            ->create([
+                'user_id' => $user->id,
+                'create_user_id' => $user->id,
+                'manageable_id' => $author->id,
+                'manageable_type' => 'author'
+            ]);
+
+        $manager2 = Manager::factory()
+            ->character_author()
+            ->private()
+            ->create([
+                'user_id' => $user->id,
+                'create_user_id' => $user->id,
+                'manageable_id' => $author->id,
+                'manageable_type' => 'author'
+            ]);
+
+        $this->assertEquals(2, $author->managers()->count());
+
+        $this->actingAs($user)
+            ->get(route('authors.delete', ['author' => $author]))
+            ->assertRedirect();
+
+        $manager->refresh();
+        $manager2->refresh();
+
+        $this->assertTrue($manager->trashed());
+        $this->assertTrue($manager2->trashed());
+    }
 }

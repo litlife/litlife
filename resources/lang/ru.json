@@ -178,5 +178,6 @@
   "Google": "Гугл",
   "Facebook": "Фейсбук",
   "Please allow to use your name to create a new account": "Пожалуйста, разрешите использовать ваше имя для создания новой учетной записи",
-  "The verification request has already been approved": "Заявка на верификацию уже одобрена"
+  "The verification request has already been approved": "Заявка на верификацию уже одобрена",
+  "The verification request has already been sent": "Заявка на верификацию уже была отправлена"
 }

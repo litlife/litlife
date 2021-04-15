@@ -981,4 +981,17 @@ class Author extends Model
     {
         return $query->orderBy("rating", 'desc');
     }
+
+    public function publish()
+    {
+        $this->statusAccepted();
+        $this->save();
+
+        foreach ($this->managers as $manager) {
+            if ($manager->isPrivate()) {
+                $manager->statusSentForReview();
+                $manager->save();
+            }
+        }
+    }
 }

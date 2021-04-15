@@ -48,6 +48,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function manage(User $auth_user, Author $author)
     {
@@ -67,6 +68,7 @@ class AuthorPolicy extends Policy
      * Можно ли объединять автора
      *
      * @param  User  $auth_user
+     * @return bool
      */
     public function merge(User $auth_user)
     {
@@ -127,6 +129,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function create_photo(User $auth_user, Author $author)
     {
@@ -151,6 +154,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function group(User $auth_user, Author $author)
     {
@@ -162,6 +166,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function ungroup(User $auth_user, Author $author)
     {
@@ -177,6 +182,7 @@ class AuthorPolicy extends Policy
      * Может ли пользователь видеть техническую информацию об авторе
      *
      * @param  User  $auth_user
+     * @return bool
      */
     public function display_technical_information(User $auth_user)
     {
@@ -188,6 +194,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function refresh_counters(User $auth_user, Author $author)
     {
@@ -209,6 +216,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function makeAccepted(User $auth_user, Author $author)
     {
@@ -224,6 +232,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function booksCloseAccess(User $auth_user, Author $author)
     {
@@ -262,6 +271,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool|\Illuminate\Auth\Access\Response
      */
     public function sales_request(User $auth_user, Author $author)
     {
@@ -324,6 +334,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool|\Illuminate\Auth\Access\Response
      */
     public function verficationRequest(User $auth_user, Author $author)
     {
@@ -334,6 +345,10 @@ class AuthorPolicy extends Policy
         $managers = $author->managers;
 
         foreach ($managers as $manager) {
+            if ($manager->isPrivate() and $manager->create_user->is($auth_user)) {
+                return $this->deny(__('The verification request has already been sent'));
+            }
+
             if ($manager->isAccepted()) {
                 return $this->deny(__('The verification request has already been approved'));
             }
@@ -353,6 +368,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool|\Illuminate\Auth\Access\Response
      */
     public function editorRequest(User $auth_user, Author $author)
     {
@@ -386,6 +402,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function viewManagers(User $auth_user, Author $author)
     {
@@ -397,6 +414,7 @@ class AuthorPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Author  $author
+     * @return bool
      */
     public function salesDisable(User $auth_user, Author $author)
     {

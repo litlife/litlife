@@ -163,8 +163,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/authors_sales_requests/{request}/start_review', 'AuthorSaleRequestController@startReview')->name('authors.sales_requests.start_review');
 	Route::get('/authors_sales_requests/{request}/stop_review', 'AuthorSaleRequestController@stopReview')->name('authors.sales_requests.stop_review');
 	Route::get('/managers/{manager}/destroy', 'ManagerController@destroy')->name('managers.destroy');
-	Route::get('/managers/{manager}/approve', 'ManagerController@approve')->name('managers.approve');
-	Route::get('/managers/{manager}/decline', 'ManagerController@decline')->name('managers.decline');
+	Route::get('/managers/{manager}/approve', 'ManagerController@approve')->name('managers.approve')->middleware('db.transaction');
+	Route::get('/managers/{manager}/decline', 'ManagerController@decline')->name('managers.decline')->middleware('db.transaction');
 	Route::get('/managers/{manager}/start_review', 'ManagerController@startReview')->name('managers.start_review');
 	Route::get('/managers/{manager}/stop_review', 'ManagerController@stopReview')->name('managers.stop_review');
 	Route::get('/authors/{author}/sales/disable', 'AuthorManagerController@salesDisable')->name('authors.sales.disable');

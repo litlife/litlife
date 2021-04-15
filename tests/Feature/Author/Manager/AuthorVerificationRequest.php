@@ -104,4 +104,38 @@ class AuthorVerificationRequest extends TestCase
         $this->assertEquals($comment, $manager->comment);
         $this->assertTrue($manager->isSentForReview());
     }
+
+    public function testIfAuthorPrivateAndAnotherRequestAlreadyExists()
+    {
+        $author = Author::factory()
+            ->private()
+            ->create();
+
+        $user = $author->create_user;
+        $user->group->author_editor_request = true;
+        $user->push();
+
+        $comment = $this->faker->realText(300);
+
+        $this->actingAs($user)
+            ->post(route('authors.verification.request_save', $author), [
+                'comment' => $comment
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect()
+            ->assertSessionHas(['success' => __('manager.request_is_saved_and_will_be_sent_for_review_after_the_authors_publication')]);
+
+        $manager = $author->managers()->first();
+
+        $this->assertNotNull($manager);
+        $this->assertTrue($manager->isPrivate());
+
+        $this->assertFalse($user->can('verficationRequest', $author));
+
+        $this->actingAs($user)
+            ->post(route('authors.verification.request_save', $author), [
+                'comment' => $comment
+            ])
+            ->assertForbidden();
+    }
 }

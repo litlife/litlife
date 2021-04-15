@@ -752,6 +752,13 @@ class AuthorController extends Controller
 		$author->statusAccepted();
 		$author->save();
 
+        foreach ($author->managers as $manager) {
+            if ($manager->isPrivate()) {
+                $manager->statusSentForReview();
+                $manager->save();
+            }
+        }
+
 		activity()->performedOn($author)
 			->log('make_accepted');
 
