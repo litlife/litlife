@@ -376,8 +376,8 @@ Breadcrumbs::for('books.notes.edit', function ($breadcrumbs, $book, $note) {
 		$breadcrumbs->parent('books.notes.index', $book);
 
 	if (is_object($note)) {
-		$breadcrumbs->push($note->title, route('books.notes.show', ['book' => $book, 'section' => $note->inner_id]));
-		$breadcrumbs->push(__('common.edit'), route('books.notes.edit', ['book' => $book, 'section' => $note->inner_id]));
+		$breadcrumbs->push($note->title, route('books.notes.show', ['book' => $book, 'note' => $note->inner_id]));
+		$breadcrumbs->push(__('common.edit'), route('books.notes.edit', ['book' => $book, 'note' => $note->inner_id]));
 	}
 });
 

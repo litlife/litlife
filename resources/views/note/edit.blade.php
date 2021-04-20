@@ -21,13 +21,11 @@
 		<div class="card-body">
 
 			<form role="form" method="POST"
-				  action="{{ route('books.notes.update', ['book' => $book, 'section' => $section->inner_id]) }}">
+				  action="{{ route('books.notes.update', ['book' => $book, 'note' => $section->inner_id]) }}">
 
 				@csrf
 
 				@method('patch')
-
-
 
 				@if (session('success'))
 					<div class="alert alert-success alert-dismissable">
