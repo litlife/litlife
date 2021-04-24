@@ -9,6 +9,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use League\HTMLToMarkdown\HtmlConverter;
+use Stevebauman\Purify\Facades\Purify;
 
 /**
  * App\TextBlock

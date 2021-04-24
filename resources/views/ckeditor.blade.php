@@ -85,10 +85,9 @@
 
 				removeButtons: 'Save,Templates,Scayt,HiddenField,ImageButton,Button,Select,Textarea,TextField,Radio,Checkbox,Outdent,Indent,CreateDiv,BidiLtr,BidiRtl,Language,Anchor,Flash,Smiley,SpecialChar,PageBreak,Iframe,Styles,Format,ShowBlocks,About,NewPage,Preview,Print,BGColor',
 
-				allowedContent: 'h1; h2; h3; h4; h5; h6; ' +
-					'a[id,name,target,!href,class](u-title);' +
+				allowedContent: 'a[id,name,target,!href,class](u-title);' +
 					'p{text-align}[style](u-image-align-center); strong; em; s; u; sub; sup; b; i; br; blockquote; ' +
-					'span{color,background-color,font-size,font-family}[lang,style];' +
+					'span{color,background-color}[lang,style];' +
 					'div(u-section-break,u-title,u-empty-line,u-subtitle,u-annotation,u-date,u-epigraph,u-text-author,u-poem,u-stanza,u-image-align-center,u-date,u-v)[class,id];' +
 					'img(u-image-align-left,u-image-align-right){text-align,width,height}[!src,alt,width,height,style,class]; ' +
 					'table{border-spacing,border-collapse}[border,cellpadding,cellspacing,style,class]; caption; tbody; thead; tr; th{padding}[style,abbr]; td{padding}[style,abbr]; tfoot; col[width,valign,align,span]; colgroup[width,valign,align,span];' +
