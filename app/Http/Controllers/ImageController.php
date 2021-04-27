@@ -10,87 +10,86 @@ use Illuminate\Support\Facades\Validator;
 
 class ImageController extends Controller
 {
-	public function create()
-	{
-		$this->authorize('create', Image::class);
+    public function create()
+    {
+        $this->authorize('create', Image::class);
 
-		if (request()->ajax())
-			return view('image.create')->renderSections()['content'];
-		else
-			return view('image.create');
-	}
+        if (request()->ajax()) {
+            return view('image.create')->renderSections()['content'];
+        } else {
+            return view('image.create');
+        }
+    }
 
+    /**
+     * Добавление изображения
+     *
+     * @param  Request  $request
+     * @return mixed
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function store(Request $request)
+    {
+        $this->authorize('create', Image::class);
 
-	/**
-	 * Добавление изображения
-	 *
-	 * @param Request $request
-	 * @return mixed
-	 * @throws
-	 *
-	 */
+        if (class_exists(Facade::class)) {
+            Debugbar::disable();
+        }
 
-	public function store(Request $request)
-	{
-		$this->authorize('create', Image::class);
+        $validator = Validator::make($request->all(),
+            [
+                'upload' =>
+                    'required|image|mimes:'.
+                    implode(',', config('litlife.support_images_formats'))
+                    .'|max:'.config('litlife.max_image_size')
+            ]);
 
-		if (class_exists(Facade::class)) {
-			Debugbar::disable();
-		}
+        if ($validator->fails()) {
+            if ($request->ajax()) {
+                return ['errors' => $validator->errors()];
+            } elseif ($request->input('responseType') == 'json') {
+                $fileName = $request->file('upload') ? $request->file('upload')->getClientOriginalName() : '';
+                $uploaded = 0;
+                $error['message'] = $validator->errors()->first();
+                return compact('uploaded', 'error', 'fileName');
+            } else {
+                return view('image.store_ckeditor', ['message' => $validator->errors()->first()]);
+            }
+        }
 
-		$validator = Validator::make($request->all(),
-			['upload' =>
-				'required|image|mimes:' .
-				implode(',', config('litlife.support_images_formats'))
-				. '|max:' . config('litlife.max_image_size')]);
+        $image = new Image;
+        $image->openImage($request->file('upload')->getRealPath());
+        if (!empty($image_exists = auth()->user()->images()->sha256Hash($image->getImagick()->getImageSignature())->first()) and ($image_exists->exists())) {
+            $image = $image_exists;
+        } else {
+            $image->storage = config('filesystems.default');
+            $image->name = $request->file('upload')->getClientOriginalName();
+            $image->save();
+        }
 
-		if ($validator->fails()) {
-			if ($request->ajax()) {
-				return ['errors' => $validator->errors()];
-			} elseif ($request->input('responseType') == 'json') {
-				$fileName = $request->file('upload')->getClientOriginalName();
-				$uploaded = 0;
-				$error['message'] = $validator->errors()->first();
-				return compact('uploaded', 'error', 'fileName');
-			} else {
-				return view('image.store_ckeditor', ['message' => $validator->errors()->first()]);
-			}
-		}
+        if ($request->ajax()) {
+            return $image;
+        } elseif ($request->input('responseType') == 'json') {
 
-		$image = new Image;
-		$image->openImage($request->file('upload')->getRealPath());
-		if (!empty($image_exists = auth()->user()->images()->sha256Hash($image->getImagick()->getImageSignature())->first()) and ($image_exists->exists())) {
-			$image = $image_exists;
-		} else {
-			$image->storage = config('filesystems.default');
-			$image->name = $request->file('upload')->getClientOriginalName();
-			$image->save();
-		}
+            $array = $image->toArray();
+            $array['uploaded'] = '1';
+            $array['fileName'] = $request->file('upload')->getClientOriginalName();
+            $array['url'] = $image->url;
 
-		if ($request->ajax()) {
-			return $image;
-		} elseif ($request->input('responseType') == 'json') {
+            return $array;
+        } else {
+            return view('image.store_ckeditor', ['url' => $image->url]);
+        }
+    }
 
-			$array = $image->toArray();
-			$array['uploaded'] = '1';
-			$array['fileName'] = $request->file('upload')->getClientOriginalName();
-			$array['url'] = $image->url;
-
-			return $array;
-		} else {
-			return view('image.store_ckeditor', ['url' => $image->url]);
-		}
-	}
-
-	/**
-	 * Удаление изображения
-	 *
-	 * @param int $id
-	 * @throws
-	 */
-
-	public function destroy($id)
-	{
-		$this->authorize('delete', Image::class);
-	}
+    /**
+     * Удаление изображения
+     *
+     * @param  int  $id
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function destroy($id)
+    {
+        $this->authorize('delete', Image::class);
+    }
 }

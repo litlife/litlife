@@ -624,6 +624,29 @@ class ImageTest extends TestCase
         $this->assertNotEquals($image->url, $image2->url);
     }
 
+    public function testIfUploadIsEmpty()
+    {
+        Storage::fake(config('filesystems.default'));
+
+        $user = User::factory()->create()
+            ->fresh();
+
+        $upload = UploadedFile::fake()->image('avatar.jpg');
+
+        $response = $this->actingAs($user)
+            ->post(route('images.store'), [
+                'upload' => '',
+                'responseType' => 'json'
+            ])
+            ->assertOk();
+
+        $response->assertJson([
+            'uploaded' => 0,
+            'error' => ['message' => __('validation.required', ['attribute' => 'upload'])],
+            'fileName' => ''
+        ]);
+    }
+
     /*
         public function testDebugbarDisable()
         {
