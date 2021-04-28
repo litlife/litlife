@@ -14,7 +14,10 @@ class ManagersDeleteUniqueIndex extends Migration
     public function up()
     {
         Schema::table('managers', function (Blueprint $table) {
-            $table->dropUnique(['manageable_type', 'manageable_id', 'user_id', 'deleted_at']);
+
+            \Illuminate\Support\Facades\DB::statement('drop index if exists managers_manageable_type_manageable_id_user_id_deleted_at_uniqu;');
+            //$table->dropUnique(['manageable_type', 'manageable_id', 'user_id', 'deleted_at']);
+
             $table->index(['manageable_type', 'manageable_id', 'user_id', 'deleted_at']);
         });
     }
@@ -28,7 +31,7 @@ class ManagersDeleteUniqueIndex extends Migration
     {
         Schema::table('managers', function (Blueprint $table) {
             $table->dropIndex(['manageable_type', 'manageable_id', 'user_id', 'deleted_at']);
-            $table->unique(['manageable_type', 'manageable_id', 'user_id', 'deleted_at']);
+            $table->unique(['manageable_type', 'manageable_id', 'user_id', 'deleted_at'], 'managers_manageable_type_manageable_id_user_id_deleted_at_uniqu');
         });
     }
 }
