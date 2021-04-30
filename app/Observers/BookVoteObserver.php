@@ -2,10 +2,12 @@
 
 namespace App\Observers;
 
+use App\Book;
 use App\BookStatus;
 use App\BookVote;
 use App\Enums\ReadStatus;
 use App\Jobs\User\UpdateUserBookVotesCount;
+use App\User;
 
 class BookVoteObserver
 {
@@ -77,10 +79,12 @@ class BookVoteObserver
 	 * @param  $book_vote
 	 * @return void
 	 */
-
 	private function updateUserVoteCount(&$book_vote)
 	{
-		UpdateUserBookVotesCount::dispatch($book_vote->create_user);
+	    if ($book_vote->create_user instanceof User)
+        {
+            UpdateUserBookVotesCount::dispatch($book_vote->create_user);
+        }
 	}
 
 	/**
@@ -89,10 +93,9 @@ class BookVoteObserver
 	 * @param  $book_vote
 	 * @return void
 	 */
-
 	private function refreshBookRating(&$book_vote)
 	{
-		if (!empty($book_vote->book)) {
+		if ($book_vote->book instanceof Book) {
 			$book_vote->book->ratingChanged();
 			$book_vote->book->save();
 		}

@@ -76,4 +76,17 @@ class AuthorDeleteBookRatingsTest extends TestCase
 
         $this->assertNotNull($rating->deleted_at);
     }
+
+    public function testParseInvalidFormatTime()
+    {
+        $rating = BookVote::factory()
+            ->for(Book::factory()->with_writer())
+            ->create();
+
+        $author = $rating->book->writers->first();
+
+        $this->artisan('author:delete_book_ratings', ['author_id' => $author->id, 'older_than' => 'Invalid time'])
+            ->expectsOutput('Could not parse \'Invalid time\': DateTime::__construct(): Failed to parse time string (Invalid time) at position 0 (I): The timezone could not be found in the database')
+            ->assertExitCode(1);
+    }
 }

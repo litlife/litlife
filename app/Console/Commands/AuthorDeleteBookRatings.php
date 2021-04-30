@@ -9,7 +9,9 @@ use App\Jobs\Book\UpdateBookRating;
 use App\Jobs\User\UpdateUserBookVotesCount;
 use App\User;
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class AuthorDeleteBookRatings extends Command
 {
@@ -49,11 +51,25 @@ class AuthorDeleteBookRatings extends Command
     {
         $this->author = Author::findOrFail($this->argument('author_id'));
 
-        if (!empty($olderThan = $this->argument('older_than')))
-        {
-            $this->olderThan = Carbon::parse($olderThan);
+        if (!empty($olderThan = $this->argument('older_than'))) {
+            try {
+                $this->olderThan = Carbon::parse($olderThan);
+            } catch (InvalidFormatException $exception) {
+                print($exception->getMessage());
+                $this->error($exception->getMessage());
+                return 1;
+            }
         }
 
+        DB::transaction(function () {
+            $this->transaction();
+        });
+
+        return 0;
+    }
+
+    public function transaction()
+    {
         $query = BookVote::void()
             ->join("book_authors", "book_authors.book_id", "=", "book_votes.book_id")
             ->where("book_authors.author_id", $this->author->id)
@@ -63,34 +79,28 @@ class AuthorDeleteBookRatings extends Command
             ->with('create_user');
 
         $query->chunk(100, function ($ratings) {
-           foreach ($ratings as $rating)
-           {
-               $this->item($rating);
-           }
+            foreach ($ratings as $rating) {
+                $this->item($rating);
+            }
 
             $array = $ratings->pluck('create_user_id')->toArray();
 
-           if (count($array) > 0)
-           {
-               $users = User::whereIn('id', $array)->get();
+            if (count($array) > 0) {
+                $users = User::whereIn('id', $array)->get();
 
-               foreach ($users as $user)
-               {
-                   UpdateUserBookVotesCount::dispatch($user);
-               }
-           }
+                foreach ($users as $user) {
+                    UpdateUserBookVotesCount::dispatch($user);
+                }
+            }
         });
 
         $this->author->any_books()->chunk(10, function ($books) {
-            foreach ($books as $book)
-            {
+            foreach ($books as $book) {
                 UpdateBookRating::dispatch($book);
             }
         });
 
         UpdateAuthorRating::dispatch($this->author);
-
-        return 0;
     }
 
     public function item(BookVote $rating)
