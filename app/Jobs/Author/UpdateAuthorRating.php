@@ -35,6 +35,7 @@ class UpdateAuthorRating
 
 		$this->author->votes_count = (clone $query)
 			->join('book_votes', 'books.id', '=', 'book_votes.book_id')
+            ->whereNull('book_votes.deleted_at')
 			->count();
 
 		$this->author->vote_average = (clone $query)
