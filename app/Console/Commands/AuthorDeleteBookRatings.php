@@ -78,7 +78,7 @@ class AuthorDeleteBookRatings extends Command
             })
             ->with('create_user');
 
-        $query->chunk(100, function ($ratings) {
+        $query->chunkById(100, function ($ratings) {
             foreach ($ratings as $rating) {
                 $this->item($rating);
             }
@@ -94,7 +94,7 @@ class AuthorDeleteBookRatings extends Command
             }
         });
 
-        $this->author->any_books()->chunk(10, function ($books) {
+        $this->author->any_books()->chunkById(10, function ($books) {
             foreach ($books as $book) {
                 UpdateBookRating::dispatch($book);
             }
