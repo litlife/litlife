@@ -49,28 +49,30 @@ class BookVoteObserver
 	 * @param  $book_vote
 	 * @return void
 	 */
-
 	private function setBookStatusReadedForUser(&$book_vote)
 	{
-		$status = $book_vote->create_user
-			->book_read_statuses
-			->where('book_id', $book_vote->book_id)
-			->first();
+	    if ($book_vote->create_user instanceof User)
+        {
+            $status = $book_vote->create_user
+                ->book_read_statuses
+                ->where('book_id', $book_vote->book_id)
+                ->first();
 
-		if (empty($status) or (!empty($status) and
-				!in_array($status->status, ['readed', 'read_not_complete', 'not_read']))) {
+            if (empty($status) or (!empty($status) and
+                    !in_array($status->status, ['readed', 'read_not_complete', 'not_read']))) {
 
-			if (empty($status)) {
-				$status = new BookStatus();
-				$status->user_id = $book_vote->create_user_id;
-				$status->book_id = $book_vote->book_id;
-			}
+                if (empty($status)) {
+                    $status = new BookStatus();
+                    $status->user_id = $book_vote->create_user_id;
+                    $status->book_id = $book_vote->book_id;
+                }
 
-			$status->status = ReadStatus::Readed;
-			$status->origin_book_id = $book_vote->book_id;
-			$status->user_updated_at = now();
-			$status->save();
-		}
+                $status->status = ReadStatus::Readed;
+                $status->origin_book_id = $book_vote->book_id;
+                $status->user_updated_at = now();
+                $status->save();
+            }
+        }
 	}
 
 	/**

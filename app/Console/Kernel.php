@@ -158,7 +158,10 @@ class Kernel extends ConsoleKernel
         Commands\AutoSolveSupportQuestion::class,
         Commands\Csv\BookVoteCsvCreate::class,
         Commands\Csv\BookCsvCreate::class,
-        Commands\AuthorDeleteBookRatings::class
+        Commands\AuthorDeleteBookRatings::class,
+        Commands\DeleteBookRatingIfUserDeleted::class,
+        Commands\DeleteBookStatusIfUserDeleted::class,
+        Commands\DeleteAuthorStatusIfUserDeleted::class
 	];
 
 	/**
