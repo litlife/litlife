@@ -38,19 +38,38 @@
 									@switch ($activityLog->subject_type)
 
 										@case ('book')
-										<x-book-name :book="$activityLog->subject"/>
+
+											@if ($activityLog->subject instanceof \App\Book)
+												<a href="{{ route('books.show', $activityLog->subject) }}">{{ $activityLog->subject->title }}</a>
+											@else
+												{{ __('book.deleted') }}
+											@endif
+
 										@break
 
 										@case ('author')
-										<x-author-name :author="$activityLog->subject"/>
+
+											@if ($activityLog->subject instanceof \App\Author)
+												<a href="{{ route('authors.show', $activityLog->subject) }}">{{ $activityLog->subject->full_name }}</a>
+											@else
+												{{ __('author.deleted') }}
+											@endif
 										@break
 
 										@case ('author_biography')
-										<a href="{{ route('authors.show', $activityLog->subject) }}">{{ $activityLog->subject->name }}</a>
+											@if ($activityLog->subject instanceof \App\Author)
+												<a href="{{ route('authors.show', $activityLog->subject) }}">{{ $activityLog->subject->full_name }}</a>
+											@else
+												{{ __('author.deleted') }}
+											@endif
 										@break
 
 										@case ('author_photo')
-										<x-author-name :author="$activityLog->subject->author"/>
+											@if ($activityLog->subject instanceof \App\Author)
+												<a href="{{ route('authors.show', $activityLog->subject) }}">{{ $activityLog->subject->full_name }}</a>
+											@else
+												{{ __('author.deleted') }}
+											@endif
 										@break
 
 										@case ('book_file')
@@ -72,6 +91,15 @@
 
 										@case ('sequence')
 										@include('sequence.name', ['sequence' => $activityLog->subject])
+										@break
+
+										@case ('user')
+
+										@if ($activityLog->subject instanceof \App\User)
+											<a href="{{ route('profile', $activityLog->subject) }}">{{ $activityLog->subject->userName }}</a>
+										@else
+											{{ __('user.deleted') }}
+										@endif
 										@break
 
 									@endswitch

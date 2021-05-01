@@ -290,6 +290,7 @@ class UserPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  User  $user
+     * @return bool
      */
     public function delete(User $auth_user, User $user)
     {
@@ -305,6 +306,7 @@ class UserPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  User  $user
+     * @return bool
      */
     public function restore(User $auth_user, User $user)
     {

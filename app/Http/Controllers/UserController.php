@@ -420,6 +420,9 @@ class UserController extends Controller
 
 		$user->delete();
 
+        activity()->performedOn($user)
+            ->log('deleted');
+
 		return back()
 			->with(['success' => __('user.deleted')]);
 	}
@@ -439,6 +442,9 @@ class UserController extends Controller
 		$this->authorize('restore', $user);
 
 		$user->restore();
+
+        activity()->performedOn($user)
+            ->log('restored');
 
 		return back()
 			->with(['success' => __('user.restored')]);

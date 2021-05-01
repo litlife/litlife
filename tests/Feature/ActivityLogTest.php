@@ -6,12 +6,11 @@ use App\Activity;
 use App\Author;
 use App\Book;
 use App\User;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class ActivityLogTest extends TestCase
 {
-
-
     public function testShowHttp()
     {
         $user = User::factory()->create();
@@ -50,5 +49,15 @@ class ActivityLogTest extends TestCase
             ->assertOk();
     }
 
+    public function testIfPropertiesIsNull()
+    {
+        $activity = Activity::factory()->create();
+        $activity->properties = null;
+        $activity->save();
+        $activity->refresh();
 
+        $this->assertInstanceOf(Collection::class, $activity->properties);
+        $this->assertEquals(0, $activity->properties->count());
+        $this->assertNull($activity->getExtraProperty('test'));
+    }
 }

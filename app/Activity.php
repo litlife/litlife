@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * App\Activity
@@ -66,5 +67,13 @@ class Activity extends \Spatie\Activitylog\Models\Activity
         }
 
         return $array;
+    }
+
+    public function getPropertiesAttribute($value) :Collection
+    {
+        if ($value == null)
+            return new Collection();
+
+        return $value;
     }
 }

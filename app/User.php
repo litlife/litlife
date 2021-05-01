@@ -11,6 +11,7 @@ use App\Notifications\GroupAssignmentNotification;
 use App\Notifications\NewReferredUserNotification;
 use App\Traits\AdminNoteableTrait;
 use App\Traits\Friendship;
+use App\Traits\LogsActivity;
 use App\Traits\PaginatableTrait;
 use App\Traits\Payments;
 use Carbon\Carbon;
@@ -259,6 +260,11 @@ class User extends Authenticatable
     use Payments;
     use PaginatableTrait;
     use HasFactory;
+    use LogsActivity;
+
+    protected static $recordEvents = [];
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
 
     //use CacheQueryBuilder;
 
