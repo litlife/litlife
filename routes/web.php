@@ -591,6 +591,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/support_questions/{support_question}/feedbacks', 'SupportQuestionController@feedbackStore')->name('support_questions.feedbacks.store');
 });
 
+Route::get('/remove_ads', 'OtherController@removeAds')->name('remove_ads');
+
 Route::get('/books/{book}/pages', 'SectionController@page')->name('books.pages');
 
 Route::get('/surveys/guest/create', 'SurveyController@createGuest')->name('surveys.guest.create')->middleware('signed');

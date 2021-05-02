@@ -8,6 +8,7 @@ use App\Notifications\BookSoldNotification;
 use App\User;
 use App\UserPaymentTransaction;
 use App\UserPurchase;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
 
@@ -50,11 +51,12 @@ class BookPurchaseJob
 		$this->author_profit_percent = $this->book->seller_manager()->profit_percent;
 	}
 
-	/**
-	 * Execute the job.
-	 *
-	 * @return void
-	 */
+    /**
+     * Execute the job.
+     *
+     * @return void
+     * @throws \Throwable
+     */
 	public function handle()
 	{
 		DB::transaction(function () {
@@ -122,6 +124,8 @@ class BookPurchaseJob
 			$this->buyer->purchasedBookCountRefresh();
 			$this->book->boughtTimesCountRefresh();
 
+            $this->addTimeToDisabledAdsUntilForBuyer(intval(ceil($purchase->price)));
+
 			$this->seller->notify(new BookSoldNotification($purchase));
 			$this->buyer->notify(new BookPurchasedNotification($purchase));
 		});
@@ -168,4 +172,10 @@ class BookPurchaseJob
 	{
 		return $this->book->price - $this->getSiteSum() - $this->getBuyerRefererSum() - $this->getSellerRefererSum();
 	}
+
+	public function addTimeToDisabledAdsUntilForBuyer(int $days)
+    {
+        $this->buyer->data->adsDisabledUntilAppendDays($days);
+        $this->buyer->data->save();
+    }
 }

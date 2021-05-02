@@ -3,6 +3,7 @@
 namespace Tests\Feature\User;
 
 use App\User;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class UserSeeAdsPolicyTest extends TestCase
@@ -46,20 +47,42 @@ class UserSeeAdsPolicyTest extends TestCase
         $this->assertFalse($user->can('see_ads', User::class));
     }
 
-    public function testDontShowAdsIfPurchaseABook()
+    public function testShowIfAdsDisabledTimeIsPast()
     {
         $user = User::factory()->create();
         $user->group->not_show_ad = false;
-        $user->data->books_purchased_count = 0;
+        $user->data->ads_disabled_until = Carbon::now();
+        $user->push();
+        $user->refresh();
+
+        $this->travel(1)->days();
+
+        $this->assertTrue($user->can('see_ads', User::class));
+    }
+
+    public function testDontShowIfAdsDisabledTimeIsFuture()
+    {
+        $this->travel(1)->days();
+
+        $user = User::factory()->create();
+        $user->group->not_show_ad = false;
+        $user->data->ads_disabled_until = Carbon::now();
+        $user->push();
+        $user->refresh();
+
+        $this->travelBack();
+
+        $this->assertFalse($user->can('see_ads', User::class));
+    }
+
+    public function testShowAdsIfAdsDisabledUntilIsNull()
+    {
+        $user = User::factory()->create();
+        $user->group->not_show_ad = false;
+        $user->data->ads_disabled_until = null;
         $user->push();
         $user->refresh();
 
         $this->assertTrue($user->can('see_ads', User::class));
-
-        $user->data->books_purchased_count = 1;
-        $user->push();
-        $user->refresh();
-
-        $this->assertFalse($user->can('see_ads', User::class));
     }
 }

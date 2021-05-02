@@ -74,6 +74,8 @@ class Activity extends \Spatie\Activitylog\Models\Activity
         if ($value == null)
             return new Collection();
 
-        return $value;
+        $value = json_decode($value);
+
+        return new Collection($value);
     }
 }

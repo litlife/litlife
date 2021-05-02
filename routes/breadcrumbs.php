@@ -1629,3 +1629,7 @@ Breadcrumbs::for('support_questions.edit', function ($breadcrumbs, $supportQuest
 Breadcrumbs::for('verifications.show', function ($breadcrumbs, $manager) {
     $breadcrumbs->push(__('Request for verification'), route('support_questions.edit', $manager));
 });
+
+Breadcrumbs::for('remove_ads', function ($breadcrumbs) {
+    $breadcrumbs->push(__('How to disable ads?'), route('remove_ads'));
+});

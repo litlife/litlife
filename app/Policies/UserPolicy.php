@@ -6,6 +6,7 @@ use App\Enums\TransactionType;
 use App\Enums\UserAccountPermissionValues;
 use App\Enums\UserGroupEnum;
 use App\User;
+use Carbon\Carbon;
 
 class UserPolicy extends Policy
 {
@@ -562,6 +563,7 @@ class UserPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  User  $user
+     * @return bool
      */
     public function email_unrescue(User $auth_user, User $user)
     {
@@ -574,6 +576,7 @@ class UserPolicy extends Policy
      * Может ли пользователь видеть объявления
      *
      * @param  User  $auth_user
+     * @return bool
      */
     public function see_ads(?User $auth_user)
     {
@@ -582,7 +585,7 @@ class UserPolicy extends Policy
             return false;
 */
         if (isset($auth_user)) {
-            if (!empty($auth_user->getPermission('NotShowAd'))) {
+            if (!empty($auth_user->getPermission('not_show_ad'))) {
                 return false;
             }
 
@@ -591,8 +594,10 @@ class UserPolicy extends Policy
                     return false;
                 }
 
-                if ($auth_user->data->books_purchased_count >= 1) {
-                    return false;
+                if ($auth_user->data->ads_disabled_until != null)
+                {
+                    if ($auth_user->data->ads_disabled_until->isFuture())
+                        return false;
                 }
             }
         }
