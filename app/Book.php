@@ -1723,16 +1723,14 @@ class Book extends Model
 
     public function scopeOrderByRatingDesc($query)
     {
-        return $query->orderBy('in_rating', 'desc')
-            ->orderBy('vote_average', 'desc')
+        return $query->orderBy('vote_average', 'desc')
             ->orderBy('user_vote_count', 'desc')
             ->orderBy('books.id', 'desc');
     }
 
     public function scopeOrderByRatingAsc($query)
     {
-        return $query->orderBy('in_rating', 'desc')
-            ->orderBy('vote_average', 'asc')
+        return $query->orderBy('vote_average', 'asc')
             ->orderBy('user_vote_count', 'desc')
             ->orderBy('books.id', 'desc');
     }
