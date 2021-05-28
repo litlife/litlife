@@ -6,13 +6,13 @@ if (typeof sceditor !== 'undefined') {
 			var lang = document.documentElement.getAttribute('lang');
 			var Spoiler = sceditor.locale[lang].Spoiler;
 			//this.insert('<div class="spoiler">', '</div>');
-			this.insert('[spoiler=' + Spoiler + ']', '[/spoiler]');
+			this.insert('[spoiler="' + Spoiler + '"]', '[/spoiler]');
 		},
 		txtExec: function () {
 			var lang = document.documentElement.getAttribute('lang');
 			var Spoiler = sceditor.locale[lang].Spoiler;
 			//this.insert('[spoiler]', '[/spoiler]');
-			this.insert('[spoiler=' + Spoiler + ']', '[/spoiler]');
+			this.insert('[spoiler="' + Spoiler + '"]', '[/spoiler]');
 		},
 		tooltip: 'Add Spoiler'
 	});
@@ -20,54 +20,44 @@ if (typeof sceditor !== 'undefined') {
 	sceditor.formats.bbcode.set('spoiler', {
 
 		tags: {
-			div: {
+			'div': {
 				'class': ['bb_spoiler']
 			}
 		},
-
 		quoteType: sceditor.BBCodeParser.QuoteType.always,
-
 		allowedChildren: ['b', 'i', 'u', 'sub', 'sup', 'font', 'img', 'color', 'hr', 'left', 'right', 'center', 'url'],
 		isInline: false,
 		allowsEmpty: true,
-
 		isSelfClosing: false,
 
 		format: function (element, content) {
 
 			console.log('format');
 
-			var element = $(element);
+			var jqueryElement = $(element);
 
-			var attr = '',
-				$desc = element.children(".desc:first");
+			var attrs = '',
+				$desc = jqueryElement.children(".desc:first");
 
 			if ($desc.length === 1 && $desc.text())
-				attr = '=' + $desc.text();
-			else if (element.data('spoiler-id'))
-				attr = '=' + element.data('spoiler-id');
+				attrs = '=' + $desc.text();
+			else if (jqueryElement.data('spoiler-id'))
+				attrs = '=' + jqueryElement.data('spoiler-id');
 
-			return '[spoiler' + attr + ']' + content + '[/spoiler]';
+			return '[spoiler' + attrs + ']' + content + '[/spoiler]';
 		},
 
 		html: function (token, attrs, content) {
 			console.log('html');
 
-			var idspoiler = '', spo = '';
+			var idspoiler = '', title = '';
 
 			if (attrs.defaultattr) {
-				spo = '<div class="bb_spoiler_title sceditor-ignore">' + attrs.defaultattr + '</div>';
+				title = '<div class="bb_spoiler_title sceditor-ignore" contenteditable="false">' + attrs.defaultattr + '</div>';
 				idspoiler = attrs.defaultattr;
 			}
 
-			return '<div class="bb_spoiler" data-spoiler-id="' + idspoiler + '">' + spo + '<div class="bb_spoiler_text">' + content + '</div></div>';
-
-			/*
-					return '<div class="bb_spoiler">' +
-						'<div class="bb_spoiler_title" style="cursor:text">' + (typeof attrs.defaultattr !== 'undefined' ? attrs.defaultattr : "Спойлер") + '</div>' +
-						'<div class="bb_spoiler_text" style="display: block;">' + content + '</div>' +
-						'</div>';
-					*/
+			return '<div class="bb_spoiler" data-spoiler-id="' + idspoiler + '">' + title + '<div class="bb_spoiler_text">' + content + '</div></div>';
 		},
 		tooltip: 'Spoiler'
 	});
