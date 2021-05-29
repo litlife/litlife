@@ -71,8 +71,16 @@ class Activity extends \Spatie\Activitylog\Models\Activity
 
     public function getPropertiesAttribute($value) :Collection
     {
-        if ($value == null)
+        if ($value == null or empty($value))
             return new Collection();
+
+        if (is_string($value) and $value == '[]')
+            return new Collection();
+
+        $value = @json_decode($value);
+
+        if (!$value instanceof Collection)
+            return new Collection($value);
 
         return $value;
     }
