@@ -244,6 +244,16 @@ class Kernel extends ConsoleKernel
 		$schedule->command('refresh:keywords')
 			->dailyAt('4:20');
 
+        $schedule->call(function () {
+
+            Artisan::call('user:if_deleted_delete_author_statuses');
+            Artisan::call('user:if_deleted_delete_ratings');
+            Artisan::call('user:if_deleted_delete_book_statuses');
+
+        })->dailyAt('1:00')
+            ->name('cleaning_the_data_of_deleted_users')
+            ->withoutOverlapping();
+
 		//$schedule->command('bookfiles:deleteting_old')->hourly();
 
 		$schedule->command('bookfiles:findmake 5')
