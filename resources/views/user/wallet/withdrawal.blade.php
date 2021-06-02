@@ -49,12 +49,14 @@
 								   href="{{ route('users.wallet.payment_details', $user) }}">{{ __('user_outgoing_payment.add_wallet') }}</a>
 							@else
 								@foreach ($user->getFilledWallets() as $wallet)
+
 									<div class="form-check">
 										<input class="form-check-input {{ $errors->has('wallet') ? ' is-invalid' : '' }}"
-											   type="radio" name="wallet"
+											   type="radio" name="wallet" @if ($wallet->isWebmoney()) disabled @endif
 											   id="gridRadios{{ $wallet->type }}"
 											   @if ($wallet->id == old('wallet')) checked="checked" @endif
 											   value="{{ $wallet->id }}">
+
 										<label class="form-check-label" for="gridRadios{{ $wallet->type }}">
 											<strong>{{ __('user_payment_detail.'.$wallet->type) }}</strong>
 											@if ($wallet->isCard())
@@ -62,30 +64,36 @@
 											@endif
 											{{ $wallet->number }} <br/>
 
-											@if ($wallet->getComission())
-												Комиссия {{ $wallet->getComission() }} % <br/>
-											@endif
+											@if ($wallet->isWebmoney())
+												<strong>Выплаты на кошельки Webmoney остановлены на неопределенный срок по причине реорганизации на стороне
+													поставщика. Пожалуйста, выберите другой способ выплаты</strong>
+											@else
 
-											@if ($wallet->getMinComissionSum())
-												Минимальная комиссия {{ $wallet->getMinComissionSum() }} р. <br/>
-											@endif
-
-											@if ($wallet->getMin() > config('litlife.min_outgoing_payment_sum'))
-												@if ($wallet->getMin())
-													Минимальная сумма {{ $wallet->getMin() }} р. <br/>
+												@if ($wallet->getComission())
+													Комиссия {{ $wallet->getComission() }} % <br/>
 												@endif
-											@endif
 
-											@if ($wallet->getMax())
-												Максимальная сумма {{ $wallet->getMax() }} р. <br/>
-											@endif
+												@if ($wallet->getMinComissionSum())
+													Минимальная комиссия {{ $wallet->getMinComissionSum() }} р. <br/>
+												@endif
 
-											@if ($wallet->getMaxInMonth())
-												Максимально в месяц {{ $wallet->getMaxInMonth() }} р. <br/>
-											@endif
+												@if ($wallet->getMin() > config('litlife.min_outgoing_payment_sum'))
+													@if ($wallet->getMin())
+														Минимальная сумма {{ $wallet->getMin() }} р. <br/>
+													@endif
+												@endif
 
-											@if ($wallet->getMaxInDay())
-												Максимально в день {{ $wallet->getMaxInDay() }} р. <br/>
+												@if ($wallet->getMax())
+													Максимальная сумма {{ $wallet->getMax() }} р. <br/>
+												@endif
+
+												@if ($wallet->getMaxInMonth())
+													Максимально в месяц {{ $wallet->getMaxInMonth() }} р. <br/>
+												@endif
+
+												@if ($wallet->getMaxInDay())
+													Максимально в день {{ $wallet->getMaxInDay() }} р. <br/>
+												@endif
 											@endif
 										</label>
 									</div>
@@ -127,7 +135,9 @@
 				<ul>
 					<li>{{ __('user_payment_transaction.payment_types_array.card_rf') }} {{ __('user_payment_transaction.withdrawal_comissions_description.card_rf') }}</li>
 					<li>{{ __('user_payment_transaction.payment_types_array.card_not_rf') }} {{ __('user_payment_transaction.withdrawal_comissions_description.card_not_rf') }}</li>
+					<!--
 					<li>{{ __('user_payment_transaction.payment_types_array.webmoney') }} {{ __('user_payment_transaction.withdrawal_comissions_description.webmoney') }}</li>
+					-->
 					<li>{{ __('user_payment_transaction.payment_types_array.yandex') }} {{ __('user_payment_transaction.withdrawal_comissions_description.yandex') }}</li>
 					<li>{{ __('user_payment_transaction.payment_types_array.qiwi') }} {{ __('user_payment_transaction.withdrawal_comissions_description.qiwi') }}</li>
 				</ul>

@@ -30,26 +30,29 @@ class StoreUserOutgoingPayment extends FormRequest
 			'sum' => ['required', 'integer']
 		];
 
-		$detail = UserPaymentDetail::findOrFail($this->request->get('wallet'));
+		$detail = UserPaymentDetail::find($this->request->get('wallet'));
 
-		if ($detail->isCard()) {
-			if ($detail->isRuCard()) {
-				array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.card_rf.min'));
-				array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.card_rf.max'));
-			} else {
-				array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.card_not_rf.min'));
-				array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.card_not_rf.max'));
-			}
-		} elseif ($detail->isWebmoney()) {
-			array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.webmoney.min'));
-			array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.webmoney.max'));
-		} elseif ($detail->isQiwi()) {
-			array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.qiwi.min'));
-			array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.qiwi.max'));
-		} elseif ($detail->isYandex()) {
-			array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.yandex.min'));
-			array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.yandex.max'));
-		}
+		if (!empty($detail))
+        {
+            if ($detail->isCard()) {
+                if ($detail->isRuCard()) {
+                    array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.card_rf.min'));
+                    array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.card_rf.max'));
+                } else {
+                    array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.card_not_rf.min'));
+                    array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.card_not_rf.max'));
+                }
+            } elseif ($detail->isWebmoney()) {
+                array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.webmoney.min'));
+                array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.webmoney.max'));
+            } elseif ($detail->isQiwi()) {
+                array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.qiwi.min'));
+                array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.qiwi.max'));
+            } elseif ($detail->isYandex()) {
+                array_push($rules['sum'], 'min:' . config('unitpay.withdrawal_restrictions.yandex.min'));
+                array_push($rules['sum'], 'max:' . config('unitpay.withdrawal_restrictions.yandex.max'));
+            }
+        }
 
 		return $rules;
 	}

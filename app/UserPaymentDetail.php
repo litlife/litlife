@@ -96,7 +96,7 @@ class UserPaymentDetail extends Model
 
     public function isWebmoney()
     {
-        return $this->type == 'webmoney';
+        return $this->type == 'webmoney' or $this->type == 'wmr' or $this->type == 'wmp';
     }
 
     public function isYandex()
