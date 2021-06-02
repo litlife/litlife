@@ -39,7 +39,7 @@ class SectionUserDraftPolicyTest extends TestCase
 
     public function testUseDraftIfManagerAuthorPolicy()
     {
-        $book = Book::factory()->with_author_manager()->with_section()->create();
+        $book = Book::factory()->with_author_manager()->with_section()->si_true()->create();
 
         $section = $book->sections()->first();
         $author = $book->authors->first();

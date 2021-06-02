@@ -184,8 +184,12 @@ class BookFilePolicy extends Policy
             }
         } else {
 
-            if (optional($file->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-                if (!$file->book->isEditionDetailsFilled()) {
+            $book = &$file->book;
+
+            if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+                if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                    return false;
+                } else {
                     return true;
                 }
             }

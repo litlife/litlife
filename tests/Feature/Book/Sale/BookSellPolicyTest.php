@@ -56,7 +56,7 @@ class BookSellPolicyTest extends TestCase
         $this->assertTrue($user->can('sell', $book));
     }
 
-    public function testAuthorCanTSellIfBookDeletedPolicy()
+    public function testAuthorCantSellIfBookDeletedPolicy()
     {
         $author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
 
@@ -70,4 +70,31 @@ class BookSellPolicyTest extends TestCase
         $this->assertFalse($user->can('sell', $book));
     }
 
+    public function testCanSellPublishedBook()
+    {
+        $author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
+
+        $user = $author->managers->first()->user;
+        $book = $author->books->first();
+        $book->create_user()->associate($user);
+        $book->is_si = false;
+        $book->is_lp = false;
+        $book->push();
+
+        $this->assertTrue($user->can('sell', $book));
+    }
+
+    public function testCantSellLpBook()
+    {
+        $author = Author::factory()->with_author_manager_can_sell()->with_book()->create();
+
+        $user = $author->managers->first()->user;
+        $book = $author->books->first();
+        $book->create_user()->associate($user);
+        $book->is_si = false;
+        $book->is_lp = true;
+        $book->push();
+
+        $this->assertFalse($user->can('sell', $book));
+    }
 }

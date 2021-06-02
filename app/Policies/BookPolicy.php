@@ -579,8 +579,10 @@ class BookPolicy extends Policy
             }
         } else {
 
-            if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-                if (!$book->isEditionDetailsFilled()) {
+            if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+                if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                    return false;
+                } else {
                     return true;
                 }
             }
@@ -613,8 +615,10 @@ class BookPolicy extends Policy
             }
         }
 
-        if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$book->isEditionDetailsFilled()) {
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -646,8 +650,10 @@ class BookPolicy extends Policy
             }
         }
 
-        if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$book->isEditionDetailsFilled()) {
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -679,8 +685,10 @@ class BookPolicy extends Policy
             }
         }
 
-        if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$book->isEditionDetailsFilled()) {
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -802,8 +810,10 @@ class BookPolicy extends Policy
             }
         }
 
-        if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$book->isEditionDetailsFilled()) {
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -1317,8 +1327,10 @@ class BookPolicy extends Policy
             return false;
         }
 
-        if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$book->isEditionDetailsFilled()) {
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -1420,11 +1432,11 @@ class BookPolicy extends Policy
         if (!$auth_user->can('use_shop', User::class)) {
             return false;
         }
-
+/*
         if (!$book->is_si) {
             return false;
         }
-
+*/
         if ($book->is_lp) {
             return false;
         }
@@ -1503,11 +1515,11 @@ class BookPolicy extends Policy
         if (!$book->isDownloadAccess() and !$book->isReadAccess()) {
             return false;
         }
-
+/*
         if (!$book->is_si) {
             return false;
         }
-
+*/
         if ($book->is_lp) {
             return false;
         }
@@ -1566,11 +1578,11 @@ class BookPolicy extends Policy
         if (!$book->isReadAccess()) {
             return false;
         }
-
+/*
         if (!$book->is_si) {
             return false;
         }
-
+*/
         if ($book->is_lp) {
             return false;
         }
@@ -1902,9 +1914,11 @@ class BookPolicy extends Policy
      *
      * @param  User  $auth_user
      * @param  Book  $book
+     * @return bool
      */
     public function editSiLpPublishFields(User $auth_user, Book $book)
     {
+        /*
         if ($book->isAccepted()) {
             if ($book->isUserVerifiedAuthorOfBook($auth_user)) {
                 if ($book->isEditionDetailsFilled()) {
@@ -1920,7 +1934,7 @@ class BookPolicy extends Policy
                 }
             }
         }
-
+*/
         return true;
     }
 
@@ -1977,8 +1991,10 @@ class BookPolicy extends Policy
             }
         } else {
 
-            if (optional($book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-                if (!$book->isEditionDetailsFilled()) {
+            if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+                if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                    return false;
+                } else {
                     return true;
                 }
             }

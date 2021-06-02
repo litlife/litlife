@@ -63,19 +63,6 @@
 				</div>
 			@endif
 
-			@if (!$book->is_si)
-				<div class="alert alert-warning">
-					<p>{{ __('book.only_si_books_are_allowed_to_be_sold') }}</p>
-					@if ($book->isPrivate())
-						<p>{{ __('book.please_go_to_the_book_description_editing_page_and_set_the_status_samizdat') }}</p>
-					@else
-						<p>{{ __('book.please_write_to_the_topic_ask_a_moderator_if_you_need_to_set_the_status_of_si') }}</p>
-						<a class="btn btn-sm btn-primary" target="_blank"
-						   href="{{ route('topics.show', ['topic' => 222]) }}">{{ __('book.go_to_the_topic_ask_for_a_moderator') }}</a>
-					@endif
-				</div>
-			@endif
-
 			@if ($isChapterWithExceedingTheNumberOfCharactersExists)
 				<div class="alert alert-warning">
 					<p>{{ __('book.book_should_be_divided_into_chapters_and_parts', ['max_symbols_count' => config('litlife.max_section_characters_count')]) }}</p>
@@ -191,7 +178,9 @@
 
 									<small id="price_help_block" class="form-text text-muted">
 										{!! __('book.free_sections_count_helper') !!}<br/>
-										<strong>{{ __('book.the_free_fragment_is_percentage', ['percentage' => $freeFragmentCharactersPercentage]) }}</strong>
+										@if ($book->isForSale())
+											<strong>{{ __('book.the_free_fragment_is_percentage', ['percentage' => $freeFragmentCharactersPercentage]) }}</strong>
+										@endif
 									</small>
 								</div>
 							</div>

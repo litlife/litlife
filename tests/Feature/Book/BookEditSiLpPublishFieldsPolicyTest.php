@@ -7,6 +7,7 @@ use Tests\TestCase;
 
 class BookEditSiLpPublishFieldsPolicyTest extends TestCase
 {
+    /*
     public function testCantIfSiBook()
     {
         $author = Author::factory()->with_author_manager()->with_si_book()->create();
@@ -17,6 +18,7 @@ class BookEditSiLpPublishFieldsPolicyTest extends TestCase
 
         $this->assertFalse($user->can('editSiLpPublishFields', $book));
     }
+    */
 
     public function testCanIfNotSiNotLpNotPublished()
     {

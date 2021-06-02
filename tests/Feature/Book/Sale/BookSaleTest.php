@@ -712,7 +712,7 @@ class BookSaleTest extends TestCase
         $this->assertEquals($new_author->id, pos($book->writers()->pluck('id')->toArray()));
     }
 
-    public function testCantSellNotSiBooks()
+    public function testCanSellNotSiBooks()
     {
         $buyer = User::factory()->create();
 
@@ -745,14 +745,15 @@ class BookSaleTest extends TestCase
         $book->is_lp = false;
         $book->push();
 
-        $this->assertFalse($user->can('sell', $book));
-        $this->assertFalse($buyer->can('buy', $book));
-        $this->assertFalse($buyer->can('buy_button', $book));
-
+        $this->assertTrue($user->can('sell', $book));
+        $this->assertTrue($buyer->can('buy', $book));
+        $this->assertTrue($buyer->can('buy_button', $book));
+/*
         $this->actingAs($user)
             ->get(route('books.sales.edit', ['book' => $book]))
             ->assertOk()
             ->assertSeeText(__('book.only_si_books_are_allowed_to_be_sold'));
+        */
     }
 
     public function testCantSellLpBooks()
@@ -1286,7 +1287,7 @@ class BookSaleTest extends TestCase
 
         $this->assertEquals(0, $log->price);
     }
-
+/*
     public function testSeeWarningPleaseSetSiStatusIfBookPrivate()
     {
         $buyer = User::factory()->create();
@@ -1323,7 +1324,7 @@ class BookSaleTest extends TestCase
 
         $this->assertEquals(0, $book->price);
     }
-
+*/
     public function testCanSetPriceIfBookPrivate()
     {
         $buyer = User::factory()->create();

@@ -176,12 +176,12 @@ class Manager extends Model
         return $value;
     }
 
-    public function isAuthorCharacter()
+    public function isAuthorCharacter() :bool
     {
         return $this->character == 'author';
     }
 
-    public function isEditorCharacter()
+    public function isEditorCharacter() :bool
     {
         return $this->character == 'editor';
     }

@@ -115,8 +115,12 @@ class SectionPolicy extends Policy
             return false;
         }
 
-        if (optional($section->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$section->book->isEditionDetailsFilled()) {
+        $book = &$section->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -158,8 +162,12 @@ class SectionPolicy extends Policy
             }
         }
 
-        if (optional($section->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$section->book->isEditionDetailsFilled()) {
+        $book = &$section->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -193,8 +201,12 @@ class SectionPolicy extends Policy
             }
         }
 
-        if (optional($section->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if ($section->book->isUserCreator($auth_user)) {
+        $book = &$section->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -218,8 +230,12 @@ class SectionPolicy extends Policy
             return false;
         }
 
-        if (optional($section->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if ($section->book->isUserCreator($auth_user)) {
+        $book = &$section->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -243,11 +259,17 @@ class SectionPolicy extends Policy
             return false;
         }
 
-        if (optional($section->book->getManagerAssociatedWithUser($auth_user))->character != 'author') {
-            return false;
+        $book = &$section->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 
 }

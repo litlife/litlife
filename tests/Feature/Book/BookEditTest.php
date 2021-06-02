@@ -843,7 +843,7 @@ class BookEditTest extends TestCase
 
         $this->assertTrue($genre->is($book->genres()->first()));
     }
-
+/*
     public function testCantChangeSiLPPublishFieldsIfBookAccepted()
     {
         $author = Author::factory()
@@ -884,4 +884,5 @@ class BookEditTest extends TestCase
         $this->assertEmpty($book->pi_pub);
         $this->assertEmpty($book->pi_city);
     }
+*/
 }

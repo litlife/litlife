@@ -607,7 +607,6 @@ class BookController extends Controller
 		]);
 	}
 
-
 	public function edit_sequence_item($id)
 	{
 		$sequence = Sequence::findOrFail($id);
@@ -620,8 +619,8 @@ class BookController extends Controller
 	 *
 	 * @param StoreBook $request
 	 * @param Book $book
-	 * @return Response
-	 * @throws
+	 * @return \Illuminate\Http\RedirectResponse
+     * @throws
 	 */
 	public function update(StoreBook $request, Book $book)
 	{
@@ -1914,7 +1913,7 @@ class BookController extends Controller
 				->route('books.sales.edit', $book)
 				->withErrors(['price' => __('book.book_added_by_another_user')]);
 		}
-
+/*
 		if (!$book->is_si) {
 			if ($book->isPrivate()) {
 				return redirect()
@@ -1926,7 +1925,7 @@ class BookController extends Controller
 					->withErrors([__('book.please_write_to_the_topic_ask_a_moderator_if_you_need_to_set_the_status_of_si')]);
 			}
 		}
-
+*/
 		$this->validate($request, [
 			'price' => 'nullable|numeric|min:' . config('litlife.min_book_price') . '|max:' . config('litlife.max_book_price') . '',
 			'free_sections_count' => 'nullable|integer'

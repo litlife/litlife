@@ -38,8 +38,12 @@ class AttachmentPolicy extends Policy
             }
         }
 
-        if (optional($attachment->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$attachment->book->isEditionDetailsFilled()) {
+        $book = &$attachment->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -68,8 +72,12 @@ class AttachmentPolicy extends Policy
             }
         }
 
-        if (optional($attachment->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if ($attachment->book->isUserCreator($auth_user)) {
+        $book = &$attachment->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }
@@ -103,8 +111,12 @@ class AttachmentPolicy extends Policy
             }
         }
 
-        if (optional($attachment->book->getManagerAssociatedWithUser($auth_user))->character == 'author') {
-            if (!$attachment->book->isEditionDetailsFilled()) {
+        $book = &$attachment->book;
+
+        if (optional($book->getManagerAssociatedWithUser($auth_user))->isAuthorCharacter()) {
+            if ($book->isEditionDetailsFilled() and !$book->isUserCreator($auth_user)) {
+                return false;
+            } else {
                 return true;
             }
         }

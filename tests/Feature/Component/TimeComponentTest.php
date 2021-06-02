@@ -28,6 +28,8 @@ class TimeComponentTest extends TestCase
      */
     public function testTime()
     {
+        Carbon::setTestNow(Carbon::parse('2020-08-02 10:23:18'));
+
         Session::put('geoip', (object) ['timezone' => 'Europe/Moscow']);
 
         $component = new Time(Carbon::parse('2015-06-02 10:23:18'));
@@ -46,6 +48,8 @@ class TimeComponentTest extends TestCase
      */
     public function testAutoParseCarbon()
     {
+        Carbon::setTestNow(Carbon::parse('2020-08-02 10:23:18'));
+
         Session::put('geoip', (object) ['timezone' => 'Europe/Moscow']);
 
         $component = new Time('2015-06-02 10:23:18');
