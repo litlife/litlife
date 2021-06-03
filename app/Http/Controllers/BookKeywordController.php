@@ -27,7 +27,7 @@ class BookKeywordController extends Controller
 
 		SharedData::put(['book_id' => $book->id]);
 
-		$keywords = $book->book_keywords()
+		$keywords = $book->originBookKeywords()
 			->whereHas('keyword')
 			->with(['create_user', 'keyword'])
 			->latest()
@@ -41,8 +41,8 @@ class BookKeywordController extends Controller
 	 *
 	 * @param Book $book
 	 * @param Request $request
-	 * @return Response
-	 * @throws
+	 * @return \Illuminate\Http\RedirectResponse
+     * @throws
 	 */
 	public function store(Book $book, Request $request)
 	{
@@ -60,7 +60,8 @@ class BookKeywordController extends Controller
 	/**
 	 * Удаление
 	 *
-	 * @param  $book , $keyword
+	 * @param $book
+     * @param int $id
 	 * @return void
 	 * @throws
 	 */
@@ -80,8 +81,8 @@ class BookKeywordController extends Controller
 	 * Поиск js
 	 *
 	 * @param Request $request
-	 * @return array
-	 */
+	 * @return \Illuminate\Contracts\Pagination\Paginator
+     */
 	public function search(Request $request)
 	{
 		/*
@@ -106,8 +107,8 @@ class BookKeywordController extends Controller
 	 *
 	 * @param Request $request
 	 * @param Book $book
-	 * @param $id
-	 * @param $vote
+	 * @param int $id
+	 * @param int $vote
 	 * @return array
 	 * @throws
 	 */
@@ -145,7 +146,7 @@ class BookKeywordController extends Controller
 	{
 		$keywords = BookKeyword::sentOnReview()
 			->joinKeywords()
-			->select('book_keywords.*', 'keywords.text')
+			->select(['book_keywords.*', 'keywords.text'])
 			->with('create_user', 'keyword')
 			->with(['book' => function ($query) {
 				$query->any();

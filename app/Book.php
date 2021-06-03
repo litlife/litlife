@@ -2104,6 +2104,15 @@ class Book extends Model
             });
     }
 
+    public function originBookKeywords()
+    {
+        return $this->hasMany('App\BookKeyword', 'origin_book_id')
+            ->with("keyword")
+            ->when(Auth::check(), function ($query) {
+                return $query->with("user_vote");
+            });
+    }
+
     public function files()
     {
         return $this->hasMany('App\BookFile', 'book_id', 'id');

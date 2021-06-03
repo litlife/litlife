@@ -372,8 +372,8 @@ class BookController extends Controller
 				}
 			]);
 
-			$mainBook->load([
-				'book_keywords' => function ($query) {
+			$book->load([
+				'originBookKeywords' => function ($query) {
 					$query->acceptedAndSentForReviewOrBelongsToUser(auth()->user())
 						->whereHas('keyword')
 						->with('keyword');

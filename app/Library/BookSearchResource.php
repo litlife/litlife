@@ -293,7 +293,7 @@ class BookSearchResource extends SearchResource
 				->get();
 
 			foreach ($this->keywords as $keyword) {
-				$this->query->whereHas('book_keywords', function ($query) use ($keyword) {
+				$this->query->whereHas('originBookKeywords', function ($query) use ($keyword) {
 					$query->acceptedOrBelongsToAuthUser()->where('keyword_id', $keyword->id);
 				});
 			}
