@@ -89,7 +89,9 @@ class SceditorTest extends DuskTestCase
             "[quote]текст[/quote]");
 
         $this->assertHtmlEquals(
-            "<div class=\"bb_spoiler\" data-spoiler-id=\"Спойлер\"><div class=\"bb_spoiler_title sceditor-ignore\">Спойлер</div><div class=\"bb_spoiler_text\">текст<br /></div></div>",
+            "<div class=\"bb_spoiler\" data-spoiler-id=\"Спойлер\">".
+            "<div class=\"bb_spoiler_title sceditor-ignore\" contenteditable=\"false\">Спойлер</div>".
+            "<div class=\"bb_spoiler_text\">текст<br /></div></div>",
             "[spoiler=\"Спойлер\"]текст[/spoiler]");
 
         $this->assertHtmlEquals(
