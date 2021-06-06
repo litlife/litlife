@@ -20,6 +20,7 @@ use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -376,7 +377,7 @@ class OtherController extends Controller
 
 	public function welcomeNotification()
 	{
-		$user = auth()->user();
+		$user = Auth::user();
 
 		$message = (new UserHasRegisteredNotification($user))->toMail($user);
 
@@ -384,4 +385,18 @@ class OtherController extends Controller
 
 		return $markdown->render('vendor.notifications.email', $message->toArray());
 	}
+
+    /**
+     * Как отключить рекламу
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+	public function removeAds(Request $request)
+    {
+        if ($request->ajax())
+            return view('remove_ads')->renderSections()['text'];
+        else
+            return view('remove_ads');
+    }
 }

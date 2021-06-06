@@ -106,7 +106,8 @@ class UserData extends Model
 
     protected $dates = [
         'last_news_view_at',
-        'favorite_authors_books_latest_viewed_at'
+        'favorite_authors_books_latest_viewed_at',
+        'ads_disabled_until'
     ];
 
     public function getFavoriteAuthorsAttribute($value)
@@ -181,5 +182,17 @@ class UserData extends Model
         }
 
         $this->attributes['created_collections_count'] = $value;
+    }
+
+    public function adsDisabledUntilAppendDays(int $days) :void
+    {
+        $until = $this->ads_disabled_until;
+
+        if (!$until instanceof Carbon)
+            $until = Carbon::now();
+
+        $until = $until->addDays($days);
+
+        $this->ads_disabled_until = $until;
     }
 }

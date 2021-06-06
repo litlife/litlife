@@ -20,17 +20,17 @@ class TextBlockCkeditorContentFilterTest extends DuskTestCase
     {
         $this->create();
 
-        $this->filterCkeditor('<h1>текст</h1>');
+        $this->filterCkeditor('<h1>текст</h1>', '<p>текст</p>');
 
-        $this->filterCkeditor('<h2>текст</h2>');
+        $this->filterCkeditor('<h2>текст</h2>', '<p>текст</p>');
 
-        $this->filterCkeditor('<h3>текст</h3>');
+        $this->filterCkeditor('<h3>текст</h3>', '<p>текст</p>');
 
-        $this->filterCkeditor('<h4>текст</h4>');
+        $this->filterCkeditor('<h4>текст</h4>', '<p>текст</p>');
 
-        $this->filterCkeditor('<h5>текст</h5>');
+        $this->filterCkeditor('<h5>текст</h5>', '<p>текст</p>');
 
-        $this->filterCkeditor('<h6>текст</h6>');
+        $this->filterCkeditor('<h6>текст</h6>', '<p>текст</p>');
 
         $this->filterCkeditor('<p><a class="u-title" href="/" id="test" name="test" target="_blank">текст</a></p>');
 
@@ -166,7 +166,7 @@ class TextBlockCkeditorContentFilterTest extends DuskTestCase
         $this->filterCkeditor($xhtml);
 
         $xhtml = "<p><span style=\"font-family:Arial; font-size:18px\">test</span></p>";
-        $this->filterCkeditor($xhtml);
+        $this->filterCkeditor($xhtml, '<p><span>test</span></p>');
     }
 
     public function create()

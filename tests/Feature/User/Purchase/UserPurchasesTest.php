@@ -3,11 +3,14 @@
 namespace Tests\Feature\User\Purchase;
 
 use App\Author;
+use App\Book;
+use App\Jobs\Book\BookPurchaseJob;
 use App\Notifications\BookPurchasedNotification;
 use App\Notifications\BookSoldNotification;
 use App\ReferredUser;
 use App\User;
 use App\UserPurchase;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Litlife\Unitpay\Facades\UnitPay;
 use Litlife\Unitpay\UnitPayFake;
@@ -457,5 +460,39 @@ class UserPurchasesTest extends TestCase
 
         $this->assertEquals(1, $buyer->data->books_purchased_count);
         $this->assertEquals(1, $book->bought_times_count);
+    }
+
+    public function testAddTimeToDisableAds()
+    {
+        Notification::fake();
+
+        $author = Author::factory()->with_book_for_sale()->with_author_manager_can_sell()->create();
+
+        $book = $author->books->first();
+        $book->price = 42.5;
+        $book->save();
+
+        $seller = $author->seller();
+
+        $buyer = User::factory()->withMoneyOnBalance()->create();
+
+        $this->assertEquals(1000, $buyer->balance);
+        $this->assertNull($buyer->data->ads_disabled_until);
+
+        $this->actingAs($buyer)
+            ->get(route('books.buy', $book))
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('books.show', $book));
+
+        $purchase = $buyer->purchases()->first();
+        $seller = $book->seller();
+        $book->refresh();
+        $buyer->refresh();
+
+        $this->assertEquals(1, $buyer->data->books_purchased_count);
+        $this->assertEquals(1, $book->bought_times_count);
+        $this->assertNotNull($buyer->data->ads_disabled_until);
+        $this->assertGreaterThan(Carbon::now()->addDays(42), $buyer->data->ads_disabled_until);
+        $this->assertLessThan(Carbon::now()->addDays(44), $buyer->data->ads_disabled_until);
     }
 }

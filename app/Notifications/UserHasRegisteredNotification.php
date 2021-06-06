@@ -17,8 +17,8 @@ class UserHasRegisteredNotification extends Notification
 	/**
 	 * Create a new notification instance.
 	 *
-	 * @param User $user ;
-	 * @param string $password ;
+	 * @param User $user
+	 * @param string $password
 	 * @return void
 	 */
 	public function __construct(User $user, $password = '')
