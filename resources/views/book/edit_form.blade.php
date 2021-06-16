@@ -206,7 +206,7 @@
 							<option value="{{ $keyword }}" selected>{{ $keyword }}</option>
 						@endforeach
 					@else
-						@foreach($book->book_keywords as $c => $keyword)
+						@foreach($mainBook->book_keywords as $c => $keyword)
 							@if (!empty($keyword->keyword))
 								<option value="{{ $keyword->keyword->text }}" selected>{{ $keyword->keyword->text }}</option>
 							@endif

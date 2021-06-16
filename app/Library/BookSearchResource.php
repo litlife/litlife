@@ -292,11 +292,11 @@ class BookSearchResource extends SearchResource
 				->limit(3)
 				->get();
 
-			foreach ($this->keywords as $keyword) {
-				$this->query->whereHas('originBookKeywords', function ($query) use ($keyword) {
-					$query->acceptedOrBelongsToAuthUser()->where('keyword_id', $keyword->id);
-				});
-			}
+            foreach ($this->keywords as $keyword) {
+                $this->query->whereHas('book_keywords', function ($query) use ($keyword) {
+                    $query->acceptedOrBelongsToAuthUser()->where('keyword_id', $keyword->id);
+                });
+            }
 		}
 
 		if (!empty(intval($this->getInputValue('hide_grouped')))) {

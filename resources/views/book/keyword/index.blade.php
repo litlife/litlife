@@ -10,8 +10,6 @@
 
 	@include ('book.edit_tab')
 
-
-
 	@if(count($keywords) > 0)
 		<div class="card mb-3">
 			<div class="card-body">

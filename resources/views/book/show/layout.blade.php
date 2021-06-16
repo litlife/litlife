@@ -929,12 +929,12 @@
 					<div class="row my-3">
 						<div class="col-12 keywords btn-margin-bottom-1">
 
-							@if (is_object($book->originBookKeywords) and $book->originBookKeywords->count())
+							@if (is_object($mainBook->book_keywords) and $mainBook->book_keywords->count())
 
 								<meta itemprop="keywords"
-									  content="{{ implode(', ', $book->originBookKeywords->pluck('keyword.text')->toArray()) }}"/>
+									  content="{{ implode(', ', $mainBook->book_keywords->pluck('keyword.text')->toArray()) }}"/>
 
-								@foreach ($book->originBookKeywords as $book_keyword)
+								@foreach ($mainBook->book_keywords as $book_keyword)
 									@if (isset($book_keyword->keyword))
 										<button class="keyword button btn btn-sm btn-outline-secondary"
 												data-id="{{ $book_keyword->id }}"

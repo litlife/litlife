@@ -27,7 +27,12 @@ class BookKeywordController extends Controller
 
 		SharedData::put(['book_id' => $book->id]);
 
-		$keywords = $book->originBookKeywords()
+        if ($book->isInGroup() and $book->isNotMainInGroup() and !empty($book->mainBook))
+            $mainBook = $book->mainBook;
+        else
+            $mainBook = $book;
+
+		$keywords = $mainBook->book_keywords()
 			->whereHas('keyword')
 			->with(['create_user', 'keyword'])
 			->latest()

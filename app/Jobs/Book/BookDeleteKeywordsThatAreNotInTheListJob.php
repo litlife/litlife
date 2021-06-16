@@ -12,6 +12,7 @@ class BookDeleteKeywordsThatAreNotInTheListJob
 
 	protected $book;
 	protected $keywords = [];
+    protected $mainBook;
 
 	/**
 	 * Create a new job instance.
@@ -24,6 +25,11 @@ class BookDeleteKeywordsThatAreNotInTheListJob
 	{
 		$this->book = $book;
 		$this->keywords = $keywords;
+
+        if ($this->book->isInGroup() and $this->book->isNotMainInGroup() and !empty($this->book->mainBook))
+            $this->mainBook = $this->book->mainBook;
+        else
+            $this->mainBook = $book;
 	}
 
 	/**
@@ -40,7 +46,7 @@ class BookDeleteKeywordsThatAreNotInTheListJob
 
 	public function handleWithTransaction()
 	{
-		foreach ($this->book->book_keywords()->with('keyword')->get() as $book_keyword) {
+		foreach ($this->mainBook->book_keywords()->with('keyword')->get() as $book_keyword) {
 			if (empty($book_keyword->keyword) or !$this->isExistsInArrayOfNewKeywords($book_keyword->keyword->text)) {
 				$book_keyword->delete();
 			}

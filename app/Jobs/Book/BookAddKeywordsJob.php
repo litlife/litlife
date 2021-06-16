@@ -14,6 +14,7 @@ class BookAddKeywordsJob
 
 	protected $book;
 	protected $keywords = [];
+	protected $mainBook;
 
 	/**
 	 * Create a new job instance.
@@ -26,6 +27,11 @@ class BookAddKeywordsJob
 	{
 		$this->book = $book;
 		$this->keywords = $keywords;
+
+        if ($this->book->isInGroup() and $this->book->isNotMainInGroup() and !empty($this->book->mainBook))
+            $this->mainBook = $this->book->mainBook;
+        else
+            $this->mainBook = $book;
 	}
 
 	/**
@@ -53,13 +59,13 @@ class BookAddKeywordsJob
 				if (empty($keyword)) {
 
 					// запрещаем добавление новых ключевых слов к приватным книгам
-					if (!$this->book->isAccepted())
+					if (!$this->mainBook->isAccepted())
 						continue;
 
 					$keyword = new Keyword;
 					$keyword->text = $keywordIdOrText;
 					if (auth()->user()->getPermission('book_keyword_add_new_with_check') or auth()->user()->getPermission('book_keyword_moderate')) {
-						if ($this->book->isPrivate())
+						if ($this->mainBook->isPrivate())
 							$keyword->statusPrivate();
 						else {
 							if (auth()->user()->getPermission('book_keyword_moderate'))
@@ -75,7 +81,7 @@ class BookAddKeywordsJob
 			}
 
 			if (!empty($keyword)) {
-				$book_keyword = $this->book->book_keywords()
+				$book_keyword = $this->mainBook->book_keywords()
 					->where('keyword_id', $keyword->id)
 					->withTrashed()
 					->first();
@@ -83,12 +89,13 @@ class BookAddKeywordsJob
 				if (empty($book_keyword)) {
 					$book_keyword = new BookKeyword;
 					$book_keyword->keyword_id = $keyword->id;
-					if ($this->book->isPrivate())
+					$book_keyword->origin_book_id = $this->book->id;
+					if ($this->mainBook->isPrivate())
 						$book_keyword->statusPrivate();
 					else {
 						$book_keyword->status = $keyword->status;
 					}
-					$this->book->book_keywords()->save($book_keyword);
+					$this->mainBook->book_keywords()->save($book_keyword);
 				}
 
 				if ($book_keyword->trashed()) {

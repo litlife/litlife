@@ -48,6 +48,7 @@ use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\TwitterCard;
 use Carbon\Carbon;
 use Coderello\SharedData\Facades\SharedData;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
@@ -372,13 +373,13 @@ class BookController extends Controller
 				}
 			]);
 
-			$book->load([
-				'originBookKeywords' => function ($query) {
-					$query->acceptedAndSentForReviewOrBelongsToUser(auth()->user())
-						->whereHas('keyword')
-						->with('keyword');
-				}
-			]);
+            $mainBook->load([
+                'book_keywords' => function ($query) {
+                    $query->acceptedAndSentForReviewOrBelongsToUser(auth()->user())
+                        ->whereHas('keyword')
+                        ->with('keyword');
+                }
+            ]);
 		}
 
 		$book->loadMissing(['authors.managers']);
@@ -574,17 +575,22 @@ class BookController extends Controller
 	 *
 	 * @param Book $book
 	 * @return View
-	 * @throws
+	 * @throws AuthorizationException
 	 */
 	public function edit(Book $book)
 	{
 		$this->authorize('update', $book);
 
+        if ($book->isInGroup() and $book->isNotMainInGroup() and !empty($book->mainBook))
+            $mainBook = $book->mainBook;
+        else
+            $mainBook = $book;
+
 		js_put('book', $book);
 
 		$languages = Language::all();
 
-		$genres = Genre::select('id', 'name', 'book_count')
+		$genres = Genre::select(['id', 'name', 'book_count'])
 			->notMain()
 			->orderBy('book_count', 'desc')
 			->get();
@@ -600,6 +606,7 @@ class BookController extends Controller
 			$cantEditSiLpPublishFields = false;
 
 		return view('book.edit', [
+		    'mainBook' => $mainBook,
 			'book' => $book,
 			'languages' => $languages,
 			'genres' => $genres,
