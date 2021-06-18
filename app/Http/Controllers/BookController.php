@@ -210,10 +210,15 @@ class BookController extends Controller
 			return redirect()
 				->route('books.create');
 
+        if ($book->isInGroup() and $book->isNotMainInGroup() and !empty($book->mainBook))
+            $mainBook = $book->mainBook;
+        else
+            $mainBook = $book;
+
 		if ($book->parse->isFailed()) {
-			return view('book.create.failed_processing', ['book' => $book]);
+			return view('book.create.failed_processing', ['book' => $book, 'mainBook' => $mainBook]);
 		} elseif (!$book->parse->isSucceed()) {
-			return view('book.create.processing', ['book' => $book]);
+			return view('book.create.processing', ['book' => $book, 'mainBook' => $mainBook]);
 		} else {
 
 			$this->authorize('update', $book);
@@ -237,7 +242,8 @@ class BookController extends Controller
 				'languages' => $languages,
 				'genres' => $genres,
 				'redirectSuccessUrl' => route('books.create.complete', $book),
-				'cantEditSiLpPublishFields' => false
+				'cantEditSiLpPublishFields' => false,
+                'mainBook' => $mainBook
 			]);
 
 			if (!empty($request->session()->get('errors'))) {
