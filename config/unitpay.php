@@ -68,17 +68,17 @@ return [
 	],
 	'withdrawal_restrictions' => [
 		'qiwi' => [
-			'comission' => '2',
+			'comission' => '3',
 			'min' => '10',
 			'max' => '15000',
 		],
 		'yandex' => [
-			'comission' => '2',
+			'comission' => '3',
 			'min' => '10',
 			'max' => '15000',
 		],
         'yoomoney' => [
-            'comission' => '2',
+            'comission' => '3',
             'min' => '10',
             'max' => '15000',
             'max_in_day' => '600000',
@@ -94,15 +94,15 @@ return [
             'max' => '14700'
         ],
 		'card_rf' => [
-            'comission' => '2',
-			'min_comission' => '30',
+            'comission' => '3',
+			'min_comission' => '50',
 			'min' => '50',
 			'max' => '50000',
 			'max_in_month' => '600000',
 		],
 		'card_not_rf' => [
-            'comission' => '3',
-			'min_comission' => '180',
+            'comission' => '4',
+			'min_comission' => '200',
 			'min' => '120',
 			'max' => '50000',
 			'max_in_month' => '600000',
